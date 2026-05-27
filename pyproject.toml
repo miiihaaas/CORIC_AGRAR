@@ -1,0 +1,32 @@
+[project]
+name = "coric-agrar"
+version = "0.1.0"
+description = "Trojezičan Django sajt za Ćorić Agrar — katalog poljoprivredne mehanizacije, lead-gen forme, admin panel"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2,<6.0",
+    "django-anymail>=15.0",
+    "django-axes>=8.3.1",
+    "django-bootstrap5>=26.2",
+    "django-csp>=4.0",
+    "django-environ>=0.13.0",
+    "django-htmx>=1.27.0",
+    "django-modeltranslation>=0.20.3",
+    "django-ratelimit>=4.1.0",
+    "django-template-partials>=25.3",
+    "pdf2image>=1.17.0",
+    "psycopg[binary]>=3.3.4",
+    "python-magic>=0.4.27",
+    "sorl-thumbnail>=13.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "djade>=1.9.0",
+    "django-debug-toolbar>=6.3.0",
+    "playwright>=1.60.0",
+    "pre-commit>=4.6.0",
+    "pytest>=9.0.3",
+    "pytest-django>=4.12.0",
+    "ruff>=0.15.14",
+]
