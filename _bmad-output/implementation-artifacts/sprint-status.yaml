@@ -1,0 +1,162 @@
+# generated: 2026-05-27
+# last_updated: 2026-05-27
+# project: CORIC_AGRAR
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: {project-root}/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-05-27
+last_updated: 2026-05-27
+project: CORIC_AGRAR
+project_key: NOKEY
+tracking_system: file-system
+story_location: "{project-root}/_bmad-output/implementation-artifacts"
+
+development_status:
+  # ============================================================
+  # Epic 1: Project Foundation & Visual Identity
+  # ============================================================
+  epic-1: backlog
+  1-1-project-bootstrap-sa-uv-i-django: backlog
+  1-2-multi-environment-settings-split-sa-django-environ: backlog
+  1-3-docker-compose-za-local-environment: backlog
+  1-4-i18n-setup-sa-locale-url-routing-i-switcher: backlog
+  1-5-self-hosted-roboto-design-md-tokens-kao-css-custom-properties: backlog
+  1-6-base-templates-sa-bootstrap-5-htmx-setup: backlog
+  1-7-reusable-visual-komponente: backlog
+  1-8-sticky-nav-top-header-footer-language-switcher-partial: backlog
+  1-9-github-actions-ci-pipeline: backlog
+  epic-1-retrospective: optional
+
+  # ============================================================
+  # Epic 2: Public Catalog — Browse Brands & Products
+  # ============================================================
+  epic-2: backlog
+  2-1-brand-series-category-subcategory-modeli: backlog
+  2-2-product-i-related-modeli: backlog
+  2-3-image-pipeline-sa-sorl-thumbnail-responsive-srcset: backlog
+  2-4-pdf-cover-thumbnail-generator: backlog
+  2-5-glightbox-integracija: backlog
+  2-6-brand-listing-strana-sa-grid-extended-layout-om: backlog
+  2-7-product-detail-strana: backlog
+  2-8-tractor-listing-strana-sa-htmx-filterima: backlog
+  2-9-used-machinery-listing-sa-filterima: backlog
+  2-10-jeegee-prikljucna-mehanizacija-strana: backlog
+  2-11-subcategory-listing-4-nivoa-hijerarhija: backlog
+  2-12-hzm-radne-masine-tulip-mix-prikolice-strane: backlog
+  2-13-global-search-sa-postgresql-fts: backlog
+  epic-2-retrospective: optional
+
+  # ============================================================
+  # Epic 3: Home & Static Pages
+  # ============================================================
+  epic-3: backlog
+  3-1-home-strana-sa-svim-sekcijama: backlog
+  3-2-o-nama-strana: backlog
+  3-3-kontakt-strana-sa-formom-i-mapom: backlog
+  3-4-sitesettings-model-inicijalni-admin: backlog
+  epic-3-retrospective: optional
+
+  # ============================================================
+  # Epic 4: Lead-gen Forms & Email Delivery
+  # ============================================================
+  epic-4: backlog
+  4-1-lead-model-smtp-setup: backlog
+  4-2-opsta-kontakt-forma-fr-5: backlog
+  4-3-model-inquiry-form-sa-auto-popunjenim-modelom: backlog
+  4-4-servisni-zahtev-form-sa-foto-upload-om: backlog
+  4-5-rezervni-delovi-form: backlog
+  4-6-htmx-form-patterns-aria-live-oob-rate-limiting: backlog
+  epic-4-retrospective: optional
+
+  # ============================================================
+  # Epic 5: Blog (Priče sa polja)
+  # ============================================================
+  epic-5: backlog
+  5-1-blogpost-category-tag-modeli-admin-stub: backlog
+  5-2-blog-index-strana-sa-paginacijom-filter: backlog
+  5-3-blog-post-detail-strana: backlog
+  5-4-footer-dynamic-najnovije-vesti-kolona: backlog
+  epic-5-retrospective: optional
+
+  # ============================================================
+  # Epic 6: SEO & Discoverability
+  # ============================================================
+  epic-6: backlog
+  6-1-seometa-model-per-page-admin: backlog
+  6-2-sitemap-auto-generation-sa-hreflang: backlog
+  6-3-robots-txt-open-graph-twitter-card-meta: backlog
+  6-4-redirect-manager-301: backlog
+  6-5-i18n-fallback-marker-tooltip: backlog
+  6-6-seo-hreflang-html-tagovi-locale-aware-slug-ovi: backlog
+  epic-6-retrospective: optional
+
+  # ============================================================
+  # Epic 7: GDPR & Privacy
+  # ============================================================
+  epic-7: backlog
+  7-1-cookiepolicy-model-admin: backlog
+  7-2-gdpr-banner-sa-consent-management: backlog
+  7-3-ga4-fb-pixel-template-tagovi-conditional-render: backlog
+  7-4-politika-kolacica-politika-privatnosti-staticke-strane: backlog
+  epic-7-retrospective: optional
+
+  # ============================================================
+  # Epic 8: Admin Dashboard & Content Management
+  # ============================================================
+  epic-8: backlog
+  8-1-custom-admin-login-sa-rate-limiting: backlog
+  8-2-user-accounts-rbac-superadmin-editor-groups: backlog
+  8-3-admin-dashboard-sa-segmentovanim-lead-count-om: backlog
+  8-4-brand-crud-admin: backlog
+  8-5-category-subcategory-crud-sa-hierarchy: backlog
+  8-6-product-crud-admin-sa-multi-locale: backlog
+  8-7-blog-crud-admin-sa-wysiwyg: backlog
+  8-8-staticke-strane-crud: backlog
+  8-9-sitesettings-navigation-menu-admin: backlog
+  epic-8-retrospective: optional
+
+  # ============================================================
+  # Epic 9: Go-Live Readiness (Production + Quality)
+  # ============================================================
+  epic-9: backlog
+  9-1-production-docker-compose-nginx-config: backlog
+  9-2-hetzner-deployment-script-ssl: backlog
+  9-3-glitchtip-6-self-host-setup: backlog
+  9-4-uptimerobot-konfiguracija: backlog
+  9-5-pg-dump-restic-hetzner-storage-box-backup: backlog
+  9-6-django-logging-konfiguracija: backlog
+  9-7-sample-seed-data-fixtures: backlog
+  9-8-playwright-e2e-testovi-za-3-uj-a: backlog
+  9-9-a11y-audit-performance-load-test: backlog
+  9-10-webp-avif-final-lighthouse-pass: backlog
+  epic-9-retrospective: optional
