@@ -540,13 +540,17 @@ def test_ac6_readme_exists_with_quickstart():
 
 
 def test_ac3_installed_apps_is_default_django():
-    """AC3/Gotcha #8: INSTALLED_APPS sadrzi Django default-e + apps.core (Story 1.4).
+    """AC3/Gotcha #8: INSTALLED_APPS sadrzi Django default-e + apps.core + 3rd-party
+    app-ove dodate kroz prethodne story-je.
 
     NAPOMENA: Story 1.2 refactor je `config.settings` (modul) zamenio sa
     `config.settings` (paket); base settings su sada u `config.settings.base`.
     NAPOMENA: Story 1.4 NAMERNO dodaje `apps.core` kao prvi domain app — invariant
     iz Story 1.1 superseded (isti pattern kao Story 1.2 settings split i Story 1.3
     compose dodatak).
+    NAPOMENA: Story 1.6 NAMERNO dodaje `django_htmx` i `django_bootstrap5` (template
+    tag discovery + HtmxMiddleware) — invariant iz Story 1.4 superseded (isti pattern
+    kao Story 1.4 amendment).
     """
     import importlib
     import os
@@ -569,14 +573,16 @@ def test_ac3_installed_apps_is_default_django():
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
+        "django_htmx",            # Story 1.6
+        "django_bootstrap5",      # Story 1.6
         "apps.core",
     }
     actual = set(apps)
 
-    # MUST be Django defaults + apps.core (Story 1.4 adds first domain app)
+    # MUST be Django defaults + 3rd-party (Story 1.6) + apps.core (Story 1.4)
     assert actual == expected, (
-        f"INSTALLED_APPS mora biti Django default + apps.core posle Story 1.4. "
-        f"Extras: {actual - expected}. Missing: {expected - actual}"
+        f"INSTALLED_APPS mora biti Django default + django_htmx + django_bootstrap5 + apps.core "
+        f"posle Story 1.6. Extras: {actual - expected}. Missing: {expected - actual}"
     )
 
 

@@ -23,8 +23,8 @@ DEBUG = env.bool("DJANGO_DEBUG", default=False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 
 # ── Applications ────────────────────────────────────────────────────────────
-# NAPOMENA: Story 1.2 zadržava default Django INSTALLED_APPS. 3rd-party app-ovi
-# (django-htmx, django-bootstrap5, modeltranslation) dodaju se u kasnijim story-jama.
+# NAPOMENA: Story 1.2 zadržava default Django INSTALLED_APPS. Story 1.6 dodaje
+# django_htmx + django_bootstrap5 (template tag discovery + middleware reg).
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_htmx",            # NOVO Story 1.6 — request.htmx detection
+    "django_bootstrap5",      # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
 ]
 
@@ -45,6 +47,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",          # NOVO Story 1.6 — postavlja request.htmx
     "apps.core.middleware.LocaleSwitcherMiddleware",
 ]
 
@@ -125,6 +128,27 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
+}
+
+# ── Bootstrap 5 ──────────────────────────────────────────────────────────────
+# django-bootstrap5 konfiguracija. base.py = DEV variant (CDN jsDelivr) per
+# project-context.md § Frontend frameworks line 67 ("Bootstrap 5.3 — CDN u dev,
+# local u prod"). production.py override-uje na local /static/vendor/.
+# Verzija pinned na 5.3.3 (latest stable 5.x kao 2026-05).
+# `integrity: None` eksplicitno suprimira django-bootstrap5 default SRI check
+# (vidi Gotcha #19 — bez ovoga, override css_url bez SRI hash-a baca
+# SubresourceIntegrityError).
+BOOTSTRAP5 = {
+    "css_url": {
+        "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+        "integrity": None,
+    },
+    "javascript_url": {
+        "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
+        "integrity": None,
+    },
+    "javascript_in_head": False,
+    "include_jquery": False,
 }
 
 # ── Default ─────────────────────────────────────────────────────────────────

@@ -33,4 +33,20 @@ STORAGES = {
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
+# ── Bootstrap 5 (production override) ────────────────────────────────────────
+# Production: lokalni vendor fajlovi (GDPR + CSP-readiness).
+# Story 1.6 Task 4 prepares static/vendor/bootstrap-5.3.3/ for ovaj override.
+BOOTSTRAP5 = {
+    "css_url": {
+        "url": "/static/vendor/bootstrap-5.3.3/css/bootstrap.min.css",
+        "integrity": None,
+    },
+    "javascript_url": {
+        "url": "/static/vendor/bootstrap-5.3.3/js/bootstrap.bundle.min.js",
+        "integrity": None,
+    },
+    "javascript_in_head": False,
+    "include_jquery": False,
+}
+
 # Story 9.3 doda: import sentry_sdk; sentry_sdk.init(dsn=env("GLITCHTIP_DSN"), ...)

@@ -202,17 +202,19 @@ def test_ac1_static_subdirs_exist():
 
 
 def test_ac1_static_no_other_subdirs_yet():
-    """AC1 / YAGNI: static/js/, static/img/, static/vendor/ NE SMEJU postojati u Story 1.5.
+    """AC1 / YAGNI: static/js/, static/img/ NE SMEJU postojati u Story 1.5/1.6.
 
-    Story 1.6+ uvodi vendor/, Story 1.7 js/, Story 2.3 img/.
+    Story 1.6 NAMERNO uvodi `static/vendor/` (AC7 — HTMX + Bootstrap vendor fajlovi).
+    Skinuti `vendor` iz forbidden liste — isti pattern kao Story 1.2/1.3/1.4/1.5 amendments.
+    Story 1.7 uvodi js/, Story 2.3 img/.
     """
     if not STATIC_DIR.exists():
         pytest.skip("static/ direktorijum ne postoji — drugi test (test_ac1_static_directory_exists) hvata.")
-    forbidden = ["js", "img", "vendor"]
+    forbidden = ["js", "img"]
     found = [name for name in forbidden if (STATIC_DIR / name).exists()]
     assert not found, (
         f"static/ sadrži forbidden subdir-ove: {found}. "
-        f"Story 1.5 (YAGNI) NE kreira js/img/vendor — Story 1.6+ ih uvodi."
+        f"Story 1.5/1.6 (YAGNI) NE kreira js/img — Story 1.7+ ih uvode."
     )
 
 
