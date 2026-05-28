@@ -1,0 +1,106 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+
+# Virtual environments (build stage instalira u /app/.venv unutar slike)
+.venv/
+venv/
+env/
+ENV/
+
+# uv cache
+.uv/
+
+# Django local artifacts
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+*.log
+logs/
+
+# Static + media (mountuje se kroz volume u dev, generise u deploy-u)
+staticfiles/
+static_collected/
+media/
+
+# Testing
+.pytest_cache/
+.cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.hypothesis/
+tests/
+test-results/
+junit.xml
+
+# Playwright
+playwright-report/
+playwright/.cache/
+playwright/.auth/
+blob-report/
+
+# Linters & formatters
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# Pre-commit
+.pre-commit-cache/
+
+# IDE & editor
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+.DS_Store
+
+# Compose override fajlovi (lokalni tweaks ne ulaze u image)
+compose/*.override.yml
+docker-compose.override.yml
+.docker-data/
+
+# Environment & secrets — KRITICNO
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# BMad artifacts (planning dokumenti ne treba u runtime image-u)
+_bmad/
+_bmad-output/
+bmad-orchestrators-bundle/
+.claude/
+
+# Docs
+docs/
+README.md
+
+# Backup
+*.sql
+*.sql.gz
+*.dump
+*.bak
+backups/
+
+# Node (defenzivno, nije u stack-u)
+node_modules/
+npm-debug.log*
+
+# Tmp / misc
+.tmp/
+tmp/
+*.pid

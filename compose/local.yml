@@ -1,0 +1,60 @@
+# CORIC_AGRAR — Docker Compose za LOCAL development
+# Pokreni: just dev   (ili: docker compose -f compose/local.yml up)
+# Stop:    just dev-down
+
+name: coric_agrar_local
+
+services:
+  django:
+    build:
+      context: ..
+      dockerfile: compose/django/Dockerfile
+    image: coric_agrar_django_local
+    env_file:
+      - ../.env
+    environment:
+      # Override DJANGO_SETTINGS_MODULE eksplicitno (manage.py default vec je razvoj, ali defenzivno)
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      # POSTGRES_* informational za entrypoint wait-for-db
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: coric
+    volumes:
+      # Bind mount source code za hot-reload (Django autoreload watcher)
+      - ../:/app:cached
+      # Named volume za .venv da bind mount ne overwrite-uje image .venv
+      - django_venv:/app/.venv
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: coric_agrar
+      POSTGRES_USER: coric
+      # LOCAL ONLY — staging/prod koristi secrets, NIKAD ovaj password
+      POSTGRES_PASSWORD: coric
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      # Opciono — exposes Postgres na host port da mozes povezati psql/DBeaver direktno
+      # Ako koliduje sa host-instal-iranim PostgreSQL-om, zameni sa "127.0.0.1:5433:5432" ili obrisi
+      # Bind na loopback samo (SEC-1.3-02): host pristup je dozvoljen tek lokalno; Django u Docker mrezi pristupa kroz db:5432 hostname (Docker DNS) bez promene.
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coric -d coric_agrar"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: coric_agrar_postgres_data
+  django_venv:
+    name: coric_agrar_django_venv

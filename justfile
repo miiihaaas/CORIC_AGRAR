@@ -5,9 +5,31 @@
 default:
     @just --list
 
-# Pokrece dev server (bice rewired na docker compose u Story 1.3)
+# Pokrece dev stack (Django + PostgreSQL) kroz Docker Compose
 dev:
-    uv run python manage.py runserver
+    docker compose -f compose/local.yml up
+
+# Builduje Django image (potrebno samo kad se Dockerfile menja ili posle prvog clone-a)
+dev-build:
+    docker compose -f compose/local.yml build
+
+# Stop dev stack (CHUVA postgres_data volume; koristi `down -v` rucno ako bas zelis da brises data)
+dev-down:
+    docker compose -f compose/local.yml down
+
+# Tail logs (follow mode; Ctrl+C izlazi)
+dev-logs:
+    docker compose -f compose/local.yml logs -f
+
+# Otvori bash shell u django kontejneru (za debug, manage.py shell, itd.)
+# dev-shell zavisi od bash u runtime image-u (python:3.13-slim ima bash); ako future story prebaci na alpine, koristi sh.
+dev-shell:
+    docker compose -f compose/local.yml exec django /bin/bash
+
+# Wrapper za manage.py komande u kontejneru
+# Primer: just dev-manage createsuperuser
+dev-manage *ARGS:
+    docker compose -f compose/local.yml exec django python manage.py {{ARGS}}
 
 # Pokrece test suite
 test:

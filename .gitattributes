@@ -1,0 +1,14 @@
+# CORIC_AGRAR — git line-ending policy
+# Default: text=auto (git auto-detektuje text vs binary; ne forsira EOL na disku)
+# Razlog: forsiranje eol=lf na sve text fajlove izaziva whole-file diff churn na Windows-u
+* text=auto
+
+# Shell skripte MORAJU biti LF (Docker/Linux execution) — KRITICNO
+# Bash u Linux kontejneru ne tolerise CRLF (`/bin/bash^M: bad interpreter`)
+*.sh text eol=lf
+compose/django/entrypoint.sh text eol=lf
+
+# Eksplicitni binary marker (sprecava slucajno text mangling)
+*.png binary
+*.jpg binary
+*.pdf binary

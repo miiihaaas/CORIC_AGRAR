@@ -584,21 +584,21 @@ def test_ac3_installed_apps_is_default_django():
 
 
 def test_no_out_of_scope_artifacts_yet():
-    """Story 1.1 ne kreira: apps/, templates/, static/, .env, Dockerfile,
-    .pre-commit-config.yaml, compose/, .github/.
+    """Story 1.1 ne kreira: apps/, templates/, static/, .pre-commit-config.yaml, .github/.
 
     NAPOMENA: Story 1.2 NAMERNO uvodi `.env.example` (AC4) i `config/settings/`
     paket (AC1). Ti artefakti su uklonjeni iz forbidden liste kao legitimna
     Story 1.2 refactor side-effect.
+
+    NAPOMENA: Story 1.3 NAMERNO uvodi: `compose/` (AC1), `compose/django/Dockerfile` (AC2),
+    `.env` (Task 10.1, gitignored lokalno). Story 1.1 scope-creep guard azuriran po
+    Story 1.2 presedanu.
     """
     forbidden = [
         "apps",
         "templates",
         "static",
-        ".env",
-        "Dockerfile",
         ".pre-commit-config.yaml",
-        "compose",
         ".github",
     ]
     existing = []
