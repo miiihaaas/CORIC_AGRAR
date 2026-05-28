@@ -1,6 +1,10 @@
 # CORIC_AGRAR — justfile (task runner)
 # Pokrenuti `just --list` za listu svih recepata.
 
+# Windows: koristi PowerShell umesto default-a `sh` (koji nije prisutan na Windows-u).
+# Direktiva važi samo na Windows-u; Linux/Mac koriste default sh.
+set windows-shell := ["powershell.exe", "-c"]
+
 # Default recept — prikazuje listu kad se pokrene `just` bez argumenata
 default:
     @just --list
