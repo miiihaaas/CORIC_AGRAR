@@ -1,0 +1,21 @@
+{% load static %}
+{# Repeating Element — dekorativan grafem (točak/brazda) u brand boji. #}
+<div
+  class="coric-repeating-element coric-repeating-element--{{ variant|default:'green' }}"
+  aria-hidden="true"
+>
+  {# IMP-D5: preserveAspectRatio="xMaxYMin meet" je safety net za buduće viewBox izmene. #}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 60 40"
+    preserveAspectRatio="xMaxYMin meet"
+    class="coric-repeating-element__corner"
+    aria-hidden="true"
+  >
+    {# AC7 EXCEPTION: stroke="white" je named CSS keyword (dozvoljeno per AC7 EXCEPTION clause). #}
+    <path d="M60,12 A12,12 0 0 1 48,0" fill="none" stroke="white" stroke-width="1" opacity="0.5" />
+    <path d="M60,20 A20,20 0 0 1 40,0" fill="none" stroke="white" stroke-width="1" opacity="0.5" />
+    <path d="M60,28 A28,28 0 0 1 32,0" fill="none" stroke="white" stroke-width="1" opacity="0.5" />
+    <path d="M60,36 A36,36 0 0 1 24,0" fill="none" stroke="white" stroke-width="1" opacity="0.5" />
+  </svg>
+</div>

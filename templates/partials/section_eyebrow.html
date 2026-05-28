@@ -1,0 +1,6 @@
+{# Section Eyebrow — UPPERCASE caption sa zlatnim linijama oko teksta. #}
+{% with tag=tag|default:"div" %}<{{ tag }} class="coric-section-eyebrow{% if variant %} coric-section-eyebrow--{{ variant }}{% endif %}">
+  <span class="coric-section-eyebrow__line" aria-hidden="true"></span>
+  <span class="coric-section-eyebrow__text">{{ text }}</span>
+  <span class="coric-section-eyebrow__line" aria-hidden="true"></span>
+</{{ tag }}>{% endwith %}

@@ -1,2 +1,9 @@
 /* main.css — site-wide custom CSS. Story 1.7+ populates with komponente. */
 /* Loaded AFTER tokens.css i Bootstrap CSS u base.html — overrides cascade. */
+
+/* Components CSS imports (Story 1.7) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/repeating-element.css');
+@import url('./components/pill-button.css');
+@import url('./components/wave-divider.css');
+@import url('./components/section-eyebrow.css');
+@import url('./components/hero-overlay-card.css');

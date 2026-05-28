@@ -54,7 +54,7 @@ dev elopment_status:
   1-4-i18n-setup-sa-locale-url-routing-i-switcher: done
   1-5-self-hosted-roboto-design-md-tokens-kao-css-custom-properties: done
   1-6-base-templates-sa-bootstrap-5-htmx-setup: done
-  1-7-reusable-visual-komponente: backlog
+  1-7-reusable-visual-komponente: done
   1-8-sticky-nav-top-header-footer-language-switcher-partial: backlog
   1-9-github-actions-ci-pipeline: backlog
   epic-1-retrospective: optional

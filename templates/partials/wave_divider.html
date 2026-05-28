@@ -1,0 +1,17 @@
+{# Wave Divider — inline SVG sa mekanim bezier krivama. Dekorativan (aria-hidden). #}
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 80"
+  preserveAspectRatio="none"
+  width="100%"
+  height="80"
+  aria-hidden="true"
+  role="presentation"
+  class="coric-wave-divider{% if position == 'bottom' %} coric-wave-divider--bottom{% endif %}"
+>
+  {# IMP-17: explicit token-based fill sprečava FOUC (crni flash dok CSS ne učita). #}
+  <path
+    d="M0,40 C150,80 300,0 450,40 C600,80 750,0 900,40 C1050,80 1200,0 1200,40 L1200,80 L0,80 Z"
+    fill="var(--color-brand-green-800)"
+  />
+</svg>

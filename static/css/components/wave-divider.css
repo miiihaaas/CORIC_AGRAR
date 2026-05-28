@@ -1,0 +1,20 @@
+/* wave-divider.css — inline SVG talas sa 3-4 mekana vrha. */
+
+.coric-wave-divider {
+  display: block;
+  width: 100%;
+  height: 80px;
+  /* IMP-D3: defensive future-use. Trenutno IMP-17 koristi explicit fill na SVG path-u;
+     ovaj setter preuzima kontrolu samo ako se refactor vrati na currentColor strategiju. */
+  color: var(--color-brand-green-800);
+}
+
+.coric-wave-divider--bottom {
+  transform: scaleY(-1);
+}
+
+@media (max-width: 767px) {
+  .coric-wave-divider {
+    height: 48px;
+  }
+}

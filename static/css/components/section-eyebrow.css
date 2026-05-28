@@ -1,0 +1,29 @@
+/* section-eyebrow.css — UPPERCASE caption sa zlatnim linijama. */
+
+.coric-section-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-scale-3);
+  margin-bottom: var(--spacing-scale-4);
+}
+
+/* IMP-5: linija širina MORA biti token (--spacing-scale-10); nikakav hardcoded literal. */
+.coric-section-eyebrow__line {
+  flex: 0 0 var(--spacing-scale-10);
+  height: 1px;
+  background-color: var(--color-accent-gold-500);
+}
+
+.coric-section-eyebrow__text {
+  font-family: var(--typography-family-primary);
+  font-weight: var(--typography-weight-light);
+  font-size: var(--typography-scale-caption);
+  letter-spacing: var(--typography-tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-brand-green-800);
+}
+
+.coric-section-eyebrow--on-dark .coric-section-eyebrow__text {
+  color: var(--color-semantic-text-on-dark);
+}

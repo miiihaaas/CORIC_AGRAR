@@ -1,0 +1,71 @@
+/* pill-button.css — CTA dugmad u 3 varijante (primary / secondary / cta-light). */
+
+.coric-button {
+  display: inline-block;
+  padding: var(--spacing-scale-3) var(--spacing-scale-6);
+  border-radius: var(--rounded-pill);
+  font-family: var(--typography-family-primary);
+  font-weight: var(--typography-weight-bold);
+  font-size: var(--typography-scale-small);
+  letter-spacing: var(--typography-tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  min-height: 44px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.coric-button:focus,
+.coric-button:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.coric-button--primary {
+  background-color: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
+  border: 2px solid transparent;
+}
+
+.coric-button--primary:hover {
+  background-color: var(--color-accent-lime-500);
+  color: var(--color-brand-green-900);
+}
+
+.coric-button--secondary {
+  background-color: transparent;
+  color: var(--color-brand-green-800);
+  border: 2px solid var(--color-brand-green-800);
+}
+
+.coric-button--secondary:hover {
+  background-color: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-button--cta-light {
+  background-color: var(--color-accent-gold-500);
+  color: var(--color-brand-green-900);
+  border: 2px solid transparent;
+}
+
+.coric-button--cta-light:hover {
+  background-color: var(--color-accent-lime-500);
+  color: var(--color-brand-green-900);
+}
+
+/* CRITICAL-3: ko ship-uje motion ship-uje i guard. */
+@media (prefers-reduced-motion: reduce) {
+  .coric-button {
+    transition: none;
+  }
+}
+
+/* IMP-13: Windows High Contrast Mode — transparent border postaje vidljiv. */
+@media (forced-colors: active) {
+  .coric-button {
+    border-color: ButtonText;
+  }
+}

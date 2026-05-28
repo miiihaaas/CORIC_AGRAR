@@ -1,0 +1,27 @@
+/* repeating-element.css — dekorativan brand grafem (3:2 ratio, beli koncentrični lukovi). */
+
+.coric-repeating-element {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+}
+
+.coric-repeating-element--green {
+  background-color: var(--color-brand-green-800);
+}
+
+.coric-repeating-element--jeegee {
+  background-color: var(--color-jeegee-blue);
+}
+
+/* CRITICAL-2: bez ovog __corner bloka SVG arcs ne idu u gornji desni ugao. */
+.coric-repeating-element__corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  pointer-events: none;
+}
