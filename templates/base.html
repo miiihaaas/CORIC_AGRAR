@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 {% load i18n %}
+{% load static %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Ćorić Agrar{% endblock %}</title>
+  <link rel="stylesheet" href="{% static "css/tokens.css" %}">
   {% block extra_head %}{% endblock %}
 </head>
 <body>

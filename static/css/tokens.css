@@ -1,0 +1,175 @@
+/* ============================================================================
+ * tokens.css — Ćorić Agrar CSS Custom Properties
+ *
+ * 1:1 mapping iz DESIGN.md frontmatter (colors, typography, rounded, shadows,
+ * spacing). Sve komponente konzumiraju tokene preko var(--token-name) — bez
+ * magic vrednosti u komponentnom CSS-u.
+ *
+ * Roboto: self-hosted (Apache License 2.0, https://fonts.google.com/specimen/Roboto)
+ * ========================================================================= */
+
+/* ============================================================================
+ * @font-face — Roboto subset (latin + latin-ext, weights 300/400/700)
+ * Each face uses display swap (FOIT prevention; vidi project-context.md § Perf).
+ * unicode-range omogućuje browser-u da preuzme samo subset koji se koristi.
+ * ========================================================================= */
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: normal;
+  font-display: swap;
+  src: url('../fonts/roboto/roboto-latin-300.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-display: swap;
+  src: url('../fonts/roboto/roboto-latin-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: normal;
+  font-display: swap;
+  src: url('../fonts/roboto/roboto-latin-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: normal;
+  font-display: swap;
+  src: url('../fonts/roboto/roboto-latin-ext-300.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-display: swap;
+  src: url('../fonts/roboto/roboto-latin-ext-400.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: normal;
+  font-display: swap;
+  src: url('../fonts/roboto/roboto-latin-ext-700.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ============================================================================
+ * :root — CSS Custom Properties (63 tokena ukupno: 21 color + 42 ostali)
+ * Naming convention: --<group>-<name>-<variant> per project-context.md
+ * ========================================================================= */
+
+:root {
+  /* === COLORS — Brand greens (DESIGN.md colors.brand) === */
+  --color-brand-green-900: #1f3f2f;
+  --color-brand-green-800: #25402f;
+  --color-brand-green-600: #395f48;
+  --color-brand-green-400: #4d7e60;
+
+  /* === COLORS — Accents (DESIGN.md colors.accent) === */
+  --color-accent-gold-500: #e7af12;
+  --color-accent-lime-500: #c8d32c;
+
+  /* === COLORS — Brand-specific (DESIGN.md colors.brand-specific) === */
+  --color-jeegee-blue: #00a4e9;
+
+  /* === COLORS — Neutrals (DESIGN.md colors.neutral) === */
+  --color-neutral-cream: #f5f1e8;
+  --color-neutral-white: #ffffff;
+  --color-neutral-gray-100: #f4f4f4;
+  --color-neutral-gray-300: #d1d1d1;
+  --color-neutral-gray-500: #8a8a8a;
+  --color-neutral-gray-700: #4a4a4a;
+  --color-neutral-black: #0f0f0f;
+
+  /* === COLORS — Semantic (DESIGN.md colors.semantic) === */
+  --color-semantic-text-primary: #1f3f2f;
+  --color-semantic-text-on-dark: #ffffff;
+  --color-semantic-text-muted: #4a4a4a;
+  --color-semantic-border: #395f48;
+  --color-semantic-error: #c0392b;
+  --color-semantic-success: #2d6b2d;
+  --color-semantic-focus-ring: #5a8a6e;
+
+  /* === TYPOGRAPHY — Family (DESIGN.md typography.family) === */
+  --typography-family-primary: 'Roboto', system-ui, sans-serif;
+
+  /* === TYPOGRAPHY — Weights (DESIGN.md typography.weight) === */
+  --typography-weight-light: 300;
+  --typography-weight-regular: 400;
+  --typography-weight-bold: 700;
+
+  /* === TYPOGRAPHY — Scale (DESIGN.md typography.scale; rem values, 1rem = 16px) === */
+  --typography-scale-h1: 3.5rem;
+  --typography-scale-h2: 2.5rem;
+  --typography-scale-h3: 1.75rem;
+  --typography-scale-h4: 1.25rem;
+  --typography-scale-body: 1.25rem;
+  --typography-scale-small: 1rem;
+  --typography-scale-caption: 0.875rem;
+
+  /* === TYPOGRAPHY — Line-height (DESIGN.md typography.line-height) === */
+  --typography-line-height-tight: 1.2;
+  --typography-line-height-base: 1.5;
+  --typography-line-height-relaxed: 1.7;
+
+  /* === TYPOGRAPHY — Tracking (DESIGN.md typography.tracking) === */
+  --typography-tracking-normal: 0;
+  --typography-tracking-wide: 0.05em;
+
+  /* === ROUNDED (DESIGN.md rounded) === */
+  --rounded-none: 0;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 10px;
+  --rounded-pill: 999px;
+  --rounded-full: 50%;
+
+  /* === SHADOWS (DESIGN.md shadows) === */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 3px rgba(31, 63, 47, 0.06);
+  --shadow-md: 0 2px 8px rgba(31, 63, 47, 0.06);
+  --shadow-lg: 0 4px 12px rgba(31, 63, 47, 0.08);
+  --shadow-nav-shrunk: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* === SPACING — Base + scale (DESIGN.md spacing.base + spacing.scale; px values) === */
+  --spacing-base: 4px;
+  --spacing-scale-1: 4px;
+  --spacing-scale-2: 8px;
+  --spacing-scale-3: 12px;
+  --spacing-scale-4: 16px;
+  --spacing-scale-5: 24px;
+  --spacing-scale-6: 32px;
+  --spacing-scale-8: 48px;
+  --spacing-scale-10: 64px;
+  --spacing-scale-12: 96px;
+
+  /* === SPACING — Section (DESIGN.md spacing.scale.section + section-mobile) === */
+  --spacing-section: 80px;
+  --spacing-section-mobile: 48px;
+
+  /* === SPACING — Container (DESIGN.md spacing.container) === */
+  --spacing-container-max-width: 1200px;
+  --spacing-container-gutter-desktop: 24px;
+  --spacing-container-gutter-mobile: 16px;
+}

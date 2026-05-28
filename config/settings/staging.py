@@ -14,3 +14,10 @@ LANGUAGE_COOKIE_SECURE = True  # defense-in-depth (Story 1.4 / Dev-B SEC review)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Bez HSTS na staging-u (HSTS pin-uje host na HTTPS — ne želiš to na staging domenu)
+
+# ── Static files storage override za staging ─────────────────────────────────
+# Staging je production-like — manifest se koristi za realan test cache-busting-a.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}

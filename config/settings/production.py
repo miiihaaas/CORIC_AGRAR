@@ -23,4 +23,14 @@ SECURE_HSTS_PRELOAD = True
 SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 
+# ── Static files storage override za prod ────────────────────────────────────
+# Prod koristi Whitenoise CompressedManifestStaticFilesStorage:
+# - hash u filename (tokens.<hash>.css) → cache-busting + max-age=1y
+# - automatski .gz + .br kompresovane varijante
+# Zahteva collectstatic --noinput kao deploy step (PRE prvog request-a).
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
+
 # Story 9.3 doda: import sentry_sdk; sentry_sdk.init(dsn=env("GLITCHTIP_DSN"), ...)

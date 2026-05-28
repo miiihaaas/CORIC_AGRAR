@@ -598,9 +598,12 @@ def test_no_out_of_scope_artifacts_yet():
 
     NAPOMENA: Story 1.4 NAMERNO uvodi `apps/` (AC1) i `templates/` (AC6). Skinuti
     iz forbidden liste — isti pattern kao Story 1.2 i Story 1.3 amendments.
+
+    NAPOMENA: Story 1.5 NAMERNO uvodi `static/` (AC1 — static/, static/css/,
+    static/fonts/roboto/). Skinuti iz forbidden liste — isti pattern kao
+    Story 1.2/1.3/1.4 amendments.
     """
     forbidden = [
-        "static",
         ".pre-commit-config.yaml",
         ".github",
     ]

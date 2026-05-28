@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # POSLE Security, PRE Session (Whitenoise docs)
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -106,8 +107,25 @@ USE_L10N = True
 USE_TZ = True
 
 # ── Static ───────────────────────────────────────────────────────────────────
-STATIC_URL = "static/"
-# STATIC_ROOT, STATICFILES_DIRS, MEDIA_ROOT — dolaze u Story 1.5/1.6 kad static asset folder bude kreiran
+# base.py definiše osnovni STORAGES dict sa plain StaticFilesStorage (Django default).
+# Env-specific settings override-uju STORAGES["staticfiles"]:
+#   - development.py: plain StaticFilesStorage (no manifest, no collectstatic needed)
+#   - production.py / staging.py: Whitenoise CompressedManifestStaticFilesStorage
+#     (gzip + brotli + hash cache-busting; zahteva collectstatic deploy step)
+# STATIC_URL ima leading slash radi i18n_patterns kompatibilnosti — bez slash-a
+# {% static %} resolve uvodi current locale prefix (/sr/static/...) → 404. Vidi Gotcha #29.
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 # ── Default ─────────────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

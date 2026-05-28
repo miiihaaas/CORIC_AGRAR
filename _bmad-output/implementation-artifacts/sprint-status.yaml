@@ -1,5 +1,5 @@
 # generated: 2026-05-27
-# last_updated: 2026-05-28 (Story 1.4 created; status -> ready-for-dev)
+# last_updated: 2026-05-28 (Story 1.5 created; status -> ready-for-dev)
 # project: CORIC_AGRAR
 # project_key: NOKEY
 # tracking_system: file-system
@@ -52,7 +52,7 @@ development_status:
   1-2-multi-environment-settings-split-sa-django-environ: done
   1-3-docker-compose-za-local-environment: done
   1-4-i18n-setup-sa-locale-url-routing-i-switcher: done
-  1-5-self-hosted-roboto-design-md-tokens-kao-css-custom-properties: backlog
+  1-5-self-hosted-roboto-design-md-tokens-kao-css-custom-properties: done
   1-6-base-templates-sa-bootstrap-5-htmx-setup: backlog
   1-7-reusable-visual-komponente: backlog
   1-8-sticky-nav-top-header-footer-language-switcher-partial: backlog
