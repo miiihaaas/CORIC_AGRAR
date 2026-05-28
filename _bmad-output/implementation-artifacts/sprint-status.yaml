@@ -1,5 +1,5 @@
 # generated: 2026-05-27
-# last_updated: 2026-05-28 (Story 1.5 created; status -> ready-for-dev)
+# last_updated: 2026-05-28 (Story 1.8 created; status -> ready-for-dev)
 # project: CORIC_AGRAR
 # project_key: NOKEY
 # tracking_system: file-system
@@ -55,7 +55,7 @@ dev elopment_status:
   1-5-self-hosted-roboto-design-md-tokens-kao-css-custom-properties: done
   1-6-base-templates-sa-bootstrap-5-htmx-setup: done
   1-7-reusable-visual-komponente: done
-  1-8-sticky-nav-top-header-footer-language-switcher-partial: backlog
+  1-8-sticky-nav-top-header-footer-language-switcher-partial: done
   1-9-github-actions-ci-pipeline: backlog
   epic-1-retrospective: optional
 

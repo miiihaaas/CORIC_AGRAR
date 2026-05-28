@@ -796,24 +796,42 @@ def test_base_html_css_load_order():
     )
 
 
-# AC-8: Strategy A — main.css mora imati TAČNO 5 @import url('./components/...') direktiva
+# AC-8: Strategy A — main.css mora imati 5 Story 1.7 @import url('./components/...') direktiva
 def test_main_css_imports_all_5_components():
-    """AC8 (Strategy A — D1 default): main.css sadrži 5 `@import url('./components/...')` linija.
+    """AC8 (Strategy A — D1 default): main.css sadrži 5 Story 1.7 component @import linija.
 
     Mandatory relative-with-dot syntax `./components/...` (IMP-7) — sprečava Whitenoise/Manifest
     edge cases. Ako Dev izabere Strategy B, ovaj test mora biti adapted (vidi interface contract § 9).
+
+    Updated for Story 1.8 (TEST_MODIFICATION GREEN-phase): Story 1.8 adds 3 more
+    @import lines (header.css, footer.css, sticky-nav.css) — total 8 imports expected.
+    Assertion changed from `== 5` to `>= 5` and explicitly checks each Story 1.7
+    component is present (positional invariant preserved). Story 1.8 separate test in
+    tests/test_navigation_chrome.py verifies the 3 Story 1.8 imports.
     """
     if not MAIN_CSS.exists():
         pytest.fail("static/css/main.css ne postoji (Story 1.6 regression).")
     css = MAIN_CSS.read_text(encoding="utf-8")
-    # Match @import url('./components/<name>.css') sa single quotes (canonical IMP-7)
     pattern = r"@import\s+url\(\s*['\"]\./components/[a-z-]+\.css['\"]\s*\)"
     matches = re.findall(pattern, css)
-    assert len(matches) == 5, (
-        f"main.css ima {len(matches)} `@import url('./components/...')` direktiva, očekivano 5. "
+    assert len(matches) >= 5, (
+        f"main.css ima {len(matches)} `@import url('./components/...')` direktiva, očekivano >= 5. "
         f"AC8 Strategy A + IMP-7 — relative-with-dot syntax MANDATORY. "
         f"Pronađeni: {matches}"
     )
+    # Story 1.7 invariant — each of 5 canonical components must be present.
+    for name in (
+        "repeating-element.css",
+        "pill-button.css",
+        "wave-divider.css",
+        "section-eyebrow.css",
+        "hero-overlay-card.css",
+    ):
+        component_pattern = rf"@import\s+url\(\s*['\"]\./components/{re.escape(name)}['\"]\s*\)"
+        assert re.search(component_pattern, css), (
+            f"main.css NE sadrži `@import url('./components/{name}')`. "
+            f"Story 1.7 component invariant — must persist post-Story 1.8 expansion."
+        )
 
 
 # AC-7 (template check): nijedan inline `style="..."` u novim partial-ima

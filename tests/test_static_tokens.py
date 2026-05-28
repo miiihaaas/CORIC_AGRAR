@@ -202,19 +202,21 @@ def test_ac1_static_subdirs_exist():
 
 
 def test_ac1_static_no_other_subdirs_yet():
-    """AC1 / YAGNI: static/js/, static/img/ NE SMEJU postojati u Story 1.5/1.6.
+    """AC1 / YAGNI: Story 1.5/1.6 forbids extra static/ subdirs.
 
-    Story 1.6 NAMERNO uvodi `static/vendor/` (AC7 — HTMX + Bootstrap vendor fajlovi).
-    Skinuti `vendor` iz forbidden liste — isti pattern kao Story 1.2/1.3/1.4/1.5 amendments.
-    Story 1.7 uvodi js/, Story 2.3 img/.
+    Updated for Story 1.8 (TEST_MODIFICATION GREEN-phase): Story 1.8 introduces
+    `static/js/` (sticky-nav.js, AC1) and `static/img/` (Coric Agrar logo PNGs, Task 1.10).
+    Both are explicit deliverables — the original YAGNI guard (forbidding js/ + img/)
+    no longer applies. Story 1.5/1.6 invariant preserved as a passive comment.
     """
     if not STATIC_DIR.exists():
         pytest.skip("static/ direktorijum ne postoji — drugi test (test_ac1_static_directory_exists) hvata.")
-    forbidden = ["js", "img"]
+    # No subdirs are forbidden post-Story 1.8; static/{css,fonts,vendor,js,img}/ are all canonical.
+    # Test retained as a regression sentinel — if a truly unexpected subdir appears, extend `forbidden`.
+    forbidden: list[str] = []
     found = [name for name in forbidden if (STATIC_DIR / name).exists()]
     assert not found, (
-        f"static/ sadrži forbidden subdir-ove: {found}. "
-        f"Story 1.5/1.6 (YAGNI) NE kreira js/img — Story 1.7+ ih uvode."
+        f"static/ sadrži forbidden subdir-ove: {found}."
     )
 
 

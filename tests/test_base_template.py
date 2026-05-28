@@ -371,20 +371,40 @@ def test_ac1_base_html_noscript_block():
 
 
 def test_ac2_skip_link_first_child_of_body():
-    """AC2: skip link MORA biti PRVI element body-ja (PRE <header>)."""
+    """AC2: skip link MORA biti PRVI element body-ja (PRE prvog chrome include-a).
+
+    Story 1.8 CRITICAL-CASCADE-2 + Decision D17 (flatten Option A): <header> wrapper
+    uklonjen u korist role="banner" na .coric-top-header div-u. Canonical landmark
+    region u base.html sada je `{% include "partials/header.html" %}` koji renderuje
+    .coric-top-header + <nav class="coric-nav"> kao siblings (NE wrapped u <header>).
+
+    POLISH-7 iter 3: regex umesto literal .find() — resilient na whitespace varijacije
+    ({% include%}, {%  include  %}, jednostruki vs dvostruki navodnici). Brittleness
+    eliminisana — test ne fail-uje na sitne template formatting promene.
+    """
     src = _read_base_html()
     body_open_idx = src.find("<body>")
     skip_link_idx = src.find("visually-hidden-focusable")
-    header_idx = src.find("<header>")
+    header_include_match = re.search(
+        r'\{%\s*include\s*[\'"]partials/header\.html[\'"]\s*%\}',
+        src,
+    )
     assert body_open_idx != -1, "base.html ne sadrži <body> tag."
     assert skip_link_idx != -1, (
         "base.html ne sadrži skip link (`visually-hidden-focusable` klasa). AC2."
     )
-    assert header_idx != -1, "base.html ne sadrži <header> tag (regression)."
-    assert body_open_idx < skip_link_idx < header_idx, (
+    assert header_include_match is not None, (
+        "base.html ne uključuje header partial (regression — Story 1.8 zahteva da je "
+        "`{% include \"partials/header.html\" %}` u base.html; regex prihvata whitespace "
+        "+ jednostruke/dvostruke navodnike)."
+    )
+    coric_top_header_include_idx = header_include_match.start()
+    assert body_open_idx < skip_link_idx < coric_top_header_include_idx, (
         f"Skip link nije prvi element body-ja. "
-        f"body_open={body_open_idx}, skip_link={skip_link_idx}, header={header_idx}. "
-        f"AC2: skip link mora biti TAČNO PRVI fokusabilan element (PRE header-a)."
+        f"body_open={body_open_idx}, skip_link={skip_link_idx}, "
+        f"header_include={coric_top_header_include_idx}. "
+        f"AC2 (Story 1.6 regression updated u Story 1.8 scope per CRITICAL-CASCADE-2 + D17): "
+        f"skip link mora biti TAČNO PRVI fokusabilan element (PRE chrome includes)."
     )
 
 

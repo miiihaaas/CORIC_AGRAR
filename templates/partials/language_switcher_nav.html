@@ -1,0 +1,22 @@
+{% load i18n %}
+{# Story 1.8 — Language switcher (CSP-safe; CRITICAL-1 / D3 / D18).
+   Form-per-locale: each form has hidden inputs + submit button.
+   Current locale button receives the landmark indicator attribute (GOV.UK precedent). #}
+<ul class="coric-nav__language-switcher" role="list">
+  {% get_available_languages as available_languages %}
+  {% for lang_code, lang_name in available_languages %}
+    <li>
+      <form action="{% url 'set_language' %}" method="post" class="coric-language-switcher__form">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.path }}">
+        <input name="language" type="hidden" value="{{ lang_code }}">
+        <button type="submit"
+                class="coric-language-switcher__btn{% if LANGUAGE_CODE == lang_code %} coric-language-switcher__btn--current{% endif %}"
+                {% if LANGUAGE_CODE == lang_code %}aria-current="page"{% endif %}
+                aria-label="{% blocktranslate with language=lang_name %}Prebaci na {{ language }}{% endblocktranslate %}">
+          {{ lang_code|upper }}
+        </button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>

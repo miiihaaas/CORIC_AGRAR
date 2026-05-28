@@ -1,0 +1,86 @@
+/* sticky-nav.css — Sticky shrink-on-scroll behavior (Story 1.8).
+ * CRITICAL-6: body { position: relative } enables sentinel absolute positioning.
+ * CRITICAL-5: sentinel is direct child <body> (set in base.html), NOT in header.html.
+ * CRITICAL-11 + D16: shrunk top-header collapse via height: 0 + visibility: hidden (CLS-friendly).
+ * CRITICAL-CASCADE-3: visibility transition-delay 200ms in shrunk state — WCAG 2.4.7/2.4.11.
+ * AC9 whitelist: 1px, 100px (sentinel offset), 60px (shrunk nav), 40px (shrunk logo).
+ */
+
+/* CRITICAL-6: <body> as positioned containing block for sentinel.
+ * Story 1.8 sticky-nav: enables IntersectionObserver sentinel positioning. */
+body {
+  position: relative;
+}
+
+/* Sentinel — invisible, positioned for IntersectionObserver (CRITICAL-5). */
+.coric-sticky-sentinel {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* ============================================================================
+ * Shrunk-state rules — toggled by sticky-nav.js (Decision D13).
+ * body.coric-nav-shrunk is the SOT class (sibling selector unavailable upstream).
+ * ========================================================================= */
+.coric-nav--shrunk {
+  height: 60px;
+  box-shadow: var(--shadow-nav-shrunk);
+}
+
+.coric-nav--shrunk .coric-nav__logo-img {
+  max-height: 40px;
+}
+
+/* CRITICAL-11 + CRITICAL-CASCADE-3:
+ * height: 0 + padding: 0 + visibility: hidden — smooth collapse, no CLS, removes
+ * descendants from tab order POSLE height transition (visibility delay 200ms). */
+body.coric-nav-shrunk .coric-top-header {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  visibility: hidden;
+  transition: height 200ms ease, padding 200ms ease, visibility 0s linear 200ms;
+}
+
+body.coric-nav-shrunk .coric-nav {
+  height: 60px;
+}
+
+body.coric-nav-shrunk .coric-nav__logo-img {
+  max-height: 40px;
+}
+
+/* ============================================================================
+ * Mobile bypass (single-source per POLISH-2 / FINAL-1).
+ * D4: sticky shrink-on-scroll does NOT apply below md breakpoint. Sentinel hidden + top-header
+ * uses height: auto (mobile expand-on-toggle has variable height).
+ * ========================================================================= */
+@media (max-width: 767px) {
+  .coric-top-header {
+    height: auto;
+  }
+
+  .coric-sticky-sentinel {
+    display: none;
+  }
+}
+
+/* ============================================================================
+ * Reduced-motion override (AC7 + POLISH-3).
+ * Disables transitions including visibility delay so flip is instant.
+ * ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .coric-nav,
+  .coric-nav__logo-img,
+  .coric-top-header {
+    transition: none;
+  }
+
+  body.coric-nav-shrunk .coric-top-header {
+    transition: none;
+  }
+}

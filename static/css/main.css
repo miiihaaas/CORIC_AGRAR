@@ -7,3 +7,8 @@
 @import url('./components/wave-divider.css');
 @import url('./components/section-eyebrow.css');
 @import url('./components/hero-overlay-card.css');
+
+/* Components CSS imports (Story 1.8) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/header.css');
+@import url('./components/footer.css');
+@import url('./components/sticky-nav.css');

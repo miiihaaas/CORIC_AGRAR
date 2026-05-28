@@ -1,0 +1,121 @@
+{% load i18n %}
+{% load static %}
+
+{# Story 1.8 — Top header + Main nav.
+   CRITICAL-7 / D17 flatten Option A: no outer header wrapper element.
+   The top-header div and the nav element are siblings at template root.
+   Sentinel je u base.html (direct child body), NIJE ovde — CRITICAL-5. #}
+
+{# CRITICAL-CASCADE-1: role="banner" na .coric-top-header (ARIA landmark restoration after flatten). #}
+<div class="coric-top-header" role="banner" aria-label="{% translate "Kontakt informacije" %}">
+  <button type="button"
+          class="coric-top-header__mobile-toggle d-md-none"
+          data-bs-toggle="collapse"
+          data-bs-target="#coricTopHeaderExpanded"
+          aria-expanded="false"
+          aria-controls="coricTopHeaderExpanded"
+          aria-label="{% translate "Pokazi kontakt informacije" %}">
+    <svg aria-hidden="true" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+      <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58z"/>
+    </svg>
+  </button>
+  <div id="coricTopHeaderExpanded" class="collapse d-md-block coric-top-header__content">
+    {# IMP-2: <p> NE <address> — HTML5 <address> rezervisan za nearest <article>/<body>. #}
+    <p class="coric-top-header__address">
+      {% translate "Vojvodjanska 1, Basaid, Srbija" %}
+    </p>
+    <a href="tel:+381230468168" class="coric-top-header__phone"
+       aria-label="{% translate "Telefon prodaje" %}">
+      +381 230 468 168
+    </a>
+    {# IMP-4: service_phone HARDKODERAN placeholder; Story 8.x SiteSettings replaces. #}
+    <a href="tel:+381000000000" class="coric-top-header__phone--service"
+       aria-label="{% translate "Telefon servisa" %}">
+      {% translate "Servis" %}: +381 XXX XXX XXX
+    </a>
+    <div class="coric-top-header__social">
+      <a href="#" class="coric-top-header__social-link" aria-label="Facebook">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M24 12c0-6.627-5.373-12-12-12S0 5.373 0 12c0 5.99 4.388 10.954 10.125 11.854V15.47H7.078V12h3.047V9.356c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.234 2.686.234v2.953H15.83c-1.491 0-1.956.925-1.956 1.875V12h3.328l-.532 3.469h-2.796v8.385C19.612 22.954 24 17.99 24 12z"/>
+        </svg>
+      </a>
+      <a href="#" class="coric-top-header__social-link" aria-label="Instagram">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+{# Glavni nav — sticky shrink-on-scroll #}
+{# CRITICAL-7: <nav> je sibling sa .coric-top-header. Sticky containing block postaje <body>. #}
+<nav class="coric-nav navbar navbar-expand-md"
+     role="navigation"
+     aria-label="{% translate "Glavna navigacija" %}">
+  <div class="container">
+    {# CRITICAL-9: URL namespace 'core:home'. CRITICAL-8: logo asset u static/img/. #}
+    <a class="navbar-brand coric-nav__logo" href="{% url 'core:home' %}">
+      <img src="{% static 'img/coric-agrar-logo-transp-200.png' %}"
+           alt="Coric Agrar"
+           class="coric-nav__logo-img">
+    </a>
+
+    <button class="navbar-toggler coric-nav__hamburger"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#coricMainNav"
+            aria-controls="coricMainNav"
+            aria-expanded="false"
+            aria-label="{% translate "Otvori meni" %}">
+      <span class="navbar-toggler-icon" aria-hidden="true"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="coricMainNav">
+      <ul class="navbar-nav ms-auto coric-nav__list">
+        <li class="nav-item">
+          <a class="nav-link coric-nav__link" href="{% url 'core:home' %}">{% translate "Pocetna" %}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link coric-nav__link" href="#">{% translate "Traktori" %}</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link coric-nav__link dropdown-toggle"
+             href="#"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false"
+             aria-haspopup="true"
+             id="navbarDropdownMehanizacija">
+            {% translate "Mehanizacija" %}
+          </a>
+          <ul class="dropdown-menu coric-nav__dropdown" aria-labelledby="navbarDropdownMehanizacija">
+            <li><a class="dropdown-item" href="#">{% translate "Prikljucna mehanizacija (Jeegee)" %}</a></li>
+            <li><a class="dropdown-item" href="#">{% translate "Radne masine (HZM)" %}</a></li>
+            <li><a class="dropdown-item" href="#">{% translate "MIX prikolice (Tulip)" %}</a></li>
+            <li><a class="dropdown-item" href="#">{% translate "Polovna mehanizacija" %}</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Servis" %}</a></li>
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Price sa polja" %}</a></li>
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "O nama" %}</a></li>
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Kontakt" %}</a></li>
+        <li class="nav-item">
+          {# IMP-3: NO aria-expanded (button not wired za toggle until Story 2.13). #}
+          <button type="button"
+                  class="coric-nav__search-toggle"
+                  aria-label="{% translate "Otvori pretragu" %}">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+        </li>
+        <li class="nav-item">
+          {# CRITICAL-1: NOVI partial language_switcher_nav.html (CSP-safe, form-per-locale). #}
+          {% include "partials/language_switcher_nav.html" %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

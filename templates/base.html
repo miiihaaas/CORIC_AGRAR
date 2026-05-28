@@ -16,15 +16,15 @@
 </head>
 <body>
   <a class="visually-hidden-focusable" href="#main-content">{% translate "Preskoči na sadržaj" %}</a>
-  <header>
-    {% include "partials/language_switcher.html" %}
-  </header>
+  <div class="coric-sticky-sentinel" aria-hidden="true"></div>
+  {% include "partials/header.html" %}
   <main id="main-content" tabindex="-1">
     {% block content %}
       <h1>Ćorić Agrar</h1>
       <p>{% translate "Dobrodošli." %}</p>
     {% endblock %}
   </main>
+  {% include "partials/footer.html" %}
   {% aria_live %}
   <noscript>
     <div class="alert alert-warning text-center mb-0" role="alert">
@@ -34,6 +34,7 @@
   {# Site-wide scripts PRVI: Bootstrap sync (django-bootstrap5 NE emit-uje defer) + HTMX defer; child block scripts uvek vide Bootstrap učitan (sync Bootstrap precedes block u DOM order-u); vidi Gotcha #15 #}
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   {% bootstrap_javascript %}
+  <script src="{% static 'js/sticky-nav.js' %}" defer></script>
   {# Per-page scripts POSLE site-wide — sync init safe za Bootstrap komponente #}
   {% block scripts %}{% endblock %}
 </body>

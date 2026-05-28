@@ -1,0 +1,231 @@
+/* header.css — Top header + Main nav styling (Story 1.8).
+ * BEM classes: .coric-top-header__*, .coric-nav__*, .coric-language-switcher__*
+ * Tokens: --color-brand-green-900/800, --color-semantic-text-on-dark,
+ *         --spacing-scale-*, --typography-*, --shadow-nav-shrunk.
+ * Hardkoderani px in AC9 whitelist: 1, 2, 40, 44, 56, 80; unitless: 1020.
+ */
+
+/* ============================================================================
+ * Top header — kontakt informacije (banner landmark, CRITICAL-CASCADE-1).
+ * CRITICAL-CASCADE-4: explicit height: 40px enables shrunk-state transition.
+ * CRITICAL-CASCADE-3: visibility: visible parno sa shrunk visibility: hidden.
+ * Mobile height: auto override in sticky-nav.css (single-source per POLISH-2).
+ * ========================================================================= */
+.coric-top-header {
+  background-color: var(--color-brand-green-900);
+  color: var(--color-semantic-text-on-dark);
+  padding: var(--spacing-scale-2) var(--spacing-container-gutter-desktop);
+  font-size: var(--typography-scale-caption);
+  height: 40px;
+  overflow: hidden;
+  visibility: visible;
+  transition: height 200ms ease, padding 200ms ease, visibility 0s linear 0s;
+}
+
+.coric-top-header__content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-scale-5);
+  flex-wrap: wrap;
+}
+
+.coric-top-header__address {
+  margin: 0;
+}
+
+.coric-top-header__phone,
+.coric-top-header__phone--service {
+  color: var(--color-semantic-text-on-dark);
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.coric-top-header__phone:hover,
+.coric-top-header__phone--service:hover {
+  text-decoration: underline;
+}
+
+.coric-top-header__social {
+  display: flex;
+  gap: var(--spacing-scale-2);
+  align-items: center;
+}
+
+.coric-top-header__social-link {
+  color: var(--color-semantic-text-on-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.coric-top-header__mobile-toggle {
+  background: transparent;
+  border: 0;
+  color: var(--color-semantic-text-on-dark);
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ============================================================================
+ * Main nav — sticky shrink-on-scroll (CRITICAL-12 z-index 1020).
+ * Sticky containing block: <body> (CRITICAL-7 flatten Option A).
+ * ========================================================================= */
+.coric-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background-color: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
+  height: 80px;
+  transition: height 200ms ease, box-shadow 200ms ease;
+}
+
+.coric-nav__logo-img {
+  max-height: 56px;
+  transition: max-height 200ms ease;
+}
+
+.coric-nav__link {
+  color: var(--color-semantic-text-on-dark);
+  text-transform: uppercase;
+  letter-spacing: var(--typography-tracking-wide);
+  font-weight: var(--typography-weight-bold);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.coric-nav__hamburger {
+  background: transparent;
+  border: 0;
+  color: var(--color-semantic-text-on-dark);
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.coric-nav__search-toggle {
+  background: transparent;
+  border: 0;
+  color: var(--color-semantic-text-on-dark);
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coric-nav__dropdown {
+  background-color: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-nav__dropdown .dropdown-item {
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-nav__dropdown .dropdown-item:hover,
+.coric-nav__dropdown .dropdown-item:focus {
+  background-color: var(--color-brand-green-600);
+  color: var(--color-semantic-text-on-dark);
+}
+
+/* ============================================================================
+ * Language switcher (AC4) — horizontal button list.
+ * ========================================================================= */
+.coric-nav__language-switcher {
+  display: flex;
+  gap: var(--spacing-scale-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+.coric-language-switcher__form {
+  margin: 0;
+}
+
+.coric-language-switcher__btn {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  min-height: 44px;
+  min-width: 44px;
+  font-weight: var(--typography-weight-bold);
+  text-transform: uppercase;
+  padding: var(--spacing-scale-2);
+  cursor: pointer;
+}
+
+.coric-language-switcher__btn--current {
+  text-decoration: underline;
+}
+
+/* ============================================================================
+ * Focus styles — Safari 14 fallback (IMP-5) + modern :focus-visible.
+ * ========================================================================= */
+.coric-nav__link:focus,
+.coric-nav__search-toggle:focus,
+.coric-nav__hamburger:focus,
+.coric-language-switcher__btn:focus {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+@supports selector(:focus-visible) {
+  .coric-nav__link:focus,
+  .coric-nav__search-toggle:focus,
+  .coric-nav__hamburger:focus,
+  .coric-language-switcher__btn:focus {
+    outline: none;
+  }
+  .coric-nav__link:focus-visible,
+  .coric-nav__search-toggle:focus-visible,
+  .coric-nav__hamburger:focus-visible,
+  .coric-language-switcher__btn:focus-visible {
+    outline: 2px solid var(--color-semantic-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================================
+ * Forced colors (Windows High Contrast Mode) override per AC7.
+ * ========================================================================= */
+@media (forced-colors: active) {
+  .coric-nav__link:focus-visible,
+  .coric-nav__hamburger:focus-visible,
+  .coric-nav__search-toggle:focus-visible,
+  .coric-language-switcher__btn:focus-visible {
+    outline: 2px solid CanvasText;
+  }
+}
+
+/* ============================================================================
+ * Mobile (below the md breakpoint) — hamburger + toggles. AC6/AC10.
+ * NOTE: .coric-top-header { height: auto } override managed by sticky-nav.css.
+ * ========================================================================= */
+@media (max-width: 767px) {
+  .coric-top-header__mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .coric-nav__logo-img {
+    max-height: 40px;
+  }
+}
+
+/* ============================================================================
+ * Reduced-motion override for hamburger collapse (AC10).
+ * ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-collapse.collapsing,
+  .coric-top-header__expanded.collapsing {
+    transition: none;
+  }
+}
