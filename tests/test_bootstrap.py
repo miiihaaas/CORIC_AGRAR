@@ -280,16 +280,25 @@ def test_ac3_uv_init_placeholder_files_removed():
 
 # AC-3: manage.py i config/ skeleton fajlovi
 def test_ac3_django_skeleton_files_exist():
-    """AC3: manage.py + config/__init__.py + settings.py + urls.py + wsgi.py + asgi.py."""
+    """AC3: manage.py + config/__init__.py + settings (package ili single file) + urls.py + wsgi.py + asgi.py.
+
+    NAPOMENA: Story 1.2 refactor je `config/settings.py` (single file) zamenio sa
+    `config/settings/` paketom. Ovaj test prihvata oba state-a (single file ili paket)
+    radi backwards-kompatibilnosti.
+    """
     required_files = [
         MANAGE_PY_PATH,
         CONFIG_DIR / "__init__.py",
-        CONFIG_DIR / "settings.py",
         CONFIG_DIR / "urls.py",
         CONFIG_DIR / "wsgi.py",
         CONFIG_DIR / "asgi.py",
     ]
     missing = [str(p.relative_to(PROJECT_ROOT)) for p in required_files if not p.exists()]
+    # Settings: prihvata ili single file (config/settings.py) ili paket (config/settings/)
+    settings_single = CONFIG_DIR / "settings.py"
+    settings_pkg = CONFIG_DIR / "settings"
+    if not (settings_single.exists() or (settings_pkg.exists() and settings_pkg.is_dir())):
+        missing.append("config/settings.py or config/settings/ (package)")
     assert not missing, (
         f"Django skeleton fajlovi nedostaju: {missing}. "
         f"Pokreni `uv run django-admin startproject config .` (zavrsna tacka KRITICNA)."
@@ -315,13 +324,28 @@ def test_ac3_manage_py_is_executable_django_script():
 
 # AC-3: `uv run python manage.py check` mora vratiti 0 issues
 def test_ac3_manage_py_check_passes():
-    """AC3: `uv run python manage.py check` exits 0 sa output 'no issues' / '0 silenced'."""
+    """AC3: `uv run python manage.py check` exits 0 sa output 'no issues' / '0 silenced'.
+
+    NAPOMENA: Story 1.2 uvodi fail-fast za DJANGO_SECRET_KEY (Gotcha #3). Test sada
+    eksplicitno setuje DJANGO_SECRET_KEY env var za poziv `manage.py check`.
+    """
+    import os
     uv_bin = shutil.which("uv")
     if uv_bin is None:
         pytest.fail("uv binary nije u PATH-u. Instaliraj uv >= 0.5 prvo.")
     if not MANAGE_PY_PATH.exists():
         pytest.fail("manage.py nedostaje - Django skeleton nije kreiran.")
-    result = _run([uv_bin, "run", "python", "manage.py", "check"])
+    env = os.environ.copy()
+    env["DJANGO_SECRET_KEY"] = "test-secret-key-for-bootstrap-smoke-not-a-real-secret"
+    result = subprocess.run(
+        [uv_bin, "run", "python", "manage.py", "check"],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        shell=False,
+        timeout=120,
+        env=env,
+    )
     assert result.returncode == 0, (
         f"`manage.py check` exit code {result.returncode}.\n"
         f"stdout: {result.stdout}\n"
@@ -517,18 +541,24 @@ def test_ac6_readme_exists_with_quickstart():
 
 def test_ac3_installed_apps_is_default_django():
     """AC3/Gotcha #8: INSTALLED_APPS mora ostati nemodifikovan startproject default
-    (6 stavki: admin, auth, contenttypes, sessions, messages, staticfiles)."""
+    (6 stavki: admin, auth, contenttypes, sessions, messages, staticfiles).
+
+    NAPOMENA: Story 1.2 refactor je `config.settings` (modul) zamenio sa
+    `config.settings` (paket); base settings su sada u `config.settings.base`.
+    Test sada importuje base modul + setuje DJANGO_SECRET_KEY za fail-fast guardrail.
+    """
     import importlib
     import os
 
     if str(PROJECT_ROOT) not in sys.path:
         sys.path.insert(0, str(PROJECT_ROOT))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+    os.environ.setdefault("DJANGO_SECRET_KEY", "test-secret-key-for-bootstrap-not-real")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.development")
     # Ako je settings vec import-ovan iz prethodnog testa, reload da dohvatimo svezi state
-    if "config.settings" in sys.modules:
-        settings = importlib.reload(sys.modules["config.settings"])
+    if "config.settings.base" in sys.modules:
+        settings = importlib.reload(sys.modules["config.settings.base"])
     else:
-        settings = importlib.import_module("config.settings")
+        settings = importlib.import_module("config.settings.base")
     apps = list(settings.INSTALLED_APPS)
 
     expected = {
@@ -554,14 +584,18 @@ def test_ac3_installed_apps_is_default_django():
 
 
 def test_no_out_of_scope_artifacts_yet():
-    """Story 1.1 ne kreira: apps/, templates/, static/, .env, .env.example, Dockerfile,
-    .pre-commit-config.yaml, compose/, .github/, config/settings/ (folder)."""
+    """Story 1.1 ne kreira: apps/, templates/, static/, .env, Dockerfile,
+    .pre-commit-config.yaml, compose/, .github/.
+
+    NAPOMENA: Story 1.2 NAMERNO uvodi `.env.example` (AC4) i `config/settings/`
+    paket (AC1). Ti artefakti su uklonjeni iz forbidden liste kao legitimna
+    Story 1.2 refactor side-effect.
+    """
     forbidden = [
         "apps",
         "templates",
         "static",
         ".env",
-        ".env.example",
         "Dockerfile",
         ".pre-commit-config.yaml",
         "compose",
@@ -572,11 +606,6 @@ def test_no_out_of_scope_artifacts_yet():
         if (PROJECT_ROOT / path).exists():
             existing.append(path)
 
-    # config/settings/ as a folder (not config/settings.py file) would be scope creep
-    settings_dir = PROJECT_ROOT / "config" / "settings"
-    if settings_dir.exists() and settings_dir.is_dir():
-        existing.append("config/settings/ (folder)")
-
     assert not existing, (
-        f"Story 1.1 scope creep — sledeci artifakti NE smeju postojati u 1.1: {existing}"
+        f"Out-of-scope artefakti postoje: {existing}"
     )

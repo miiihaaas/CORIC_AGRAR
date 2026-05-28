@@ -1,5 +1,5 @@
 # generated: 2026-05-27
-# last_updated: 2026-05-27 (Story 1.1 created via bmad-create-story)
+# last_updated: 2026-05-27 (Story 1.2 created via bmad-create-story)
 # project: CORIC_AGRAR
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-27
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 project: CORIC_AGRAR
 # Note: Story 1.1 transitioned from backlog → ready-for-dev on 2026-05-27;
 #       Epic 1 transitioned from backlog → in-progress (first story in epic created).
@@ -49,7 +49,7 @@ development_status:
   # ============================================================
   epic-1: in-progress
   1-1-project-bootstrap-sa-uv-i-django: done
-  1-2-multi-environment-settings-split-sa-django-environ: backlog
+  1-2-multi-environment-settings-split-sa-django-environ: done
   1-3-docker-compose-za-local-environment: backlog
   1-4-i18n-setup-sa-locale-url-routing-i-switcher: backlog
   1-5-self-hosted-roboto-design-md-tokens-kao-css-custom-properties: backlog
