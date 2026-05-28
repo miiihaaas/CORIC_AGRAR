@@ -1,0 +1,16 @@
+{% load i18n %}
+<form action="{% url 'set_language' %}" method="post" class="coric-language-switcher">
+  {% csrf_token %}
+  <input name="next" type="hidden" value="{{ request.path }}">
+  <label for="coric-language-select">
+    <span class="visually-hidden">{% translate "Izaberi jezik" %}</span>
+  </label>
+  <select id="coric-language-select" name="language" onchange="this.form.submit()">
+    <option value="sr" {% if LANGUAGE_CODE == 'sr' %}selected{% endif %}>Srpski</option>
+    <option value="hu" {% if LANGUAGE_CODE == 'hu' %}selected{% endif %}>Magyar</option>
+    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+  </select>
+  <noscript>
+    <button type="submit">{% translate "Promeni jezik" %}</button>
+  </noscript>
+</form>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Ćorić Agrar{% endblock %}</title>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header>
+    {% include "partials/language_switcher.html" %}
+  </header>
+  <main>
+    {% block content %}
+      <h1>Ćorić Agrar</h1>
+      <p>{% translate "Dobrodošli." %}</p>
+    {% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

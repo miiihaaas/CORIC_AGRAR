@@ -540,12 +540,13 @@ def test_ac6_readme_exists_with_quickstart():
 
 
 def test_ac3_installed_apps_is_default_django():
-    """AC3/Gotcha #8: INSTALLED_APPS mora ostati nemodifikovan startproject default
-    (6 stavki: admin, auth, contenttypes, sessions, messages, staticfiles).
+    """AC3/Gotcha #8: INSTALLED_APPS sadrzi Django default-e + apps.core (Story 1.4).
 
     NAPOMENA: Story 1.2 refactor je `config.settings` (modul) zamenio sa
     `config.settings` (paket); base settings su sada u `config.settings.base`.
-    Test sada importuje base modul + setuje DJANGO_SECRET_KEY za fail-fast guardrail.
+    NAPOMENA: Story 1.4 NAMERNO dodaje `apps.core` kao prvi domain app — invariant
+    iz Story 1.1 superseded (isti pattern kao Story 1.2 settings split i Story 1.3
+    compose dodatak).
     """
     import importlib
     import os
@@ -568,12 +569,13 @@ def test_ac3_installed_apps_is_default_django():
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
+        "apps.core",
     }
     actual = set(apps)
 
-    # MUST be exactly the startproject defaults (no premature additions)
+    # MUST be Django defaults + apps.core (Story 1.4 adds first domain app)
     assert actual == expected, (
-        f"INSTALLED_APPS mora ostati Django default za Story 1.1. "
+        f"INSTALLED_APPS mora biti Django default + apps.core posle Story 1.4. "
         f"Extras: {actual - expected}. Missing: {expected - actual}"
     )
 
@@ -584,7 +586,7 @@ def test_ac3_installed_apps_is_default_django():
 
 
 def test_no_out_of_scope_artifacts_yet():
-    """Story 1.1 ne kreira: apps/, templates/, static/, .pre-commit-config.yaml, .github/.
+    """Story 1.1 ne kreira: static/, .pre-commit-config.yaml, .github/.
 
     NAPOMENA: Story 1.2 NAMERNO uvodi `.env.example` (AC4) i `config/settings/`
     paket (AC1). Ti artefakti su uklonjeni iz forbidden liste kao legitimna
@@ -593,10 +595,11 @@ def test_no_out_of_scope_artifacts_yet():
     NAPOMENA: Story 1.3 NAMERNO uvodi: `compose/` (AC1), `compose/django/Dockerfile` (AC2),
     `.env` (Task 10.1, gitignored lokalno). Story 1.1 scope-creep guard azuriran po
     Story 1.2 presedanu.
+
+    NAPOMENA: Story 1.4 NAMERNO uvodi `apps/` (AC1) i `templates/` (AC6). Skinuti
+    iz forbidden liste — isti pattern kao Story 1.2 i Story 1.3 amendments.
     """
     forbidden = [
-        "apps",
-        "templates",
         "static",
         ".pre-commit-config.yaml",
         ".github",

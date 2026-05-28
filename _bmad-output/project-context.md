@@ -202,7 +202,7 @@ uv sync                       # restore deps from uv.lock
 - **Inline editing:** koristi `TabularInline` / `StackedInline` za FK relationships (Product images, Product variants)
 
 ### i18n u Django
-- **Settings:** `LANGUAGE_CODE = 'sr-latn'`, `LANGUAGES = [('sr', 'Srpski'), ('hu', 'Magyar'), ('en', 'English')]`
+- **Settings:** `LANGUAGE_CODE = 'sr'`, `LANGUAGES = [('sr', 'Srpski'), ('hu', 'Magyar'), ('en', 'English')]`  # 'sr' matches LANGUAGES tuple key — Story 1.4 odluka; sr-latn može u Story 6.5/6.6 ako SEO/hreflang traži distinkciju
 - **`USE_I18N = True`**, `USE_L10N = True`, `USE_TZ = True`
 - **Middleware order:** `LocaleMiddleware` IZA `SessionMiddleware`, ISPRED `CommonMiddleware`
 - **Locale fallback:** sr je default; ako neki prevod nedostaje → fallback na sr (custom logic ako treba)
