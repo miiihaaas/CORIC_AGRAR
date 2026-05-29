@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_bootstrap5",  # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
     "apps.brands",  # NOVO Story 2.1 — Brand/Series/Category/Subcategory domain app
+    "apps.products",  # NOVO Story 2.2 — Product i related modeli (POSLE brands per dep rule)
 ]
 
 MIDDLEWARE = [
@@ -111,6 +112,11 @@ LANGUAGES = [
     ("hu", "Magyar"),
     ("en", "English"),
 ]
+# Story 2.2 — architecture-defensive locale fallback chain (NIJE FR-32 mapiranje —
+# FR-32 je view-layer marker u Story 6.5). Modeltranslation zahteva deterministički
+# fallback chain ka sr da bi pristup translated polju bez aktivnog language context-a
+# vratio sr fallback umesto None. Vidi project-context.md § i18n locale fallback.
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("sr",)
 LANGUAGE_CODE = "sr"
 LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "UTC"
