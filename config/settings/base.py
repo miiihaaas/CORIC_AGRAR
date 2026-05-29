@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.brands",  # NOVO Story 2.1 — Brand/Series/Category/Subcategory domain app
     "apps.products",  # NOVO Story 2.2 — Product i related modeli (POSLE brands per dep rule)
+    "sorl.thumbnail",  # NOVO Story 2.3 — third-party paket POSLE domain app-ova (utility lib)
+    "apps.media_pipeline",  # NOVO Story 2.3 — utility app POSLE sorl.thumbnail (koristi njegove template tags)
 ]
 
 MIDDLEWARE = [
@@ -136,6 +138,21 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# ── Media ────────────────────────────────────────────────────────────────────
+# MEDIA_URL ima leading slash radi i18n_patterns kompatibilnosti (matches STATIC_URL).
+# MEDIA_ROOT je BASE_DIR/media (development); production override može menjati za
+# Nginx serving direktno iz disk-a.
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# FIX-4 (Security MEDIUM-1) — Django upload limits sinhronizovani sa
+# apps/media_pipeline/utils.MAX_UPLOAD_SIZE_BYTES (10 MB). Default Django limit
+# je 2.5 MB što bi za uploads između 2.5–10 MB spool-ovao na disk (file pointer
+# umesto in-memory), čineći helper limit nejednoznačnim. Drži 1 MB buffer iznad
+# helper limita kao defense-in-depth (helper raise-uje pre Django parse).
+DATA_UPLOAD_MAX_MEMORY_SIZE = 11 * 1024 * 1024  # 11 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -144,6 +161,29 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+# ── sorl-thumbnail (Story 2.3) ───────────────────────────────────────────────
+# Image pipeline za responsive srcset (400w/800w/1600w varijante) na svim
+# Product/Brand/ProductImage/ProductVariant/ProductTestimonial image poljima.
+# Lazy generation: thumbnail-ovi se kreiraju on-demand pri prvom HTTP GET-u
+# na URL slike, NE post-save signal. KVStore cache-uje (image_path, geometry)
+# → thumbnail URL mapping za fast hit drugi render.
+# Vidi project-context.md § Media pipeline + architecture.md § Image processing.
+THUMBNAIL_BACKEND = "sorl.thumbnail.base.ThumbnailBackend"
+THUMBNAIL_KVSTORE = "sorl.thumbnail.kvstores.cached_db_kvstore.KVStore"
+THUMBNAIL_FORMAT = "JPEG"
+THUMBNAIL_QUALITY = 85
+THUMBNAIL_PRESERVE_FORMAT = False  # per-call override via `format='PNG'` u {% responsive_picture %} (Decision MP-D5)
+# NAPOMENA: sorl-thumbnail koristi THUMBNAIL_PREFIX (sa trailing slash) kao subdirektorijum
+# unutar MEDIA_ROOT za sve thumbnail-ove. Story 2.3 spec je referencirao THUMBNAIL_DIRNAME
+# (ne postoji kao sorl setting) — kanonski naziv je THUMBNAIL_PREFIX.
+THUMBNAIL_PREFIX = "thumbnails/"
+# FIX-3 (Security HIGH-2) — THUMBNAIL_DEBUG je hardcoded False u svim env-ovima.
+# Kad je True, sorl-thumbnail u template render-u vraća stack trace sa Pillow verzijom
+# i MEDIA_ROOT putanjom — info leak rizik ako DEBUG=True curne u staging.
+# Per story 2.3 AC2 + interface contract (Decision MP-D7 dodaje rename na PREFIX).
+# Dev-only override (npr. dev investigation): postaviti u development.py.
+THUMBNAIL_DEBUG = False
 
 # ── Bootstrap 5 ──────────────────────────────────────────────────────────────
 # django-bootstrap5 konfiguracija. base.py = DEV variant (CDN jsDelivr) per

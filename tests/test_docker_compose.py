@@ -266,11 +266,25 @@ def test_ac2_dockerfile_uses_uv_sync_frozen():
         "Story Gotcha #7: bez ovog flag-a uv pokušava da instalira coric-agrar "
         "kao paket — failuje jer nemamo [build-system]."
     )
-    # MORA imati --no-dev
-    assert re.search(r"uv\s+sync\s+[^\n]*--no-dev", content), (
-        "Dockerfile `uv sync` poziv NEMA `--no-dev` flag. "
-        "Bez njega dev grupa (pytest, ruff, ...) ulazi u runtime image — bloat + "
-        "potencijalni security surface."
+    # Story 2.3 Decision MP-D6: local dev Dockerfile uključuje dev deps (pytest, ruff,
+    # djade) da `just test` (Docker-backed) ima pytest dostupan u kontejneru.
+    # Production override compose-a treba ponovo dodati --no-dev kad se uvede.
+    # (Prethodna asercija `--no-dev` superseded — vidi Story 2.3 Decision MP-D6.)
+    #
+    # FIX-9 (Dev A + Dev B + Architect): pozitivna asercija da NEMA `--no-dev` u local
+    # Dockerfile-ovim INSTRUKCIJAMA (RUN/CMD/ENTRYPOINT). Komentari (`# ... --no-dev ...`)
+    # su OK i očekivani — dokumentuju future production override (Epic 9 Story 9.x).
+    # Regression guard: ako neko vrati --no-dev u RUN uv sync, pytest neće biti dostupan
+    # za `just test` (Docker-backed).
+    non_comment_lines = [
+        ln for ln in content.splitlines() if not ln.lstrip().startswith("#")
+    ]
+    non_comment_blob = "\n".join(non_comment_lines)
+    assert "--no-dev" not in non_comment_blob, (
+        "compose/django/Dockerfile sadrži `--no-dev` u izvršnoj instrukciji (van komentara) — "
+        "local dev image zahteva pytest/ruff/djade za `just test` (Docker-backed). "
+        "Production deploy (Epic 9 Story 9.x) treba da koristi separate compose override "
+        "koji re-aplikuje --no-dev. Vidi Story 2.3 Decision MP-D6."
     )
 
 
@@ -870,8 +884,8 @@ def test_ac6_justfile_preserves_story_1_1_recipes():
     required = ["test", "lint", "migrate", "messages"]
     missing = []
     for recipe in required:
-        # Match line koji počinje sa `<recipe>:` (no args)
-        pattern = rf"^{re.escape(recipe)}\s*:"
+        # Match line koji počinje sa `<recipe>:` ili `<recipe> *ARGS:` (Story 2.3 MP-D6).
+        pattern = rf"^{re.escape(recipe)}\s*(?:\*[A-Za-z_].*)?:"
         if not re.search(pattern, content, re.MULTILINE):
             missing.append(recipe)
     assert not missing, (

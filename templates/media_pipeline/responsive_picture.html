@@ -1,0 +1,17 @@
+{% comment %}
+Story 2.3 — responsive `<picture>` element za sve ImageField-ove.
+Renderuje se kroz {% responsive_picture <field> alt=... sizes=... %} tag.
+Lazy loading podrazumevan; above-the-fold caller prosleđuje loading="eager".
+{% endcomment %}
+{% if image %}
+    <picture>
+        <img src="{{ fallback_url }}"
+             srcset="{{ srcset }}"
+             sizes="{{ sizes }}"
+             alt="{{ alt }}"
+             loading="{{ loading }}"
+             width="{{ default_width }}"
+             {% if default_height %}height="{{ default_height }}"{% endif %}
+             {% if css_class %}class="{{ css_class }}"{% endif %}>
+    </picture>
+{% endif %}

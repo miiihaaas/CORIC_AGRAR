@@ -36,7 +36,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-27
-last_updated: 2026-05-29  # Story 2.2 done — code review converged in 2 iter (97/98 tests pass, ruff clean, 3 migrations)
+last_updated: 2026-05-29  # Story 2.3 done — image pipeline (sorl-thumbnail + validate_image_mime + responsive_picture); 38/38 media_pipeline tests, code review 2 iter (5/5 PASS), MP-D6/D7/D8 documented
 project: CORIC_AGRAR
 # Note: Story 1.1 transitioned from backlog → ready-for-dev on 2026-05-27;
 #       Epic 1 transitioned from backlog → in-progress (first story in epic created).
@@ -66,7 +66,7 @@ dev elopment_status:
   epic-2: in-progress
   2-1-brand-series-category-subcategory-modeli: done
   2-2-product-i-related-modeli: done
-  2-3-image-pipeline-sa-sorl-thumbnail-responsive-srcset: backlog
+  2-3-image-pipeline-sa-sorl-thumbnail-responsive-srcset: done
   2-4-pdf-cover-thumbnail-generator: backlog
   2-5-glightbox-integracija: backlog
   2-6-brand-listing-strana-sa-grid-extended-layout-om: backlog

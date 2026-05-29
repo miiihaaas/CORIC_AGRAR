@@ -77,6 +77,14 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
+      # Story 2.3 FIX-1: libmagic1 je system dep za python-magic (validate_image_mime).
+      # Bez nje, magic.from_buffer() raise-uje pri prvoj invocaciji u CI test runu.
+      # poppler-utils future-proofs Story 2.4 PDF cover generator (pdf2image dep).
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmagic1 poppler-utils
+
       - name: Install dev deps
         run: uv sync --frozen --group dev
 

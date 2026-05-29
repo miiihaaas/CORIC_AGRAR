@@ -35,9 +35,11 @@ dev-shell:
 dev-manage *ARGS:
     docker compose -f compose/local.yml exec django python manage.py {{ARGS}}
 
-# Pokrece test suite
-test:
-    uv run pytest
+# Pokrece test suite (kroz Docker — libmagic + poppler-utils system deps NISU dostupni na Windows host-u)
+# Per Story 2.3 Decision MP-D6: konzistentan dev UX, izbegava libmagic SEGFAULT na Windows.
+# Primer sa argumentima: just test apps/media_pipeline/tests/
+test *ARGS:
+    docker compose -f compose/local.yml run --rm django uv run pytest {{ARGS}}
 
 # Lint (read-only check, ne menja kod)
 lint:

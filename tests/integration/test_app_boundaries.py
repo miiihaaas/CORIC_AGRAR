@@ -120,3 +120,44 @@ def test_products_does_not_import_catalog():
         # apps/products production code.
         return
     _assert_no_import(products_dir, "apps.catalog")
+
+
+# =============================================================================
+# Story 2.3 AC8 — apps.media_pipeline NE SME importovati apps.products / apps.brands
+# =============================================================================
+
+
+def test_media_pipeline_does_not_import_products():
+    """Story 2.3 AC8 / architecture.md § App dependency graph.
+
+    apps.media_pipeline je UTILITY/cross-cutting app — domain app-ovi (products, brands,
+    blog) KONZUMIRAJU utility kroz template tagove i helper-e; utility NIKAD NE SME
+    uvoziti domain app-ove.
+
+    Regression guard: future Stories (npr. 2.4 PDF cover generator) mogu biti iskušane
+    da `from apps.products.models import ProductBrochure` u apps/media_pipeline/signals.py.
+    Ovaj test odmah uhvati takvu liniju — signals.py mora koristiti `apps.get_model()`
+    kasnu resoluciju umesto direktnog import-a.
+    """
+    media_pipeline_dir = REPO_ROOT / "apps" / "media_pipeline"
+    if not media_pipeline_dir.exists():
+        # Defensive: ako apps/media_pipeline još ne postoji (RED phase pre Dev implementacije),
+        # test prolazi trivijalno. Posle Dev GREEN phase, ovaj guard pokriva production code.
+        return
+    _assert_no_import(media_pipeline_dir, "apps.products")
+
+
+def test_media_pipeline_does_not_import_brands():
+    """Story 2.3 AC8 / architecture.md § App dependency graph.
+
+    apps.media_pipeline je UTILITY app — NE SME importovati apps.brands. Brand model
+    polja (Brand.logo, Brand.hero_image) se konzumiraju iz template-a kroz
+    `{% responsive_picture brand.logo %}` tag, NE iz Python koda u media_pipeline.
+
+    Boundary rule (architecture.md § App dependency graph line 732):
+        media_pipeline ← (utility, importovan od products + brands + blog)
+    """
+    media_pipeline_dir = REPO_ROOT / "apps" / "media_pipeline"
+    if not media_pipeline_dir.exists():
+        return
+    _assert_no_import(media_pipeline_dir, "apps.brands")

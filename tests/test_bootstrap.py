@@ -446,8 +446,9 @@ def test_ac5_justfile_contains_required_recipes():
     # Just dozvoljava i "<naziv> arg:" sintaksu, ali za nas su sve bez argumenata.
     missing = []
     for recipe in required_recipes:
-        # Match line koji pocinje sa "<recipe>:" ili "<recipe> " (sa argumentima)
-        pattern = rf"^{re.escape(recipe)}\s*(?:[a-zA-Z_].*)?:"
+        # Match line koji pocinje sa "<recipe>:" ili "<recipe> <args>:"
+        # Story 2.3 (Decision MP-D6) uvodi `test *ARGS:` recept — `*` u argumentima.
+        pattern = rf"^{re.escape(recipe)}\s*(?:[*a-zA-Z_].*)?:"
         if not re.search(pattern, content, re.MULTILINE):
             missing.append(recipe)
     assert not missing, (
@@ -559,6 +560,11 @@ def test_ac3_installed_apps_is_default_django():
     NAPOMENA: Story 2.1 NAMERNO dodaje `modeltranslation` (PRE django.contrib.admin)
     i `apps.brands` (POSLE apps.core) — invariant iz Story 1.6 superseded (isti pattern
     kao prethodni amendment-i).
+    NAPOMENA: Story 2.2 NAMERNO dodaje `apps.products` (POSLE apps.brands per dep rule)
+    — invariant iz Story 2.1 superseded.
+    NAPOMENA: Story 2.3 NAMERNO dodaje `sorl.thumbnail` (third-party POSLE domain app-ova
+    radi konzumiranja njihovih template tag-ova) + `apps.media_pipeline` (utility app
+    POSLE sorl.thumbnail) — invariant iz Story 2.2 superseded.
     """
     import importlib
     import os
@@ -586,14 +592,17 @@ def test_ac3_installed_apps_is_default_django():
         "django_bootstrap5",  # Story 1.6
         "apps.core",
         "apps.brands",  # Story 2.1
+        "apps.products",  # Story 2.2 — POSLE apps.brands per dep rule
+        "sorl.thumbnail",  # Story 2.3 — POSLE domain app-ova (utility lib)
+        "apps.media_pipeline",  # Story 2.3 — POSLE sorl.thumbnail (koristi tags)
     }
     actual = set(apps)
 
-    # MUST be Django defaults + 3rd-party (Story 1.6) + modeltranslation (Story 2.1)
-    # + apps.core (Story 1.4) + apps.brands (Story 2.1)
+    # MUST be Django defaults + 3rd-party + apps.* per Story 2.1/2.2/2.3 amendment chain
     assert actual == expected, (
         f"INSTALLED_APPS mora biti Django default + modeltranslation + django_htmx + "
-        f"django_bootstrap5 + apps.core + apps.brands posle Story 2.1. "
+        f"django_bootstrap5 + apps.core + apps.brands + apps.products + sorl.thumbnail + "
+        f"apps.media_pipeline posle Story 2.3. "
         f"Extras: {actual - expected}. Missing: {expected - actual}"
     )
 

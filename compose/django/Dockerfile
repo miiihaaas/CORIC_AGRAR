@@ -17,7 +17,10 @@ WORKDIR /app
 # Cache-friendly: COPY samo lockfiles, instaliraj deps, tek onda copy source u runtime stage
 # Ako se promeni samo source code, ovaj layer je vec cached
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
+# Story 2.3 Decision MP-D6: local dev image uključuje dev dependencies (pytest, ruff, djade)
+# kako bi `just test` (Docker-backed) imao pytest dostupan u kontejneru.
+# Production override (compose/production.yml) treba ponovo dodati --no-dev kad se uvede.
+RUN uv sync --frozen --no-install-project
 
 # ============================================================
 # Stage 2 — runtime: slim image sa system deps + .venv iz builder-a
@@ -46,6 +49,10 @@ WORKDIR /app
 
 # Preuzmi venv iz builder stage-a (bez uv binary, bez build artifacts)
 COPY --from=builder /app/.venv /app/.venv
+
+# Story 2.3 Decision MP-D6: kopiramo uv binary u runtime image radi `just test` kompatibilnosti
+# (Docker-backed pytest run). Production deploy može preskočiti ovaj korak ako image size matters.
+COPY --from=builder /usr/local/bin/uv /usr/local/bin/uv
 
 # Entrypoint script (LF line endings — vidi Gotcha #5)
 COPY compose/django/entrypoint.sh /entrypoint.sh
