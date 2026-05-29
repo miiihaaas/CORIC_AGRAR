@@ -227,7 +227,9 @@ def test_ac3_middleware_lang_query_param_handling():
     try:
         _setup_django()
     except Exception as exc:
-        pytest.skip(f"Django setup nije moguc (pytest-django nije konfigurisan?): {exc}")
+        pytest.skip(
+            f"Django setup nije moguc (pytest-django nije konfigurisan?): {exc}"
+        )
 
     try:
         from django.conf import settings
@@ -332,7 +334,9 @@ def test_ac3_middleware_cross_prefix_lang_redirects():
 
     cls = _import_middleware_class()
 
-    def dummy_view(request):  # pragma: no cover — middleware presrece, ne bi smelo da bude pozvano
+    def dummy_view(
+        request,
+    ):  # pragma: no cover — middleware presrece, ne bi smelo da bude pozvano
         return HttpResponse("")
 
     middleware = cls(dummy_view)

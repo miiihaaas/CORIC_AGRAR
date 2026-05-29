@@ -52,3 +52,7 @@ migrate:
 messages:
     uv run python manage.py makemessages -a
     uv run python manage.py compilemessages
+
+# Setup pre-commit hooks (Story 1.9 — jednokratno posle klon-a)
+precommit-install:
+    uv run pre-commit install

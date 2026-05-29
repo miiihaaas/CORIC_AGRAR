@@ -220,7 +220,7 @@ def test_ac1_base_html_html_lang_dynamic():
     src = _read_base_html()
     pattern = r'<html\s+lang\s*=\s*["\']\{\{\s*LANGUAGE_CODE\s*\}\}["\']'
     assert re.search(pattern, src), (
-        "base.html ne sadrži `<html lang=\"{{ LANGUAGE_CODE }}\">`. "
+        'base.html ne sadrži `<html lang="{{ LANGUAGE_CODE }}">`. '
         "Story 1.4 invariant — Story 1.6 expansion NE sme razbiti."
     )
 
@@ -230,7 +230,7 @@ def test_ac1_base_html_viewport_meta():
     src = _read_base_html()
     pattern = r'<meta\s+name\s*=\s*["\']viewport["\']\s+content\s*=\s*["\']width=device-width,\s*initial-scale=1\.0["\']'
     assert re.search(pattern, src), (
-        "base.html ne sadrži standardni `<meta name=\"viewport\">`. "
+        'base.html ne sadrži standardni `<meta name="viewport">`. '
         "Story 1.4 regression — Story 1.6 mora preserve."
     )
 
@@ -244,7 +244,7 @@ def test_ac1_base_html_meta_description_block():
         r'["\']\{%\s*block\s+meta_description\s*%\}\{%\s*endblock\s*%\}["\']'
     )
     assert re.search(pattern, src), (
-        "base.html ne sadrži `<meta name=\"description\" content=\"{% block meta_description %}{% endblock %}\">`. "
+        'base.html ne sadrži `<meta name="description" content="{% block meta_description %}{% endblock %}">`. '
         "Story 1.6 AC1 — placeholder block za Story 6.x SEO meta."
     )
 
@@ -395,7 +395,7 @@ def test_ac2_skip_link_first_child_of_body():
     )
     assert header_include_match is not None, (
         "base.html ne uključuje header partial (regression — Story 1.8 zahteva da je "
-        "`{% include \"partials/header.html\" %}` u base.html; regex prihvata whitespace "
+        '`{% include "partials/header.html" %}` u base.html; regex prihvata whitespace '
         "+ jednostruke/dvostruke navodnike)."
     )
     coric_top_header_include_idx = header_include_match.start()
@@ -414,7 +414,7 @@ def test_ac2_skip_link_uses_visually_hidden_focusable():
     # Pattern: <a class="visually-hidden-focusable" href="#main-content">
     pattern = r'<a\s+class\s*=\s*["\']visually-hidden-focusable["\']\s+href\s*=\s*["\']#main-content["\']'
     assert re.search(pattern, src), (
-        "base.html skip link nema `<a class=\"visually-hidden-focusable\" href=\"#main-content\">`. "
+        'base.html skip link nema `<a class="visually-hidden-focusable" href="#main-content">`. '
         "AC2 + Gotcha #13: koristimo Bootstrap utility klasu (appears on focus only)."
     )
 
@@ -423,8 +423,8 @@ def test_ac2_skip_link_targets_main_content():
     """AC2: skip link href MORA biti `#main-content` (target je <main id="main-content">)."""
     src = _read_base_html()
     assert 'href="#main-content"' in src or "href='#main-content'" in src, (
-        "base.html skip link nema `href=\"#main-content\"`. "
-        "AC2: target je <main id=\"main-content\"> (vidi AC3)."
+        'base.html skip link nema `href="#main-content"`. '
+        'AC2: target je <main id="main-content"> (vidi AC3).'
     )
 
 
@@ -433,7 +433,7 @@ def test_ac2_skip_link_translated():
     src = _read_base_html()
     pattern = r'\{%\s*translate\s+["\']Preskoči na sadržaj["\']\s*%\}'
     assert re.search(pattern, src), (
-        "base.html skip link tekst NIJE pod `{% translate \"Preskoči na sadržaj\" %}`. "
+        'base.html skip link tekst NIJE pod `{% translate "Preskoči na sadržaj" %}`. '
         "AC2: hu/en prevodi dolaze kroz `just messages` u Story 6.x."
     )
 
@@ -453,18 +453,18 @@ def test_ac3_aria_live_region_present():
     # Match div sa id="aria-live"
     matches = re.findall(r'<div\s+id\s*=\s*["\']aria-live["\']', html)
     assert len(matches) == 1, (
-        f"Rendered HTML ima {len(matches)} `<div id=\"aria-live\">` elemenata, očekivano TAČNO 1. "
+        f'Rendered HTML ima {len(matches)} `<div id="aria-live">` elemenata, očekivano TAČNO 1. '
         f"AC3 + Gotcha #3: kanonski singleton (HTMX `hx-swap-oob` target-uje preko ID-a)."
     )
     # Verifikuj atribute na tom div-u
     assert 'aria-live="polite"' in html, (
-        "Rendered HTML aria-live div nema `aria-live=\"polite\"`. AC3."
+        'Rendered HTML aria-live div nema `aria-live="polite"`. AC3.'
     )
     assert 'aria-atomic="true"' in html, (
-        "Rendered HTML aria-live div nema `aria-atomic=\"true\"`. AC3."
+        'Rendered HTML aria-live div nema `aria-atomic="true"`. AC3.'
     )
     assert 'class="visually-hidden"' in html, (
-        "Rendered HTML aria-live div nema `class=\"visually-hidden\"`. AC3 + Gotcha #13."
+        'Rendered HTML aria-live div nema `class="visually-hidden"`. AC3 + Gotcha #13.'
     )
 
 
@@ -485,7 +485,7 @@ def test_ac3_main_has_id_and_tabindex():
     pattern1 = r'<main\s+id\s*=\s*["\']main-content["\']\s+tabindex\s*=\s*["\']-1["\']'
     pattern2 = r'<main\s+tabindex\s*=\s*["\']-1["\']\s+id\s*=\s*["\']main-content["\']'
     assert re.search(pattern1, src) or re.search(pattern2, src), (
-        "base.html <main> NEMA `id=\"main-content\" tabindex=\"-1\"`. "
+        'base.html <main> NEMA `id="main-content" tabindex="-1"`. '
         "AC2 + AC3 + Gotcha #7: id je skip link target; tabindex=-1 omogućuje programatski focus."
     )
 
@@ -647,7 +647,9 @@ def test_ac5_htmx_middleware_position():
         htmx_idx = mw.index("django_htmx.middleware.HtmxMiddleware")
         locale_switcher_idx = mw.index("apps.core.middleware.LocaleSwitcherMiddleware")
     except ValueError as exc:
-        pytest.fail(f"Jedan od kritičnih middleware-a nedostaje: {exc}. MIDDLEWARE: {mw}")
+        pytest.fail(
+            f"Jedan od kritičnih middleware-a nedostaje: {exc}. MIDDLEWARE: {mw}"
+        )
     assert common_idx < htmx_idx < locale_switcher_idx, (
         f"HtmxMiddleware position pogrešna. "
         f"common={common_idx}, htmx={htmx_idx}, locale_switcher={locale_switcher_idx}. "
@@ -663,8 +665,15 @@ def test_ac5_bootstrap5_dict_present_base():
         "base.py NEMA `BOOTSTRAP5` setting dict. "
         "AC5 — django-bootstrap5 konfiguracija za env-aware Bootstrap URL."
     )
-    assert isinstance(bs5, dict), f"BOOTSTRAP5 mora biti dict, vec {type(bs5).__name__}."
-    required_keys = {"css_url", "javascript_url", "javascript_in_head", "include_jquery"}
+    assert isinstance(bs5, dict), (
+        f"BOOTSTRAP5 mora biti dict, vec {type(bs5).__name__}."
+    )
+    required_keys = {
+        "css_url",
+        "javascript_url",
+        "javascript_in_head",
+        "include_jquery",
+    }
     missing = required_keys - set(bs5.keys())
     assert not missing, (
         f"BOOTSTRAP5 dict NE sadrži ključeve: {missing}. Dobijeno: {sorted(bs5.keys())}."
@@ -693,7 +702,7 @@ def test_ac5_bootstrap5_dev_uses_cdn():
     css_url = bs5.get("css_url", {})
     js_url = bs5.get("javascript_url", {})
     assert isinstance(css_url, dict) and isinstance(js_url, dict), (
-        f"css_url / javascript_url moraju biti dict-ovi (sa 'url' i 'integrity' kljucevima)."
+        "css_url / javascript_url moraju biti dict-ovi (sa 'url' i 'integrity' kljucevima)."
     )
     css_target = css_url.get("url", "")
     js_target = js_url.get("url", "")
@@ -762,9 +771,7 @@ def test_ac5_bootstrap5_integrity_none():
     bs5_prod = getattr(prod, "BOOTSTRAP5", None)
     if bs5_prod is None:
         pytest.fail("BOOTSTRAP5 override nedostaje u production.py.")
-    _assert_integrity_none(
-        bs5_prod["css_url"], "production.py BOOTSTRAP5['css_url']"
-    )
+    _assert_integrity_none(bs5_prod["css_url"], "production.py BOOTSTRAP5['css_url']")
     _assert_integrity_none(
         bs5_prod["javascript_url"], "production.py BOOTSTRAP5['javascript_url']"
     )
@@ -851,7 +858,9 @@ def test_ac7_htmx_min_js_version_1_9_x():
     """
     if not HTMX_MIN_JS.exists():
         pytest.skip(HTMX_VENDOR_MISSING_MSG)
-    head_lines = HTMX_MIN_JS.read_text(encoding="utf-8", errors="replace").splitlines()[:5]
+    head_lines = HTMX_MIN_JS.read_text(encoding="utf-8", errors="replace").splitlines()[
+        :5
+    ]
     head_text = "\n".join(head_lines)
     pattern = r"HTMX\s+v1\.9\."
     assert re.search(pattern, head_text, re.IGNORECASE), (
@@ -899,7 +908,14 @@ def test_ac9_django_check_passes():
     env = os.environ.copy()
     env["DJANGO_SECRET_KEY"] = TEST_SECRET
     result = subprocess.run(
-        [uv_bin, "run", "python", "manage.py", "check", "--settings=config.settings.development"],
+        [
+            uv_bin,
+            "run",
+            "python",
+            "manage.py",
+            "check",
+            "--settings=config.settings.development",
+        ],
         cwd=PROJECT_ROOT,
         capture_output=True,
         text=True,
@@ -918,10 +934,10 @@ def test_ac9_render_home_includes_skip_link():
     """AC9.9: GET /sr/ → rendered HTML sadrži skip link sa sr translation 'Preskoči na sadržaj'."""
     html = _render_home_sr()
     assert 'class="visually-hidden-focusable"' in html, (
-        "Rendered HTML ne sadrži `class=\"visually-hidden-focusable\"`. AC9.9."
+        'Rendered HTML ne sadrži `class="visually-hidden-focusable"`. AC9.9.'
     )
     assert 'href="#main-content"' in html, (
-        "Rendered HTML ne sadrži `href=\"#main-content\"`. AC9.9."
+        'Rendered HTML ne sadrži `href="#main-content"`. AC9.9.'
     )
     # sr translation (msgid fallback)
     assert "Preskoči na sadržaj" in html, (
@@ -1043,8 +1059,9 @@ def test_base_html_no_uppercase_hex():
     if MAIN_CSS.exists():
         main_src = MAIN_CSS.read_text(encoding="utf-8")
         matches_main = re.findall(r"#[0-9A-Fa-f]{6}", main_src)
-        bad_main = [m for m in matches_main if any(c.isalpha() and c.isupper() for c in m[1:])]
+        bad_main = [
+            m for m in matches_main if any(c.isalpha() and c.isupper() for c in m[1:])
+        ]
         assert not bad_main, (
-            f"main.css sadrži uppercase hex vrednosti: {bad_main}. "
-            f"Story 1.5 AC4 carry."
+            f"main.css sadrži uppercase hex vrednosti: {bad_main}. Story 1.5 AC4 carry."
         )

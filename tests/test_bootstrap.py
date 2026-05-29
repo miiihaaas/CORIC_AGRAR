@@ -197,15 +197,21 @@ def test_ac2_django_and_psycopg_in_dependencies():
         "[project].dependencies mora biti lista (PEP 621 format)."
     )
     names = _extract_package_names(deps)
-    assert "django" in names, f"`django` nedostaje u dependencies. Dobijeno: {sorted(names)}"
-    assert "psycopg" in names, f"`psycopg` nedostaje u dependencies. Dobijeno: {sorted(names)}"
+    assert "django" in names, (
+        f"`django` nedostaje u dependencies. Dobijeno: {sorted(names)}"
+    )
+    assert "psycopg" in names, (
+        f"`psycopg` nedostaje u dependencies. Dobijeno: {sorted(names)}"
+    )
     # Django version constraint provera - mora biti >= 5.2
     django_spec = next((d for d in deps if d.strip().lower().startswith("django")), "")
-    assert ">=5.2" in django_spec.replace(" ", "") or ">=5" in django_spec.replace(" ", ""), (
-        f"Django constraint nije >=5.2 (spec: {django_spec!r})"
-    )
+    assert ">=5.2" in django_spec.replace(" ", "") or ">=5" in django_spec.replace(
+        " ", ""
+    ), f"Django constraint nije >=5.2 (spec: {django_spec!r})"
     # psycopg mora biti pinovan sa [binary] extras (interface contract sec 2.1 row 2)
-    psycopg_spec = next((d for d in deps if d.strip().lower().startswith("psycopg")), "")
+    psycopg_spec = next(
+        (d for d in deps if d.strip().lower().startswith("psycopg")), ""
+    )
     assert "[binary]" in psycopg_spec.replace(" ", "").lower(), (
         f"psycopg mora imati [binary] extras (spec: {psycopg_spec!r}). "
         f"Pokreni: uv add 'psycopg[binary]'"
@@ -293,11 +299,15 @@ def test_ac3_django_skeleton_files_exist():
         CONFIG_DIR / "wsgi.py",
         CONFIG_DIR / "asgi.py",
     ]
-    missing = [str(p.relative_to(PROJECT_ROOT)) for p in required_files if not p.exists()]
+    missing = [
+        str(p.relative_to(PROJECT_ROOT)) for p in required_files if not p.exists()
+    ]
     # Settings: prihvata ili single file (config/settings.py) ili paket (config/settings/)
     settings_single = CONFIG_DIR / "settings.py"
     settings_pkg = CONFIG_DIR / "settings"
-    if not (settings_single.exists() or (settings_pkg.exists() and settings_pkg.is_dir())):
+    if not (
+        settings_single.exists() or (settings_pkg.exists() and settings_pkg.is_dir())
+    ):
         missing.append("config/settings.py or config/settings/ (package)")
     assert not missing, (
         f"Django skeleton fajlovi nedostaju: {missing}. "
@@ -330,6 +340,7 @@ def test_ac3_manage_py_check_passes():
     eksplicitno setuje DJANGO_SECRET_KEY env var za poziv `manage.py check`.
     """
     import os
+
     uv_bin = shutil.which("uv")
     if uv_bin is None:
         pytest.fail("uv binary nije u PATH-u. Instaliraj uv >= 0.5 prvo.")
@@ -374,15 +385,12 @@ def test_ac4_dev_dependency_group_contains_all_seven():
         "Mora biti PEP 735 format (NE legacy [tool.uv.dev-dependencies])."
     )
     dev_deps = dep_groups.get("dev", [])
-    assert isinstance(dev_deps, list), (
-        "[dependency-groups].dev mora biti lista."
-    )
+    assert isinstance(dev_deps, list), "[dependency-groups].dev mora biti lista."
     names = _extract_package_names(dev_deps)
     required = set(DEV_DEPENDENCIES)
     missing = required - names
     assert not missing, (
-        f"Dev grupa nedostaje pakete: {sorted(missing)}. "
-        f"Pronadjeno: {sorted(names)}"
+        f"Dev grupa nedostaje pakete: {sorted(missing)}. Pronadjeno: {sorted(names)}"
     )
 
 
@@ -443,8 +451,7 @@ def test_ac5_justfile_contains_required_recipes():
         if not re.search(pattern, content, re.MULTILINE):
             missing.append(recipe)
     assert not missing, (
-        f"justfile recepti nedostaju: {missing}. "
-        f"Pronadjeni sadrzaj:\n{content[:500]}"
+        f"justfile recepti nedostaju: {missing}. Pronadjeni sadrzaj:\n{content[:500]}"
     )
 
 
@@ -523,9 +530,7 @@ def test_ac6_readme_exists_with_quickstart():
     content = README_PATH.read_text(encoding="utf-8")
     # Mora imati Quickstart sekciju (case-insensitive) i kljucne komande
     content_lower = content.lower()
-    assert "quickstart" in content_lower, (
-        "README.md ne sadrzi 'Quickstart' sekciju."
-    )
+    assert "quickstart" in content_lower, "README.md ne sadrzi 'Quickstart' sekciju."
     assert "uv sync" in content_lower, (
         "README.md Quickstart ne sadrzi `uv sync` komandu."
     )
@@ -573,8 +578,8 @@ def test_ac3_installed_apps_is_default_django():
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
-        "django_htmx",            # Story 1.6
-        "django_bootstrap5",      # Story 1.6
+        "django_htmx",  # Story 1.6
+        "django_bootstrap5",  # Story 1.6
         "apps.core",
     }
     actual = set(apps)
@@ -608,16 +613,16 @@ def test_no_out_of_scope_artifacts_yet():
     NAPOMENA: Story 1.5 NAMERNO uvodi `static/` (AC1 — static/, static/css/,
     static/fonts/roboto/). Skinuti iz forbidden liste — isti pattern kao
     Story 1.2/1.3/1.4 amendments.
+
+    NAPOMENA: Story 1.9 NAMERNO uvodi `.pre-commit-config.yaml` (AC6) i
+    `.github/workflows/ci.yml` (AC1). Skinuti iz forbidden liste — isti pattern
+    kao Story 1.2/1.3/1.4/1.5 amendments. Story 1.9 je infra-only cross-cutting
+    story koja zatvara Epic 1 i postavlja CI gate.
     """
-    forbidden = [
-        ".pre-commit-config.yaml",
-        ".github",
-    ]
+    forbidden: list[str] = []
     existing = []
     for path in forbidden:
         if (PROJECT_ROOT / path).exists():
             existing.append(path)
 
-    assert not existing, (
-        f"Out-of-scope artefakti postoje: {existing}"
-    )
+    assert not existing, f"Out-of-scope artefakti postoje: {existing}"

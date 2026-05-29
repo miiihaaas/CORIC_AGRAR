@@ -1,0 +1,44 @@
+# .pre-commit-config.yaml — Story 1.9 (GitHub Actions CI Pipeline)
+# Pokrece se lokalno na svaki commit (posle `uv run pre-commit install` setup-a).
+# CI lint job (.github/workflows/ci.yml) pokrece iste lint komande - fail lokalno = fail u CI.
+# NAPOMENA (Decision D11): pytest se NAMERNO ne pokreće u pre-commit-u - pytest je CI-only gate
+# (pre-commit budget <5s, pytest 30-60s).
+# Verzija sync sa pyproject.toml [dependency-groups.dev] - Decision D8 (manual sync discipline).
+
+# REFACTOR #8 (iter-1): defaults eksplicitno - python3.13 matchuje pyproject requires-python;
+# default_stages [pre-commit] osigurava da se hooks ne pokrecu na push/merge stage-ima slucajno.
+default_language_version:
+  python: python3.13
+
+default_stages: [pre-commit]
+
+repos:
+  # IMP-5: standardni pre-commit-hooks (baseline higijenski hooks).
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0  # Verified 2026-05-29 latest stable major.
+    hooks:
+      # REFACTOR #11 (iter-1) + BUG-1 (iter-2): exclude vendor JS i compiled gettext .mo binare
+      # od whitespace fix-a. Regex MORA biti `static/vendor/.*` (sa `.*` na kraju da hvata fajlove
+      # UNUTAR vendor dir-a) — prethodni `static/vendor/` bez `.*` je match-ovao SAMO sam
+      # direktorijum, ne i fajlove u njemu. Empirijski potvrdio Dev Reviewer B u iter-2.
+      - id: trailing-whitespace
+        exclude: '^(static/vendor/.*|locale/.*\.mo)$'
+      - id: end-of-file-fixer
+        exclude: '^(static/vendor/.*|locale/.*\.mo)$'
+      - id: check-yaml
+      - id: check-merge-conflict
+
+  # Ruff: lint (--fix) + format. 1:1 sa CI lint job ruff check komandom (LINT-only sync).
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.15  # Verified 2026-05-29 latest stable - matches pyproject.toml ruff>=0.15.14.
+    hooks:
+      - id: ruff-check
+        args: [--fix]  # Auto-fix import sort, trailing whitespace; CI ne koristi --fix.
+      - id: ruff-format
+
+  # Djade: Django template format. 1:1 sa CI lint job djade --check komandom.
+  - repo: https://github.com/adamchainz/djade-pre-commit
+    rev: 1.9.0  # Verified 2026-05-29 latest stable - matches pyproject.toml djade>=1.9.0.
+    hooks:
+      - id: djade
+        args: [--target-version, "5.2"]  # Matches pyproject.toml django>=5.2,<6.0.

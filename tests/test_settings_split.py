@@ -101,8 +101,9 @@ def _load_settings_module(module_name: str):
     return importlib.import_module(full_name)
 
 
-def _run(cmd: list[str], env: dict[str, str] | None = None,
-         cwd: Path | None = None) -> subprocess.CompletedProcess:
+def _run(
+    cmd: list[str], env: dict[str, str] | None = None, cwd: Path | None = None
+) -> subprocess.CompletedProcess:
     """Subprocess wrapper. env=None znaci nasledjuje os.environ."""
     full_env = os.environ.copy()
     if env:
@@ -130,8 +131,8 @@ def test_ac1_settings_package_directory_exists():
         f"Kreiraj paket sa __init__.py."
     )
     assert SETTINGS_PKG_DIR.is_dir(), (
-        f"config/settings/ postoji ali NIJE direktorijum (verovatno je fajl). "
-        f"Refactor zahteva paket strukturu."
+        "config/settings/ postoji ali NIJE direktorijum (verovatno je fajl). "
+        "Refactor zahteva paket strukturu."
     )
 
 
@@ -192,8 +193,14 @@ def test_ac1_manage_py_check_passes_for_development():
     if not MANAGE_PY.exists():
         pytest.fail("manage.py nedostaje — Story 1.1 nije done.")
     result = _run(
-        [uv_bin, "run", "python", "manage.py", "check",
-         "--settings=config.settings.development"],
+        [
+            uv_bin,
+            "run",
+            "python",
+            "manage.py",
+            "check",
+            "--settings=config.settings.development",
+        ],
         env={"DJANGO_SECRET_KEY": TEST_SECRET},
     )
     assert result.returncode == 0, (
@@ -489,9 +496,7 @@ def test_ac3_production_has_full_hsts_set():
     for attr in bool_true_attrs:
         assert hasattr(prod, attr), f"`production.py` ne eksponuje `{attr}`."
         actual = getattr(prod, attr)
-        assert actual is True, (
-            f"`production.{attr}` = {actual!r}, ocekivano True."
-        )
+        assert actual is True, f"`production.{attr}` = {actual!r}, ocekivano True."
     # HSTS seconds — bar 1 godina (31536000)
     assert hasattr(prod, "SECURE_HSTS_SECONDS"), (
         "`production.py` ne eksponuje `SECURE_HSTS_SECONDS`. Mora biti `env.int(..., default=31536000)`."

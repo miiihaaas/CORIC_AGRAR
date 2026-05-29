@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_htmx",            # NOVO Story 1.6 — request.htmx detection
-    "django_bootstrap5",      # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
+    "django_htmx",  # NOVO Story 1.6 — request.htmx detection
+    "django_bootstrap5",  # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
 ]
 
@@ -47,7 +47,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",          # NOVO Story 1.6 — postavlja request.htmx
+    "django_htmx.middleware.HtmxMiddleware",  # NOVO Story 1.6 — postavlja request.htmx
     "apps.core.middleware.LocaleSwitcherMiddleware",
 ]
 
@@ -89,7 +89,9 @@ del EMAIL_CONFIG
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},

@@ -84,7 +84,7 @@ def test_ac4_translation_example_fields_minimal():
         or 'fields=("name", "description")' in src
     )
     assert has_canonical, (
-        "apps/core/translation.py ne sadrzi canonical example `fields = (\"name\", \"description\")`. "
+        'apps/core/translation.py ne sadrzi canonical example `fields = ("name", "description")`. '
         "Story 1.4 spec (Dev Notes § translation.py Template) propisuje tacno ovaj redosled. "
         "Pronadji `fields = (...)` red u modulu i normalizuj."
     )

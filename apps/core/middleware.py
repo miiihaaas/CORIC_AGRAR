@@ -49,7 +49,8 @@ class LocaleSwitcherMiddleware:
             response.set_cookie(
                 settings.LANGUAGE_COOKIE_NAME,
                 requested,
-                max_age=getattr(settings, "LANGUAGE_COOKIE_AGE", None) or 60 * 60 * 24 * 365,
+                max_age=getattr(settings, "LANGUAGE_COOKIE_AGE", None)
+                or 60 * 60 * 24 * 365,
                 path=settings.LANGUAGE_COOKIE_PATH,
                 domain=settings.LANGUAGE_COOKIE_DOMAIN,
                 secure=settings.LANGUAGE_COOKIE_SECURE,

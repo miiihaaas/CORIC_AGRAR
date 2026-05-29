@@ -167,7 +167,7 @@ def test_ac2_language_code_is_sr():
     # Eksplicitno matchovanje: LANGUAGE_CODE = "sr" (single ili double quote)
     pattern = r'^\s*LANGUAGE_CODE\s*=\s*["\']sr["\']\s*$'
     assert re.search(pattern, src, re.MULTILINE), (
-        "config/settings/base.py NE sadrzi `LANGUAGE_CODE = \"sr\"`. "
+        'config/settings/base.py NE sadrzi `LANGUAGE_CODE = "sr"`. '
         "Story 1.4 AC2 zahteva tacno tu vrednost (NE 'en-us' / 'sr-latn' / 'sr_RS')."
     )
 
@@ -212,7 +212,7 @@ def test_ac2_locale_paths_defined():
     # Mora referencirati BASE_DIR / "locale"
     pattern = r'BASE_DIR\s*/\s*["\']locale["\']'
     assert re.search(pattern, src), (
-        "LOCALE_PATHS ne koristi `BASE_DIR / \"locale\"` pattern. "
+        'LOCALE_PATHS ne koristi `BASE_DIR / "locale"` pattern. '
         "Mora biti `LOCALE_PATHS = [BASE_DIR / 'locale']` (lista, NE string, NE tuple)."
     )
 
@@ -385,9 +385,7 @@ def test_ac5_urls_uses_i18n_patterns():
     # Mora importovati i18n_patterns
     assert "from django.conf.urls.i18n import i18n_patterns" in src or re.search(
         r"from\s+django\.conf\.urls\.i18n\s+import\s+i18n_patterns", src
-    ), (
-        "config/urls.py ne importuje i18n_patterns iz django.conf.urls.i18n."
-    )
+    ), "config/urls.py ne importuje i18n_patterns iz django.conf.urls.i18n."
     # prefix_default_language=True eksplicitno
     assert re.search(r"prefix_default_language\s*=\s*True", src), (
         "config/urls.py ne postavlja `prefix_default_language=True` eksplicitno. "
@@ -475,10 +473,8 @@ def test_ac5_set_language_outside_i18n_patterns():
         "AC5 zahteva registraciju set_language view-a."
     )
     # Pronadji prvi poziv i18n_patterns(
-    patterns_match = re.search(r'i18n_patterns\s*\(', src)
-    assert patterns_match, (
-        "config/urls.py ne poziva `i18n_patterns(...)`."
-    )
+    patterns_match = re.search(r"i18n_patterns\s*\(", src)
+    assert patterns_match, "config/urls.py ne poziva `i18n_patterns(...)`."
     assert setlang_match.start() < patterns_match.start(), (
         f"Path `i18n/setlang/` (pozicija {setlang_match.start()}) JE definisan POSLE "
         f"`i18n_patterns(` (pozicija {patterns_match.start()}) u config/urls.py. "
@@ -496,19 +492,17 @@ def test_ac5_admin_inside_i18n_patterns():
     POSLE `i18n_patterns(` poziva ali PRE zatvarajuce `)` (tj. unutar argument liste).
     """
     src = _read_urls_source()
-    admin_match = re.search(r'admin\.site\.urls', src)
+    admin_match = re.search(r"admin\.site\.urls", src)
     assert admin_match, (
         "config/urls.py ne sadrzi `admin.site.urls`. "
         "AC5 zahteva ukljucivanje admin URL-a unutar i18n_patterns()."
     )
-    patterns_match = re.search(r'i18n_patterns\s*\(', src)
-    assert patterns_match, (
-        "config/urls.py ne poziva i18n_patterns()."
-    )
+    patterns_match = re.search(r"i18n_patterns\s*\(", src)
+    assert patterns_match, "config/urls.py ne poziva i18n_patterns()."
     assert admin_match.start() > patterns_match.start(), (
-        f"`admin.site.urls` je referenciran PRE `i18n_patterns(` u config/urls.py. "
-        f"AC5 / Interface contract § 3.5: admin MORA biti unutar i18n_patterns() "
-        f"(admin UI se prevodi prema URL locale prefiksu)."
+        "`admin.site.urls` je referenciran PRE `i18n_patterns(` u config/urls.py. "
+        "AC5 / Interface contract § 3.5: admin MORA biti unutar i18n_patterns() "
+        "(admin UI se prevodi prema URL locale prefiksu)."
     )
 
 
@@ -582,7 +576,7 @@ def test_ac6_base_html_uses_language_code():
     src = BASE_HTML.read_text(encoding="utf-8")
     pattern = r"<html\s+lang\s*=\s*['\"]\{\{\s*LANGUAGE_CODE\s*\}\}['\"]"
     assert re.search(pattern, src), (
-        "templates/base.html ne sadrzi `<html lang=\"{{ LANGUAGE_CODE }}\">`. "
+        'templates/base.html ne sadrzi `<html lang="{{ LANGUAGE_CODE }}">`. '
         "Gotcha #13 / AC6: vrednost MORA biti template variable, NE hardcoded 'sr'."
     )
 
@@ -610,7 +604,7 @@ def test_ac6_base_html_default_content():
     # Pattern za {% translate "Dobrodošli." %} tolerantan na single/double quotes
     pattern = r'\{%\s*translate\s+["\']Dobrodošli\.["\']\s*%\}'
     assert re.search(pattern, src), (
-        "templates/base.html ne sadrzi `{% translate \"Dobrodošli.\" %}` u default block-u. "
+        'templates/base.html ne sadrzi `{% translate "Dobrodošli." %}` u default block-u. '
         "AC6 default content propisuje translatable welcome string."
     )
 
@@ -641,10 +635,10 @@ def test_ac6_render_html_lang_matches_url_locale():
         )
         content = response.content.decode("utf-8", errors="replace")
         assert f'<html lang="{code}"' in content or f"<html lang='{code}'" in content, (
-            f"GET /{code}/ rendered HTML ne sadrzi `<html lang=\"{code}\">`. "
+            f'GET /{code}/ rendered HTML ne sadrzi `<html lang="{code}">`. '
             f"Verifikuj context processor `django.template.context_processors.i18n` "
             f"u TEMPLATES OPTIONS (Gotcha #13). Bez njega `{{{{ LANGUAGE_CODE }}}}` "
-            f"je prazan string i <html lang=\"\"> je broken HTML."
+            f'je prazan string i <html lang=""> je broken HTML.'
         )
 
 
@@ -674,7 +668,7 @@ def test_ac7_switcher_posts_to_set_language():
         "AC7: forma mora referencirati Django set_language view (NE hardcoded URL)."
     )
     assert re.search(r'method\s*=\s*["\']post["\']', src, re.IGNORECASE), (
-        "language_switcher.html forma nema `method=\"post\"`. "
+        'language_switcher.html forma nema `method="post"`. '
         "Gotcha #8: set_language je @require_POST decorated; GET vraca 405."
     )
 
@@ -696,7 +690,7 @@ def test_ac7_switcher_next_uses_request_path():
         "language_switcher.html `next` polje nije kanonsko `{{ request.path }}`. "
         "Iter-1 lesson: koristio `|slice:'3:'` filter sto je razbijalo deep-link "
         "po stranama. Kanonska forma (iz Story 1.4 spec § Dev Notes): "
-        "<input type=\"hidden\" name=\"next\" value=\"{{ request.path }}\">. "
+        '<input type="hidden" name="next" value="{{ request.path }}">. '
         "Django set_language interno koristi translate_url() koji handluje prefix."
     )
     # Negative: ne sme imati |slice ili |default filter na request.path
@@ -827,7 +821,7 @@ def test_no_hardcoded_serbian_strings_in_views():
     """
     if not CORE_VIEWS_PY.exists():
         pytest.fail(
-            f"apps/core/views.py ne postoji. Story 1.4 AC1 zahteva minimalan home view."
+            "apps/core/views.py ne postoji. Story 1.4 AC1 zahteva minimalan home view."
         )
     src = CORE_VIEWS_PY.read_text(encoding="utf-8")
     # Heuristika: trazimo stringove sa srpskim diakritickim slovima (š/č/ć/ž/đ)
@@ -970,7 +964,12 @@ def test_ac9_manage_py_check_passes_with_apps_core_registered():
     # --- 2. apps.core runtime registration (AC9.4 — kritican test) ---
     registration_result = subprocess.run(
         [
-            uv_bin, "run", "python", "manage.py", "shell", "-c",
+            uv_bin,
+            "run",
+            "python",
+            "manage.py",
+            "shell",
+            "-c",
             "from django.apps import apps; apps.get_app_config('core'); print('OK')",
         ],
         cwd=PROJECT_ROOT,
@@ -1030,14 +1029,13 @@ def test_pytest_django_configured():
     importmode = pytest_config.get("importmode") or pytest_config.get("import_mode")
     addopts = str(pytest_config.get("addopts", ""))
     import_mode_configured = (
-        importmode == "importlib"
-        or "--import-mode=importlib" in addopts
+        importmode == "importlib" or "--import-mode=importlib" in addopts
     )
     assert import_mode_configured, (
         f"[tool.pytest.ini_options] ne konfigurise import mode 'importlib'. "
         f"importmode = {importmode!r}, addopts = {addopts!r}. "
-        f"Mora biti postavljen kroz `addopts = \"--import-mode=importlib\"` "
-        f"(ili explicit `importmode = \"importlib\"`). Bez njega `apps/core/tests/` "
+        f'Mora biti postavljen kroz `addopts = "--import-mode=importlib"` '
+        f'(ili explicit `importmode = "importlib"`). Bez njega `apps/core/tests/` '
         f"collection puca jer top-level `tests/` paket i `apps/core/tests/` paket "
         f"dele isto ime."
     )

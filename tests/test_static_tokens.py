@@ -123,7 +123,9 @@ def _woff2_files_present() -> bool:
     """True ako svih 6 očekivanih woff2 fajlova postoje u static/fonts/roboto/."""
     if not STATIC_FONTS_ROBOTO_DIR.exists():
         return False
-    return all((STATIC_FONTS_ROBOTO_DIR / fname).exists() for fname in EXPECTED_WOFF2_FILES)
+    return all(
+        (STATIC_FONTS_ROBOTO_DIR / fname).exists() for fname in EXPECTED_WOFF2_FILES
+    )
 
 
 def _load_settings_module(module_name: str):
@@ -159,7 +161,9 @@ def _load_pyproject() -> dict:
         return tomllib.load(f)
 
 
-def _run(cmd: list[str], env: dict[str, str] | None = None) -> subprocess.CompletedProcess:
+def _run(
+    cmd: list[str], env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess:
     """Subprocess wrapper. Inherits os.environ + optional override env."""
     full_env = os.environ.copy()
     if env:
@@ -210,14 +214,14 @@ def test_ac1_static_no_other_subdirs_yet():
     no longer applies. Story 1.5/1.6 invariant preserved as a passive comment.
     """
     if not STATIC_DIR.exists():
-        pytest.skip("static/ direktorijum ne postoji — drugi test (test_ac1_static_directory_exists) hvata.")
+        pytest.skip(
+            "static/ direktorijum ne postoji — drugi test (test_ac1_static_directory_exists) hvata."
+        )
     # No subdirs are forbidden post-Story 1.8; static/{css,fonts,vendor,js,img}/ are all canonical.
     # Test retained as a regression sentinel — if a truly unexpected subdir appears, extend `forbidden`.
     forbidden: list[str] = []
     found = [name for name in forbidden if (STATIC_DIR / name).exists()]
-    assert not found, (
-        f"static/ sadrži forbidden subdir-ove: {found}."
-    )
+    assert not found, f"static/ sadrži forbidden subdir-ove: {found}."
 
 
 # =============================================================================
@@ -449,7 +453,9 @@ def test_ac4_tokens_css_semantic_colors():
         "--color-semantic-success",
         "--color-semantic-focus-ring",
     ]
-    missing = [t for t in expected_tokens if not re.search(rf"{re.escape(t)}\s*:", content)]
+    missing = [
+        t for t in expected_tokens if not re.search(rf"{re.escape(t)}\s*:", content)
+    ]
     assert not missing, (
         f"tokens.css nedostaju semantic tokeni: {missing}. "
         f"AC4 zahteva svih 7 (text-primary, text-on-dark, text-muted, border, "
@@ -546,8 +552,16 @@ def test_ac5_shadow_tokens_present():
     """AC5: 5 shadow tokena + acceptance signal `--shadow-md: 0 2px 8px rgba(31, 63, 47, 0.06)`."""
     content = _read_tokens_css()
     # Verifikuj prisustvo svih 5 imena
-    expected_names = ["--shadow-none", "--shadow-sm", "--shadow-md", "--shadow-lg", "--shadow-nav-shrunk"]
-    missing = [n for n in expected_names if not re.search(rf"{re.escape(n)}\s*:", content)]
+    expected_names = [
+        "--shadow-none",
+        "--shadow-sm",
+        "--shadow-md",
+        "--shadow-lg",
+        "--shadow-nav-shrunk",
+    ]
+    missing = [
+        n for n in expected_names if not re.search(rf"{re.escape(n)}\s*:", content)
+    ]
     assert not missing, f"tokens.css nedostaju shadow tokeni: {missing}. AC5."
     # Acceptance signal: shadow-md eksplicitno
     md_pattern = r"--shadow-md\s*:\s*0\s+2px\s+8px\s+rgba\(31,\s*63,\s*47,\s*0\.06\)"
@@ -578,7 +592,9 @@ def test_ac5_spacing_tokens_present():
     )
     # Verifikuj prisustvo svih 9 scale stavki + base
     scale_names = [f"--spacing-scale-{i}" for i in (1, 2, 3, 4, 5, 6, 8, 10, 12)]
-    missing_scale = [n for n in scale_names if not re.search(rf"{re.escape(n)}\s*:", content)]
+    missing_scale = [
+        n for n in scale_names if not re.search(rf"{re.escape(n)}\s*:", content)
+    ]
     assert not missing_scale, (
         f"tokens.css nedostaju spacing-scale tokeni: {missing_scale}. AC5."
     )
@@ -605,7 +621,11 @@ def test_ac5_token_naming_convention():
     # Sve linije sa `--name:` — name mora počinjati grupom (color/typography/rounded/shadow/spacing)
     expected_groups = ("color", "typography", "rounded", "shadow", "spacing")
     all_tokens = re.findall(r"^\s*(--[a-z][a-z0-9-]*)\s*:", content, re.MULTILINE)
-    bad = [t for t in all_tokens if not any(t.startswith(f"--{g}-") for g in expected_groups)]
+    bad = [
+        t
+        for t in all_tokens
+        if not any(t.startswith(f"--{g}-") for g in expected_groups)
+    ]
     assert not bad, (
         f"tokens.css ima tokene koji NE prate naming convention `--<group>-...`: {bad}. "
         f"Dozvoljene grupe: {expected_groups}. AC5 + project-context.md."
@@ -638,15 +658,15 @@ def test_ac6_static_url_leading_slash():
     src = _read_base_source()
     pattern = r"^\s*STATIC_URL\s*=\s*['\"]/static/['\"]"
     assert re.search(pattern, src, re.MULTILINE), (
-        "base.py nema `STATIC_URL = \"/static/\"` (sa leading slash-om). "
+        'base.py nema `STATIC_URL = "/static/"` (sa leading slash-om). '
         "Gotcha #29: bez leading slash-a, {% static %} na /sr/ stranici "
         "resolve-uje u /sr/static/... → 404. Story 1.5 FIX 3."
     )
     # Negative — ne sme biti `STATIC_URL = "static/"` (bez leading slash)
     bad_pattern = r"^\s*STATIC_URL\s*=\s*['\"]static/['\"]"
     assert not re.search(bad_pattern, src, re.MULTILINE), (
-        "base.py JOŠ uvek ima `STATIC_URL = \"static/\"` (bez leading slash-a). "
-        "Story 1.4 vrednost; Story 1.5 mora promeniti na `\"/static/\"`."
+        'base.py JOŠ uvek ima `STATIC_URL = "static/"` (bez leading slash-a). '
+        'Story 1.4 vrednost; Story 1.5 mora promeniti na `"/static/"`.'
     )
 
 
@@ -656,7 +676,7 @@ def test_ac6_staticfiles_dirs_configured():
     # Match: STATICFILES_DIRS = [BASE_DIR / "static"]
     pattern = r"STATICFILES_DIRS\s*=\s*\[\s*BASE_DIR\s*/\s*['\"]static['\"]\s*\]"
     assert re.search(pattern, src), (
-        "base.py NEMA `STATICFILES_DIRS = [BASE_DIR / \"static\"]`. "
+        'base.py NEMA `STATICFILES_DIRS = [BASE_DIR / "static"]`. '
         "Story 1.5 AC6 + Task 7.4: lista (ne tuple, ne string)."
     )
 
@@ -666,7 +686,7 @@ def test_ac6_static_root_configured():
     src = _read_base_source()
     pattern = r"STATIC_ROOT\s*=\s*BASE_DIR\s*/\s*['\"]staticfiles['\"]"
     assert re.search(pattern, src), (
-        "base.py NEMA `STATIC_ROOT = BASE_DIR / \"staticfiles\"`. "
+        'base.py NEMA `STATIC_ROOT = BASE_DIR / "staticfiles"`. '
         "Story 1.5 AC6 + Task 7.5: destinacija za collectstatic (prod-only)."
     )
 
@@ -683,8 +703,7 @@ def test_ac6_whitenoise_middleware_position():
     wn = "whitenoise.middleware.WhiteNoiseMiddleware"
     sess = "django.contrib.sessions.middleware.SessionMiddleware"
     assert wn in mw, (
-        f"MIDDLEWARE NE sadrži `{wn}`. Story 1.5 AC6 + Task 7.9. "
-        f"Trenutna lista: {mw}"
+        f"MIDDLEWARE NE sadrži `{wn}`. Story 1.5 AC6 + Task 7.9. Trenutna lista: {mw}"
     )
     sec_idx = mw.index(sec)
     wn_idx = mw.index(wn)
@@ -760,10 +779,12 @@ def test_ac6_production_storages_whitenoise():
 
 def test_ac6_staging_storages_whitenoise():
     """AC6: staging.py MORA imati STORAGES override sa Whitenoise CompressedManifestStaticFilesStorage."""
-    src = SETTINGS_STAGING.read_text(encoding="utf-8") if SETTINGS_STAGING.exists() else ""
-    assert "STORAGES" in src, (
-        "staging.py NEMA STORAGES override. Story 1.5 Task 7.8."
+    src = (
+        SETTINGS_STAGING.read_text(encoding="utf-8")
+        if SETTINGS_STAGING.exists()
+        else ""
     )
+    assert "STORAGES" in src, "staging.py NEMA STORAGES override. Story 1.5 Task 7.8."
     assert "whitenoise.storage.CompressedManifestStaticFilesStorage" in src, (
         "staging.py STORAGES override NE koristi `whitenoise.storage.CompressedManifestStaticFilesStorage`. "
         "Staging je production-like — manifest se koristi za realan test."
@@ -791,7 +812,7 @@ def test_ac7_base_html_links_tokens_css():
     # Tolerant pattern — single ili double quotes oko CSS path-a
     pattern = r'<link\s+rel\s*=\s*"stylesheet"\s+href\s*=\s*"\{%\s*static\s+["\']css/tokens\.css["\']\s*%\}"'
     assert re.search(pattern, content), (
-        "templates/base.html NEMA `<link rel=\"stylesheet\" href=\"{% static \"css/tokens.css\" %}\">`. "
+        'templates/base.html NEMA `<link rel="stylesheet" href="{% static "css/tokens.css" %}">`. '
         "Story 1.5 Task 9.4 + AC7 egzaktan placement."
     )
 
@@ -806,7 +827,9 @@ def test_ac7_tokens_css_link_before_block_extra_head():
     tokens_idx = content.find("tokens.css")
     extra_head_idx = content.find("{% block extra_head %}")
     assert tokens_idx != -1, "tokens.css link NIJE u base.html (drugi test hvata)."
-    assert extra_head_idx != -1, "base.html NEMA `{% block extra_head %}` (regression!)."
+    assert extra_head_idx != -1, (
+        "base.html NEMA `{% block extra_head %}` (regression!)."
+    )
     assert tokens_idx < extra_head_idx, (
         f"tokens.css link je POSLE `{{% block extra_head %}}` u base.html "
         f"(tokens_idx={tokens_idx}, extra_head_idx={extra_head_idx}). "
@@ -841,8 +864,14 @@ def test_ac8_django_check_passes():
     if not MANAGE_PY.exists():
         pytest.fail("manage.py ne postoji — Story 1.1 nije done.")
     result = _run(
-        [uv_bin, "run", "python", "manage.py", "check",
-         "--settings=config.settings.development"],
+        [
+            uv_bin,
+            "run",
+            "python",
+            "manage.py",
+            "check",
+            "--settings=config.settings.development",
+        ],
         env={"DJANGO_SECRET_KEY": TEST_SECRET},
     )
     assert result.returncode == 0, (
@@ -859,11 +888,20 @@ def test_ac8_collectstatic_dry_run_finds_tokens_css():
     if uv_bin is None:
         pytest.skip("uv binary nije u PATH-u.")
     if not TOKENS_CSS.exists():
-        pytest.skip("tokens.css ne postoji — drugi test (test_ac3_tokens_css_exists) hvata.")
+        pytest.skip(
+            "tokens.css ne postoji — drugi test (test_ac3_tokens_css_exists) hvata."
+        )
     result = _run(
-        [uv_bin, "run", "python", "manage.py", "collectstatic",
-         "--dry-run", "--noinput",
-         "--settings=config.settings.development"],
+        [
+            uv_bin,
+            "run",
+            "python",
+            "manage.py",
+            "collectstatic",
+            "--dry-run",
+            "--noinput",
+            "--settings=config.settings.development",
+        ],
         env={"DJANGO_SECRET_KEY": TEST_SECRET},
     )
     assert result.returncode == 0, (
@@ -887,7 +925,9 @@ def test_ac8_django_client_serves_tokens_css():
 
     Skip ako pytest-django nije instaliran (fallback test_ac8_collectstatic_dry_run hvata).
     """
-    pytest.importorskip("pytest_django", reason="pytest-django nije instaliran — skip Client test.")
+    pytest.importorskip(
+        "pytest_django", reason="pytest-django nije instaliran — skip Client test."
+    )
     if not TOKENS_CSS.exists():
         pytest.skip("tokens.css ne postoji — drugi test hvata.")
     os.environ.setdefault("DJANGO_SECRET_KEY", TEST_SECRET)
@@ -900,10 +940,12 @@ def test_ac8_django_client_serves_tokens_css():
             del sys.modules[mod_key]
     try:
         import django
+
         django.setup()
     except Exception as exc:
         pytest.skip(f"Django setup pukao: {exc}")
     from django.test import Client
+
     client = Client(HTTP_HOST="localhost")
     response = client.get("/static/css/tokens.css")
     assert response.status_code == 200, (
@@ -924,7 +966,9 @@ def test_ac8_django_client_serves_tokens_css():
 
 def test_ac8_django_client_serves_woff2():
     """AC8: GET /static/fonts/roboto/roboto-latin-400.woff2 → 200 + magic bytes wOF2."""
-    pytest.importorskip("pytest_django", reason="pytest-django nije instaliran — skip Client test.")
+    pytest.importorskip(
+        "pytest_django", reason="pytest-django nije instaliran — skip Client test."
+    )
     if not _woff2_files_present():
         pytest.skip(WOFF2_MISSING_MSG)
     os.environ.setdefault("DJANGO_SECRET_KEY", TEST_SECRET)
@@ -936,10 +980,12 @@ def test_ac8_django_client_serves_woff2():
             del sys.modules[mod_key]
     try:
         import django
+
         django.setup()
     except Exception as exc:
         pytest.skip(f"Django setup pukao: {exc}")
     from django.test import Client
+
     client = Client(HTTP_HOST="localhost")
     response = client.get("/static/fonts/roboto/roboto-latin-400.woff2")
     assert response.status_code == 200, (
@@ -957,7 +1003,9 @@ def test_ac8_django_client_serves_woff2():
 
 def test_ac8_render_home_includes_tokens_css_link():
     """AC8: GET /sr/ → 200 + HTML sadrži `<link href="/static/css/tokens.css">` (apsolutan URL, ne /sr/static/...)."""
-    pytest.importorskip("pytest_django", reason="pytest-django nije instaliran — skip Client test.")
+    pytest.importorskip(
+        "pytest_django", reason="pytest-django nije instaliran — skip Client test."
+    )
     os.environ.setdefault("DJANGO_SECRET_KEY", TEST_SECRET)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.development")
     if str(PROJECT_ROOT) not in sys.path:
@@ -967,10 +1015,12 @@ def test_ac8_render_home_includes_tokens_css_link():
             del sys.modules[mod_key]
     try:
         import django
+
         django.setup()
     except Exception as exc:
         pytest.skip(f"Django setup pukao: {exc}")
     from django.test import Client
+
     client = Client(HTTP_HOST="localhost")
     response = client.get("/sr/")
     assert response.status_code == 200, (
@@ -985,8 +1035,8 @@ def test_ac8_render_home_includes_tokens_css_link():
         f"HTML head excerpt: {html[:1000]}"
     )
     assert "/sr/static/" not in html, (
-        f"Render-ovani HTML sadrži `/sr/static/...` (locale-prefixed static URL). "
-        f"Gotcha #29: STATIC_URL = \"/static/\" (leading slash) je obavezno za i18n_patterns."
+        "Render-ovani HTML sadrži `/sr/static/...` (locale-prefixed static URL). "
+        'Gotcha #29: STATIC_URL = "/static/" (leading slash) je obavezno za i18n_patterns.'
     )
 
 
@@ -1042,7 +1092,7 @@ def test_no_preconnect_to_google():
         re.IGNORECASE,
     )
     assert not bad, (
-        f"templates/base.html ima `<link rel=\"preconnect\">` ka Google domenima: {bad}. "
+        f'templates/base.html ima `<link rel="preconnect">` ka Google domenima: {bad}. '
         f"Anti-pattern — Story 1.5 AC7 + Gotcha #17."
     )
 

@@ -1,6 +1,9 @@
 """Production settings — deployed to coricagrar.example (Hetzner CX32)."""
 
-from .base import *  # noqa: F401, F403, F405
+from .base import *  # noqa: F401, F403
+from .base import (
+    env,
+)  # eksplicitno za env.int() niže (izbegava F405 star-import warning)
 
 # Eksplicitno False (defense-in-depth — base već default-uje na False)
 DEBUG = False
@@ -30,7 +33,9 @@ X_FRAME_OPTIONS = "DENY"
 # Zahteva collectstatic --noinput kao deploy step (PRE prvog request-a).
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    },
 }
 
 # ── Bootstrap 5 (production override) ────────────────────────────────────────

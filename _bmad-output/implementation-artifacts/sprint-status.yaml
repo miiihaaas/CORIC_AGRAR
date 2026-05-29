@@ -1,5 +1,5 @@
 # generated: 2026-05-27
-# last_updated: 2026-05-28 (Story 1.8 created; status -> ready-for-dev)
+# last_updated: 2026-05-29 (Story 1.9 created; status -> ready-for-dev)
 # project: CORIC_AGRAR
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-27
-last_updated: 2026-05-28
+last_updated: 2026-05-29  # Story 1.9 -> review (Dev GREEN complete: 37/37 CI tests pass)
 project: CORIC_AGRAR
 # Note: Story 1.1 transitioned from backlog → ready-for-dev on 2026-05-27;
 #       Epic 1 transitioned from backlog → in-progress (first story in epic created).
@@ -56,7 +56,7 @@ dev elopment_status:
   1-6-base-templates-sa-bootstrap-5-htmx-setup: done
   1-7-reusable-visual-komponente: done
   1-8-sticky-nav-top-header-footer-language-switcher-partial: done
-  1-9-github-actions-ci-pipeline: backlog
+  1-9-github-actions-ci-pipeline: done
   epic-1-retrospective: optional
 
   # ============================================================

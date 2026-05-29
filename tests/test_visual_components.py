@@ -211,7 +211,7 @@ def test_ac2_repeating_element_renders_green_variant():
         "Render NE sadrži `coric-repeating-element--green` modifier klasu. AC2."
     )
     assert 'aria-hidden="true"' in html, (
-        "Render NE sadrži `aria-hidden=\"true\"` (dekorativan element). AC2."
+        'Render NE sadrži `aria-hidden="true"` (dekorativan element). AC2.'
     )
     # Mora sadržati inline SVG sa corner klasom (NE <img>)
     assert "<svg" in html, "Render NE sadrži inline `<svg>` korner cluster. AC2."
@@ -232,17 +232,17 @@ def test_ac2_repeating_element_has_white_arcs_with_opacity():
     html = _render_partial("partials/repeating_element.html", {"variant": "green"})
     # Mora imati bar 1 path sa stroke="white"
     assert re.search(r'stroke\s*=\s*["\']white["\']', html), (
-        "Render NE sadrži `stroke=\"white\"` na SVG path-u. AC2 + Dev Notes Template — "
+        'Render NE sadrži `stroke="white"` na SVG path-u. AC2 + Dev Notes Template — '
         "koncentrični lukovi u gornjem desnom uglu MORAJU biti beli."
     )
     # Mora imati opacity="0.5" za suptilnost
     assert re.search(r'opacity\s*=\s*["\']0\.5["\']', html), (
-        "Render NE sadrži `opacity=\"0.5\"` na SVG path-u. AC2 — luci su suptilni "
+        'Render NE sadrži `opacity="0.5"` na SVG path-u. AC2 — luci su suptilni '
         "(0.5 opacity per DESIGN.md repeating-element)."
     )
     # Mora imati stroke-width="1" (tanke crte)
     assert re.search(r'stroke-width\s*=\s*["\']1["\']', html), (
-        "Render NE sadrži `stroke-width=\"1\"` na SVG path-u. AC2 — tanki lukovi."
+        'Render NE sadrži `stroke-width="1"` na SVG path-u. AC2 — tanki lukovi.'
     )
 
 
@@ -357,7 +357,7 @@ def test_ac3_pill_button_supports_as_button_with_type_submit():
     )
     assert "<button" in html, "Render NIJE <button> element."
     assert re.search(r'type\s*=\s*["\']submit["\']', html), (
-        "Render NE sadrži `type=\"submit\"`. AC3 + IMP-11 — form submit support."
+        'Render NE sadrži `type="submit"`. AC3 + IMP-11 — form submit support.'
     )
     assert "Pošalji" in html, "Render NE sadrži label tekst."
 
@@ -380,17 +380,15 @@ def test_ac4_wave_divider_renders_with_aria_hidden_and_token_fill():
     assert "<img " not in html, (
         "Render sadrži `<img>` tag — Wave Divider MORA biti inline SVG. AC4."
     )
-    assert 'aria-hidden="true"' in html, (
-        "Render NE sadrži `aria-hidden=\"true\"`. AC4."
-    )
+    assert 'aria-hidden="true"' in html, 'Render NE sadrži `aria-hidden="true"`. AC4.'
     # IMP-17: SVG path mora imati eksplicitan token-based fill
     assert 'fill="var(--color-brand-green-800)"' in html, (
-        "Render NE sadrži `fill=\"var(--color-brand-green-800)\"` na SVG path-u. "
+        'Render NE sadrži `fill="var(--color-brand-green-800)"` na SVG path-u. '
         "AC4 + IMP-17 (FOUC fallback — NE `currentColor`, NE hardcoded hex)."
     )
     # KRITIČNO: NE sme biti hardcoded hex na SVG path-u
     assert not re.search(r'fill\s*=\s*["\']#[0-9a-fA-F]{3,8}["\']', html), (
-        "Render sadrži hardcoded hex u fill atributu (npr. `fill=\"#25402f\"`). "
+        'Render sadrži hardcoded hex u fill atributu (npr. `fill="#25402f"`). '
         "AC4 + AC7 — token discipline."
     )
 
@@ -416,9 +414,7 @@ def test_ac4_wave_divider_supports_top_and_bottom_position():
 # AC-5: Section Eyebrow rendera tekst + 2 zlatne linije span-a
 def test_ac5_section_eyebrow_renders_uppercase_text_with_gold_lines():
     """AC5: render sa text='PROIZVODI' → coric-section-eyebrow + 2 __line span-a + text."""
-    html = _render_partial(
-        "partials/section_eyebrow.html", {"text": "PROIZVODI"}
-    )
+    html = _render_partial("partials/section_eyebrow.html", {"text": "PROIZVODI"})
     assert "coric-section-eyebrow" in html, (
         "Render NE sadrži `coric-section-eyebrow` base klasu. AC5."
     )
@@ -496,11 +492,9 @@ def test_ac6_hero_overlay_card_renders_with_brand_logo_alt():
     )
     assert "<h1" in html, "Render NE sadrži h1 element. AC6."
     assert "Hero Test" in html, "Render NE sadrži title tekst. AC6."
-    assert 'src="/static/img/logo.png"' in html, (
-        "Render NE sadrži brand_logo src. AC6."
-    )
+    assert 'src="/static/img/logo.png"' in html, "Render NE sadrži brand_logo src. AC6."
     assert 'alt="Coric Agrar"' in html, (
-        "Render NE sadrži `alt=\"Coric Agrar\"`. AC6 + IMP-14."
+        'Render NE sadrži `alt="Coric Agrar"`. AC6 + IMP-14.'
     )
 
 
@@ -518,7 +512,7 @@ def test_ac6_hero_overlay_card_caps_bullets_at_3():
     assert "Druga" in html, "Render NE sadrži 2. bullet. AC6."
     assert "Treca" in html, "Render NE sadrži 3. bullet. AC6."
     assert "Cetvrta" not in html, (
-        "Render sadrži 4. bullet — cap na 3 NE radi (verovatno |slice:\":3\" nedostaje). "
+        'Render sadrži 4. bullet — cap na 3 NE radi (verovatno |slice:":3" nedostaje). '
         "AC6 + IMP-15."
     )
     assert "Peta" not in html, (
@@ -539,7 +533,7 @@ def test_ac6_hero_overlay_card_brand_logo_alt_default_empty():
     )
     # alt="" mora biti prisutno (caller je odgovoran da postavi non-empty kad je info)
     assert 'alt=""' in html, (
-        "Render bez brand_logo_alt NE sadrži `alt=\"\"` (default empty). AC6 + IMP-14."
+        'Render bez brand_logo_alt NE sadrži `alt=""` (default empty). AC6 + IMP-14.'
     )
 
 
@@ -555,7 +549,7 @@ def test_ac6_hero_overlay_card_brand_logo_alt_explicit():
         },
     )
     assert 'alt="Jeegee logo"' in html, (
-        "Render NE sadrži `alt=\"Jeegee logo\"`. AC6 + IMP-14."
+        'Render NE sadrži `alt="Jeegee logo"`. AC6 + IMP-14.'
     )
 
 
@@ -758,7 +752,7 @@ def test_wave_divider_path_uses_token_fill():
     """
     source = _read_partial(PARTIAL_WAVE_DIVIDER)
     assert 'fill="var(--color-brand-green-800)"' in source, (
-        "wave_divider.html SOURCE NE sadrži `fill=\"var(--color-brand-green-800)\"` "
+        'wave_divider.html SOURCE NE sadrži `fill="var(--color-brand-green-800)"` '
         "na SVG path-u. AC4 + IMP-17 FOUC fallback."
     )
 
@@ -780,7 +774,9 @@ def test_base_html_css_load_order():
     tokens_idx = src.find("css/tokens.css")
     bootstrap_idx = src.find("{% bootstrap_css %}")
     main_idx = src.find("css/main.css")
-    assert tokens_idx != -1, "base.html ne sadrži tokens.css link (Story 1.5 regression)."
+    assert tokens_idx != -1, (
+        "base.html ne sadrži tokens.css link (Story 1.5 regression)."
+    )
     assert bootstrap_idx != -1, (
         "base.html ne sadrži `{% bootstrap_css %}` tag (Story 1.6 regression). "
         "IMP-D2 — Dev mora koristiti `bootstrap_css` token (NE plain `bootstrap`)."
@@ -827,7 +823,9 @@ def test_main_css_imports_all_5_components():
         "section-eyebrow.css",
         "hero-overlay-card.css",
     ):
-        component_pattern = rf"@import\s+url\(\s*['\"]\./components/{re.escape(name)}['\"]\s*\)"
+        component_pattern = (
+            rf"@import\s+url\(\s*['\"]\./components/{re.escape(name)}['\"]\s*\)"
+        )
         assert re.search(component_pattern, css), (
             f"main.css NE sadrži `@import url('./components/{name}')`. "
             f"Story 1.7 component invariant — must persist post-Story 1.8 expansion."
@@ -847,7 +845,7 @@ def test_no_inline_style_attribute_in_partials():
         if re.search(r'\bstyle\s*=\s*["\']', src):
             offending.append(partial_path.name)
     assert not offending, (
-        f"Inline `style=\"...\"` pronađen u sledećim partial-ima: {offending}. "
+        f'Inline `style="..."` pronađen u sledećim partial-ima: {offending}. '
         f"AC7 — sve preko klasa + tokens."
     )
 

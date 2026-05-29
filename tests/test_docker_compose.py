@@ -141,14 +141,12 @@ def test_ac1_compose_directory_exists():
         f"Kreiraj: New-Item -ItemType Directory compose/django"
     )
     assert COMPOSE_DIR.is_dir(), (
-        f"compose/ postoji ali NIJE direktorijum (verovatno fajl)."
+        "compose/ postoji ali NIJE direktorijum (verovatno fajl)."
     )
     assert COMPOSE_DJANGO_DIR.exists(), (
         f"compose/django/ ne postoji na {COMPOSE_DJANGO_DIR}."
     )
-    assert COMPOSE_DJANGO_DIR.is_dir(), (
-        f"compose/django/ postoji ali NIJE direktorijum."
-    )
+    assert COMPOSE_DJANGO_DIR.is_dir(), "compose/django/ postoji ali NIJE direktorijum."
 
 
 def test_ac1_gitattributes_exists_with_narrow_scope():
@@ -175,9 +173,7 @@ def test_ac1_gitattributes_exists_with_narrow_scope():
     )
 
     # MUST: eksplicitno entrypoint.sh LF rule (defenzivno)
-    explicit_pattern = (
-        r"^\s*compose/django/entrypoint\.sh\s+text\s+eol=lf\s*$"
-    )
+    explicit_pattern = r"^\s*compose/django/entrypoint\.sh\s+text\s+eol=lf\s*$"
     assert re.search(explicit_pattern, content, re.MULTILINE), (
         ".gitattributes ne sadrži eksplicitno `compose/django/entrypoint.sh text eol=lf`. "
         "Defenzivno dvostruko pravilo (osim `*.sh`) traženo u story Task 9."
@@ -198,17 +194,15 @@ def test_ac1_compose_django_directory_files_listed():
     Negative scope: NE sme da postoji `start.sh` (gunicorn launcher) — to je
     Story 9.1 prod.
     """
-    assert DOCKERFILE.exists(), (
-        f"compose/django/Dockerfile ne postoji na {DOCKERFILE}."
-    )
+    assert DOCKERFILE.exists(), f"compose/django/Dockerfile ne postoji na {DOCKERFILE}."
     assert ENTRYPOINT_SH.exists(), (
         f"compose/django/entrypoint.sh ne postoji na {ENTRYPOINT_SH}."
     )
     # Negative: start.sh je out-of-scope za Story 1.3 (Story 9.1 ga uvodi)
     start_sh = COMPOSE_DJANGO_DIR / "start.sh"
     assert not start_sh.exists(), (
-        f"compose/django/start.sh postoji — to je Story 9.1 prod-only artifact. "
-        f"Story 1.3 koristi runserver kroz CMD u Dockerfile-u, ne start.sh."
+        "compose/django/start.sh postoji — to je Story 9.1 prod-only artifact. "
+        "Story 1.3 koristi runserver kroz CMD u Dockerfile-u, ne start.sh."
     )
 
 
@@ -295,9 +289,7 @@ def test_ac2_dockerfile_python_313():
         "Runtime: `python:3.13-slim`."
     )
     # Runtime stage MORA biti `python:3.13-slim` (slim varijanta — manji image)
-    runtime_pattern = (
-        r"FROM\s+python:3\.13-slim\s+AS\s+runtime"
-    )
+    runtime_pattern = r"FROM\s+python:3\.13-slim\s+AS\s+runtime"
     assert re.search(runtime_pattern, content, re.IGNORECASE), (
         "Dockerfile runtime stage NIJE `FROM python:3.13-slim AS runtime`. "
         "Story Dev Notes Template eksplicitno koristi slim varijantu za manji image."
@@ -313,10 +305,10 @@ def test_ac2_dockerfile_system_deps_present():
     """
     content = _read_file(DOCKERFILE)
     required_packages = [
-        "libmagic1",       # python-magic MIME validacija
-        "poppler-utils",   # pdf2image PDF cover-thumbnail
+        "libmagic1",  # python-magic MIME validacija
+        "poppler-utils",  # pdf2image PDF cover-thumbnail
         "postgresql-client",  # pg_isready za entrypoint wait-for-db
-        "gettext",         # django compilemessages (Story 1.4+, prep)
+        "gettext",  # django compilemessages (Story 1.4+, prep)
     ]
     missing = [pkg for pkg in required_packages if pkg not in content]
     assert not missing, (
@@ -352,7 +344,7 @@ def test_ac2_dockerfile_sets_entrypoint():
     pattern = r"ENTRYPOINT\s*\[?[^]\n]*entrypoint\.sh"
     assert re.search(pattern, content), (
         "Dockerfile ne sadrži `ENTRYPOINT` koji referencira entrypoint.sh. "
-        "Story Dev Notes Template: `ENTRYPOINT [\"/entrypoint.sh\"]`."
+        'Story Dev Notes Template: `ENTRYPOINT ["/entrypoint.sh"]`.'
     )
 
 
@@ -380,17 +372,15 @@ def test_ac3_entrypoint_has_lf_line_endings():
     pri čitanju — zato MORA binary read. Defenzivno dvostruko zaštićeno
     kroz `.gitattributes` (test ac1) ali ovo enforce-uje na disku.
     """
-    assert ENTRYPOINT_SH.exists(), (
-        "entrypoint.sh ne postoji (videti prethodni test)."
-    )
+    assert ENTRYPOINT_SH.exists(), "entrypoint.sh ne postoji (videti prethodni test)."
     assert _has_lf_only(ENTRYPOINT_SH), (
-        f"entrypoint.sh ima CRLF line endings (\\r\\n sekvence pronađene). "
-        f"Bash u Linux kontejneru će crash-ovati sa `/usr/bin/env: 'bash\\r': "
-        f"No such file or directory`. "
-        f"Rešenje: VS Code status bar dugme `CRLF` → klik → `LF` → Save, "
-        f"ILI `dos2unix compose/django/entrypoint.sh`, "
-        f"ILI git renormalize: `git rm --cached compose/django/entrypoint.sh && "
-        f"git add compose/django/entrypoint.sh` (uz .gitattributes pravilo iz AC1)."
+        "entrypoint.sh ima CRLF line endings (\\r\\n sekvence pronađene). "
+        "Bash u Linux kontejneru će crash-ovati sa `/usr/bin/env: 'bash\\r': "
+        "No such file or directory`. "
+        "Rešenje: VS Code status bar dugme `CRLF` → klik → `LF` → Save, "
+        "ILI `dos2unix compose/django/entrypoint.sh`, "
+        "ILI git renormalize: `git rm --cached compose/django/entrypoint.sh && "
+        "git add compose/django/entrypoint.sh` (uz .gitattributes pravilo iz AC1)."
     )
 
 
@@ -446,7 +436,7 @@ def test_ac3_entrypoint_ends_with_exec_dollar_at():
     # Tolerantno na razmake: `exec "$@"` ili `exec $@` (single/double quotes/no quotes)
     pattern = r'^exec\s+["\']?\$@["\']?\s*$'
     assert re.match(pattern, last_real_line), (
-        f"entrypoint.sh POSLEDNJA non-empty/non-comment linija MORA biti `exec \"$@\"`. "
+        f'entrypoint.sh POSLEDNJA non-empty/non-comment linija MORA biti `exec "$@"`. '
         f"Dobijeno: {last_real_line!r}. "
         f"Story Gotcha #2: bez `exec` signali se ne propagiraju Django-u → "
         f"graceful shutdown je broken, Docker SIGKILL-uje posle 10s."
@@ -566,7 +556,7 @@ def test_ac4_compose_db_has_healthcheck():
     # Mora imati `test` ključ (komanda)
     assert "test" in healthcheck, (
         "`services.db.healthcheck.test` nedostaje. "
-        "AC4 template: `test: [\"CMD-SHELL\", \"pg_isready -U coric -d coric_agrar\"]`."
+        'AC4 template: `test: ["CMD-SHELL", "pg_isready -U coric -d coric_agrar"]`.'
     )
 
 
@@ -642,8 +632,7 @@ def test_ac4_compose_django_uses_env_file_from_root():
     elif isinstance(env_file, list):
         # Lista može biti list[str] ili list[dict{path: ..., required: ...}]
         env_file_values = [
-            ef if isinstance(ef, str) else ef.get("path", "")
-            for ef in env_file
+            ef if isinstance(ef, str) else ef.get("path", "") for ef in env_file
         ]
     else:
         pytest.fail(
@@ -738,7 +727,9 @@ def test_ac4_compose_django_named_volume_overlays_dot_venv():
     # Tolerantno: traži bilo koji mount koji završava sa `:/app` ili `:/app:cached`
     bind_mount_pattern = r":/app(:[a-z]+)?(\s|$)"
     bind_found = any(
-        re.search(bind_mount_pattern, m) and "django_venv" not in m and "postgres_data" not in m
+        re.search(bind_mount_pattern, m)
+        and "django_venv" not in m
+        and "postgres_data" not in m
         for m in mount_strings
     )
     assert bind_found, (
@@ -773,12 +764,12 @@ def test_ac5_dockerignore_excludes_critical_paths():
     """
     content = _read_file(DOCKERIGNORE)
     required = [
-        ".venv",         # host venv ne ide u image
-        "__pycache__",   # bytecode
+        ".venv",  # host venv ne ide u image
+        "__pycache__",  # bytecode
         "_bmad-output",  # planning artifacts
-        "_bmad",         # BMad installer
-        ".git",          # git history
-        ".env",          # secrets MORA biti ignored
+        "_bmad",  # BMad installer
+        ".git",  # git history
+        ".env",  # secrets MORA biti ignored
     ]
     missing = [pat for pat in required if pat not in content]
     assert not missing, (
@@ -903,19 +894,15 @@ def test_ac7_env_example_database_url_uses_docker_hostname():
     compose network-a. Story 1.2 je imao samo `DATABASE_URL=` (prazno);
     Story 1.3 popunjava placeholder sa Docker servis ime-om.
     """
-    assert ENV_EXAMPLE.exists(), (
-        f".env.example ne postoji na {ENV_EXAMPLE}."
-    )
+    assert ENV_EXAMPLE.exists(), f".env.example ne postoji na {ENV_EXAMPLE}."
     content = _read_file(ENV_EXAMPLE)
     # Match: DATABASE_URL=postgres://coric:coric@db:5432/coric_agrar
-    pattern = (
-        r"^DATABASE_URL\s*=\s*postgres://coric:coric@db:5432/coric_agrar\s*$"
-    )
+    pattern = r"^DATABASE_URL\s*=\s*postgres://coric:coric@db:5432/coric_agrar\s*$"
     assert re.search(pattern, content, re.MULTILINE), (
-        f".env.example `DATABASE_URL=` linija ne matchuje očekivani format. "
-        f"AC7 traži: `DATABASE_URL=postgres://coric:coric@db:5432/coric_agrar` "
-        f"(host `db`, NE `localhost`). "
-        f"Vidi Story AC7 / Dev Notes § `.env.example` snippet."
+        ".env.example `DATABASE_URL=` linija ne matchuje očekivani format. "
+        "AC7 traži: `DATABASE_URL=postgres://coric:coric@db:5432/coric_agrar` "
+        "(host `db`, NE `localhost`). "
+        "Vidi Story AC7 / Dev Notes § `.env.example` snippet."
     )
 
 
@@ -961,9 +948,7 @@ def test_ac8_compose_config_validation_passes():
         pytest.fail("compose/local.yml ne postoji.")
     result = _run_docker_compose_config(COMPOSE_LOCAL_YML)
     if result is None:
-        pytest.skip(
-            "docker CLI nije na PATH-u — preskačem AC8 config validaciju."
-        )
+        pytest.skip("docker CLI nije na PATH-u — preskačem AC8 config validaciju.")
     # Tolerantno: ako stderr pominje samo `.env not found` (Task 10 lokalni step),
     # ipak fail-uj (Dev mora da kopira .env iz .env.example). U bilo kom drugom
     # slučaju jasno reportuj exit code + stderr.
@@ -991,9 +976,24 @@ def test_ac8_dockerfile_can_be_lex_parsed():
         pytest.fail("compose/django/Dockerfile ne postoji.")
     content = _read_file(DOCKERFILE)
     valid_instructions = {
-        "FROM", "RUN", "CMD", "ENTRYPOINT", "COPY", "ADD", "ENV", "ARG",
-        "EXPOSE", "WORKDIR", "USER", "VOLUME", "LABEL", "ONBUILD",
-        "STOPSIGNAL", "HEALTHCHECK", "SHELL", "MAINTAINER",
+        "FROM",
+        "RUN",
+        "CMD",
+        "ENTRYPOINT",
+        "COPY",
+        "ADD",
+        "ENV",
+        "ARG",
+        "EXPOSE",
+        "WORKDIR",
+        "USER",
+        "VOLUME",
+        "LABEL",
+        "ONBUILD",
+        "STOPSIGNAL",
+        "HEALTHCHECK",
+        "SHELL",
+        "MAINTAINER",
     }
     bad_lines: list[tuple[int, str]] = []
     in_continuation = False
@@ -1015,7 +1015,7 @@ def test_ac8_dockerfile_can_be_lex_parsed():
         in_continuation = line.endswith("\\")
 
     assert not bad_lines, (
-        f"Dockerfile sadrži linije sa nevalidnim Dockerfile instrukcijama:\n"
+        "Dockerfile sadrži linije sa nevalidnim Dockerfile instrukcijama:\n"
         + "\n".join(f"  line {ln}: {raw!r}" for ln, raw in bad_lines[:10])
         + (f"\n  ... ({len(bad_lines) - 10} more)" if len(bad_lines) > 10 else "")
         + f"\nValidne instrukcije: {sorted(valid_instructions)}"
@@ -1059,14 +1059,14 @@ def test_no_inline_secrets_in_compose():
             # - Volume name "coric_agrar_postgres_data" (32 chars ali nije secret)
             if "coric_agrar" in token:
                 continue
-            if "/" in stripped[max(0, match.start() - 3):match.end() + 3]:
+            if "/" in stripped[max(0, match.start() - 3) : match.end() + 3]:
                 # Looks like URL fragment
                 continue
             suspicious_lines.append((lineno, raw.strip(), token))
 
     assert not suspicious_lines, (
-        f"compose/local.yml ima sumnjivo dugačke string-token-e (potencijalno "
-        f"baked-in secrets):\n"
+        "compose/local.yml ima sumnjivo dugačke string-token-e (potencijalno "
+        "baked-in secrets):\n"
         + "\n".join(
             f"  line {ln}: {raw!r}  (token: {token!r})"
             for ln, raw, token in suspicious_lines[:5]
@@ -1092,9 +1092,9 @@ def test_dockerfile_no_secrets_baked_in():
     forbidden_keys = [
         "DJANGO_SECRET_KEY",
         "SECRET_KEY",
-        "DATABASE_URL",   # ne sme baked-in jer sadrži password
+        "DATABASE_URL",  # ne sme baked-in jer sadrži password
         "EMAIL_HOST_PASSWORD",
-        "EMAIL_URL",      # može sadržati SMTP password
+        "EMAIL_URL",  # može sadržati SMTP password
         "POSTGRES_PASSWORD",
     ]
     bad = []

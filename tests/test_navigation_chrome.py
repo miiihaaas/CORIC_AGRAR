@@ -205,8 +205,7 @@ def test_ac1_all_3_new_css_files_and_js_exist():
     if not JS_STICKY_NAV.exists():
         missing.append(JS_STICKY_NAV.relative_to(PROJECT_ROOT))
     assert not missing, (
-        f"Sledeći Story 1.8 fajlovi ne postoje: {missing}. "
-        f"Story 1.8 AC1."
+        f"Sledeći Story 1.8 fajlovi ne postoje: {missing}. Story 1.8 AC1."
     )
 
 
@@ -214,7 +213,7 @@ def test_ac1_all_3_new_css_files_and_js_exist():
 def test_ac1_logo_assets_present():
     """AC1 + CRITICAL-8: static/img/ + 2 logo PNG-a moraju postojati posle Task 1.10."""
     assert STATIC_IMG_DIR.exists() and STATIC_IMG_DIR.is_dir(), (
-        f"static/img/ direktorijum ne postoji. Story 1.8 Task 1.9 mora kreirati."
+        "static/img/ direktorijum ne postoji. Story 1.8 Task 1.9 mora kreirati."
     )
     missing = []
     if not LOGO_DARK.exists():
@@ -250,13 +249,13 @@ def test_ac1_base_html_includes_header_footer_sticky_script():
     # header partial include
     header_pattern = r'\{%\s*include\s*[\'"]partials/header\.html[\'"]\s*%\}'
     assert re.search(header_pattern, src), (
-        "base.html NE sadrži `{% include \"partials/header.html\" %}`. "
+        'base.html NE sadrži `{% include "partials/header.html" %}`. '
         "Story 1.8 AC1 + Task 5.2."
     )
     # footer partial include
     footer_pattern = r'\{%\s*include\s*[\'"]partials/footer\.html[\'"]\s*%\}'
     assert re.search(footer_pattern, src), (
-        "base.html NE sadrži `{% include \"partials/footer.html\" %}`. "
+        'base.html NE sadrži `{% include "partials/footer.html" %}`. '
         "Story 1.8 AC1 + Task 5.3."
     )
     # sticky-nav.js script tag with defer
@@ -276,9 +275,11 @@ def test_ac1_base_html_sentinel_before_header_include():
     top-header dobije height: 0 u shrunk state.
     """
     src = _read_base_html()
-    sentinel_idx = src.find('coric-sticky-sentinel')
-    header_match = re.search(r'\{%\s*include\s*[\'"]partials/header\.html[\'"]\s*%\}', src)
-    body_open_idx = src.find('<body>')
+    sentinel_idx = src.find("coric-sticky-sentinel")
+    header_match = re.search(
+        r'\{%\s*include\s*[\'"]partials/header\.html[\'"]\s*%\}', src
+    )
+    body_open_idx = src.find("<body>")
     assert sentinel_idx != -1, (
         "base.html NE sadrži `coric-sticky-sentinel`. Story 1.8 Task 5.2 + CRITICAL-5."
     )
@@ -298,7 +299,9 @@ def test_ac1_base_html_footer_between_main_and_aria_live():
     """AC1 + CRITICAL-4: order u base.html mora biti: `</main>` → footer include → `{% aria_live %}`."""
     src = _read_base_html()
     main_close_idx = src.find("</main>")
-    footer_match = re.search(r'\{%\s*include\s*[\'"]partials/footer\.html[\'"]\s*%\}', src)
+    footer_match = re.search(
+        r'\{%\s*include\s*[\'"]partials/footer\.html[\'"]\s*%\}', src
+    )
     aria_live_idx = src.find("{% aria_live %}")
     assert main_close_idx != -1, "base.html NEMA </main> (regression)."
     assert footer_match is not None, "base.html NEMA footer include."
@@ -323,13 +326,11 @@ def test_ac2_top_header_has_role_banner():
     <header class="coric-site-header"> wrapper koji je default banner landmark.
     """
     html = _render_partial("partials/header.html")
-    assert "coric-top-header" in html, (
-        "Render NE sadrži `coric-top-header` klasu. AC2."
-    )
+    assert "coric-top-header" in html, "Render NE sadrži `coric-top-header` klasu. AC2."
     # role="banner" mora biti u istom elementu kao coric-top-header
     pattern = r'class\s*=\s*["\'][^"\']*coric-top-header[^"\']*["\'][^>]*role\s*=\s*["\']banner["\']|role\s*=\s*["\']banner["\'][^>]*class\s*=\s*["\'][^"\']*coric-top-header'
     assert re.search(pattern, html), (
-        "Render NE sadrži `role=\"banner\"` na `.coric-top-header` div-u. "
+        'Render NE sadrži `role="banner"` na `.coric-top-header` div-u. '
         "AC2 + CRITICAL-CASCADE-1 iter 2 — banner ARIA landmark restoration."
     )
 
@@ -344,13 +345,13 @@ def test_ac2_top_header_uses_p_not_address_for_address():
     """
     src = _read_partial(PARTIAL_HEADER)
     # Mora postojati <p class="...coric-top-header__address...">
-    assert re.search(r'<p[^>]*coric-top-header__address', src), (
-        "header.html NEMA `<p class=\"coric-top-header__address\">`. "
+    assert re.search(r"<p[^>]*coric-top-header__address", src), (
+        'header.html NEMA `<p class="coric-top-header__address">`. '
         "AC2 + IMP-2 — top header address mora biti <p>, NE <address>."
     )
     # NE sme biti <address class="coric-top-header__address">
-    assert not re.search(r'<address[^>]*coric-top-header__address', src), (
-        "header.html koristi `<address class=\"coric-top-header__address\">` — "
+    assert not re.search(r"<address[^>]*coric-top-header__address", src), (
+        'header.html koristi `<address class="coric-top-header__address">` — '
         "AC2 + IMP-2 zabranjuje (HTML5 semantika rezervisana za nearest body/article)."
     )
 
@@ -364,7 +365,7 @@ def test_ac2_top_header_has_explicit_height_40px_in_full_state():
     """
     css = _read_css(CSS_HEADER)
     # Mora postojati .coric-top-header blok sa height: 40px
-    pattern = r'\.coric-top-header\s*\{[^}]*height\s*:\s*40px'
+    pattern = r"\.coric-top-header\s*\{[^}]*height\s*:\s*40px"
     assert re.search(pattern, css, re.DOTALL), (
         "header.css NEMA `height: 40px` na `.coric-top-header` (full state). "
         "AC2 + CRITICAL-CASCADE-4 iter 2 — explicit value enables shrunk-state animation."
@@ -378,7 +379,7 @@ def test_ac2_top_header_mobile_height_auto_override_in_sticky_nav_css():
     """
     css = _read_css(CSS_STICKY_NAV)
     # Mora postojati @media (max-width: 767px) blok koji sadrži .coric-top-header sa height: auto
-    pattern = r'@media\s*\(\s*max-width\s*:\s*767px\s*\)\s*\{[^}]*\.coric-top-header[^}]*height\s*:\s*auto'
+    pattern = r"@media\s*\(\s*max-width\s*:\s*767px\s*\)\s*\{[^}]*\.coric-top-header[^}]*height\s*:\s*auto"
     assert re.search(pattern, css, re.DOTALL), (
         "sticky-nav.css NEMA `@media (max-width: 767px)` block sa `.coric-top-header { height: auto }`. "
         "AC2 + POLISH-2 iter 3 — single-sourced canonical mobile override."
@@ -427,19 +428,21 @@ def test_ac3_nav_has_position_sticky_and_z_index_1020():
     """
     css = _read_css(CSS_HEADER)
     # .coric-nav mora imati position: sticky + z-index: 1020
-    nav_block_pattern = r'\.coric-nav\s*\{[^}]*\}'
+    nav_block_pattern = r"\.coric-nav\s*\{[^}]*\}"
     nav_blocks = re.findall(nav_block_pattern, css, re.DOTALL)
     assert nav_blocks, "header.css NE sadrži `.coric-nav` blok. AC3."
     # Sve relevantne deklaracije proveravamo na globalnom CSS-u (sticky + z-index mogu biti u istom ili odvojenim pravilima)
-    assert re.search(r"\.coric-nav\b[^{]*\{[^}]*position\s*:\s*sticky", css, re.DOTALL), (
-        "header.css NEMA `position: sticky` na `.coric-nav`. AC3 + CRITICAL-7."
-    )
+    assert re.search(
+        r"\.coric-nav\b[^{]*\{[^}]*position\s*:\s*sticky", css, re.DOTALL
+    ), "header.css NEMA `position: sticky` na `.coric-nav`. AC3 + CRITICAL-7."
     assert re.search(r"\.coric-nav\b[^{]*\{[^}]*z-index\s*:\s*1020", css, re.DOTALL), (
         "header.css NEMA `z-index: 1020` na `.coric-nav`. AC3 + CRITICAL-12 "
         "(iznad Bootstrap dropdown 1000 i popover 1010)."
     )
     # NE sme biti z-index: 1000 na .coric-nav (stara vrednost)
-    assert not re.search(r"\.coric-nav\b[^{]*\{[^}]*z-index\s*:\s*1000\b", css, re.DOTALL), (
+    assert not re.search(
+        r"\.coric-nav\b[^{]*\{[^}]*z-index\s*:\s*1000\b", css, re.DOTALL
+    ), (
         "header.css koristi staru `z-index: 1000` na `.coric-nav` — CRITICAL-12 mandira 1020."
     )
 
@@ -473,10 +476,10 @@ def test_ac3_search_toggle_has_no_aria_expanded():
     """
     src = _read_partial(PARTIAL_HEADER)
     # Pronađi search-toggle button blok
-    search_button_pattern = r'<button[^>]*coric-nav__search-toggle[^>]*>'
+    search_button_pattern = r"<button[^>]*coric-nav__search-toggle[^>]*>"
     matches = re.findall(search_button_pattern, src)
     assert matches, (
-        "header.html NE sadrži `<button class=\"...coric-nav__search-toggle...\">`. AC3."
+        'header.html NE sadrži `<button class="...coric-nav__search-toggle...">`. AC3.'
     )
     # Ni jedan match ne sme imati aria-expanded
     for m in matches:
@@ -495,8 +498,8 @@ def test_ac3_header_html_no_coric_site_header_wrapper():
     siblings na template root.
     """
     src = _read_partial(PARTIAL_HEADER)
-    assert not re.search(r'<header[^>]*coric-site-header', src), (
-        "header.html sadrži `<header class=\"coric-site-header\">` wrapper. "
+    assert not re.search(r"<header[^>]*coric-site-header", src), (
+        'header.html sadrži `<header class="coric-site-header">` wrapper. '
         "AC3 + CRITICAL-7 + Decision D17 — flatten Option A mandira NO wrapper "
         "(top-header i nav su standalone siblings, nav-ov sticky containing block je <body>)."
     )
@@ -535,16 +538,20 @@ def test_ac4_language_switcher_nav_no_inline_handlers():
 # AC-4: language_switcher_nav rendera <form action="{% url 'set_language' %}"> per locale
 def test_ac4_language_switcher_nav_renders_forms_per_locale():
     """AC4: rendered output mora imati `<form>` element sa `action="..."` (set_language endpoint)."""
-    html = _render_partial("partials/language_switcher_nav.html", {"LANGUAGE_CODE": "sr"})
+    html = _render_partial(
+        "partials/language_switcher_nav.html", {"LANGUAGE_CODE": "sr"}
+    )
     # Mora imati bar 1 <form action=...> (URL `set_language` resolve-uje na /i18n/setlang/)
-    form_matches = re.findall(r'<form[^>]*action\s*=\s*["\'][^"\']*setlang[^"\']*["\']', html)
+    form_matches = re.findall(
+        r'<form[^>]*action\s*=\s*["\'][^"\']*setlang[^"\']*["\']', html
+    )
     assert form_matches, (
-        "Rendered output NEMA `<form action=\"...setlang...\">`. "
+        'Rendered output NEMA `<form action="...setlang...">`. '
         "AC4 — language switcher mora koristiti POST na `{% url 'set_language' %}`."
     )
     # Mora imati bar 1 <button type="submit">
     assert re.search(r'<button[^>]*type\s*=\s*["\']submit["\']', html), (
-        "Rendered output NEMA `<button type=\"submit\">`. "
+        'Rendered output NEMA `<button type="submit">`. '
         "AC4 — CSP-friendly submit (NE inline onchange)."
     )
 
@@ -556,16 +563,18 @@ def test_ac4_language_switcher_nav_has_aria_current_on_current_locale():
     GOV.UK precedent: `aria-current="page"` (NE `aria-current="true"`) — NVDA + JAWS
     najavljuju identično, ali `page` je semantic-richer za multi-page sajt.
     """
-    html = _render_partial("partials/language_switcher_nav.html", {"LANGUAGE_CODE": "sr"})
+    html = _render_partial(
+        "partials/language_switcher_nav.html", {"LANGUAGE_CODE": "sr"}
+    )
     # Bar jedan element mora imati aria-current="page"
     assert 'aria-current="page"' in html, (
-        "Rendered output NEMA `aria-current=\"page\"`. "
+        'Rendered output NEMA `aria-current="page"`. '
         "AC4 + CRITICAL-2 — trenutni locale mora imati landmark indicator."
     )
     # Ukupno mora biti TAČNO 1 (samo trenutni)
     aria_current_count = html.count('aria-current="page"')
     assert aria_current_count == 1, (
-        f"Rendered output ima {aria_current_count} `aria-current=\"page\"`, očekivano TAČNO 1. "
+        f'Rendered output ima {aria_current_count} `aria-current="page"`, očekivano TAČNO 1. '
         f"AC4 — samo trenutni locale (LANGUAGE_CODE='sr')."
     )
 
@@ -678,7 +687,7 @@ def test_ac6_footer_has_role_contentinfo():
     """AC6: `<footer>` mora imati `role="contentinfo"` (eksplicitno za starije AT-ove)."""
     html = _render_partial("partials/footer.html")
     assert re.search(r'<footer[^>]*role\s*=\s*["\']contentinfo["\']', html), (
-        "footer.html NE rendera `<footer role=\"contentinfo\">`. "
+        'footer.html NE rendera `<footer role="contentinfo">`. '
         "AC6 + AC8 — eksplicitan ARIA landmark."
     )
 
@@ -719,7 +728,9 @@ def test_ac6_footer_renders_lorem_ipsum_news_placeholder_with_todo():
         f"AC6 — placeholder za Story 5.4 (dinamički BlogPost queryset)."
     )
     # TODO komentar za Story 5.4
-    assert re.search(r"TODO:?\s*Story\s*5\.4", src) or re.search(r"Story\s*5\.4", src), (
+    assert re.search(r"TODO:?\s*Story\s*5\.4", src) or re.search(
+        r"Story\s*5\.4", src
+    ), (
         "footer.html NE sadrži `TODO Story 5.4` komentar. "
         "AC6 — placeholder mora biti markiran za buduće dinamičko zamenjivanje."
     )
@@ -778,7 +789,9 @@ def test_ac7_sticky_nav_css_reduced_motion_disables_visibility_transition():
     )
     reduced_motion_block = reduced_motion_match.group(1)
     # Unutar blok-a mora postojati body.coric-nav-shrunk .coric-top-header { transition: none }
-    pattern = r"body\.coric-nav-shrunk\s+\.coric-top-header[^{]*\{[^}]*transition\s*:\s*none"
+    pattern = (
+        r"body\.coric-nav-shrunk\s+\.coric-top-header[^{]*\{[^}]*transition\s*:\s*none"
+    )
     assert re.search(pattern, reduced_motion_block, re.DOTALL), (
         "sticky-nav.css `@media (prefers-reduced-motion: reduce)` blok NE sadrži "
         "`body.coric-nav-shrunk .coric-top-header { transition: none }`. "
@@ -811,12 +824,12 @@ def test_ac8_header_renders_banner_and_navigation_landmarks():
     html = _render_partial("partials/header.html")
     # role="banner"
     assert 'role="banner"' in html, (
-        "Rendered header NEMA `role=\"banner\"` (top-header). "
+        'Rendered header NEMA `role="banner"` (top-header). '
         "AC8 + CRITICAL-CASCADE-1 iter 2."
     )
     # role="navigation"
     assert 'role="navigation"' in html, (
-        "Rendered header NEMA `role=\"navigation\"` (nav). AC8."
+        'Rendered header NEMA `role="navigation"` (nav). AC8.'
     )
 
 
@@ -829,7 +842,7 @@ def test_ac8_header_has_exactly_one_banner_landmark():
     html = _render_partial("partials/header.html")
     banner_count = html.count('role="banner"')
     assert banner_count == 1, (
-        f"Rendered header ima {banner_count} `role=\"banner\"` landmark(s), očekivano TAČNO 1. "
+        f'Rendered header ima {banner_count} `role="banner"` landmark(s), očekivano TAČNO 1. '
         f"AC8 + WAI-ARIA APG."
     )
 
@@ -892,7 +905,7 @@ def test_ac9_no_inline_style_attribute_in_3_new_partials():
         if re.search(r'\bstyle\s*=\s*["\']', src):
             offending.append(partial_path.name)
     assert not offending, (
-        f"Inline `style=\"...\"` u 3 nova partial-a: {offending}. "
+        f'Inline `style="..."` u 3 nova partial-a: {offending}. '
         f"AC9 — sve preko klasa + tokens."
     )
 
@@ -900,7 +913,14 @@ def test_ac9_no_inline_style_attribute_in_3_new_partials():
 # AC-9: nijedan inline event handler ili <script> u 3 nova partial-a
 def test_ac9_no_inline_scripts_or_handlers_in_3_new_partials():
     """AC9: grep negative za inline `onclick=`, `onchange=`, `onsubmit=`, `<script` u 3 nova partial-a."""
-    bad_handlers = ["onclick=", "onchange=", "onsubmit=", "onload=", "onmouseover=", "<script"]
+    bad_handlers = [
+        "onclick=",
+        "onchange=",
+        "onsubmit=",
+        "onload=",
+        "onmouseover=",
+        "<script",
+    ]
     offending = []
     for partial_path in ALL_NEW_PARTIALS:
         src = _read_partial(partial_path)
@@ -960,8 +980,11 @@ def test_ac10_story_1_6_regression_test_migrated_to_regex_pattern():
     )
     func_body = func_match.group(1)
     # Telo NE SME imati `src.find("<header>")` (stari pattern)
-    assert 'src.find("<header>")' not in func_body and "src.find('<header>')" not in func_body, (
-        "test_ac2_skip_link_first_child_of_body i dalje koristi `src.find(\"<header>\")` "
+    assert (
+        'src.find("<header>")' not in func_body
+        and "src.find('<header>')" not in func_body
+    ), (
+        'test_ac2_skip_link_first_child_of_body i dalje koristi `src.find("<header>")` '
         "(stari Story 1.6 pattern). Task 10a + POLISH-7 iter 3 mandira migration na "
         "`re.search(r'\\{%\\s*include\\s*...partials/header.html...\\s*%\\}', src)`."
     )
