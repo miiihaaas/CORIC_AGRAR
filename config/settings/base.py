@@ -26,6 +26,12 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 # NAPOMENA: Story 1.2 zadržava default Django INSTALLED_APPS. Story 1.6 dodaje
 # django_htmx + django_bootstrap5 (template tag discovery + middleware reg).
 INSTALLED_APPS = [
+    # NAPOMENA: modeltranslation MORA biti PRE django.contrib.admin
+    # (per django-modeltranslation docs § Configuration — admin integration
+    # patch-uje admin pri AppConfig.ready() i mora imati referenciu na
+    # admin pre nego što admin registruje own widget-e). Vidi Story 2.1
+    # Decision D2 + Gotcha BR-2.
+    "modeltranslation",  # NOVO Story 2.1 — MORA PRE django.contrib.admin
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -35,6 +41,7 @@ INSTALLED_APPS = [
     "django_htmx",  # NOVO Story 1.6 — request.htmx detection
     "django_bootstrap5",  # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
+    "apps.brands",  # NOVO Story 2.1 — Brand/Series/Category/Subcategory domain app
 ]
 
 MIDDLEWARE = [

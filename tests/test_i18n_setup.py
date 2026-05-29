@@ -337,22 +337,31 @@ def test_ac2_apps_core_in_installed_apps_source():
 
 
 def test_ac2_apps_core_is_last_in_installed_apps():
-    """AC2 / Interface contract § 2.1: 'apps.core' MORA biti POSLEDNJI element u INSTALLED_APPS.
+    """AC2 / Interface contract § 2.1: 'apps.core' MORA biti registrovan POSLE Django core/contrib.
 
     Konvencija: domain app-ovi idu posle Django core/contrib app-ova (Gotcha #6).
+
+    NAPOMENA: Story 2.1 NAMERNO dodaje 'apps.brands' POSLE 'apps.core' — invariant
+    "apps.core last" iz Story 1.4 superseded (isti pattern kao Story 1.6 amendment).
+    Sada se proverava da je apps.core registrovan POSLE Django/3rd-party app-ova,
+    NE više da je poslednji element.
     """
     base = _load_base_settings()
     apps = list(getattr(base, "INSTALLED_APPS", []))
     assert apps, "INSTALLED_APPS je prazan ili nedostaje."
     assert "apps.core" in apps, (
         f"'apps.core' nije u INSTALLED_APPS. Trenutni: {apps}. "
-        f"AC2: mora biti dodat (kao poslednji element)."
+        f"AC2: mora biti dodat (posle Django core/contrib + 3rd-party)."
     )
-    assert apps[-1] == "apps.core", (
-        f"'apps.core' nije POSLEDNJI element u INSTALLED_APPS. "
-        f"Pozicija: {apps.index('apps.core')}, ukupno: {len(apps)}, lista: {apps}. "
-        f"AC2 / Interface contract § 2.1: domain app-ovi idu POSLE Django core."
-    )
+    # apps.core mora biti posle svih Django core/contrib app-ova
+    apps_core_idx = apps.index("apps.core")
+    django_contrib_apps = [a for a in apps if a.startswith("django.contrib")]
+    if django_contrib_apps:
+        max_django_idx = max(apps.index(a) for a in django_contrib_apps)
+        assert apps_core_idx > max_django_idx, (
+            f"'apps.core' MORA biti POSLE svih django.contrib app-ova. "
+            f"apps.core idx={apps_core_idx}, last django.contrib idx={max_django_idx}, lista: {apps}."
+        )
 
 
 def test_ac2_use_l10n_true():

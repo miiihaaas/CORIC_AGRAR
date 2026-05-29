@@ -556,6 +556,9 @@ def test_ac3_installed_apps_is_default_django():
     NAPOMENA: Story 1.6 NAMERNO dodaje `django_htmx` i `django_bootstrap5` (template
     tag discovery + HtmxMiddleware) — invariant iz Story 1.4 superseded (isti pattern
     kao Story 1.4 amendment).
+    NAPOMENA: Story 2.1 NAMERNO dodaje `modeltranslation` (PRE django.contrib.admin)
+    i `apps.brands` (POSLE apps.core) — invariant iz Story 1.6 superseded (isti pattern
+    kao prethodni amendment-i).
     """
     import importlib
     import os
@@ -572,6 +575,7 @@ def test_ac3_installed_apps_is_default_django():
     apps = list(settings.INSTALLED_APPS)
 
     expected = {
+        "modeltranslation",  # Story 2.1 — MORA PRE django.contrib.admin
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
@@ -581,13 +585,16 @@ def test_ac3_installed_apps_is_default_django():
         "django_htmx",  # Story 1.6
         "django_bootstrap5",  # Story 1.6
         "apps.core",
+        "apps.brands",  # Story 2.1
     }
     actual = set(apps)
 
-    # MUST be Django defaults + 3rd-party (Story 1.6) + apps.core (Story 1.4)
+    # MUST be Django defaults + 3rd-party (Story 1.6) + modeltranslation (Story 2.1)
+    # + apps.core (Story 1.4) + apps.brands (Story 2.1)
     assert actual == expected, (
-        f"INSTALLED_APPS mora biti Django default + django_htmx + django_bootstrap5 + apps.core "
-        f"posle Story 1.6. Extras: {actual - expected}. Missing: {expected - actual}"
+        f"INSTALLED_APPS mora biti Django default + modeltranslation + django_htmx + "
+        f"django_bootstrap5 + apps.core + apps.brands posle Story 2.1. "
+        f"Extras: {actual - expected}. Missing: {expected - actual}"
     )
 
 

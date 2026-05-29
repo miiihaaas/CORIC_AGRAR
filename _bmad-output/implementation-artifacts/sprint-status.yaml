@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-27
-last_updated: 2026-05-29  # Story 1.9 -> review (Dev GREEN complete: 37/37 CI tests pass)
+last_updated: 2026-05-29  # Story 2.1 GREEN phase complete → review (46/46 contract tests pass)
 project: CORIC_AGRAR
 # Note: Story 1.1 transitioned from backlog → ready-for-dev on 2026-05-27;
 #       Epic 1 transitioned from backlog → in-progress (first story in epic created).
@@ -62,8 +62,8 @@ dev elopment_status:
   # ============================================================
   # Epic 2: Public Catalog — Browse Brands & Products
   # ============================================================
-  epic-2: backlog
-  2-1-brand-series-category-subcategory-modeli: backlog
+  epic-2: in-progress
+  2-1-brand-series-category-subcategory-modeli: done
   2-2-product-i-related-modeli: backlog
   2-3-image-pipeline-sa-sorl-thumbnail-responsive-srcset: backlog
   2-4-pdf-cover-thumbnail-generator: backlog

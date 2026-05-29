@@ -194,14 +194,17 @@ def test_ac1_core_tests_package_init_exists():
     )
 
 
-def test_ac1_core_does_not_have_models_admin_yet():
-    """AC1 (scope guard): Story 1.4 NE kreira models.py, admin.py, forms.py, migrations/.
+def test_ac1_core_does_not_have_admin_or_forms_yet():
+    """Story 1.4 scope guard (relaksirano u Story 2.1).
 
-    Sprecava da Dev preempt-uje Story 1.6+ (models, migrations) ili 2.x (admin).
-    Ako Dev doda models.py u Story 1.4, ovaj test pada — prisilno odlozi za Story 1.6.
+    Story 2.1 LEGITIMNO uvodi apps/core/models.py (TimestampedModel, SluggedModel)
+    i apps/core/utils.py (slugify_ascii) kao FOUNDATION za Epic 2 domain apps.
+    Vidi Story 2.1 AC9 + Decision D3.
+
+    Ali admin.py, forms.py, signals.py, managers.py, migrations/ ostaju forbidden
+    u apps/core/ — apps.core je infrastructure namespace, ne domain app sa CRUD.
     """
     forbidden = [
-        CORE_DIR / "models.py",
         CORE_DIR / "admin.py",
         CORE_DIR / "forms.py",
         CORE_DIR / "signals.py",
@@ -210,6 +213,6 @@ def test_ac1_core_does_not_have_models_admin_yet():
     ]
     existing = [str(p.relative_to(PROJECT_ROOT)) for p in forbidden if p.exists()]
     assert not existing, (
-        f"Forbidden artefakti u apps/core/ (Story 1.4 scope creep): {existing}. "
-        f"Odlozi za Story 1.6 (modeli + migracije) ili 2.x (admin)."
+        f"Forbidden artefakti u apps/core/: {existing}. "
+        f"apps.core je infrastructure namespace — domain CRUD pripada apps/<domain>/."
     )
