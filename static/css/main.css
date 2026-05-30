@@ -13,3 +13,8 @@
 @import url('./components/footer.css');
 @import url('./components/sticky-nav.css');
 @import url('./components/lightbox.css');
+
+/* Components CSS imports (Story 2.6) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/brand-listing.css');
+@import url('./components/statistic-medallion.css');
+@import url('./components/testimonials-slider.css');

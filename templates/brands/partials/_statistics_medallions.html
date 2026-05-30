@@ -1,0 +1,11 @@
+{% load i18n %}
+<h2 id="brand-statistics-title" class="visually-hidden">{% translate "Statistike" %}</h2>
+{% include "partials/section_eyebrow.html" with text=_("STATISTIKE") tag="div" %}
+<div class="coric-statistic-medallions" data-statistic-counters>
+  {% for stat in brand.statistics|slice:":4" %}
+    <div class="coric-statistic-medallion" data-testid="statistic-medallion-{{ forloop.counter }}">
+      <span class="coric-statistic-medallion__value" data-count-target="{{ stat.value }}" data-count-duration="1500">0</span>
+      <span class="coric-statistic-medallion__label">{{ stat.label }}</span>
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,13 @@
+{% load i18n %}
+{% include "partials/wave_divider.html" with position="top" %}
+<div class="coric-catalog-cta">
+  {% include "partials/section_eyebrow.html" with text=_("KATALOG") tag="div" %}
+  <h2 id="brand-catalog-cta-title" class="coric-catalog-cta__heading">{% translate "Preuzmi katalog" %}</h2>
+  <p class="coric-catalog-cta__description">{% blocktranslate with brand=brand.name %}Kompletan PDF katalog modela brenda {{ brand }}.{% endblocktranslate %}</p>
+  <a href="{{ brand.catalog_pdf.url }}"
+     target="_blank"
+     rel="noopener noreferrer"
+     download
+     class="coric-button coric-button--primary"
+     data-testid="brand-catalog-download">{% translate "Preuzmi katalog" %}</a>
+</div>

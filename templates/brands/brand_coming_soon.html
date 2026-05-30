@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n media_tags static %}
+
+{% block title %}{{ brand.name }} — {% translate "Uskoro" %} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% blocktranslate with brand=brand.name %}Brend {{ brand }} će uskoro biti dostupan u našem katalogu.{% endblocktranslate %}{% endblock %}
+
+{% block extra_head %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+  <div class="coric-brand-coming-soon" data-testid="brand-coming-soon-page">
+    {% if brand.logo %}
+      <div class="coric-brand-coming-soon__logo">
+        {% responsive_picture brand.logo alt=brand.name sizes="(max-width: 768px) 80vw, 320px" loading="eager" format='PNG' %}
+      </div>
+    {% endif %}
+    <h1 id="brand-coming-soon-title" class="coric-brand-coming-soon__title">{{ brand.name }}</h1>
+    <span class="coric-pill-badge coric-pill-badge--coming-soon" role="status">{% translate "Uskoro" %}</span>
+    <p class="coric-brand-coming-soon__message">{% blocktranslate with brand=brand.name %}Brend {{ brand }} će uskoro biti dostupan u našem katalogu.{% endblocktranslate %}</p>
+    <a href="{% url 'core:home' %}" class="coric-button coric-button--primary">{% translate "Nazad na Home" %}</a>
+  </div>
+{% endblock content %}

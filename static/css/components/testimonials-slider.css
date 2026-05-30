@@ -1,0 +1,98 @@
+/* ============================================================================
+ * testimonials-slider.css — testimonijal slider (Story 2.6 AC7)
+ * Tokeni iz tokens.css.
+ * ========================================================================= */
+
+.coric-testimonials-slider {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-scale-6) var(--spacing-scale-4);
+}
+
+.coric-testimonials-slider__viewport {
+  position: relative;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.coric-testimonials-slider__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.coric-testimonials-slider__slide.is-active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.coric-testimonials-slider__quote {
+  font-size: var(--typography-scale-h4);
+  font-style: italic;
+  color: var(--color-brand-green-800);
+  line-height: var(--typography-line-height-relaxed);
+  margin: 0 0 var(--spacing-scale-4);
+}
+
+.coric-testimonials-slider__attribution {
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  margin: 0;
+}
+
+.coric-testimonials-slider__photo {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--rounded-full);
+  overflow: hidden;
+  margin-right: var(--spacing-scale-3);
+  vertical-align: middle;
+}
+
+.coric-testimonials-slider__controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-scale-3);
+  margin-top: var(--spacing-scale-5);
+}
+
+.coric-testimonials-slider__nav,
+.coric-testimonials-slider__pause {
+  background: transparent;
+  border: 1px solid var(--color-brand-green-600);
+  color: var(--color-brand-green-800);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  cursor: pointer;
+  font-size: var(--typography-scale-body);
+  transition: background 0.2s ease;
+}
+
+.coric-testimonials-slider__nav:hover,
+.coric-testimonials-slider__pause:hover {
+  background: var(--color-neutral-gray-100);
+}
+
+.coric-testimonials-slider__nav:focus-visible,
+.coric-testimonials-slider__pause:focus-visible {
+  outline: 2px solid var(--color-accent-gold-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-testimonials-slider__slide {
+    transition: none;
+  }
+  .coric-testimonials-slider__nav,
+  .coric-testimonials-slider__pause {
+    transition: none;
+  }
+}

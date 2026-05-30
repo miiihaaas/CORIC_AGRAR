@@ -1,0 +1,59 @@
+/* ============================================================================
+ * statistic-medallion.css — 4-medallion grid (Story 2.6 AC6)
+ * Tokeni iz tokens.css.
+ * ========================================================================= */
+
+.coric-statistic-medallions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-scale-5);
+  padding: var(--spacing-scale-8) 0;
+}
+
+@media (max-width: 1024px) {
+  .coric-statistic-medallions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .coric-statistic-medallions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.coric-statistic-medallion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-scale-5);
+  text-align: center;
+  background: var(--color-neutral-cream);
+  border-radius: var(--rounded-full);
+  aspect-ratio: 1;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+.coric-statistic-medallion__value {
+  font-size: var(--typography-scale-h1);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+  line-height: var(--typography-line-height-tight);
+}
+
+.coric-statistic-medallion__label {
+  font-size: var(--typography-scale-small);
+  color: var(--color-neutral-gray-700);
+  margin-top: var(--spacing-scale-2);
+  text-transform: uppercase;
+  letter-spacing: var(--typography-tracking-wide);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-statistic-medallion__value {
+    /* JS handluje no-animation; defensive CSS guard */
+    transition: none;
+  }
+}

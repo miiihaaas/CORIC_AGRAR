@@ -1,0 +1,323 @@
+/* ============================================================================
+ * brand-listing.css — Brand Listing strana (Story 2.6)
+ *
+ * Layout sekcija (hero wrapper, sections, grid + extended layouts, akordion,
+ * empty state, catalog CTA) + coming-soon + product placeholder selektori.
+ * Sve vrednosti kroz var(--token) iz tokens.css.
+ * ========================================================================= */
+
+/* === Root wrapper === */
+.coric-brand-detail {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-container-gutter-desktop);
+}
+
+@media (max-width: 768px) {
+  .coric-brand-detail {
+    padding: 0 var(--spacing-container-gutter-mobile);
+  }
+}
+
+/* === Hero wrapper === */
+.coric-brand-hero {
+  margin-bottom: var(--spacing-section);
+}
+
+/* === Statistike wrapper === */
+.coric-brand-statistics {
+  margin-bottom: var(--spacing-section);
+}
+
+/* === Testimonijali wrapper === */
+.coric-testimonials {
+  margin-bottom: var(--spacing-section);
+}
+
+/* === Serije wrapper === */
+.coric-brand-series {
+  margin-bottom: var(--spacing-section);
+}
+
+.coric-series-block {
+  margin-bottom: var(--spacing-scale-8);
+}
+
+.coric-series-block__title {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-series-block__description {
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  margin-bottom: var(--spacing-scale-5);
+}
+
+/* === Grid layout === */
+.coric-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-scale-5);
+}
+
+@media (max-width: 768px) {
+  .coric-product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Grid kartica === */
+.coric-product-card {
+  display: block;
+  background: var(--color-neutral-white);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coric-product-card:hover,
+.coric-product-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.coric-product-card:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.coric-product-card__image {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-neutral-gray-100);
+}
+
+.coric-product-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coric-product-card__body {
+  padding: var(--spacing-scale-4);
+}
+
+.coric-product-card__title {
+  font-size: var(--typography-scale-h4);
+  color: var(--color-brand-green-800);
+  margin: 0 0 var(--spacing-scale-2);
+}
+
+.coric-product-card__spec {
+  font-size: var(--typography-scale-small);
+  color: var(--color-neutral-gray-700);
+  margin: 0 0 var(--spacing-scale-3);
+}
+
+.coric-product-card__cta {
+  display: inline-block;
+}
+
+/* === Extended layout === */
+.coric-product-row {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--spacing-scale-6);
+  margin-bottom: var(--spacing-scale-8);
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .coric-product-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.coric-product-row__image {
+  background: var(--color-neutral-gray-100);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+}
+
+.coric-product-row__specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-3);
+}
+
+.coric-product-row__title {
+  font-size: var(--typography-scale-h3);
+  color: var(--color-brand-green-800);
+  margin: 0;
+}
+
+.coric-product-row__desc {
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+}
+
+.coric-product-row__accordion {
+  border-bottom: 1px solid var(--color-neutral-gray-300);
+  padding: var(--spacing-scale-2) 0;
+}
+
+.coric-product-row__accordion summary {
+  cursor: pointer;
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+}
+
+.coric-product-row__accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.coric-product-row__accordion-icon {
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-accent-gold-500);
+  transition: transform 0.2s ease;
+}
+
+.coric-product-row__accordion[open] .coric-product-row__accordion-icon {
+  transform: rotate(45deg);
+}
+
+.coric-product-row__specs-table {
+  width: 100%;
+  margin-top: var(--spacing-scale-2);
+  border-collapse: collapse;
+}
+
+.coric-product-row__specs-table th,
+.coric-product-row__specs-table td {
+  padding: var(--spacing-scale-2) var(--spacing-scale-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-neutral-gray-100);
+  font-size: var(--typography-scale-small);
+}
+
+.coric-product-row__specs-table th {
+  color: var(--color-neutral-gray-700);
+  font-weight: var(--typography-weight-regular);
+  width: 40%;
+}
+
+.coric-product-row__specs-table td {
+  color: var(--color-brand-green-800);
+  font-weight: var(--typography-weight-bold);
+}
+
+/* === Empty state === */
+.coric-empty-state {
+  text-align: center;
+  padding: var(--spacing-scale-6);
+  color: var(--color-neutral-gray-500);
+  font-style: italic;
+}
+
+/* === Catalog CTA banner === */
+.coric-catalog-cta-banner {
+  margin-top: var(--spacing-section);
+}
+
+.coric-catalog-cta {
+  background: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
+  padding: var(--spacing-scale-10) var(--spacing-scale-5);
+  text-align: center;
+}
+
+.coric-catalog-cta__heading {
+  font-size: var(--typography-scale-h2);
+  margin: 0 0 var(--spacing-scale-4);
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-catalog-cta__description {
+  font-size: var(--typography-scale-body);
+  margin: 0 0 var(--spacing-scale-5);
+}
+
+/* === Coming-soon brand (AC2.5) === */
+.coric-brand-coming-soon {
+  padding: var(--spacing-scale-8) var(--spacing-scale-4);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.coric-brand-coming-soon__logo {
+  max-width: 240px;
+  margin: 0 auto var(--spacing-scale-4);
+  display: block;
+}
+
+.coric-brand-coming-soon__title {
+  font-size: var(--typography-scale-h1);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-3);
+}
+
+.coric-brand-coming-soon__message {
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  margin-bottom: var(--spacing-scale-4);
+}
+
+/* === Pill badge (reusable) === */
+.coric-pill-badge {
+  display: inline-block;
+  padding: var(--spacing-scale-1) var(--spacing-scale-3);
+  border-radius: var(--rounded-pill);
+  font-size: var(--typography-scale-small);
+  font-weight: var(--typography-weight-bold);
+  letter-spacing: var(--typography-tracking-wide);
+  text-transform: uppercase;
+}
+
+.coric-pill-badge--coming-soon {
+  background: var(--color-accent-gold-500);
+  color: var(--color-brand-green-800);
+}
+
+/* === Product placeholder (SM-D21) === */
+.coric-product-placeholder {
+  padding: var(--spacing-scale-8) var(--spacing-scale-4);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.coric-product-placeholder__title {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-product-placeholder__message {
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  margin-bottom: var(--spacing-scale-5);
+}
+
+/* === Reduced motion guard === */
+@media (prefers-reduced-motion: reduce) {
+  .coric-product-card {
+    transition: none;
+  }
+  .coric-product-card:hover,
+  .coric-product-card:focus-visible {
+    transform: none;
+  }
+  .coric-product-row__accordion-icon {
+    transition: none;
+  }
+}

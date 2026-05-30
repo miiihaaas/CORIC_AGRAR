@@ -1,0 +1,14 @@
+{% load i18n %}
+{% for series in brand.series.all %}
+  <article class="coric-series-block" aria-labelledby="series-{{ series.slug }}-title" data-testid="series-section-{{ series.slug }}">
+    <h3 id="series-{{ series.slug }}-title" class="coric-series-block__title">{{ series.name }}</h3>
+    {% if series.description %}<p class="coric-series-block__description">{{ series.description }}</p>{% endif %}
+    {% if series.layout_mode == "grid" %}
+      {% include "brands/partials/_series_grid.html" %}
+    {% elif series.layout_mode == "extended" %}
+      {% include "brands/partials/_series_extended.html" %}
+    {% endif %}
+  </article>
+{% empty %}
+  <p class="coric-empty-state">{% translate "Modeli ovog brenda su u pripremi." %}</p>
+{% endfor %}

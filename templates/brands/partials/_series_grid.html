@@ -1,0 +1,22 @@
+{% load i18n media_tags %}
+<div class="coric-product-grid">
+  {% for product in series.products.all %}
+    <a class="coric-product-card"
+       href="{{ product.get_absolute_url }}"
+       aria-label="{{ product.name }}"
+       data-testid="product-card-{{ product.slug }}">
+      <div class="coric-product-card__image">
+        {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" css_class="coric-product-card__img" %}
+      </div>
+      <div class="coric-product-card__body">
+        <h3 class="coric-product-card__title">{{ product.name }}</h3>
+        {% if product.horse_power %}
+          <p class="coric-product-card__spec">{{ product.horse_power }} {% translate "KS" %}</p>
+        {% endif %}
+        <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "OPŠIRNIJE" %}</span>
+      </div>
+    </a>
+  {% empty %}
+    <p class="coric-empty-state">{% translate "Modeli ove serije su u pripremi." %}</p>
+  {% endfor %}
+</div>

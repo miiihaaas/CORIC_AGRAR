@@ -1,0 +1,50 @@
+{% load i18n media_tags %}
+<h2 id="brand-testimonials-title" class="visually-hidden">{% translate "Iz prve ruke" %}</h2>
+{% include "partials/section_eyebrow.html" with text=_("IZ PRVE RUKE") tag="div" %}
+<div class="coric-testimonials-slider"
+     data-testimonials-slider
+     data-autoadvance-ms="6000"
+     role="region"
+     aria-roledescription="{% translate 'karusel' %}"
+     aria-label="{% translate 'Testimonijali korisnika' %}"
+     data-testid="testimonials-slider">
+  <div class="coric-testimonials-slider__viewport">
+    {% for t in testimonials %}
+      <article class="coric-testimonials-slider__slide{% if forloop.first %} is-active{% endif %}"
+               role="group"
+               aria-roledescription="{% translate 'slajd' %}"
+               aria-label="{% blocktranslate with counter=forloop.counter total=testimonials|length %}{{ counter }} od {{ total }}{% endblocktranslate %}"
+               aria-hidden="{% if not forloop.first %}true{% else %}false{% endif %}"
+               data-testid="testimonial-{{ forloop.counter }}">
+        <blockquote class="coric-testimonials-slider__quote">{{ t.quote }}</blockquote>
+        <p class="coric-testimonials-slider__attribution">
+          {% if t.photo %}
+            <span class="coric-testimonials-slider__photo">
+              {% responsive_picture t.photo alt=t.author_name sizes="80px" loading="lazy" %}
+            </span>
+          {% endif %}
+          — {{ t.author_name }}{% if t.location %}, {{ t.location }}{% endif %}
+        </p>
+      </article>
+    {% endfor %}
+  </div>
+  <div class="coric-testimonials-slider__controls">
+    <button type="button"
+            class="coric-testimonials-slider__nav coric-testimonials-slider__nav--prev"
+            data-slider-prev
+            aria-label="{% translate 'Prethodni' %}"
+            data-testid="prev-testimonial">‹</button>
+    <button type="button"
+            class="coric-testimonials-slider__pause"
+            data-slider-pause
+            aria-label="{% translate 'Pauziraj' %}"
+            aria-pressed="false"
+            data-testid="pause-testimonial">⏸</button>
+    <button type="button"
+            class="coric-testimonials-slider__nav coric-testimonials-slider__nav--next"
+            data-slider-next
+            aria-label="{% translate 'Sledeći' %}"
+            data-testid="next-testimonial">›</button>
+  </div>
+  <span class="visually-hidden" aria-live="polite" data-slider-live></span>
+</div>

@@ -15,7 +15,7 @@ source_documents:
 
 _Ovaj fajl sadrži kritična pravila i patterne koje AI agenti MORAJU da slede pri implementaciji koda. Fokus je na neočiglednim detaljima koje agenti lako previde. Za detaljne arhitektonske odluke konsultuj `_bmad-output/planning-artifacts/architecture.md`._
 
-**Komunikacija:** Srpski (latinica). UI strings: srpski (latinica) — **NIKAD ćirilica**.
+**Komunikacija:** Srpski (latinica). UI strings: srpski (latinica) — **NIKAD ćirilica**, **NIKAD šišana latinica** (uvek pune dijakritike č/ć/ž/š/đ; ASCII samo u slugovima/URL-ovima).
 
 ---
 
@@ -494,6 +494,41 @@ naziv = "Ćorić Agrar"
 PORUKA_USPEH = _("Uspešno sačuvano")
 ```
 
+### 🚫 Anti-pattern: Šišana latinica u user-facing tekstu
+Sav srpski tekst koji vidi krajnji korisnik (HTML stranice, template stringovi,
+UI poruke, `{% translate %}` vrednosti, `alt`/`title`/`aria-label` atributi,
+meta tagovi) MORA koristiti pune dijakritike: **č, ć, ž, š, đ** (i velika
+Č, Ć, Ž, Š, Đ). Šišana latinica (`c`, `s`, `z`, `dj` umesto dijakritika) je
+zabranjena u svemu što se renderuje korisniku.
+
+**Jedini izuzetak** — slugovi i URL putanje, gde važi obrnuto pravilo: ASCII
+transliteracija je obavezna (vidi _Anti-pattern: Unicode u URL-u_). Dijakritika
+u tekstu, ASCII u URL-u.
+
+```html
+<!-- ❌ NIKAD šišana latinica -->
+<h1>Poljoprivredna mehanizacija i prikljucna oprema</h1>
+<a title="Posaljite upit">Kontaktirajte nas</a>
+<img alt="Traktor na njivi u prolece">
+<meta name="description" content="Najbolja oprema za vase gazdinstvo">
+
+<!-- ✅ UVEK pune dijakritike -->
+<h1>Poljoprivredna mehanizacija i priključna oprema</h1>
+<a title="Pošaljite upit">Kontaktirajte nas</a>
+<img alt="Traktor na njivi u proleće">
+<meta name="description" content="Najbolja oprema za vaše gazdinstvo">
+```
+
+```python
+# ❌ NIKAD
+label = _("Posaljite poruku")
+# ✅ UVEK
+label = _("Pošaljite poruku")
+```
+
+> Provera fajla je UTF-8 (`.editorconfig`), pa dijakritika nema tehničkih
+> prepreka — izostavljanje je uvek greška, nikad kompromis zbog enkodinga.
+
 ### 🚫 Anti-pattern: Unicode u URL-u
 ```python
 # ❌ NIKAD
@@ -620,6 +655,13 @@ git commit -m "feat(<app>): add <field> to <model>"
 App dependency rules (iz architecture.md):
 - ❌ `core` ne sme importovati domain apps (products, brands, ...)
 - ❌ `brands` ne sme importovati `products` (jednosmerna — `products → brands`)
+  - **Exception** (Story 2.6+): `apps/brands/views.py` SME importovati `Product`,
+    `ProductSpecification`, `ProductTestimonial` iz `apps.products.models` zato
+    što `BrandDetailView` agregira products grupisane po brendu (read-only
+    query layer, no model dependency, no FK iz brand → product, no .save() /
+    .create() na Product iz brands view-a). Coupling je **view-layer-only**
+    i ne krši arhitektonsku invariantu jednosmerne zavisnosti. Vidi Story 2.6
+    Decision SM-D16 za rationale.
 - ❌ `forms` ne sme importovati `catalog` / `blog` direktno
 - ❌ Domain apps ne smeju importovati iz `admin_ext`
 

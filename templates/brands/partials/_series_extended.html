@@ -1,0 +1,33 @@
+{% load i18n media_tags %}
+{% for product in series.products.all %}
+  <article class="coric-product-row" data-testid="product-row-{{ product.slug }}">
+    <div class="coric-product-row__image">
+      {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 60vw" loading="lazy" %}
+    </div>
+    <div class="coric-product-row__specs">
+      <h3 class="coric-product-row__title">{{ product.name }}</h3>
+      {% if product.description %}
+        <p class="coric-product-row__desc">{{ product.description|truncatewords:25 }}</p>
+      {% endif %}
+      {% regroup product.specifications.all by section_label as spec_sections %}
+      {% for section_group in spec_sections %}
+        <details class="coric-product-row__accordion"{% if forloop.first %} open{% endif %} data-testid="spec-section-{{ section_group.grouper|slugify }}">
+          <summary>{{ section_group.grouper }}<span class="coric-product-row__accordion-icon" aria-hidden="true">+</span></summary>
+          <table class="coric-product-row__specs-table">
+            <tbody>
+              {% for spec in section_group.list %}
+                <tr>
+                  <th scope="row">{{ spec.key }}</th>
+                  <td>{{ spec.value }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </details>
+      {% endfor %}
+      <a class="coric-button coric-button--primary" href="{{ product.get_absolute_url }}">{% translate "OPŠIRNIJE" %}</a>
+    </div>
+  </article>
+{% empty %}
+  <p class="coric-empty-state">{% translate "Modeli ove serije su u pripremi." %}</p>
+{% endfor %}

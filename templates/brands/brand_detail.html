@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n media_tags static %}
+
+{% block title %}{{ brand.name }} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{{ brand.slogan|default:brand.description|truncatewords:25 }}{% endblock %}
+
+{% block content %}
+  <div class="coric-brand-detail" data-testid="brand-detail-page">
+    <section id="brand-hero" aria-label="{% blocktranslate with name=brand.name %}Hero sekcija — {{ name }}{% endblocktranslate %}">
+      {% include "brands/partials/_hero_section.html" %}
+    </section>
+
+    {% if brand.statistics %}
+      <section id="brand-statistics" aria-labelledby="brand-statistics-title" class="coric-brand-statistics">
+        {% include "brands/partials/_statistics_medallions.html" %}
+      </section>
+    {% endif %}
+
+    {% if testimonials %}
+      <section id="brand-testimonials" aria-labelledby="brand-testimonials-title" class="coric-testimonials">
+        {% include "brands/partials/_testimonials_slider.html" %}
+      </section>
+    {% endif %}
+
+    <section id="brand-series" aria-labelledby="brand-series-title" class="coric-brand-series">
+      <h2 id="brand-series-title" class="visually-hidden">{% translate "Modeli brenda" %}</h2>
+      {% include "brands/partials/_series_section.html" %}
+    </section>
+
+    {% if brand.catalog_pdf %}
+      <section id="brand-catalog-cta" aria-labelledby="brand-catalog-cta-title" class="coric-catalog-cta-banner">
+        {% include "brands/partials/_catalog_cta.html" %}
+      </section>
+    {% endif %}
+  </div>
+{% endblock content %}

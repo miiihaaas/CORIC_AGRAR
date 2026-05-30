@@ -24,6 +24,8 @@ urlpatterns = [
 # URL-ovi SA lokal prefiksom (`/sr/...`, `/hu/...`, `/en/...`)
 urlpatterns += i18n_patterns(
     path("admin/", admin.site.urls),
+    path("", include("apps.brands.urls")),
+    path("", include("apps.products.urls")),
     path("", include("apps.core.urls")),
     prefix_default_language=True,
 )
