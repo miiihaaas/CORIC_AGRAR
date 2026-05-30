@@ -1,0 +1,33 @@
+/*
+ * lightbox.css — GLightbox theme overrides (Story 2.5).
+ * Vendor CSS: static/vendor/glightbox/glightbox.min.css (MIT, biati-digital/glightbox 3.x)
+ * Custom theme:
+ *  - Backdrop boja prati DESIGN.md § Modal/Lightbox: rgba(15,15,15,0.85)
+ *  - prefers-reduced-motion: instant transition (no fade)
+ */
+
+/* Backdrop boja — override GLightbox default-a koji je rgba(0,0,0,0.92).
+ * DESIGN.md frontmatter ne eksponuje explicit token za modal backdrop —
+ * koristi se hardcoded rgba() iz DESIGN.md § Elevation & Depth linija 287
+ * (single source). Ako se kasnije uvede --color-backdrop-modal token u
+ * tokens.css, ovo pravilo treba prepisati na var(--color-backdrop-modal).
+ *
+ * Backdrop = .goverlay (per GLightbox 3.x markup) — NIKAD .gcontainer
+ * (to je modal content wrapper). .glightbox-clean je default skin koji
+ * ships sa GLightbox 3.x (jedini skin koji se garantovano isporucuje).
+ */
+.glightbox-clean .goverlay {
+  background: rgba(15, 15, 15, 0.85) !important;
+}
+
+/* Reduced motion: instant fade — GLightbox interne animacije vec uklanja
+ * JS init (openEffect: 'none'), ali defensive CSS osigurava da i CSS
+ * tranzicije ne odigraju ako vendor CSS klasa stigne pre JS init-a.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .glightbox-clean .ginner-container,
+  .glightbox-clean .gslide {
+    transition: none !important;
+    animation: none !important;
+  }
+}

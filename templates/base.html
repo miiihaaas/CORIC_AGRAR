@@ -10,6 +10,7 @@
   <meta name="description" content="{% block meta_description %}{% endblock %}">
   <title>{% block title %}Ćorić Agrar{% endblock %}</title>
   <link rel="stylesheet" href="{% static "css/tokens.css" %}">
+  <link rel="stylesheet" href="{% static 'vendor/glightbox/glightbox.min.css' %}">
   {% bootstrap_css %}
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
   {% block extra_head %}{% endblock %}
@@ -35,6 +36,8 @@
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
   {% bootstrap_javascript %}
   <script src="{% static 'js/sticky-nav.js' %}" defer></script>
+  <script src="{% static 'vendor/glightbox/glightbox.min.js' %}" defer></script>
+  <script src="{% static 'js/lightbox-init.js' %}" defer></script>
   {# Per-page scripts POSLE site-wide — sync init safe za Bootstrap komponente #}
   {% block scripts %}{% endblock %}
 </body>

@@ -1,0 +1,23 @@
+GLightbox vendor pin
+====================
+
+Version:  3.3.1
+Source:   https://github.com/biati-digital/glightbox/releases/tag/v3.3.1
+License:  MIT
+Added:    2026-05-30 (Story 2.5)
+
+File integrity (verify locally before deploy):
+
+  glightbox.min.css
+    Size: 13749 bytes
+    SHA-512: 4FE2A81B77DB0E84A7960117150AB07130BD01D905231841966A1A16A61A223AB64A184DC0D6A8F4029A2D43CC7F08813CBD1273102D73E5186C7020BDDFAC8D
+
+  glightbox.min.js
+    Size: 56343 bytes
+    SHA-512: 5CBE784A371E5D91736E5CE236768515A5E0833A82B99AC54B896858FA6F3C9E8A83491CD87C8BF3DF9C3DE1F418CAB4B0A2F649E83352603C2F1F5AD2CB76A3
+
+Upstream-vs-local verification: PENDING
+  Action: before production deploy (Story 9.2), Mihas must:
+    1. Visit https://www.npmjs.com/package/glightbox/v/3.3.1
+    2. Compare the npm-published integrity hash against the local SHA-512 above
+    3. If mismatch — re-download from canonical source and document the new hash here

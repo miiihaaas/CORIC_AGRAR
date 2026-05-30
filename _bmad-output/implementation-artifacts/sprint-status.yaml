@@ -36,7 +36,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-27
-last_updated: 2026-05-30  # Story 2.4 done — PDF cover-thumbnail generator (signals.py + pdf_utils.py + apps.ready() hook); 72/72 tests, code review 1 iter (5/5 PASS), validate iter 1, MP-D6 + PDF-D1..D8 documented; SEC-2 deferred to Story 8.6
+last_updated: 2026-05-30  # Story 2.5 done — Code Review 5/5 PASS (1 fix iter: BUG×2, PERF×1, SEC-MED×1, SEC-LOW×2, REFACTOR×2; 6 unfixable deferred-with-docs); 22/22 tests; AC6 manual smoke check deferred to Mihas pre-Story-2.7
 project: CORIC_AGRAR
 # Note: Story 1.1 transitioned from backlog → ready-for-dev on 2026-05-27;
 #       Epic 1 transitioned from backlog → in-progress (first story in epic created).
@@ -68,7 +68,7 @@ dev elopment_status:
   2-2-product-i-related-modeli: done
   2-3-image-pipeline-sa-sorl-thumbnail-responsive-srcset: done
   2-4-pdf-cover-thumbnail-generator: done
-  2-5-glightbox-integracija: backlog
+  2-5-glightbox-integracija: done
   2-6-brand-listing-strana-sa-grid-extended-layout-om: backlog
   2-7-product-detail-strana: backlog
   2-8-tractor-listing-strana-sa-htmx-filterima: backlog
