@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n static media_tags %}
+
+{% block title %}{% translate "Traktori" %} | Ćorić Agrar{% endblock %}
+
+{% block meta_description %}{% blocktranslate %}Filtrirajte traktore po snazi i ceni — kompletna ponuda svih brendova Ćorić Agrar-a.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+  <section class="coric-tractor-listing" data-testid="tractor-listing-page" aria-labelledby="tractor-listing-title">
+    <header class="coric-tractor-listing__header">
+      <h1 id="tractor-listing-title" class="coric-tractor-listing__title">{% translate "Traktori" %}</h1>
+      <p class="coric-tractor-listing__lead">{% translate "Pronađite traktor koji odgovara vašoj farmi i budžetu." %}</p>
+    </header>
+
+    <section id="brand-header" aria-labelledby="brand-header-title" class="coric-brand-header">
+      {% include "products/partials/_brand_header.html" %}
+    </section>
+
+    <section id="tractor-filters" aria-labelledby="tractor-filters-title" class="coric-tractor-filters">
+      {% include "products/partials/_filter_form.html" %}
+    </section>
+
+    <section id="tractor-results-wrap" aria-labelledby="tractor-results-title" class="coric-tractor-results">
+      <h2 id="tractor-results-title" class="visually-hidden">{% translate "Rezultati pretrage" %}</h2>
+      {% include "products/partials/_results_grid.html" %}
+    </section>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <link rel="stylesheet" href="{% static 'vendor/nouislider/nouislider.min.css' %}">
+  <script src="{% static 'vendor/nouislider/nouislider.min.js' %}" defer></script>
+  <script src="{% static 'js/tractor-filters.js' %}" defer></script>
+{% endblock %}

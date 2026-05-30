@@ -1,7 +1,7 @@
-"""Product detail view — Story 2.7 (Epic 2 Public Catalog).
+"""Product views — Story 2.7 ProductDetailView + Story 2.8 TractorListView.
 
-Server-side rendering only; HTMX filteri su Story 2.8 scope. Replaces Story 2.6
-`placeholder_view` FBV stub.
+Story 2.7 — server-side product detail rendering (ProductDetailView).
+Story 2.8 — Tractor listing strana sa HTMX filterima (TractorListView).
 
 Query optimizacija (SM-D21/D28): TAČNO 7 SQL upita za pun render kada manual
 ProductSimilar override postoji (auto fallback je 8 queries).
@@ -9,11 +9,16 @@ ProductSimilar override postoji (auto fallback je 8 queries).
 
 from __future__ import annotations
 
+from decimal import Decimal, InvalidOperation
+
 from django.core.exceptions import SuspiciousFileOperation
 from django.db.models import Case, CharField, IntegerField, Prefetch, Value, When
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView
+from django.views.decorators.vary import vary_on_headers
+from django.views.generic import DetailView, ListView
 
+from apps.brands.models import Brand
 from apps.products.models import (
     Product,
     ProductBrochure,
@@ -26,6 +31,33 @@ from apps.products.models import (
 
 _SIMILAR_PRODUCTS_LIMIT = 4
 _BROCHURES_LIMIT = 5
+_PRODUCTS_PER_PAGE = 24  # Story 2.8 SM-D8
+
+
+def _parse_int(raw, *, min_value=0, max_value=10_000):
+    """Story 2.8 SM-D11 defensive parser — vraća None za invalid/out-of-range input."""
+    if raw is None:
+        return None
+    try:
+        value = int(raw)
+    except (ValueError, TypeError):
+        return None
+    if value < min_value or value > max_value:
+        return None
+    return value
+
+
+def _parse_decimal(raw, *, min_value=Decimal("0"), max_value=Decimal("10000000")):
+    """Story 2.8 SM-D11 defensive parser — vraća None za invalid/out-of-range input."""
+    if raw is None:
+        return None
+    try:
+        value = Decimal(raw)
+    except (InvalidOperation, ValueError, TypeError):
+        return None
+    if value < min_value or value > max_value:
+        return None
+    return value
 
 
 class ProductDetailView(DetailView):
@@ -128,4 +160,76 @@ class ProductDetailView(DetailView):
         )
         ctx["hero_brand_logo_url"] = product.brand.logo.url if product.brand.logo else ""
 
+        return ctx
+
+
+@method_decorator(vary_on_headers("HX-Request"), name="dispatch")
+class TractorListView(ListView):
+    """Tractor listing strana sa HTMX filterima — Story 2.8.
+
+    PRVA HTMX story u Epic 2. Single-view sa get_template_names() branching
+    (SM-D3): full page render za non-HTMX request; partial render za HTMX request
+    (request.htmx == True kroz django-htmx middleware).
+
+    Query budget: ≤ 5 SQL upita (Brand list + Product count + Product slice +
+    sessions/middleware overhead). Empirijski lock-uje se u GREEN fix iter 1.
+
+    SM-D24 (review iter 1 cache poisoning defense): @vary_on_headers("HX-Request")
+    sprečava cache poisoning kada CDN/Nginx cache (Story 9.x) — isti URL vraća
+    full-page response za non-HTMX i partial fragment za HTMX request; Vary header
+    govori cache layer-ima da odvojeno cache-uju 2 representation-a.
+    """
+
+    model = Product
+    context_object_name = "products"
+    paginate_by = _PRODUCTS_PER_PAGE
+
+    def get_template_names(self):
+        if getattr(self.request, "htmx", False):
+            return ["products/partials/_results_grid.html"]
+        return ["products/tractor_listing.html"]
+
+    def get_queryset(self):
+        # SM-D7 traktori scope: subcategory.category.is_for == 'traktori'.
+        # Product.subcategory je nullable (PR-D3) — proizvodi bez subcategory ne
+        # match-uju (JOIN na NULL = no match); tractor admins MORAJU postaviti
+        # subcategory za listing visibility.
+        qs = (
+            Product.objects.filter(
+                is_published=True,
+                subcategory__category__is_for="traktori",
+            )
+            .select_related("brand", "series", "subcategory")
+            .order_by("-created_at")
+        )
+        snaga_min = _parse_int(self.request.GET.get("snaga_min"))
+        snaga_max = _parse_int(self.request.GET.get("snaga_max"))
+        cena_min = _parse_decimal(self.request.GET.get("cena_min"))
+        cena_max = _parse_decimal(self.request.GET.get("cena_max"))
+        if snaga_min is not None:
+            qs = qs.filter(horse_power__gte=snaga_min)
+        if snaga_max is not None:
+            qs = qs.filter(horse_power__lte=snaga_max)
+        if cena_min is not None:
+            qs = qs.filter(price_eur__gte=cena_min)
+        if cena_max is not None:
+            qs = qs.filter(price_eur__lte=cena_max)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["brands_for_header"] = Brand.objects.filter(
+            is_coming_soon=False
+        ).order_by("name")
+        ctx["active_filters"] = {
+            "snaga_min": self.request.GET.get("snaga_min", ""),
+            "snaga_max": self.request.GET.get("snaga_max", ""),
+            "cena_min": self.request.GET.get("cena_min", ""),
+            "cena_max": self.request.GET.get("cena_max", ""),
+        }
+        paginator = ctx.get("paginator")
+        if paginator is not None:
+            ctx["count"] = paginator.count
+        else:
+            ctx["count"] = self.get_queryset().count()
         return ctx

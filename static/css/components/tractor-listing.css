@@ -1,0 +1,220 @@
+/* ============================================================================
+ * tractor-listing.css — Tractor Listing strana (Story 2.8)
+ *
+ * Layout sekcija: outer wrapper, header (h1 + lead), brand header grid, filter
+ * form panel + loading indicator, results grid (responsive 1/2/3 col), empty state.
+ * Sve vrednosti kroz var(--token) iz tokens.css. coric-product-card BEM se REUSE
+ * iz Story 2.6 (brand-listing.css) — NE re-definisati.
+ * ========================================================================= */
+
+/* === Root wrapper === */
+.coric-tractor-listing {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-container-gutter-desktop);
+}
+
+@media (max-width: 768px) {
+  .coric-tractor-listing {
+    padding: 0 var(--spacing-container-gutter-mobile);
+  }
+}
+
+/* === Page header === */
+.coric-tractor-listing__header {
+  margin: var(--spacing-section) 0;
+  text-align: center;
+}
+
+.coric-tractor-listing__title {
+  font-size: var(--typography-scale-h1);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-3);
+}
+
+.coric-tractor-listing__lead {
+  font-size: var(--typography-scale-body);
+  color: var(--color-semantic-text-primary);
+  max-width: 60ch;
+  margin: 0 auto;
+}
+
+/* === Brand header === */
+.coric-brand-header {
+  margin-bottom: var(--spacing-section);
+}
+
+.coric-brand-header__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-scale-4);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--spacing-scale-4);
+}
+
+.coric-brand-header__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-scale-3);
+  border-radius: var(--rounded-md);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.coric-brand-header__item:hover,
+.coric-brand-header__item:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.coric-brand-header__item:focus-visible {
+  outline: 2px solid var(--color-accent-gold-500);
+  outline-offset: 2px;
+}
+
+.coric-brand-header__logo {
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+
+.coric-brand-header__name-fallback {
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+}
+
+.coric-brand-header__empty {
+  text-align: center;
+  font-style: italic;
+  color: var(--color-semantic-text-muted);
+}
+
+/* === Filter form panel === */
+.coric-tractor-filters {
+  margin-bottom: var(--spacing-section);
+  padding: var(--spacing-scale-4);
+  background: var(--color-neutral-gray-100);
+  border-radius: var(--rounded-md);
+}
+
+.coric-tractor-filters__form {
+  display: grid;
+  gap: var(--spacing-scale-4);
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .coric-tractor-filters__form {
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
+  }
+}
+
+.coric-tractor-filters__group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.coric-tractor-filters__legend {
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-2);
+}
+
+.coric-tractor-filters__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.coric-tractor-filters__loading {
+  position: absolute;
+  top: var(--spacing-scale-2);
+  right: var(--spacing-scale-2);
+}
+
+/* === HTMX indicator (min loading 200ms via opacity transition — SM-D13) === */
+.htmx-indicator {
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  opacity: 1;
+}
+
+/* === Results grid === */
+.coric-tractor-results {
+  margin-bottom: var(--spacing-section);
+}
+
+.coric-tractor-results__inner {
+  min-height: 200px;
+}
+
+.coric-tractor-results__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-scale-4);
+}
+
+@media (min-width: 576px) {
+  .coric-tractor-results__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .coric-tractor-results__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* === Pagination === */
+.coric-tractor-results__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-scale-4);
+  margin-top: var(--spacing-scale-5);
+}
+
+.coric-tractor-results__page-info {
+  font-size: var(--typography-scale-small);
+  color: var(--color-semantic-text-muted);
+}
+
+/* === Empty state === */
+.coric-tractor-empty {
+  text-align: center;
+  padding: var(--spacing-scale-6) var(--spacing-scale-4);
+}
+
+.coric-tractor-empty__title {
+  font-size: var(--typography-scale-h3);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-3);
+}
+
+.coric-tractor-empty__lead {
+  color: var(--color-semantic-text-muted);
+  max-width: 50ch;
+  margin: 0 auto var(--spacing-scale-4);
+}
+
+/* === prefers-reduced-motion respect === */
+@media (prefers-reduced-motion: reduce) {
+  .coric-brand-header__item,
+  .htmx-indicator {
+    transition: none;
+  }
+  .coric-brand-header__item:hover,
+  .coric-brand-header__item:focus-visible {
+    transform: none;
+  }
+}

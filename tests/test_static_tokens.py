@@ -1111,3 +1111,44 @@ def test_no_at_import_in_tokens_css():
         f"tokens.css sadrži @import direktiv(e): {len(matches)} matches. "
         f"AC3 + project-context.md: sve @font-face deklaracije moraju biti inline (no @import)."
     )
+
+
+# =============================================================================
+# Story 2-8 review iter 1 — Undefined-token regression guard
+# =============================================================================
+
+
+def test_story_2_8_css_uses_only_defined_tokens():
+    """Story 2-8 (review iter 1 lesson — mirror Story 2-7 iter 1 token rename N1):
+    All var(--token) references in tractor-listing.css + range-slider.css MUST resolve
+    to :root declarations in tokens.css. Catches undefined-token silent visual drift.
+
+    Razlog: browser silently fall-back na invalid value kad var(--undefined) nema
+    declaration u :root → komponenta renderuje sa null/inherit umesto očekivanim
+    tokenom (visual regression bez crash-a). Story 2-7 iter 1 N1 + Story 2-8 iter 1
+    BUG-B1 — DEDUPLIKOVANA klasa bug-a kroz CSS components.
+    """
+    if not TOKENS_CSS.exists():
+        pytest.skip("tokens.css ne postoji — drugi test hvata.")
+    tokens_content = _read_tokens_css()
+    defined_tokens = set(re.findall(r"--([a-z][a-z0-9-]*)\s*:", tokens_content))
+
+    component_paths = [
+        STATIC_CSS_DIR / "components" / "tractor-listing.css",
+        STATIC_CSS_DIR / "components" / "range-slider.css",
+    ]
+    for path in component_paths:
+        if not path.exists():
+            pytest.skip(f"{path.relative_to(PROJECT_ROOT)} ne postoji — Story 2-8 možda nije implementirana.")
+        css = path.read_text(encoding="utf-8")
+        # Strip CSS comments (/* ... */) pre token extraction — comments mogu sadržati
+        # literal `var(--token)` placeholder tekst u doc-stringovima koji NIJE pravi
+        # CSS reference (false positive guard).
+        css_no_comments = re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL)
+        used = set(re.findall(r"var\(\s*--([a-z][a-z0-9-]*)", css_no_comments))
+        undefined = used - defined_tokens
+        assert not undefined, (
+            f"{path.relative_to(PROJECT_ROOT)} uses undefined tokens: {sorted(undefined)}. "
+            f"Add to tokens.css OR rename to existing token (per project-context.md § "
+            f"'NE uvoditi nove tokene — koristiti najbliži postojeći')."
+        )

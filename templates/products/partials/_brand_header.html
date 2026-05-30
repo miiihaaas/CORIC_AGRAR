@@ -1,0 +1,23 @@
+{% load i18n media_tags %}
+
+{% include "partials/section_eyebrow.html" with text=_("BRENDOVI") tag="div" %}
+<h2 id="brand-header-title" class="visually-hidden">{% translate "Brendovi traktora" %}</h2>
+
+{% if brands_for_header %}
+  <div class="coric-brand-header__grid" data-testid="brand-header-grid">
+    {% for brand in brands_for_header %}
+      <a class="coric-brand-header__item"
+         href="{% url 'brands:detail' slug=brand.slug %}"
+         aria-label="{% blocktranslate with name=brand.name %}{{ name }} — pregled brenda{% endblocktranslate %}"
+         data-testid="brand-header-link-{{ brand.slug }}">
+        {% if brand.logo %}
+          {% responsive_picture brand.logo alt=brand.name sizes="(max-width: 768px) 120px, 160px" loading="lazy" format='PNG' css_class="coric-brand-header__logo" %}
+        {% else %}
+          <span class="coric-brand-header__name-fallback">{{ brand.name }}</span>
+        {% endif %}
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="coric-brand-header__empty">{% translate "Nema brendova trenutno." %}</p>
+{% endif %}

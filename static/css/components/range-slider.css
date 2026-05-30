@@ -1,0 +1,88 @@
+/* ============================================================================
+ * range-slider.css — Dual-thumb range slider widget (Story 2.8)
+ *
+ * Container + value display layout, plus noUiSlider library override sa
+ * coric- color palette (brand green + orange). Sve vrednosti kroz var(--token).
+ * ========================================================================= */
+
+.coric-range-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-2);
+  padding: var(--spacing-scale-2) 0;
+}
+
+.coric-range-slider__track {
+  height: 8px;
+  margin: var(--spacing-scale-3) var(--spacing-scale-2);
+}
+
+.coric-range-slider__values {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-scale-1);
+  font-size: var(--typography-scale-small);
+  color: var(--color-semantic-text-primary);
+}
+
+.coric-range-slider__value-min,
+.coric-range-slider__value-max {
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+  min-width: 3ch;
+  text-align: center;
+}
+
+.coric-range-slider__separator {
+  color: var(--color-semantic-text-muted);
+}
+
+.coric-range-slider__unit {
+  color: var(--color-semantic-text-muted);
+  margin-left: var(--spacing-scale-1);
+}
+
+/* === noUiSlider library override === */
+.coric-range-slider .noUi-target {
+  background: var(--color-neutral-gray-300);
+  border: none;
+  box-shadow: none;
+}
+
+.coric-range-slider .noUi-connect {
+  background: var(--color-brand-green-800);
+}
+
+.coric-range-slider .noUi-handle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-accent-gold-500);
+  border: 2px solid var(--color-neutral-white);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  top: -7px;
+  right: -10px;
+}
+
+.coric-range-slider .noUi-handle::before,
+.coric-range-slider .noUi-handle::after {
+  display: none;
+}
+
+.coric-range-slider .noUi-handle:focus-visible {
+  outline: 2px solid var(--color-accent-gold-500);
+  outline-offset: 3px;
+}
+
+.coric-range-slider .noUi-horizontal {
+  height: 8px;
+}
+
+/* === prefers-reduced-motion respect === */
+@media (prefers-reduced-motion: reduce) {
+  .coric-range-slider .noUi-handle,
+  .coric-range-slider .noUi-connect {
+    transition: none !important;
+  }
+}

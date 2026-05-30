@@ -390,3 +390,59 @@ class ProductSimilarFactory:
         }
         defaults.update(overrides)
         return ProductSimilar.objects.create(**defaults)
+
+
+# =============================================================================
+# Story 2.8 — TractorProductFactory (kreira Product u traktori scope-u)
+# =============================================================================
+
+
+class TractorProductFactory:
+    """Helper koji kreira Product unutar traktori Category.is_for scope-a.
+
+    Story 2.8 TractorListView filter:
+        Product.objects.filter(
+            is_published=True,
+            subcategory__category__is_for='traktori',
+        )
+
+    ProductFactory default-i NE postavljaju subcategory (Story 2.7 mu ne treba pa
+    je nullable per PR-D3); ovo bi diskvalifikovalo Product-e za tractor listing
+    queryset. TractorProductFactory get_or_create-uje shared Category(is_for='traktori')
+    + Subcategory + delegira na ProductFactory.create() sa subcategory= override.
+
+    Korišćenje:
+        product = TractorProductFactory.create(horse_power=100, price_eur=15000)
+        product = TractorProductFactory.create_unpublished()
+        product = TractorProductFactory.create(brand=my_brand, name="JD 6120")
+    """
+
+    _SHARED_CATEGORY_SLUG = "tea-traktori-default"
+    _SHARED_SUBCATEGORY_SLUG = "tea-default-subcat"
+
+    @classmethod
+    def _get_or_create_subcategory(cls):
+        from apps.brands.models import Category, Subcategory
+
+        category, _ = Category.objects.get_or_create(
+            slug=cls._SHARED_CATEGORY_SLUG,
+            defaults={"name": "TEA Traktori Default", "is_for": "traktori"},
+        )
+        subcategory, _ = Subcategory.objects.get_or_create(
+            category=category,
+            slug=cls._SHARED_SUBCATEGORY_SLUG,
+            parent=None,
+            defaults={"name": "TEA Default Subcat"},
+        )
+        return subcategory
+
+    @classmethod
+    def create(cls, brand=None, **overrides: Any):
+        subcategory = cls._get_or_create_subcategory()
+        overrides.setdefault("subcategory", subcategory)
+        return ProductFactory.create(brand=brand, **overrides)
+
+    @classmethod
+    def create_unpublished(cls, brand=None, **overrides: Any):
+        overrides["is_published"] = False
+        return cls.create(brand=brand, **overrides)

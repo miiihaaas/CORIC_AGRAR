@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<div class="coric-tractor-empty" data-testid="tractor-empty-state">
+  <h3 class="coric-tractor-empty__title">{% translate "Nema modela koji odgovaraju vašim kriterijumima" %}</h3>
+  <p class="coric-tractor-empty__lead">{% translate "Probajte da proširite opseg filtera ili poništite filtere i pregledajte celokupnu ponudu." %}</p>
+  <a href="{% url 'products:tractor_list' %}"
+     class="coric-button coric-button--primary"
+     data-testid="empty-reset-button">
+    {% translate "RESETUJ FILTERE" %}
+  </a>
+</div>

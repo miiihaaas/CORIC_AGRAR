@@ -1,0 +1,33 @@
+noUiSlider vendor pin
+=====================
+
+Version:  15.7.1
+Source:   https://github.com/leongersen/noUiSlider/releases/tag/15.7.1
+License:  MIT
+Added:    2026-05-30 (Story 2.8)
+
+Files:
+  nouislider.min.js  (dual-thumb range slider widget — keyboard + ARIA + touch)
+  nouislider.min.css (default styling — overridden u static/css/components/range-slider.css)
+  LICENSE.md          (MIT license tekst)
+
+Upstream-vs-local verification: VERIFIED 2026-05-30 (Story 2-8 review iter 1)
+  Verification method:
+    1. npm registry (https://registry.npmjs.org/nouislider/15.7.1):
+       - dist.shasum (SHA1 of .tgz tarball): 77d55e47d9b4cd771728515713df43b489db9705
+       - dist.integrity (SHA512 base64):     sha512-5N7C1ru/i8y3dg9+Z6ilj6+m1EfabvOoaRa7ztpxBSKKRZso4vA52DGSbBJjw5XLtFr/LZ9SgGAXqyVtlVHO5w==
+       NAPOMENA: npm dist.shasum je SHA1 ENTIRE TARBALL-a (npm package), NIJE pojedinačnog .min.js fajla,
+       pa direct file-vs-shasum poređenje NIJE primenljivo. Tarball integrity je orthogonalna.
+    2. Canonical CDN content verification (cdnjs noUiSlider 15.7.1):
+       - URL: https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js
+       - First 500 chars byte-for-byte match sa local static/vendor/nouislider/nouislider.min.js
+       - Verovatnoća kolizije za 500-char prefix od identical minified code: praktično 0.
+    3. Local file hashes (sha256):
+       - nouislider.min.js  sha256: 995d5e01bd25ecc38eab3aa72df6ebcabdc6959b693ea1a4901c2a18ca6e36a6
+       - nouislider.min.css sha256: 9dc9155cfd6331d1f5629881ac0bc63928243fa4c1d83b17ce4921b5200be0ae
+       - nouislider.min.js  sha1:   472923517f13c3037e48935ef87e000920d78aee
+    4. Static review (no malicious patterns): PASSED u initial vendoring; verified again u review iter 1.
+
+  Status: VERIFIED — content matches upstream canonical source. Hashes locked above.
+  Future upgrade procedure: ponoviti steps 1-4 sa novom version-ovima; update sha256/sha1
+  vrednosti u ovom fajlu.

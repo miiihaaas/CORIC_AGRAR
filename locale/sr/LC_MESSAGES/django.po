@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 13:34+0000\n"
+"POT-Creation-Date: 2026-05-30 16:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,7 +136,8 @@ msgid "Serije"
 msgstr ""
 
 #: apps/brands/models.py:248 templates/partials/footer.html:23
-#: templates/partials/header.html:74
+#: templates/partials/header.html:74 templates/products/tractor_listing.html:4
+#: templates/products/tractor_listing.html:11
 msgid "Traktori"
 msgstr ""
 
@@ -182,22 +183,22 @@ msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
 #: apps/brands/views.py:41 apps/products/models.py:370
-#: apps/products/views.py:50
+#: apps/products/views.py:80
 msgid "Motor"
 msgstr ""
 
 #: apps/brands/views.py:42 apps/products/models.py:371
-#: apps/products/views.py:51
+#: apps/products/views.py:81
 msgid "Transmisija"
 msgstr ""
 
 #: apps/brands/views.py:43 apps/products/models.py:372
-#: apps/products/views.py:52
+#: apps/products/views.py:82
 msgid "Hidraulika"
 msgstr ""
 
 #: apps/brands/views.py:44 apps/brands/views.py:45 apps/products/models.py:373
-#: apps/products/views.py:53 apps/products/views.py:54
+#: apps/products/views.py:83 apps/products/views.py:84
 msgid "Ostalo"
 msgstr ""
 
@@ -282,7 +283,7 @@ msgstr ""
 msgid "Godina"
 msgstr ""
 
-#: apps/products/models.py:142
+#: apps/products/models.py:142 templates/products/partials/_filter_form.html:44
 msgid "Cena (EUR)"
 msgstr ""
 
@@ -489,6 +490,7 @@ msgstr ""
 
 #: templates/brands/partials/_series_extended.html:28
 #: templates/brands/partials/_series_grid.html:16
+#: templates/products/partials/_results_grid.html:30
 #: templates/products/partials/_similar_products.html:20
 msgid "OPŠIRNIJE"
 msgstr ""
@@ -499,6 +501,8 @@ msgid "Modeli ove serije su u pripremi."
 msgstr ""
 
 #: templates/brands/partials/_series_grid.html:14
+#: templates/products/partials/_filter_form.html:38
+#: templates/products/partials/_results_grid.html:24
 #: templates/products/partials/_similar_products.html:18
 msgid "KS"
 msgstr ""
@@ -653,6 +657,23 @@ msgstr ""
 msgid "Prebaci na %(language)s"
 msgstr ""
 
+#: templates/products/partials/_brand_header.html:3
+msgid "BRENDOVI"
+msgstr "BRENDOVI"
+
+#: templates/products/partials/_brand_header.html:4
+msgid "Brendovi traktora"
+msgstr "Brendovi traktora"
+
+#: templates/products/partials/_brand_header.html:11
+#, python-format
+msgid "%(name)s — pregled brenda"
+msgstr "%(name)s — pregled brenda"
+
+#: templates/products/partials/_brand_header.html:22
+msgid "Nema brendova trenutno."
+msgstr "Nema brendova trenutno."
+
 #: templates/products/partials/_brochure_card.html:2
 msgid "BROŠURE"
 msgstr ""
@@ -680,6 +701,60 @@ msgstr ""
 msgid "Opis proizvoda"
 msgstr ""
 
+#: templates/products/partials/_empty_state.html:4
+msgid "Nema modela koji odgovaraju vašim kriterijumima"
+msgstr "Nema modela koji odgovaraju vašim kriterijumima"
+
+#: templates/products/partials/_empty_state.html:5
+msgid ""
+"Probajte da proširite opseg filtera ili poništite filtere i pregledajte "
+"celokupnu ponudu."
+msgstr ""
+"Probajte da proširite opseg filtera ili poništite filtere i pregledajte "
+"celokupnu ponudu."
+
+#: templates/products/partials/_empty_state.html:9
+#: templates/products/partials/_filter_form.html:72
+msgid "RESETUJ FILTERE"
+msgstr "RESETUJ FILTERE"
+
+#: templates/products/partials/_filter_form.html:3
+msgid "FILTERI"
+msgstr "FILTERI"
+
+#: templates/products/partials/_filter_form.html:4
+msgid "Filteri pretrage"
+msgstr "Filteri pretrage"
+
+#: templates/products/partials/_filter_form.html:19
+msgid "Snaga (KS)"
+msgstr "Snaga (KS)"
+
+#: templates/products/partials/_filter_form.html:29
+msgid "Snaga minimum (konjske snage)"
+msgstr "Snaga minimum (konjske snage)"
+
+#: templates/products/partials/_filter_form.html:30
+msgid "Snaga maksimum (konjske snage)"
+msgstr "Snaga maksimum (konjske snage)"
+
+#: templates/products/partials/_filter_form.html:54
+msgid "Cena minimum (EUR)"
+msgstr "Cena minimum (EUR)"
+
+#: templates/products/partials/_filter_form.html:55
+msgid "Cena maksimum (EUR)"
+msgstr "Cena maksimum (EUR)"
+
+#: templates/products/partials/_filter_form.html:63
+#: templates/products/partials/_results_grid.html:27
+msgid "EUR"
+msgstr "EUR"
+
+#: templates/products/partials/_filter_form.html:78
+msgid "Učitavanje rezultata…"
+msgstr "Učitavanje rezultata…"
+
 #: templates/products/partials/_gallery_carousel.html:2
 msgid "GALERIJA"
 msgstr ""
@@ -687,6 +762,36 @@ msgstr ""
 #: templates/products/partials/_gallery_carousel.html:3
 msgid "Galerija slika"
 msgstr ""
+
+#: templates/products/partials/_results_grid.html:13
+#, python-format
+msgid "%(name)s — pregled modela"
+msgstr "%(name)s — pregled modela"
+
+#: templates/products/partials/_results_grid.html:37
+msgid "Paginacija"
+msgstr "Paginacija"
+
+#: templates/products/partials/_results_grid.html:45
+msgid "Prethodna"
+msgstr "Prethodna"
+
+#: templates/products/partials/_results_grid.html:48
+#, python-format
+msgid "Strana %(current)s od %(total)s"
+msgstr "Strana %(current)s od %(total)s"
+
+#: templates/products/partials/_results_grid.html:57
+msgid "Sledeća"
+msgstr "Sledeća"
+
+#: templates/products/partials/_results_grid.html:70
+#, python-format
+msgid "Pronađen %(counter)s model."
+msgid_plural "Pronađeno %(counter)s modela."
+msgstr[0] "Pronađen %(counter)s model."
+msgstr[1] "Pronađena %(counter)s modela."
+msgstr[2] "Pronađeno %(counter)s modela."
 
 #: templates/products/partials/_similar_products.html:2
 msgid "SLIČNI MODELI"
@@ -720,3 +825,19 @@ msgstr ""
 #, python-format
 msgid "Otvori uvećani prikaz: %(name)s"
 msgstr ""
+
+#: templates/products/tractor_listing.html:6
+msgid ""
+"Filtrirajte traktore po snazi i ceni — kompletna ponuda svih brendova Ćorić "
+"Agrar-a."
+msgstr ""
+"Filtrirajte traktore po snazi i ceni — kompletna ponuda svih brendova Ćorić "
+"Agrar-a."
+
+#: templates/products/tractor_listing.html:12
+msgid "Pronađite traktor koji odgovara vašoj farmi i budžetu."
+msgstr "Pronađite traktor koji odgovara vašoj farmi i budžetu."
+
+#: templates/products/tractor_listing.html:24
+msgid "Rezultati pretrage"
+msgstr "Rezultati pretrage"
