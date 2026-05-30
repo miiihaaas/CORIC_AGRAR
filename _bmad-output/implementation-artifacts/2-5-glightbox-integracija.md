@@ -744,9 +744,8 @@ Claude Opus 4.7 (1M context) — Dev (GREEN phase) subagent invoked by Story Orc
 - No CDN URLs in any modified file (test #21 `test_anti_cdn_no_external_lightbox_references` PASS).
 
 **AC6 manual smoke check (DevTools Console injection):**
-- DEFERRED — Dev (Opus subagent) cannot start `just dev` Docker stack and operate a live Chrome browser in this sandboxed environment.
-- Mihas must perform Subtasks 6.1–6.6 (DevTools Console injection per story I4/C4 fixes) before Story 2.7 Dev pickup.
-- Smoke checklist for Mihas:
+- ✅ **PASS (Mihas 2026-05-30):** smoke check izvršen na `http://localhost:8000/sr/`; Lightbox se otvara sa rgba(15,15,15,0.85) backdrop-om, Esc zatvara, focus se vraća na trigger element, nema fetch ka `cdn.plyr.io` (potvrđuje `plyr: false` guard).
+- Original smoke checklist (preserved for Story 2.7 + future consumer reference):
   1. `just dev` → http://localhost:8000/
   2. F12 → Console → paste:
      ```javascript
