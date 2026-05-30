@@ -222,3 +222,104 @@ def realistic_source_image_bytes():
     buf = BytesIO()
     img.save(buf, format="JPEG", quality=95)
     return buf.getvalue()
+
+
+# =============================================================================
+# Story 2.4 — PDF fixtures (TEA RED phase EXTEND)
+# =============================================================================
+#
+# Per Decision PDF-D5: minimal raw PDF struct kao pre-defined bytes konstanta
+# (mirror Story 2.3 valid_jpeg_bytes 62-byte pattern). NEMA reportlab dep, NEMA
+# checked-in binary fixture fajla.
+#
+# Mihas MORA pokrenuti kroz Docker (poppler-utils + libmagic system deps):
+#     docker compose -f compose/local.yml run --rm django uv run pytest \
+#         apps/media_pipeline/tests/test_pdf_utils.py \
+#         apps/media_pipeline/tests/test_signals.py \
+#         apps/media_pipeline/tests/test_apps_ready.py -v
+
+
+# Minimal validan 1-page PDF struct (PDF 1.4) sa "Hello PDF!" text-om.
+# Pdf2image convert_from_bytes() može render-ovati prvu stranu kao ~595×842 PIL Image.
+# Python-magic detect-uje `application/pdf` MIME iz `%PDF-` magic bytes.
+_MINIMAL_PDF_1_PAGE = (
+    b"%PDF-1.4\n"
+    b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
+    b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n"
+    b"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+    b"/Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n"
+    b"4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 24 Tf 100 700 Td (Hello PDF!) Tj ET\nendstream\nendobj\n"
+    b"5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n"
+    b"xref\n0 6\n0000000000 65535 f\n"
+    b"0000000009 00000 n\n0000000058 00000 n\n0000000111 00000 n\n"
+    b"0000000212 00000 n\n0000000293 00000 n\n"
+    b"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n358\n%%EOF\n"
+)
+
+
+@pytest.fixture
+def minimal_pdf_1_page_bytes():
+    """Minimal 1-page validan PDF struct (per Decision PDF-D5).
+
+    Passes python-magic `application/pdf` MIME detect + pdf2image convert_from_bytes()
+    render. Korišćen za AC1 happy path (`test_validate_pdf_accepts_valid_pdf`) i AC2
+    happy path (`test_generate_brochure_cover_thumbnail_returns_content_file`).
+    """
+    return _MINIMAL_PDF_1_PAGE
+
+
+@pytest.fixture
+def corrupt_pdf_bytes():
+    """Random bytes pretvarajući se da je PDF — NIJE validan PDF struct.
+
+    Bez `%PDF-` magic bytes na početku → python-magic detect-uje `application/octet-stream`
+    ili sl., NE `application/pdf`. Test scenario AC1 (rejection) i AC2 (graceful fail).
+    """
+    return b"NOT_A_PDF_AT_ALL_JUST_RANDOM_BYTES"
+
+
+@pytest.fixture
+def empty_pdf_bytes():
+    """0-byte upload — guard za empty/missing file (AC1)."""
+    return b""
+
+
+@pytest.fixture
+def oversized_pdf_bytes():
+    """Validan PDF struct + padding stream > 10 MB (size guard test AC1).
+
+    FIX iter-1 CRIT-1: MAX_PDF_UPLOAD_SIZE_BYTES = 10 MB. Test mora upload size > 10 MB.
+    Generisemo minimal PDF + padding 11 MB raw bytes posle xref (Pillow ignoruje, poppler
+    fails ali nas ne zanima render — size check je prvi).
+    """
+    padding = b"X" * (11 * 1024 * 1024)
+    return _MINIMAL_PDF_1_PAGE + b"\n% PADDING\n" + padding
+
+
+@pytest.fixture
+def high_page_count_pdf_bytes():
+    """PDF struct sa /Count > 200 stranica (page count guard test AC1, FIX iter-1 CRIT-4).
+
+    Generišemo PDF gde /Pages /Kids lista referencira 201 page objekat. Realno renderovanje
+    NIJE bitno za test — pdfinfo_from_bytes čita SAMO metadata (Pages count).
+
+    NOTE: Ako pdfinfo ne uspe da parsira (zbog truncated struct ili sl), `validate_pdf_mime`
+    swallow-uje exception i defers to render. Test mora staviti pdfinfo-parseable struct
+    sa /Count 201 — koristimo realan /Kids array sa 201 reference iako su objekti sami
+    nepostojeći (pdfinfo gleda samo /Count int).
+    """
+    # Generišemo /Kids sa 201 reference. Sami page objekti su prazni (poppler render
+    # bi pukao ali nas zanima pdfinfo metadata extract).
+    kids_refs = " ".join(f"{i} 0 R" for i in range(3, 3 + 201))
+    pdf = (
+        b"%PDF-1.4\n"
+        b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
+        b"2 0 obj\n<< /Type /Pages /Kids [" + kids_refs.encode() + b"] /Count 201 >>\nendobj\n"
+    )
+    # Dodaj 201 minimal page objekata (3..203)
+    for i in range(3, 3 + 201):
+        pdf += (
+            f"{i} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >>\nendobj\n".encode()
+        )
+    pdf += b"xref\n0 1\n0000000000 65535 f\ntrailer\n<< /Size 1 /Root 1 0 R >>\nstartxref\n9\n%%EOF\n"
+    return pdf
