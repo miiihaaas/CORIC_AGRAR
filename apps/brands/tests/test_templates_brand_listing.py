@@ -25,7 +25,6 @@ from __future__ import annotations
 import re
 
 import pytest
-from django.urls import reverse
 from django.utils.translation import activate
 
 from apps.brands.tests.factories import BrandFactory, SeriesFactory

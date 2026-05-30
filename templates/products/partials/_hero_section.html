@@ -1,0 +1,4 @@
+{% load i18n %}
+<div class="coric-product-hero" data-testid="product-hero">
+  {% include "partials/hero_overlay_card.html" with title=product.name bullets=product.key_features brand_logo=hero_brand_logo_url brand_logo_alt=product.brand.name variant=hero_variant %}
+</div>

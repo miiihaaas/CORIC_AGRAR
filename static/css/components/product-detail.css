@@ -1,0 +1,171 @@
+/* product-detail.css — Story 2.7 Product Detail layout + accordion + brochure + similar. */
+
+.coric-product-detail {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-container-gutter-desktop);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-section);
+}
+
+@media (max-width: 767px) {
+  .coric-product-detail {
+    padding: 0 var(--spacing-container-gutter-mobile);
+    gap: var(--spacing-section-mobile);
+  }
+}
+
+/* === Hero === */
+.coric-product-hero {
+  width: 100%;
+}
+
+/* === Description === */
+.coric-product-description__body {
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-semantic-text-primary);
+  max-width: 80ch;
+}
+
+/* === Specs accordion === */
+.coric-product-specs__accordion {
+  border-bottom: 1px solid var(--color-neutral-gray-300);
+  transition: background 0.2s ease;
+}
+
+.coric-product-specs__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-scale-4) 0;
+  cursor: pointer;
+  font-weight: var(--typography-weight-bold);
+  font-size: var(--typography-scale-h4);
+  color: var(--color-brand-green-800);
+  list-style: none;
+}
+
+.coric-product-specs__summary::-webkit-details-marker {
+  display: none;
+}
+
+.coric-product-specs__summary:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.coric-product-specs__section-label {
+  flex: 1;
+}
+
+.coric-product-specs__accordion-icon {
+  font-size: var(--typography-scale-h3);
+  line-height: 1;
+  color: var(--color-accent-gold-500);
+  font-weight: var(--typography-weight-bold);
+}
+
+.coric-product-specs__accordion[open] > .coric-product-specs__summary .coric-product-specs__accordion-icon::after {
+  content: "−";
+}
+
+.coric-product-specs__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-product-specs__table th,
+.coric-product-specs__table td {
+  padding: var(--spacing-scale-3) var(--spacing-scale-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-neutral-gray-100);
+  font-size: var(--typography-scale-small);
+}
+
+.coric-product-specs__table th {
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-semantic-text-muted);
+  width: 40%;
+}
+
+/* === Brochure === */
+.coric-product-brochure-wrap {
+  background: var(--color-neutral-cream);
+  padding: var(--spacing-scale-8) var(--spacing-scale-5);
+  border-radius: var(--rounded-lg);
+}
+
+.coric-product-brochure__title {
+  font-size: var(--typography-scale-h3);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-5);
+  text-align: center;
+}
+
+.coric-product-brochure__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--spacing-card-min-width-lg), 1fr));
+  gap: var(--spacing-scale-5);
+}
+
+.coric-product-brochure__card {
+  background: var(--color-neutral-white);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-scale-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.coric-product-brochure__cover {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.coric-product-brochure__cover-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.coric-product-brochure__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-2);
+}
+
+.coric-product-brochure__name {
+  font-size: var(--typography-scale-h4);
+  color: var(--color-brand-green-800);
+  margin: 0;
+}
+
+.coric-product-brochure__size {
+  font-size: var(--typography-scale-caption);
+  color: var(--color-semantic-text-muted);
+  margin: 0;
+}
+
+/* === Similar products === */
+.coric-product-similar__title {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-6);
+}
+
+.coric-product-similar__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--spacing-card-min-width-md), 1fr));
+  gap: var(--spacing-scale-5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-product-specs__accordion {
+    transition: none !important;
+  }
+}

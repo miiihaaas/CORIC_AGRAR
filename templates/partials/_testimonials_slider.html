@@ -1,5 +1,6 @@
 {% load i18n media_tags %}
-<h2 id="brand-testimonials-title" class="visually-hidden">{% translate "Iz prve ruke" %}</h2>
+{% with slider_id=slider_id|default:"testimonials-title" %}
+<h2 id="{{ slider_id }}" class="visually-hidden">{% translate "Iz prve ruke" %}</h2>
 {% include "partials/section_eyebrow.html" with text=_("IZ PRVE RUKE") tag="div" %}
 <div class="coric-testimonials-slider"
      data-testimonials-slider
@@ -48,3 +49,4 @@
   </div>
   <span class="visually-hidden" aria-live="polite" data-slider-live></span>
 </div>
+{% endwith %}

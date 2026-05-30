@@ -18,3 +18,8 @@
 @import url('./components/brand-listing.css');
 @import url('./components/statistic-medallion.css');
 @import url('./components/testimonials-slider.css');
+
+/* Components CSS imports (Story 2.7) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/product-detail.css');
+@import url('./components/product-gallery.css');
+@import url('./components/product-variants.css');

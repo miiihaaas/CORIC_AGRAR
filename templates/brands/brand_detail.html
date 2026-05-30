@@ -19,7 +19,7 @@
 
     {% if testimonials %}
       <section id="brand-testimonials" aria-labelledby="brand-testimonials-title" class="coric-testimonials">
-        {% include "brands/partials/_testimonials_slider.html" %}
+        {% include "partials/_testimonials_slider.html" with testimonials=testimonials slider_id="brand-testimonials-title" %}
       </section>
     {% endif %}
 

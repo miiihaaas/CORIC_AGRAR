@@ -288,26 +288,6 @@
   color: var(--color-brand-green-800);
 }
 
-/* === Product placeholder (SM-D21) === */
-.coric-product-placeholder {
-  padding: var(--spacing-scale-8) var(--spacing-scale-4);
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.coric-product-placeholder__title {
-  font-size: var(--typography-scale-h2);
-  color: var(--color-brand-green-800);
-  margin-bottom: var(--spacing-scale-4);
-}
-
-.coric-product-placeholder__message {
-  font-size: var(--typography-scale-body);
-  color: var(--color-neutral-gray-700);
-  margin-bottom: var(--spacing-scale-5);
-}
-
 /* === Reduced motion guard === */
 @media (prefers-reduced-motion: reduce) {
   .coric-product-card {

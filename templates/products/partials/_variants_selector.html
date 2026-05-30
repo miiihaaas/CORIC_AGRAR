@@ -1,0 +1,34 @@
+{% load i18n media_tags %}
+{% include "partials/section_eyebrow.html" with text=_("VARIJANTE") tag="div" %}
+<h2 id="product-variants-title" class="coric-product-variants__title">{% translate "Varijante proizvoda" %}</h2>
+<p class="coric-product-variants__intro">{% translate "Kliknite na varijantu za uvećani prikaz slike." %}</p>
+<div class="coric-product-variants__grid" data-testid="product-variants-grid">
+  {% for variant in product.variants.all %}
+    {% if variant.image %}
+      <a class="glightbox coric-product-variants__card"
+         data-gallery="product-{{ product.slug }}-variants"
+         href="{{ variant.image.url }}"
+         data-glightbox="title: {{ variant.name|striptags }};{% if variant.code %} description: {% translate 'Kod' %}: {{ variant.code|striptags }};{% endif %}"
+         data-testid="variant-card-{{ variant.id }}"
+         aria-label="{% blocktranslate with name=variant.name %}Otvori uvećani prikaz: {{ name }}{% endblocktranslate %}">
+        <div class="coric-product-variants__image">
+          {% responsive_picture variant.image alt=variant.name sizes="(max-width: 768px) 100vw, 25vw" loading="lazy" css_class="coric-product-variants__img" %}
+        </div>
+        <div class="coric-product-variants__body">
+          <h3 class="coric-product-variants__name">{{ variant.name }}</h3>
+          {% if variant.code %}<p class="coric-product-variants__code">{% translate "Kod" %}: {{ variant.code }}</p>{% endif %}
+          {% if variant.description %}<p class="coric-product-variants__desc">{{ variant.description }}</p>{% endif %}
+        </div>
+      </a>
+    {% else %}
+      <div class="coric-product-variants__card coric-product-variants__card--no-image"
+           data-testid="variant-card-{{ variant.id }}">
+        <div class="coric-product-variants__body">
+          <h3 class="coric-product-variants__name">{{ variant.name }}</h3>
+          {% if variant.code %}<p class="coric-product-variants__code">{% translate "Kod" %}: {{ variant.code }}</p>{% endif %}
+          {% if variant.description %}<p class="coric-product-variants__desc">{{ variant.description }}</p>{% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

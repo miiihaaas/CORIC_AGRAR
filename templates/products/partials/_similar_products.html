@@ -1,0 +1,24 @@
+{% load i18n media_tags %}
+{% include "partials/section_eyebrow.html" with text=_("SLIČNI MODELI") tag="div" %}
+<h2 id="product-similar-title" class="coric-product-similar__title">{% translate "Možda će vas zanimati i" %}</h2>
+<div class="coric-product-similar__grid" data-testid="product-similar-grid">
+  {% for sim in similar_products %}
+    <a class="coric-product-card"
+       href="{{ sim.get_absolute_url }}"
+       aria-label="{{ sim.name }}"
+       data-testid="similar-product-card-{{ sim.slug }}">
+      <div class="coric-product-card__image">
+        {% if sim.main_image %}
+          {% responsive_picture sim.main_image alt=sim.name sizes="(max-width: 768px) 100vw, 25vw" loading="lazy" css_class="coric-product-card__img" %}
+        {% endif %}
+      </div>
+      <div class="coric-product-card__body">
+        <h3 class="coric-product-card__title">{{ sim.name }}</h3>
+        {% if sim.horse_power %}
+          <p class="coric-product-card__spec">{{ sim.horse_power }} {% translate "KS" %}</p>
+        {% endif %}
+        <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "OPŠIRNIJE" %}</span>
+      </div>
+    </a>
+  {% endfor %}
+</div>

@@ -204,7 +204,7 @@ Resulting URL-ovi (sr/hu/en locale prefiks):
 - `{% block content %}` sadrži sekcije u TAČNOM redosledu (verifikuje test AC3):
   1. Hero `<section id="brand-hero" aria-labelledby="brand-hero-title">` → include `brands/partials/_hero_section.html`
   2. Statistike `<section id="brand-statistics" aria-labelledby="brand-statistics-title" class="coric-brand-statistics">` — render SAMO kada `brand.statistics` nije prazno; include `brands/partials/_statistics_medallions.html`
-  3. Testimonijali `<section id="brand-testimonials" aria-labelledby="brand-testimonials-title" class="coric-testimonials">` — render SAMO kada `testimonials` nije prazno; include `brands/partials/_testimonials_slider.html`
+  3. Testimonijali `<section id="brand-testimonials" aria-labelledby="brand-testimonials-title" class="coric-testimonials">` — render SAMO kada `testimonials` nije prazno; include `partials/_testimonials_slider.html` with `testimonials=testimonials slider_id="brand-testimonials-title"` kwargs. **Historical note:** Refactored in Story 2.7 SM-D23/D27 — shared partial moved to `templates/partials/`, parametrized with optional `slider_id` kwarg (default `"testimonials-title"`); brand_detail.html passes explicit kwarg za backwards-compat aria-labelledby reference.
   4. Serije `<section id="brand-series" aria-labelledby="brand-series-title" class="coric-brand-series">` — uvek render; include `brands/partials/_series_section.html`
   5. Catalog CTA `<section id="brand-catalog-cta" aria-labelledby="brand-catalog-cta-title" class="coric-catalog-cta-banner">` — render SAMO kada `brand.catalog_pdf` postoji; include `brands/partials/_catalog_cta.html`
 - Korenski wrapper element MORA imati `data-testid="brand-detail-page"`

@@ -172,4 +172,9 @@
   --spacing-container-max-width: 1200px;
   --spacing-container-gutter-desktop: 24px;
   --spacing-container-gutter-mobile: 16px;
+
+  /* === CARD MIN WIDTHS — Grid minmax tokens (Story 2-7 A2 cleanup) === */
+  --spacing-card-min-width-sm: 220px;  /* variants */
+  --spacing-card-min-width-md: 240px;  /* brochures or specs */
+  --spacing-card-min-width-lg: 280px;  /* similar products */
 }

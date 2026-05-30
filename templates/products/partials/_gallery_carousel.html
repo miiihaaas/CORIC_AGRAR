@@ -1,0 +1,14 @@
+{% load i18n media_tags %}
+{% include "partials/section_eyebrow.html" with text=_("GALERIJA") tag="div" %}
+<h2 id="product-gallery-title" class="visually-hidden">{% translate "Galerija slika" %}</h2>
+<div class="coric-product-gallery__grid" data-testid="product-gallery-grid">
+  {% for image in product.images.all %}
+    <a class="glightbox coric-product-gallery__item"
+       data-gallery="product-{{ product.slug }}"
+       href="{{ image.image.url }}"
+       data-glightbox="title: {{ image.alt_text|default:product.name|striptags }};"
+       data-testid="gallery-item-{{ forloop.counter }}">
+      {% responsive_picture image.image alt=image.alt_text|default:product.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-product-gallery__img" %}
+    </a>
+  {% endfor %}
+</div>

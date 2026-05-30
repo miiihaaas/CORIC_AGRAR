@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n static media_tags %}
+
+{% block title %}{{ product.name }} | {{ product.brand.name }} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{{ product.description|truncatewords:25 }}{% endblock %}
+
+{% block content %}
+  <article class="coric-product-detail" data-testid="product-detail-page">
+    <section id="product-hero" aria-labelledby="product-hero-title">
+      {% include "products/partials/_hero_section.html" %}
+    </section>
+
+    {% if product.description %}
+      <section id="product-description" aria-labelledby="product-description-title" class="coric-product-description">
+        {% include "products/partials/_description.html" %}
+      </section>
+    {% endif %}
+
+    {% if product.images.all %}
+      <section id="product-gallery" aria-labelledby="product-gallery-title" class="coric-product-gallery">
+        {% include "products/partials/_gallery_carousel.html" %}
+      </section>
+    {% endif %}
+
+    {% if product.specifications.all %}
+      <section id="product-specs" aria-labelledby="product-specs-title" class="coric-product-specs">
+        {% include "products/partials/_specs_accordion.html" %}
+      </section>
+    {% endif %}
+
+    {% if brochures_list %}
+      <aside class="coric-product-brochure-wrap" aria-labelledby="product-brochure-title">
+        {% include "products/partials/_brochure_card.html" %}
+      </aside>
+    {% endif %}
+
+    {% if similar_products %}
+      {% include "partials/wave_divider.html" with position="top" %}
+      <section id="product-similar" aria-labelledby="product-similar-title" class="coric-product-similar">
+        {% include "products/partials/_similar_products.html" %}
+      </section>
+    {% endif %}
+
+    {% if product.testimonials.all %}
+      <section id="product-testimonials" aria-labelledby="product-testimonials-title" class="coric-testimonials">
+        {% include "partials/_testimonials_slider.html" with testimonials=product.testimonials.all slider_id="product-testimonials-title" %}
+      </section>
+    {% endif %}
+
+    {% if product.variants.all %}
+      <section id="product-variants" aria-labelledby="product-variants-title" class="coric-product-variants">
+        {% include "products/partials/_variants_selector.html" %}
+      </section>
+    {% endif %}
+
+    {% block product_detail_inquiry %}{% endblock %}
+  </article>
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% load i18n media_tags %}
+{% include "partials/section_eyebrow.html" with text=_("BROŠURE") tag="div" %}
+<h2 id="product-brochure-title" class="coric-product-brochure__title">
+  {% blocktranslate count counter=brochures_list|length %}Preuzmite brošuru{% plural %}Preuzmite brošure{% endblocktranslate %}
+</h2>
+<div class="coric-product-brochure__list">
+  {% for entry in brochures_list %}
+    <div class="coric-product-brochure__card" data-testid="brochure-card-{{ entry.brochure.id }}">
+      {% if entry.brochure.cover_thumbnail_image and entry.brochure.cover_thumbnail_image.name %}
+        <div class="coric-product-brochure__cover">
+          {% responsive_picture entry.brochure.cover_thumbnail_image alt=entry.brochure.title|default:product.name sizes="(max-width: 768px) 100vw, 240px" loading="lazy" css_class="coric-product-brochure__cover-img" %}
+        </div>
+      {% endif %}
+      <div class="coric-product-brochure__meta">
+        <h3 class="coric-product-brochure__name">{{ entry.brochure.title|default:product.name }}</h3>
+        <p class="coric-product-brochure__size">{{ entry.size_bytes|filesizeformat }}, {% translate "PDF" %}</p>
+        <a href="{{ entry.brochure.pdf_file.url }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           download
+           class="coric-button coric-button--primary"
+           data-testid="brochure-download-{{ entry.brochure.id }}">
+          {% translate "PREUZMI" %}
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>

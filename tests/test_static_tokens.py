@@ -600,15 +600,19 @@ def test_ac5_spacing_tokens_present():
     )
 
 
-def test_ac5_total_63_custom_properties():
-    """AC5: tokens.css MORA imati tačno 63 CSS custom properties u :root (21 color + 42 ostali)."""
+def test_ac5_total_custom_properties():
+    """tokens.css MORA imati tačno 66 CSS custom properties u :root.
+
+    Story 1.5 AC5 baseline: 63 tokens (21 color + 42 typography/rounded/shadow/spacing).
+    Story 2-7 A2 cleanup: +3 spacing tokens (--spacing-card-min-width-{sm,md,lg}) za grid minmax().
+    """
     content = _read_tokens_css()
     # Pattern: linija počinje (sa whitespace prefix-om) `--name:`
     matches = re.findall(r"^\s*--[a-z][a-z0-9-]*\s*:", content, re.MULTILINE)
-    assert len(matches) == 63, (
-        f"tokens.css ima {len(matches)} custom properties u :root, očekivano tačno 63 "
-        f"(21 color + 42 typography/rounded/shadow/spacing). "
-        f"AC4 + AC5 + AC8 smoke check."
+    assert len(matches) == 66, (
+        f"tokens.css ima {len(matches)} custom properties u :root, očekivano tačno 66 "
+        f"(63 Story 1.5 baseline + 3 Story 2-7 spacing-card-min-width tokens). "
+        f"AC4 + AC5 + AC8 + Story 2-7 A2 smoke check."
     )
 
 

@@ -21,7 +21,6 @@ Refs:
 from __future__ import annotations
 
 import pytest
-from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import activate
 
@@ -89,7 +88,7 @@ def test_brand_detail_404_for_nonexistent_slug(client):
     trivially passed (svaki nepoznat URL je 404), pa koristimo django.urls.reverse() da
     osiguramo URL name 'brands:detail' postoji.
     """
-    from django.urls import NoReverseMatch, reverse
+    from django.urls import NoReverseMatch
 
     activate("sr")
     # Sanity: URL name MORA biti registrovan
@@ -231,7 +230,7 @@ def test_404_when_brand_does_not_exist(client):
     Verifikuje da URL pattern POSTOJI (reverse rezolvuje) pre nego testira 404 path —
     tako se sprečava trivijalni "default 404 jer URL nema match" prolaz testa.
     """
-    from django.urls import NoReverseMatch, reverse
+    from django.urls import NoReverseMatch
 
     activate("sr")
     # Sanity: URL name MORA biti registrovan

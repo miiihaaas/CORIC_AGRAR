@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-29 20:34+0000\n"
+"POT-Creation-Date: 2026-05-30 13:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
 #: apps/brands/apps.py:15 apps/brands/models.py:105
 msgid "Brendovi"
 msgstr ""
@@ -52,6 +53,7 @@ msgid "Slogan"
 msgstr ""
 
 #: apps/brands/models.py:87
+#: templates/brands/partials/_statistics_medallions.html:2
 msgid "Statistike"
 msgstr ""
 
@@ -63,7 +65,8 @@ msgstr ""
 msgid "Brend boja"
 msgstr ""
 
-#: apps/brands/models.py:98
+#: apps/brands/models.py:98 templates/brands/brand_coming_soon.html:4
+#: templates/brands/brand_coming_soon.html:18
 msgid "Uskoro"
 msgstr ""
 
@@ -133,12 +136,12 @@ msgid "Serije"
 msgstr ""
 
 #: apps/brands/models.py:248 templates/partials/footer.html:23
-#: templates/partials/header.html:79
+#: templates/partials/header.html:74
 msgid "Traktori"
 msgstr ""
 
 #: apps/brands/models.py:249 templates/partials/footer.html:24
-#: templates/partials/header.html:89
+#: templates/partials/header.html:84
 msgid "Mehanizacija"
 msgstr ""
 
@@ -178,27 +181,68 @@ msgstr ""
 msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
-#: apps/media_pipeline/apps.py:18
+#: apps/brands/views.py:41 apps/products/models.py:370
+#: apps/products/views.py:50
+msgid "Motor"
+msgstr ""
+
+#: apps/brands/views.py:42 apps/products/models.py:371
+#: apps/products/views.py:51
+msgid "Transmisija"
+msgstr ""
+
+#: apps/brands/views.py:43 apps/products/models.py:372
+#: apps/products/views.py:52
+msgid "Hidraulika"
+msgstr ""
+
+#: apps/brands/views.py:44 apps/brands/views.py:45 apps/products/models.py:373
+#: apps/products/views.py:53 apps/products/views.py:54
+msgid "Ostalo"
+msgstr ""
+
+#: apps/media_pipeline/apps.py:21
 msgid "Media pipeline"
 msgstr ""
 
-#: apps/media_pipeline/utils.py:52
+#: apps/media_pipeline/pdf_utils.py:85
+msgid "PDF brošura je prazna ili nije priložena."
+msgstr ""
+
+#: apps/media_pipeline/pdf_utils.py:90
+#, python-format
+msgid ""
+"PDF brošura je veća od %(limit)d MB. Maksimalna dozvoljena veličina je "
+"%(limit)d MB."
+msgstr ""
+
+#: apps/media_pipeline/pdf_utils.py:104
+#, python-format
+msgid "Nedozvoljen tip fajla: %(mime)s. Dozvoljen je samo PDF format."
+msgstr ""
+
+#: apps/media_pipeline/pdf_utils.py:120
+#, python-format
+msgid "PDF brošura ima %(pages)d stranica. Maksimum je %(limit)d."
+msgstr ""
+
+#: apps/media_pipeline/utils.py:59
 msgid "Slika je prazna ili nije priložena."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:57
+#: apps/media_pipeline/utils.py:64
 #, python-format
 msgid ""
 "Slika je veća od %(limit)d MB. Maksimalna dozvoljena veličina je %(limit)d "
 "MB."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:70
+#: apps/media_pipeline/utils.py:77
 #, python-format
 msgid "Nedozvoljen tip slike: %(mime)s. Dozvoljeni tipovi: %(allowed)s."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:80
+#: apps/media_pipeline/utils.py:100
 msgid "Slika je oštećena ili nije validan format."
 msgstr ""
 
@@ -292,6 +336,9 @@ msgid "Slike proizvoda"
 msgstr ""
 
 #: apps/products/models.py:328
+#: templates/products/partials/_variants_selector.html:11
+#: templates/products/partials/_variants_selector.html:19
+#: templates/products/partials/_variants_selector.html:28
 msgid "Kod"
 msgstr ""
 
@@ -305,22 +352,6 @@ msgstr ""
 
 #: apps/products/models.py:349
 msgid "Varijante"
-msgstr ""
-
-#: apps/products/models.py:370
-msgid "Motor"
-msgstr ""
-
-#: apps/products/models.py:371
-msgid "Transmisija"
-msgstr ""
-
-#: apps/products/models.py:372
-msgid "Hidraulika"
-msgstr ""
-
-#: apps/products/models.py:373
-msgid "Ostalo"
 msgstr ""
 
 #: apps/products/models.py:382
@@ -404,20 +435,120 @@ msgstr ""
 msgid "Sličan proizvod ne sme biti isti kao izvorni proizvod."
 msgstr ""
 
-#: templates/base.html:18
+#: templates/base.html:19
 msgid "Preskoči na sadržaj"
 msgstr ""
 
-#: templates/base.html:24
+#: templates/base.html:25
 msgid "Dobrodošli."
 msgstr ""
 
-#: templates/base.html:31
+#: templates/base.html:32
 msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
 
-#: templates/partials/footer.html:9 templates/partials/header.html:76
+#: templates/brands/brand_coming_soon.html:4
+#: templates/brands/brand_detail.html:4
+#: templates/products/product_detail.html:4
+msgid "Ćorić Agrar"
+msgstr ""
+
+#: templates/brands/brand_coming_soon.html:6
+#: templates/brands/brand_coming_soon.html:19
+#, python-format
+msgid "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
+msgstr ""
+
+#: templates/brands/brand_coming_soon.html:20
+msgid "Nazad na Home"
+msgstr ""
+
+#: templates/brands/brand_detail.html:10
+#, python-format
+msgid "Hero sekcija — %(name)s"
+msgstr ""
+
+#: templates/brands/brand_detail.html:27
+msgid "Modeli brenda"
+msgstr ""
+
+#: templates/brands/partials/_catalog_cta.html:4
+msgid "KATALOG"
+msgstr ""
+
+#: templates/brands/partials/_catalog_cta.html:5
+#: templates/brands/partials/_catalog_cta.html:12
+msgid "Preuzmi katalog"
+msgstr ""
+
+#: templates/brands/partials/_catalog_cta.html:6
+#, python-format
+msgid "Kompletan PDF katalog modela brenda %(brand)s."
+msgstr ""
+
+#: templates/brands/partials/_series_extended.html:28
+#: templates/brands/partials/_series_grid.html:16
+#: templates/products/partials/_similar_products.html:20
+msgid "OPŠIRNIJE"
+msgstr ""
+
+#: templates/brands/partials/_series_extended.html:32
+#: templates/brands/partials/_series_grid.html:20
+msgid "Modeli ove serije su u pripremi."
+msgstr ""
+
+#: templates/brands/partials/_series_grid.html:14
+#: templates/products/partials/_similar_products.html:18
+msgid "KS"
+msgstr ""
+
+#: templates/brands/partials/_series_section.html:13
+msgid "Modeli ovog brenda su u pripremi."
+msgstr ""
+
+#: templates/brands/partials/_statistics_medallions.html:3
+msgid "STATISTIKE"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:3
+msgid "Iz prve ruke"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:4
+msgid "IZ PRVE RUKE"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:9
+msgid "karusel"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:10
+msgid "Testimonijali korisnika"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:16
+msgid "slajd"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:17
+#, python-format
+msgid "%(counter)s od %(total)s"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:36
+msgid "Prethodni"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:41
+msgid "Pauziraj"
+msgstr ""
+
+#: templates/partials/_testimonials_slider.html:47
+msgid "Sledeći"
+msgstr ""
+
+#: templates/partials/footer.html:9 templates/partials/header.html:71
 msgid "Pocetna"
 msgstr ""
 
@@ -425,7 +556,7 @@ msgstr ""
 msgid "Prijatelj koji razume zemlju!"
 msgstr ""
 
-#: templates/partials/footer.html:25 templates/partials/header.html:95
+#: templates/partials/footer.html:25 templates/partials/header.html:90
 msgid "Polovna mehanizacija"
 msgstr ""
 
@@ -445,7 +576,7 @@ msgstr ""
 msgid "Lorem ipsum dolor sit amet (vest 3)"
 msgstr ""
 
-#: templates/partials/footer.html:48 templates/partials/header.html:24
+#: templates/partials/footer.html:48 templates/partials/header.html:19
 msgid "Vojvodjanska 1, Basaid, Srbija"
 msgstr ""
 
@@ -453,59 +584,59 @@ msgstr ""
 msgid "Sva prava zadrzana."
 msgstr ""
 
-#: templates/partials/header.html:9
+#: templates/partials/header.html:4
 msgid "Kontakt informacije"
 msgstr ""
 
-#: templates/partials/header.html:16
+#: templates/partials/header.html:11
 msgid "Pokazi kontakt informacije"
 msgstr ""
 
-#: templates/partials/header.html:27
+#: templates/partials/header.html:22
 msgid "Telefon prodaje"
 msgstr ""
 
-#: templates/partials/header.html:32
+#: templates/partials/header.html:27
 msgid "Telefon servisa"
 msgstr ""
 
-#: templates/partials/header.html:33 templates/partials/header.html:98
+#: templates/partials/header.html:28 templates/partials/header.html:93
 msgid "Servis"
 msgstr ""
 
-#: templates/partials/header.html:54
+#: templates/partials/header.html:49
 msgid "Glavna navigacija"
 msgstr ""
 
-#: templates/partials/header.html:69
+#: templates/partials/header.html:64
 msgid "Otvori meni"
 msgstr ""
 
-#: templates/partials/header.html:92
+#: templates/partials/header.html:87
 msgid "Prikljucna mehanizacija (Jeegee)"
 msgstr ""
 
-#: templates/partials/header.html:93
+#: templates/partials/header.html:88
 msgid "Radne masine (HZM)"
 msgstr ""
 
-#: templates/partials/header.html:94
+#: templates/partials/header.html:89
 msgid "MIX prikolice (Tulip)"
 msgstr ""
 
-#: templates/partials/header.html:99
+#: templates/partials/header.html:94
 msgid "Price sa polja"
 msgstr ""
 
-#: templates/partials/header.html:100
+#: templates/partials/header.html:95
 msgid "O nama"
 msgstr ""
 
-#: templates/partials/header.html:101
+#: templates/partials/header.html:96
 msgid "Kontakt"
 msgstr ""
 
-#: templates/partials/header.html:106
+#: templates/partials/header.html:101
 msgid "Otvori pretragu"
 msgstr ""
 
@@ -517,7 +648,75 @@ msgstr ""
 msgid "Promeni jezik"
 msgstr ""
 
-#: templates/partials/language_switcher_nav.html:16
+#: templates/partials/language_switcher_nav.html:13
 #, python-format
 msgid "Prebaci na %(language)s"
+msgstr ""
+
+#: templates/products/partials/_brochure_card.html:2
+msgid "BROŠURE"
+msgstr ""
+
+#: templates/products/partials/_brochure_card.html:4
+msgid "Preuzmite brošuru"
+msgid_plural "Preuzmite brošure"
+msgstr[0] "Preuzmite brošuru"
+msgstr[1] "Preuzmite brošure"
+msgstr[2] "Preuzmite brošura"
+
+#: templates/products/partials/_brochure_card.html:16
+msgid "PDF"
+msgstr ""
+
+#: templates/products/partials/_brochure_card.html:23
+msgid "PREUZMI"
+msgstr ""
+
+#: templates/products/partials/_description.html:2
+msgid "OPIS PROIZVODA"
+msgstr ""
+
+#: templates/products/partials/_description.html:3
+msgid "Opis proizvoda"
+msgstr ""
+
+#: templates/products/partials/_gallery_carousel.html:2
+msgid "GALERIJA"
+msgstr ""
+
+#: templates/products/partials/_gallery_carousel.html:3
+msgid "Galerija slika"
+msgstr ""
+
+#: templates/products/partials/_similar_products.html:2
+msgid "SLIČNI MODELI"
+msgstr ""
+
+#: templates/products/partials/_similar_products.html:3
+msgid "Možda će vas zanimati i"
+msgstr ""
+
+#: templates/products/partials/_specs_accordion.html:2
+msgid "SPECIFIKACIJE"
+msgstr ""
+
+#: templates/products/partials/_specs_accordion.html:3
+msgid "Tehničke specifikacije"
+msgstr ""
+
+#: templates/products/partials/_variants_selector.html:2
+msgid "VARIJANTE"
+msgstr ""
+
+#: templates/products/partials/_variants_selector.html:3
+msgid "Varijante proizvoda"
+msgstr ""
+
+#: templates/products/partials/_variants_selector.html:4
+msgid "Kliknite na varijantu za uvećani prikaz slike."
+msgstr ""
+
+#: templates/products/partials/_variants_selector.html:13
+#, python-format
+msgid "Otvori uvećani prikaz: %(name)s"
 msgstr ""

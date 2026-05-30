@@ -1,0 +1,21 @@
+{% load i18n %}
+{% include "partials/section_eyebrow.html" with text=_("SPECIFIKACIJE") tag="div" %}
+<h2 id="product-specs-title" class="visually-hidden">{% translate "Tehničke specifikacije" %}</h2>
+{% regroup product.specifications.all by section_label as spec_sections %}
+{% for section_group in spec_sections %}
+  <details class="coric-product-specs__accordion"
+           {% if forloop.first %}open{% endif %}
+           data-testid="spec-section-{{ section_group.grouper|slugify }}">
+    <summary class="coric-product-specs__summary">
+      <span class="coric-product-specs__section-label">{{ section_group.grouper }}</span>
+      <span class="coric-product-specs__accordion-icon" aria-hidden="true">+</span>
+    </summary>
+    <table class="coric-product-specs__table">
+      <tbody>
+        {% for spec in section_group.list %}
+          <tr><th scope="row">{{ spec.key }}</th><td>{{ spec.value }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+{% endfor %}

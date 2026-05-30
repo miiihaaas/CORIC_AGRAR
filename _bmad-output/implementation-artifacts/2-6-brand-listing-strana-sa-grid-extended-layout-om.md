@@ -1335,6 +1335,9 @@ Story 1.7 deliverable `templates/partials/pill_button.html` render-uje `<a>` (de
 - `ruff format` na fajlovima koje sam kreirao — clean (auto-formatted views.py kroz `ruff format`)
 - `djade` na novim templates — clean (auto-formatted 3 fajla kroz djade)
 
+### Story 2.7 cascade footnote (2026-05-30)
+- Story 2.7 GREEN-phase refaktorisala `templates/brands/partials/_testimonials_slider.html` → `templates/partials/_testimonials_slider.html` (shared lokacija); partial dobio opcioni `slider_id` kwarg sa default `"testimonials-title"`. `brand_detail.html` linija 22 ažuriran da prosledi `slider_id="brand-testimonials-title"` kwarg, preserving postojeću `aria-labelledby` referencu (Story 2.6 testovi netaknuti). Per SM-D23/D27 — vidi `2-7-interface-contract.md § 4 templates/partials/_testimonials_slider.html`.
+
 ---
 
 ## Code Review Iteration 1 — Fixes (2026-05-30)
