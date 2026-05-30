@@ -1,11 +1,6 @@
 {% load i18n static %}
 
-{# Story 1.8 — Top header + Main nav.
-   CRITICAL-7 / D17 flatten Option A: no outer header wrapper element.
-   The top-header div and the nav element are siblings at template root.
-   Sentinel je u base.html (direct child body), NIJE ovde — CRITICAL-5. #}
 
-{# CRITICAL-CASCADE-1: role="banner" na .coric-top-header (ARIA landmark restoration after flatten). #}
 <div class="coric-top-header" role="banner" aria-label="{% translate "Kontakt informacije" %}">
   <button type="button"
           class="coric-top-header__mobile-toggle d-md-none"
