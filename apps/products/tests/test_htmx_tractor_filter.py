@@ -309,6 +309,45 @@ def test_pagination_link_has_href_fallback(client):
     )
 
 
+def test_pagination_url_has_no_double_question_mark(client):
+    """AC6 + SM-D18 regression guard (cross-story discovery from Story 2.9 review):
+    pagination URL-ovi NE SMEJU sadržati `??` substring.
+
+    Django 5.2 `{% querystring %}` tag emituje vodeći `?` automatski; ako template
+    pogrešno koristi `?{% querystring %}` (literal `?` + tag koji takođe emituje `?`),
+    URL postaje `??page=N` što je broken pagination. Story 2.8 `_results_grid.html`
+    je imao ovaj bug na linijama 39/43/51/55 — popravljen u Story 2.9 Iter-1 Fix Pass.
+
+    Setup: 26 traktor product-a (paginate_by=24 → 2 strane → pagination CTAs postoje).
+    """
+    activate("sr")
+    brand = BrandFactory.create()
+    for i in range(26):
+        TractorProductFactory.create(brand=brand, name=f"NoDoubleQ Tractor {i}")
+
+    response = client.get("/sr/traktori/", HTTP_HOST="localhost")
+    html = response.content.decode("utf-8")
+
+    pagination_pattern = re.compile(
+        r'<a[^>]*data-testid="pagination-(prev|next)"[^>]*>',
+        re.IGNORECASE,
+    )
+    matches = list(pagination_pattern.finditer(html))
+    assert matches, "Pagination links MORAJU postojati za regression guard (26 > 24 paginate_by)."
+
+    for m in matches:
+        tag = m.group(0)
+        assert "??" not in tag, (
+            f"Pagination link sadrži `??` (double question mark — Django 5.2 querystring "
+            f"tag misuse). Tag: {tag!r}. Use `{{% querystring page=N %}}` BEZ literal "
+            f"`?` prefiksa (querystring tag već emituje vodeći `?`)."
+        )
+        # Mora imati single ? sa page= negde u URL-u
+        assert re.search(r'\?(?:[a-z_]+=[^&"]+&)*page=\d+', tag), (
+            f"Pagination link MORA imati `?page=N` ili `?...&page=N` u URL-u. Tag: {tag!r}."
+        )
+
+
 # =============================================================================
 # AC6 — Initial server-side render also has filtered results (URL deep-link)
 # =============================================================================

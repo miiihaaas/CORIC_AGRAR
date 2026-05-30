@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 16:10+0000\n"
+"POT-Creation-Date: 2026-05-30 19:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,6 +80,7 @@ msgstr ""
 
 #: apps/brands/models.py:104 apps/brands/models.py:177
 #: apps/products/models.py:102
+#: templates/products/partials/_used_filter_form.html:32
 msgid "Brend"
 msgstr ""
 
@@ -155,6 +156,7 @@ msgid "Ikona (Bootstrap Icons class)"
 msgstr ""
 
 #: apps/brands/models.py:271 apps/brands/models.py:323
+#: templates/products/partials/_used_filter_form.html:19
 msgid "Kategorija"
 msgstr ""
 
@@ -183,22 +185,22 @@ msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
 #: apps/brands/views.py:41 apps/products/models.py:370
-#: apps/products/views.py:80
+#: apps/products/views.py:92
 msgid "Motor"
 msgstr ""
 
 #: apps/brands/views.py:42 apps/products/models.py:371
-#: apps/products/views.py:81
+#: apps/products/views.py:93
 msgid "Transmisija"
 msgstr ""
 
 #: apps/brands/views.py:43 apps/products/models.py:372
-#: apps/products/views.py:82
+#: apps/products/views.py:94
 msgid "Hidraulika"
 msgstr ""
 
 #: apps/brands/views.py:44 apps/brands/views.py:45 apps/products/models.py:373
-#: apps/products/views.py:83 apps/products/views.py:84
+#: apps/products/views.py:95 apps/products/views.py:96
 msgid "Ostalo"
 msgstr ""
 
@@ -284,6 +286,7 @@ msgid "Godina"
 msgstr ""
 
 #: apps/products/models.py:142 templates/products/partials/_filter_form.html:44
+#: templates/products/partials/_used_filter_form.html:45
 msgid "Cena (EUR)"
 msgstr ""
 
@@ -436,6 +439,22 @@ msgstr ""
 msgid "Sličan proizvod ne sme biti isti kao izvorni proizvod."
 msgstr ""
 
+#: apps/products/views.py:381
+msgid "Najnovije prvo (datum dodavanja)"
+msgstr "Najnovije prvo (datum dodavanja)"
+
+#: apps/products/views.py:382
+msgid "Cena: rastuće"
+msgstr "Cena: rastuće"
+
+#: apps/products/views.py:383
+msgid "Cena: opadajuće"
+msgstr "Cena: opadajuće"
+
+#: apps/products/views.py:384
+msgid "Godina: opadajuće"
+msgstr "Godina: opadajuće"
+
 #: templates/base.html:19
 msgid "Preskoči na sadržaj"
 msgstr ""
@@ -492,6 +511,7 @@ msgstr ""
 #: templates/brands/partials/_series_grid.html:16
 #: templates/products/partials/_results_grid.html:30
 #: templates/products/partials/_similar_products.html:20
+#: templates/products/partials/_used_results_grid.html:33
 msgid "OPŠIRNIJE"
 msgstr ""
 
@@ -561,6 +581,8 @@ msgid "Prijatelj koji razume zemlju!"
 msgstr ""
 
 #: templates/partials/footer.html:25 templates/partials/header.html:90
+#: templates/products/used_machinery_listing.html:4
+#: templates/products/used_machinery_listing.html:11
 msgid "Polovna mehanizacija"
 msgstr ""
 
@@ -715,10 +737,12 @@ msgstr ""
 
 #: templates/products/partials/_empty_state.html:9
 #: templates/products/partials/_filter_form.html:72
+#: templates/products/partials/_used_filter_form.html:111
 msgid "RESETUJ FILTERE"
 msgstr "RESETUJ FILTERE"
 
 #: templates/products/partials/_filter_form.html:3
+#: templates/products/partials/_used_filter_form.html:3
 msgid "FILTERI"
 msgstr "FILTERI"
 
@@ -739,19 +763,24 @@ msgid "Snaga maksimum (konjske snage)"
 msgstr "Snaga maksimum (konjske snage)"
 
 #: templates/products/partials/_filter_form.html:54
+#: templates/products/partials/_used_filter_form.html:55
 msgid "Cena minimum (EUR)"
 msgstr "Cena minimum (EUR)"
 
 #: templates/products/partials/_filter_form.html:55
+#: templates/products/partials/_used_filter_form.html:56
 msgid "Cena maksimum (EUR)"
 msgstr "Cena maksimum (EUR)"
 
 #: templates/products/partials/_filter_form.html:63
 #: templates/products/partials/_results_grid.html:27
+#: templates/products/partials/_used_filter_form.html:64
+#: templates/products/partials/_used_results_grid.html:30
 msgid "EUR"
 msgstr "EUR"
 
 #: templates/products/partials/_filter_form.html:78
+#: templates/products/partials/_used_filter_form.html:117
 msgid "Učitavanje rezultata…"
 msgstr "Učitavanje rezultata…"
 
@@ -769,23 +798,28 @@ msgid "%(name)s — pregled modela"
 msgstr "%(name)s — pregled modela"
 
 #: templates/products/partials/_results_grid.html:37
+#: templates/products/partials/_used_results_grid.html:40
 msgid "Paginacija"
 msgstr "Paginacija"
 
 #: templates/products/partials/_results_grid.html:45
+#: templates/products/partials/_used_results_grid.html:48
 msgid "Prethodna"
 msgstr "Prethodna"
 
 #: templates/products/partials/_results_grid.html:48
+#: templates/products/partials/_used_results_grid.html:51
 #, python-format
 msgid "Strana %(current)s od %(total)s"
 msgstr "Strana %(current)s od %(total)s"
 
 #: templates/products/partials/_results_grid.html:57
+#: templates/products/partials/_used_results_grid.html:60
 msgid "Sledeća"
 msgstr "Sledeća"
 
-#: templates/products/partials/_results_grid.html:70
+#: templates/products/partials/_results_grid.html:71
+#: templates/products/partials/_used_results_grid.html:70
 #, python-format
 msgid "Pronađen %(counter)s model."
 msgid_plural "Pronađeno %(counter)s modela."
@@ -808,6 +842,57 @@ msgstr ""
 #: templates/products/partials/_specs_accordion.html:3
 msgid "Tehničke specifikacije"
 msgstr ""
+
+#: templates/products/partials/_used_empty_state.html:4
+msgid "Trenutno nemamo polovne mehanizacije u ponudi"
+msgstr "Trenutno nemamo polovne mehanizacije u ponudi"
+
+#: templates/products/partials/_used_empty_state.html:5
+msgid ""
+"Pogledajte našu ponudu novih traktora ili promenite kriterijume pretrage."
+msgstr ""
+"Pogledajte našu ponudu novih traktora ili promenite kriterijume pretrage."
+
+#: templates/products/partials/_used_empty_state.html:9
+msgid "POGLEDAJ NOVE TRAKTORE"
+msgstr "POGLEDAJ NOVE TRAKTORE"
+
+#: templates/products/partials/_used_filter_form.html:4
+msgid "Filteri pretrage polovne mehanizacije"
+msgstr "Filteri pretrage polovne mehanizacije"
+
+#: templates/products/partials/_used_filter_form.html:24
+msgid "Sve kategorije"
+msgstr "Sve kategorije"
+
+#: templates/products/partials/_used_filter_form.html:37
+msgid "Svi brendovi"
+msgstr "Svi brendovi"
+
+#: templates/products/partials/_used_filter_form.html:70
+msgid "Godina proizvodnje"
+msgstr "Godina proizvodnje"
+
+#: templates/products/partials/_used_filter_form.html:80
+msgid "Godina minimum"
+msgstr "Godina minimum"
+
+#: templates/products/partials/_used_filter_form.html:81
+msgid "Godina maksimum"
+msgstr "Godina maksimum"
+
+#: templates/products/partials/_used_filter_form.html:96
+msgid "Sortiraj po"
+msgstr "Sortiraj po"
+
+#: templates/products/partials/_used_results_grid.html:13
+#, python-format
+msgid "%(name)s — pregled polovnog modela"
+msgstr "%(name)s — pregled polovnog modela"
+
+#: templates/products/partials/_used_results_grid.html:25
+msgid "Godina proizvodnje:"
+msgstr "Godina proizvodnje:"
 
 #: templates/products/partials/_variants_selector.html:2
 msgid "VARIJANTE"
@@ -841,3 +926,23 @@ msgstr "Pronađite traktor koji odgovara vašoj farmi i budžetu."
 #: templates/products/tractor_listing.html:24
 msgid "Rezultati pretrage"
 msgstr "Rezultati pretrage"
+
+#: templates/products/used_machinery_listing.html:6
+msgid ""
+"Polovna poljoprivredna mehanizacija — filtrirajte po kategoriji, brendu, "
+"ceni i godini proizvodnje."
+msgstr ""
+"Polovna poljoprivredna mehanizacija — filtrirajte po kategoriji, brendu, "
+"ceni i godini proizvodnje."
+
+#: templates/products/used_machinery_listing.html:12
+msgid ""
+"Pregled polovnih mašina iz naše ponude — filtrirajte po kategoriji, brendu, "
+"ceni i godini proizvodnje."
+msgstr ""
+"Pregled polovnih mašina iz naše ponude — filtrirajte po kategoriji, brendu, "
+"ceni i godini proizvodnje."
+
+#: templates/products/used_machinery_listing.html:20
+msgid "Rezultati pretrage polovne mehanizacije"
+msgstr "Rezultati pretrage polovne mehanizacije"

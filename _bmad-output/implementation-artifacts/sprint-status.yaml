@@ -36,7 +36,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-27
-last_updated: 2026-05-30  # Story 2-8 done — Code Review 5/5 PASS (1 fix iter: 2 BUG-HIGH [11 CSS missing tokens + multi-line {# #} comment leak], 2 SECURITY [Vary: HX-Request cache poisoning + noUiSlider integrity VERIFIED], 2 TEST_GAP regression guards; 0 unfixable). 653 tests pass project-wide. PRVA HTMX story u Epic 2 — kanonski request.htmx branching + OOB aria-live + hx-push-url pattern. Query budget locked at 3 SQL. SM-D24 added. AC9 manual Lighthouse smoke deferred to Mihas.
+last_updated: 2026-05-30  # Story 2-9 done — Code Review 5/5 PASS (1 fix iter, 2 iter validation rounds; 1 BUG-HIGH cross-story discovery: Story 2.8 `?{% querystring %}` → `??page=N` regression FIXED u istom PR-u + regression guard test, 2 TEST_GAP polish, 1 BEM acceptable per Story 2.6 SM-D, 1 unfixable [en/hu msgstr deferred per Subtask 7.4]); 92 Story 2.9 tests pass (+1 default-sort + 1 cross-story 2.8 guard); 480 apps tests pass (0 regressions). SM-D28 added (cross-story bugfix lesson: verify {% querystring %} tag empirically pre-rejecting Adversarial CRITICAL nalaza). Druga HTMX story u Epic 2; reuse iz 2.8: noUiSlider vendor + tractor-filters.js IIFE + range-slider.css + coric-product-card BEM 1:1. AC9 manual Lighthouse smoke deferred to Mihas.
 project: CORIC_AGRAR
 # Note: Story 1.1 transitioned from backlog → ready-for-dev on 2026-05-27;
 #       Epic 1 transitioned from backlog → in-progress (first story in epic created).
@@ -72,7 +72,7 @@ dev elopment_status:
   2-6-brand-listing-strana-sa-grid-extended-layout-om: done
   2-7-product-detail-strana: done
   2-8-tractor-listing-strana-sa-htmx-filterima: done
-  2-9-used-machinery-listing-sa-filterima: backlog
+  2-9-used-machinery-listing-sa-filterima: done
   2-10-jeegee-prikljucna-mehanizacija-strana: backlog
   2-11-subcategory-listing-4-nivoa-hijerarhija: backlog
   2-12-hzm-radne-masine-tulip-mix-prikolice-strane: backlog

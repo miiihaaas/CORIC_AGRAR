@@ -1,17 +1,17 @@
 {% load i18n media_tags %}
 
-<div id="tractor-results"
-     class="coric-tractor-results__inner"
+<div id="used-results"
+     class="coric-used-machinery-results__inner"
      role="region"
-     aria-labelledby="tractor-results-title"
-     data-testid="tractor-results-grid">
+     aria-labelledby="used-results-title"
+     data-testid="used-results-grid">
   {% if products %}
-    <div class="coric-tractor-results__grid">
+    <div class="coric-used-machinery-results__grid">
       {% for product in products %}
         <a class="coric-product-card"
            href="{{ product.get_absolute_url }}"
-           aria-label="{% blocktranslate with name=product.name %}{{ name }} — pregled modela{% endblocktranslate %}"
-           data-testid="tractor-card-{{ product.slug }}">
+           aria-label="{% blocktranslate with name=product.name %}{{ name }} — pregled polovnog modela{% endblocktranslate %}"
+           data-testid="used-card-{{ product.slug }}">
           <div class="coric-product-card__image">
             {% if product.main_image %}
               {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-product-card__img" %}
@@ -20,8 +20,11 @@
           <div class="coric-product-card__body">
             <h3 class="coric-product-card__title">{{ product.name }}</h3>
             <div class="coric-product-card__meta">
-              {% if product.horse_power %}
-                <p class="coric-product-card__spec">{{ product.horse_power }} {% translate "KS" %}</p>
+              {% if product.year %}
+                <p class="coric-product-card__spec coric-product-card__year">
+                  <span class="visually-hidden">{% translate "Godina proizvodnje:" %}</span>
+                  {{ product.year }}
+                </p>
               {% endif %}
               {% if product.price_eur %}
                 <p class="coric-product-card__price">{{ product.price_eur|floatformat:0 }} {% translate "EUR" %}</p>
@@ -34,22 +37,22 @@
     </div>
 
     {% if is_paginated %}
-      <nav class="coric-tractor-results__pagination" aria-label="{% translate 'Paginacija' %}">
+      <nav class="coric-used-machinery-results__pagination" aria-label="{% translate 'Paginacija' %}">
         {% if page_obj.has_previous %}
           <a hx-get="{% querystring page=page_obj.previous_page_number %}"
-             hx-target="#tractor-results"
+             hx-target="#used-results"
              hx-swap="innerHTML"
              hx-push-url="true"
              href="{% querystring page=page_obj.previous_page_number %}"
              class="coric-button coric-button--secondary"
              data-testid="pagination-prev">{% translate "Prethodna" %}</a>
         {% endif %}
-        <span class="coric-tractor-results__page-info">
+        <span class="coric-used-machinery-results__page-info">
           {% blocktranslate with current=page_obj.number total=paginator.num_pages %}Strana {{ current }} od {{ total }}{% endblocktranslate %}
         </span>
         {% if page_obj.has_next %}
           <a hx-get="{% querystring page=page_obj.next_page_number %}"
-             hx-target="#tractor-results"
+             hx-target="#used-results"
              hx-swap="innerHTML"
              hx-push-url="true"
              href="{% querystring page=page_obj.next_page_number %}"
@@ -59,13 +62,10 @@
       </nav>
     {% endif %}
   {% else %}
-    {% include "products/partials/_empty_state.html" %}
+    {% include "products/partials/_used_empty_state.html" %}
   {% endif %}
 </div>
 
-{% comment %}SM-D23 OOB guard — OOB div SAMO za HTMX response, sprečava plain-text render
-u inicijalnom server-side full-page render-u. Aria-live announcement target je
-singleton iz base.html linija 29 (htmx_aria.aria_live tag).{% endcomment %}
 {% if request.htmx %}
 <div hx-swap-oob="innerHTML:#aria-live">{% blocktranslate count counter=count %}Pronađen {{ counter }} model.{% plural %}Pronađeno {{ counter }} modela.{% endblocktranslate %}</div>
 {% endif %}

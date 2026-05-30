@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<div class="coric-used-machinery-empty" data-testid="used-empty-state">
+  <h3 class="coric-used-machinery-empty__title">{% translate "Trenutno nemamo polovne mehanizacije u ponudi" %}</h3>
+  <p class="coric-used-machinery-empty__lead">{% translate "Pogledajte našu ponudu novih traktora ili promenite kriterijume pretrage." %}</p>
+  <a href="{% url 'products:tractor_list' %}"
+     class="coric-button coric-button--primary"
+     data-testid="empty-view-new-tractors-button">
+    {% translate "POGLEDAJ NOVE TRAKTORE" %}
+  </a>
+</div>

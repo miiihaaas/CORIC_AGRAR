@@ -446,3 +446,92 @@ class TractorProductFactory:
     def create_unpublished(cls, brand=None, **overrides: Any):
         overrides["is_published"] = False
         return cls.create(brand=brand, **overrides)
+
+
+# =============================================================================
+# Story 2.9 — UsedProductFactory (kreira Product u USED + mehanizacija scope-u)
+# =============================================================================
+
+
+class UsedProductFactory:
+    """Helper koji kreira Product u USED + mehanizacija scope-u za Story 2.9 testove.
+
+    Story 2.9 UsedMachineryListView filter:
+        Product.objects.filter(
+            is_published=True,
+            condition='used',
+        )
+
+    Optional kategorija filter primenjuje subcategory__category__is_for='mehanizacija'.
+
+    Kreira shared Category(is_for='mehanizacija') + Subcategory + delegira na
+    ProductFactory.create() sa condition='used' + subcategory= override.
+    NE menja postojeći TractorProductFactory (Story 2.8 owner — koristi 'traktori' scope).
+    """
+
+    _SHARED_CATEGORY_SLUG = "tea-mehanizacija-default"
+    _SHARED_SUBCATEGORY_SLUG = "tea-mech-default-subcat"
+
+    @classmethod
+    def _get_or_create_subcategory(cls):
+        from apps.brands.models import Category, Subcategory
+
+        category, _ = Category.objects.get_or_create(
+            slug=cls._SHARED_CATEGORY_SLUG,
+            defaults={"name": "TEA Mehanizacija Default", "is_for": "mehanizacija"},
+        )
+        subcategory, _ = Subcategory.objects.get_or_create(
+            category=category,
+            slug=cls._SHARED_SUBCATEGORY_SLUG,
+            parent=None,
+            defaults={"name": "TEA Mehanizacija Default Subcat"},
+        )
+        return subcategory
+
+    @classmethod
+    def create(cls, brand=None, year=None, price_eur=None, **overrides: Any):
+        from apps.products.models import Product
+
+        subcategory = cls._get_or_create_subcategory()
+        overrides.setdefault("subcategory", subcategory)
+        overrides.setdefault("condition", Product.ConditionChoice.USED)
+        if year is not None:
+            overrides["year"] = year
+        if price_eur is not None:
+            overrides["price_eur"] = price_eur
+        return ProductFactory.create(brand=brand, **overrides)
+
+    @classmethod
+    def create_unpublished(cls, brand=None, **overrides: Any):
+        overrides["is_published"] = False
+        return cls.create(brand=brand, **overrides)
+
+    @classmethod
+    def create_in_category(cls, brand=None, category_slug=None, category_name=None, **overrides: Any):
+        """Kreira USED Product u SPECIFIČNOJ mehanizacija kategoriji (overrides default
+        shared subcategory). Koristi se za kategorija filter testove.
+
+        Args:
+            category_slug: slug nove kategorije (mora biti unique)
+            category_name: human-readable naziv (default = category_slug.title())
+        """
+        from apps.brands.models import Category, Subcategory
+        from apps.products.models import Product
+
+        assert category_slug, "category_slug je obavezan"
+        category, _ = Category.objects.get_or_create(
+            slug=category_slug,
+            defaults={
+                "name": category_name or category_slug.replace("-", " ").title(),
+                "is_for": "mehanizacija",
+            },
+        )
+        subcat, _ = Subcategory.objects.get_or_create(
+            category=category,
+            slug=f"{category_slug}-default-subcat",
+            parent=None,
+            defaults={"name": f"{category.name} Default Subcat"},
+        )
+        overrides["subcategory"] = subcat
+        overrides.setdefault("condition", Product.ConditionChoice.USED)
+        return ProductFactory.create(brand=brand, **overrides)

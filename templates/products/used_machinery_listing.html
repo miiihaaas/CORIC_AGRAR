@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n media_tags static %}
+
+{% block title %}{% translate "Polovna mehanizacija" %} | Ćorić Agrar{% endblock %}
+
+{% block meta_description %}{% blocktranslate %}Polovna poljoprivredna mehanizacija — filtrirajte po kategoriji, brendu, ceni i godini proizvodnje.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+  <section class="coric-used-machinery-listing" data-testid="used-machinery-listing-page" aria-labelledby="used-machinery-listing-title">
+    <header class="coric-used-machinery-listing__header">
+      <h1 id="used-machinery-listing-title" class="coric-used-machinery-listing__title">{% translate "Polovna mehanizacija" %}</h1>
+      <p class="coric-used-machinery-listing__lead">{% translate "Pregled polovnih mašina iz naše ponude — filtrirajte po kategoriji, brendu, ceni i godini proizvodnje." %}</p>
+    </header>
+
+    <section id="used-filters" aria-labelledby="used-filters-title" class="coric-used-machinery-filters">
+      {% include "products/partials/_used_filter_form.html" %}
+    </section>
+
+    <section id="used-results-wrap" aria-labelledby="used-results-title" class="coric-used-machinery-results">
+      <h2 id="used-results-title" class="visually-hidden">{% translate "Rezultati pretrage polovne mehanizacije" %}</h2>
+      {% include "products/partials/_used_results_grid.html" %}
+    </section>
+  </section>
+{% endblock content %}
+
+{% block scripts %}
+  <link rel="stylesheet" href="{% static 'vendor/nouislider/nouislider.min.css' %}">
+  <script src="{% static 'vendor/nouislider/nouislider.min.js' %}" defer></script>
+  <script src="{% static 'js/tractor-filters.js' %}" defer></script>
+{% endblock scripts %}

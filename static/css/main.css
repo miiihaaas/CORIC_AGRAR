@@ -27,3 +27,6 @@
 /* Components CSS imports (Story 2.8) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/tractor-listing.css');
 @import url('./components/range-slider.css');
+
+/* Components CSS imports (Story 2.9) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/used-machinery-listing.css');
