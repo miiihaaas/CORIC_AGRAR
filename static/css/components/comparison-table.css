@@ -1,0 +1,52 @@
+/* comparison-table — Story 2.12 */
+/* coric-comparison-table BEM: uporedna kljuc-vrednost tabela (Tulip MIX modeli */
+/* side-by-side). Responsive horizontal scroll na mobile-u, zebra redovi. */
+/* Sve vrednosti kroz design tokene iz tokens fajla — bez magic hex/px. */
+
+.coric-comparison-table__heading {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-5);
+}
+
+.coric-comparison-table__scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--spacing-section);
+}
+
+.coric-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.coric-comparison-table__corner,
+.coric-comparison-table__model {
+  background-color: var(--color-brand-green-800);
+  color: var(--color-neutral-white);
+  padding: var(--spacing-scale-3) var(--spacing-scale-4);
+  text-align: left;
+  font-weight: var(--typography-weight-bold);
+}
+
+.coric-comparison-table__model {
+  text-align: center;
+}
+
+.coric-comparison-table__key {
+  color: var(--color-brand-green-800);
+  font-weight: var(--typography-weight-bold);
+  text-align: left;
+  padding: var(--spacing-scale-3) var(--spacing-scale-4);
+}
+
+.coric-comparison-table__value {
+  color: var(--color-neutral-gray-700);
+  text-align: center;
+  padding: var(--spacing-scale-3) var(--spacing-scale-4);
+}
+
+.coric-comparison-table__row:nth-child(even) {
+  background-color: var(--color-neutral-cream);
+}

@@ -4,8 +4,10 @@ from django.urls import path
 
 from apps.brands.views import (
     BrandDetailView,
+    HzmRadneMasineView,
     JeegeePrikljucnaView,
     SubcategoryListView,
+    TulipMixPrikoliceView,
 )
 
 app_name = "brands"
@@ -37,5 +39,15 @@ urlpatterns = [
         "<slug:l2_slug>/<slug:l3_slug>/",
         SubcategoryListView.as_view(),
         name="subcategory_listing_l3",
+    ),
+    path(
+        "mehanizacija/radne-masine/",
+        HzmRadneMasineView.as_view(),
+        name="hzm_radne_masine",
+    ),
+    path(
+        "mehanizacija/mix-prikolice/",
+        TulipMixPrikoliceView.as_view(),
+        name="tulip_mix_prikolice",
     ),
 ]

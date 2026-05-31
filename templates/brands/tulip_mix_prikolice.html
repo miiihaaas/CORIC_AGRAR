@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n media_tags static %}
+
+{% block title %}{{ brand.name }} {% translate "MIX prikolice" %} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% blocktranslate with brand=brand.name %}Tulip MIX prikolice — pregled modela sa uporednim dimenzijama i iskustvima korisnika.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+  <section class="coric-brand-detail coric-tulip-mix"
+           data-testid="tulip-mix-page"
+           aria-label="{% blocktranslate with brand=brand.name %}{{ brand }} MIX prikolice{% endblocktranslate %}">
+
+    {# 1. Hero overlay sekcija (h1 dolazi iz hero_overlay_card partial-a) #}
+    <section id="tulip-hero"
+             aria-label="{% blocktranslate with brand=brand.name %}{{ brand }} hero{% endblocktranslate %}"
+             class="coric-tulip-mix__hero-section">
+      {% include "brands/partials/_tulip_hero.html" %}
+    </section>
+
+    {# 2. 2-model showcase #}
+    <section id="tulip-models"
+             aria-labelledby="tulip-models-title"
+             class="coric-tulip-mix__models-section">
+      {% include "brands/partials/_tulip_model_showcase.html" %}
+    </section>
+
+    {# 3. Uporedna dimenziona tabela (samo ako oba modela imaju specifikacije) #}
+    {% if spec_rows %}
+      <section id="tulip-comparison"
+               aria-labelledby="tulip-comparison-title"
+               class="coric-tulip-mix__comparison-section">
+        {% include "brands/partials/_tulip_comparison_table.html" %}
+      </section>
+    {% endif %}
+
+    {# 4. „Zadovoljni kupci" testimonials (samo ako testimonials nije prazno) #}
+    {% if testimonials %}
+      <section id="tulip-testimonials"
+               aria-labelledby="tulip-testimonials-title"
+               class="coric-tulip-mix__testimonials-section">
+        {% include "partials/_testimonials_slider.html" with slider_id="tulip-testimonials-title" %}
+      </section>
+    {% endif %}
+
+    {# 5. Opciono „Preuzmi katalog" CTA banner #}
+    {% if brand.catalog_pdf %}
+      <section id="tulip-catalog-cta"
+               aria-labelledby="tulip-catalog-cta-title"
+               class="coric-tulip-mix__catalog-cta-section">
+        {% include "partials/wave_divider.html" with position="top" %}
+        <div class="coric-catalog-cta-banner">
+          <h2 id="tulip-catalog-cta-title" class="coric-catalog-cta-banner__title">
+            {% blocktranslate with brand=brand.name %}Preuzmi {{ brand }} katalog{% endblocktranslate %}
+          </h2>
+          <a href="{{ brand.catalog_pdf.url }}"
+             target="_blank"
+             rel="noopener noreferrer"
+             download
+             class="coric-button coric-button--primary"
+             data-testid="tulip-catalog-download">
+            {% translate "Preuzmi katalog" %}
+          </a>
+        </div>
+      </section>
+    {% endif %}
+
+  </section>
+{% endblock content %}

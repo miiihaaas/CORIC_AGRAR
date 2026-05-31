@@ -1,0 +1,41 @@
+{% load i18n media_tags %}
+
+{% include "partials/section_eyebrow.html" with text=_("MODELI PRIKOLICA") tag="div" %}
+
+<h2 id="tulip-models-title" class="coric-category-showcase__title">
+  {% translate "Pregled modela" %}
+</h2>
+
+<div class="coric-category-showcase" data-testid="tulip-model-showcase-grid">
+  {% for product in products %}
+    <article class="coric-product-card"
+             aria-labelledby="tulip-model-{{ product.slug }}-title"
+             data-testid="tulip-model-card-{{ product.slug }}">
+      <div class="coric-product-card__image">
+        {% if product.main_image %}
+          {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" css_class="coric-product-card__img" %}
+        {% endif %}
+      </div>
+      <div class="coric-product-card__body">
+        <h3 id="tulip-model-{{ product.slug }}-title"
+            class="coric-product-card__title">{{ product.name }}</h3>
+        {% if product.key_features %}
+          <ul class="coric-product-card__features">
+            {% for feature in product.key_features %}
+              <li class="coric-product-card__feature">{{ feature }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        <a href="{{ product.get_absolute_url }}"
+           class="coric-button coric-button--primary coric-product-card__cta"
+           aria-label="{% blocktranslate with name=product.name %}Opširnije o modelu: {{ name }}{% endblocktranslate %}">
+          {% translate "OPŠIRNIJE" %}
+        </a>
+      </div>
+    </article>
+  {% empty %}
+    <p class="coric-empty-state">
+      {% translate "Modeli prikolica su u pripremi." %}
+    </p>
+  {% endfor %}
+</div>

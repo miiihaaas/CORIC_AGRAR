@@ -799,10 +799,11 @@ def test_product_specification_cascades_when_product_deleted():
     ProductSpecification.objects.create(
         product=product, section="ostalo", key="K2", value="V2"
     )
-    assert ProductSpecification.objects.count() == 2
+    product_pk = product.pk
+    assert ProductSpecification.objects.filter(product_id=product_pk).count() == 2
 
     product.delete()
-    assert ProductSpecification.objects.count() == 0
+    assert ProductSpecification.objects.filter(product_id=product_pk).count() == 0
 
 
 def test_product_specifications_related_name_access():
@@ -1265,11 +1266,13 @@ def test_initial_migration_creates_seven_product_models():
         ProductVariant,
     )
 
-    # Sve count() pozive moraju proći bez OperationalError (table missing)
-    assert Product.objects.count() == 0
+    # Sve count() pozive moraju proći bez OperationalError (table missing).
+    # 0004 seed migracija (Story 2.12) populiše 2 Tulip Product-a + 8 ProductSpecification
+    # redova (4 po modelu); ostali modeli nemaju seed redove pa su prazni.
+    assert Product.objects.count() >= 2
+    assert ProductSpecification.objects.count() >= 8
     assert ProductImage.objects.count() == 0
     assert ProductVariant.objects.count() == 0
-    assert ProductSpecification.objects.count() == 0
     assert ProductBrochure.objects.count() == 0
     assert ProductTestimonial.objects.count() == 0
     assert ProductSimilar.objects.count() == 0

@@ -28,6 +28,18 @@ _PRIKLJUCNA_CATEGORY_SLUGS = (
     "masine-za-setvu",
 )
 
+# Story 2.12 — HZM Radne Mašine + Tulip MIX Prikolice landing strane
+_HZM_BRAND_SLUG = "hzm"
+_HZM_CATEGORY_SLUG = "radne-masine"
+_TULIP_BRAND_SLUG = "tulip"
+
+# SM-D13: kategorije sa sopstvenom landing stranom dobijaju dedicated breadcrumb root
+# (label + url) umesto generičkog "Priključna mehanizacija" prefiksa. Default (sve
+# Jeegee kategorije) zadržava generički root.
+_CATEGORY_LANDING_BREADCRUMB_ROOT = {
+    "radne-masine": {"label": _("Radne mašine"), "url_name": "brands:hzm_radne_masine"},
+}
+
 
 class BrandDetailView(DetailView):
     model = Brand
@@ -235,33 +247,36 @@ class SubcategoryListView(TemplateView):
         Priključna mehanizacija) are shared by both — single source of truth,
         collapsing the previous ``_build_category_breadcrumb`` duplicate.
         """
+        root_item, is_category_landing = self._breadcrumb_root_for(category)
         items = [
             {
                 "label": _("Početna"),
                 "url": reverse("core:home"),
                 "is_current": False,
             },
-            {
-                "label": _("Priključna mehanizacija"),
-                "url": reverse("brands:jeegee_prikljucna"),
-                "is_current": False,
-            },
+            root_item,
         ]
 
         if current is None:
             # Category root → the Category itself is the current (non-link) item.
-            items.append({"label": category.name, "url": None, "is_current": True})
+            # SM-D13: za landing-mapirane kategorije root JE već category landing
+            # (npr. "Radne mašine"), pa NE dodaj duplikat category.name.
+            if not is_category_landing:
+                items.append({"label": category.name, "url": None, "is_current": True})
             return items
 
         # Intermediate/leaf: Category is a link, then each Subcategory ancestor,
-        # then the current node as the non-link tail.
-        items.append(
-            {
-                "label": category.name,
-                "url": self._category_breadcrumb_url(category, current),
-                "is_current": False,
-            }
-        )
+        # then the current node as the non-link tail. SM-D13: kada je root landing-
+        # mapiran, PRESKAČI category.name stavku (inače susedni duplikat npr.
+        # "Radne mašine → Radne mašine").
+        if not is_category_landing:
+            items.append(
+                {
+                    "label": category.name,
+                    "url": self._category_breadcrumb_url(category, current),
+                    "is_current": False,
+                }
+            )
         for ancestor in current.get_ancestors_chain():
             items.append(
                 {
@@ -281,3 +296,157 @@ class SubcategoryListView(TemplateView):
             "brands:subcategory_listing_l1",
             kwargs={"category_slug": category.slug, "l1_slug": root.slug},
         )
+
+    @staticmethod
+    def _breadcrumb_root_for(category):
+        """SM-D13: vraća (root_item, is_category_landing).
+
+        Landing-mapirane kategorije (radne-masine) dobijaju dedicated root koji
+        linkuje na svoju landing stranu; default je generički Jeegee root.
+        """
+        mapped = _CATEGORY_LANDING_BREADCRUMB_ROOT.get(category.slug)
+        if mapped is not None:
+            return (
+                {
+                    "label": mapped["label"],
+                    "url": reverse(mapped["url_name"]),
+                    "is_current": False,
+                },
+                True,
+            )
+        return (
+            {
+                "label": _("Priključna mehanizacija"),
+                "url": reverse("brands:jeegee_prikljucna"),
+                "is_current": False,
+            },
+            False,
+        )
+
+
+class HzmRadneMasineView(DetailView):
+    """HZM Radne Mašine landing strana — Story 2.12.
+
+    Statička 4-card subcategory showcase (REUSE Story 2-10 Jeegee pattern).
+    Kartice su Subcategory dece HZM 'radne-masine' Category-je; CTA href je
+    subcategory.get_absolute_url() (Story 2-11 SubcategoryListView). View NE
+    query-uje Product — samo Brand + Subcategory.
+    """
+
+    model = Brand
+    context_object_name = "brand"
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        try:
+            return queryset.get(slug=_HZM_BRAND_SLUG)
+        except Brand.DoesNotExist as exc:
+            raise Http404(_("HZM brand nije konfigurisan u sistemu.")) from exc
+
+    def get_template_names(self):
+        if getattr(self, "object", None) is not None and self.object.is_coming_soon:
+            return ["brands/brand_coming_soon.html"]
+        return ["brands/hzm_radne_masine.html"]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        if self.object.is_coming_soon:
+            return ctx
+        try:
+            category = Category.objects.get(
+                slug=_HZM_CATEGORY_SLUG,
+                is_for=Category.CategoryScope.MEHANIZACIJA,
+            )
+        except Category.DoesNotExist:
+            ctx["subcategories"] = []
+            return ctx
+        subcategories = list(
+            category.subcategories.filter(parent=None).order_by("display_order", "name")
+        )
+        for sub in subcategories:
+            sub.category = category
+        ctx["subcategories"] = subcategories
+        return ctx
+
+
+class TulipMixPrikoliceView(DetailView):
+    """Tulip MIX Prikolice landing strana — Story 2.12.
+
+    Statička model-showcase strana: 2 Product modela (6 m³ + 8 m³) + uporedna
+    dimenziona tabela + 'Zadovoljni kupci' testimonials slider + katalog CTA.
+    Cross-boundary brands→products READ-ONLY (SM-D16, mirror Story 2-11). View
+    NE WRITE-uje na Product.
+    """
+
+    model = Brand
+    context_object_name = "brand"
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        try:
+            return queryset.get(slug=_TULIP_BRAND_SLUG)
+        except Brand.DoesNotExist as exc:
+            raise Http404(_("Tulip brand nije konfigurisan u sistemu.")) from exc
+
+    def get_template_names(self):
+        if getattr(self, "object", None) is not None and self.object.is_coming_soon:
+            return ["brands/brand_coming_soon.html"]
+        return ["brands/tulip_mix_prikolice.html"]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        if self.object.is_coming_soon:
+            return ctx
+        products = list(
+            Product.objects.filter(
+                brand=self.object,
+                is_published=True,
+            )
+            .prefetch_related(
+                # SM-D14: Prefetch sa ORDERED queryset-om koji matchuje sort u
+                # _build_spec_rows → per-product .all() poslužen iz prefetch cache-a
+                # (NE novi upit). Plain prefetch + per-product .order_by() bi bio N+1.
+                Prefetch(
+                    "specifications",
+                    queryset=ProductSpecification.objects.order_by("order", "id"),
+                )
+            )
+            .order_by("price_eur", "name")
+        )
+        ctx["products"] = products
+        ctx["spec_rows"] = self._build_spec_rows(products)
+        ctx["testimonials"] = list(
+            ProductTestimonial.objects.filter(
+                product__brand=self.object,
+                product__is_published=True,
+            )
+            .select_related("product")
+            .order_by("order", "-created_at")[:10]
+        )
+        return ctx
+
+    @staticmethod
+    def _build_spec_rows(products):
+        # SM-D7: transponuj per-product specifications u uporedne redove.
+        # Svaki red: {"key": <spec key>, "values": [v_model1, v_model2, ...]}.
+        # Missing value → None (template renderuje "—"). Zadržava redosled prvog
+        # pojavljivanja key-a.
+        if not products:
+            return []
+        key_order = []
+        per_product = []
+        for product in products:
+            spec_map = {}
+            # SM-D14: .all() BEZ .order_by() → čita prefetch cache (NE novi upit).
+            for spec in product.specifications.all():
+                if spec.key not in spec_map:
+                    spec_map[spec.key] = spec.value
+                if spec.key not in key_order:
+                    key_order.append(spec.key)
+            per_product.append(spec_map)
+        rows = []
+        for key in key_order:
+            rows.append({"key": key, "values": [pp.get(key) for pp in per_product]})
+        return rows

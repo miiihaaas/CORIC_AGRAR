@@ -1,0 +1,31 @@
+{% load i18n %}
+
+{% include "partials/section_eyebrow.html" with text=_("UPOREDNE DIMENZIJE") tag="div" %}
+
+<h2 id="tulip-comparison-title" class="coric-comparison-table__heading">
+  {% translate "Uporedne dimenzije" %}
+</h2>
+
+<div class="coric-comparison-table__scroll">
+  <table class="coric-comparison-table" data-testid="tulip-comparison-table">
+    <caption class="visually-hidden">{% translate "Uporedne dimenzije Tulip MIX prikolica" %}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="coric-comparison-table__corner">{% translate "Specifikacija" %}</th>
+        {% for product in products %}
+          <th scope="col" class="coric-comparison-table__model">{{ product.name }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in spec_rows %}
+        <tr class="coric-comparison-table__row">
+          <th scope="row" class="coric-comparison-table__key">{{ row.key }}</th>
+          {% for value in row.values %}
+            <td class="coric-comparison-table__value">{{ value|default:"—" }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

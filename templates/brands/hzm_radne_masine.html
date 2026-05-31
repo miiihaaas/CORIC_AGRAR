@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n media_tags static %}
+
+{% block title %}{{ brand.name }} {% translate "Radne mašine" %} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% blocktranslate with brand=brand.name %}Pregled HZM radnih mašina po kategorijama — mini utovarivači, utovarivači bez teleskopa, teleskopski utovarivači, telehendleri.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+  <section class="coric-brand-detail coric-hzm-radne-masine"
+           data-testid="hzm-radne-masine-page"
+           aria-label="{% blocktranslate with brand=brand.name %}{{ brand }} radne mašine{% endblocktranslate %}">
+
+    {# 1. Hero overlay sekcija (h1 dolazi iz hero_overlay_card partial-a) #}
+    <section id="hzm-hero"
+             aria-label="{% blocktranslate with brand=brand.name %}{{ brand }} hero{% endblocktranslate %}"
+             class="coric-hzm-radne-masine__hero-section">
+      {% include "brands/partials/_hzm_hero.html" %}
+    </section>
+
+    {# 2. 4-card subcategory showcase #}
+    <section id="hzm-subcategories"
+             aria-labelledby="hzm-subcategories-title"
+             class="coric-hzm-radne-masine__subcategories-section">
+      {% include "brands/partials/_hzm_subcategory_showcase.html" %}
+    </section>
+
+    {# 3. Opciono catalog CTA banner (samo ako brand.catalog_pdf postoji) #}
+    {% if brand.catalog_pdf %}
+      <section id="hzm-catalog-cta"
+               aria-labelledby="hzm-catalog-cta-title"
+               class="coric-hzm-radne-masine__catalog-cta-section">
+        {% include "partials/wave_divider.html" with position="top" %}
+        <div class="coric-catalog-cta-banner">
+          <h2 id="hzm-catalog-cta-title" class="coric-catalog-cta-banner__title">
+            {% blocktranslate with brand=brand.name %}Preuzmi {{ brand }} katalog{% endblocktranslate %}
+          </h2>
+          <a href="{{ brand.catalog_pdf.url }}"
+             target="_blank"
+             rel="noopener noreferrer"
+             download
+             class="coric-button coric-button--primary"
+             data-testid="hzm-catalog-download">
+            {% translate "Preuzmi katalog" %}
+          </a>
+        </div>
+      </section>
+    {% endif %}
+
+  </section>
+{% endblock content %}

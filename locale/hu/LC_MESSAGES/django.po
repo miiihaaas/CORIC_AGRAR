@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 11:56+0000\n"
+"POT-Creation-Date: 2026-05-31 15:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,503 +18,384 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/brands/apps.py:15 apps/brands/models.py:105
 msgid "Brendovi"
 msgstr ""
 
-#: apps/brands/models.py:69 apps/brands/models.py:179 apps/brands/models.py:251
-#: apps/brands/models.py:333 apps/products/models.py:120
-#: apps/products/models.py:327
 msgid "Naziv"
 msgstr ""
 
-#: apps/brands/models.py:70 apps/brands/models.py:180 apps/brands/models.py:252
-#: apps/brands/models.py:334
 msgid "Slug"
 msgstr ""
 
-#: apps/brands/models.py:72
 msgid "Logo"
 msgstr ""
 
-#: apps/brands/models.py:79
 msgid "Hero slika"
 msgstr ""
 
-#: apps/brands/models.py:85 apps/brands/models.py:181 apps/brands/models.py:253
-#: apps/brands/models.py:335 apps/products/models.py:126
-#: apps/products/models.py:342
 msgid "Opis"
 msgstr ""
 
-#: apps/brands/models.py:86
 msgid "Slogan"
 msgstr ""
 
-#: apps/brands/models.py:87
-#: templates/brands/partials/_statistics_medallions.html:2
 msgid "Statistike"
 msgstr ""
 
-#: apps/brands/models.py:89
 msgid "Katalog (PDF)"
 msgstr ""
 
-#: apps/brands/models.py:95
 msgid "Brend boja"
 msgstr ""
 
-#: apps/brands/models.py:98 templates/brands/brand_coming_soon.html:4
-#: templates/brands/brand_coming_soon.html:18
 msgid "Uskoro"
 msgstr ""
 
-#: apps/brands/models.py:99
 msgid "Kreiran"
 msgstr ""
 
-#: apps/brands/models.py:100
 msgid "Ažuriran"
 msgstr ""
 
-#: apps/brands/models.py:104 apps/brands/models.py:177
-#: apps/products/models.py:102
-#: templates/products/partials/_used_filter_form.html:32
 msgid "Brend"
 msgstr ""
 
-#: apps/brands/models.py:122
 msgid "Hex format mora biti #RRGGBB."
 msgstr ""
 
-#: apps/brands/models.py:127 apps/products/models.py:216
-#: apps/products/models.py:232
 msgid "Mora biti lista."
 msgstr ""
 
-#: apps/brands/models.py:131
 msgid "Svaka stavka mora biti dict."
 msgstr ""
 
-#: apps/brands/models.py:135
 msgid "Statistike ne smeju imati više od 4 stavke."
 msgstr ""
 
-#: apps/brands/models.py:170
 msgid "Grid"
 msgstr ""
 
-#: apps/brands/models.py:171
 msgid "Extended"
 msgstr ""
 
-#: apps/brands/models.py:183
 msgid "Režim prikaza"
 msgstr ""
 
-#: apps/brands/models.py:189 apps/brands/models.py:261
-#: apps/brands/models.py:340
 msgid "Redosled prikaza"
 msgstr ""
 
-#: apps/brands/models.py:191 apps/brands/models.py:266
-#: apps/brands/models.py:342
 msgid "Kreirana"
 msgstr ""
 
-#: apps/brands/models.py:192 apps/brands/models.py:267
-#: apps/brands/models.py:343
 msgid "Ažurirana"
 msgstr ""
 
-#: apps/brands/models.py:197 apps/products/models.py:110
 msgid "Serija"
 msgstr ""
 
-#: apps/brands/models.py:198
 msgid "Serije"
 msgstr ""
 
-#: apps/brands/models.py:248 templates/partials/footer.html:23
-#: templates/partials/header.html:74 templates/products/tractor_listing.html:4
-#: templates/products/tractor_listing.html:11
 msgid "Traktori"
 msgstr ""
 
-#: apps/brands/models.py:249 templates/partials/footer.html:24
-#: templates/partials/header.html:84
 msgid "Mehanizacija"
 msgstr ""
 
-#: apps/brands/models.py:255
 msgid "Tip kataloga"
 msgstr ""
 
-#: apps/brands/models.py:264 apps/brands/models.py:337
 msgid "Ikona (Bootstrap Icons class)"
 msgstr ""
 
-#: apps/brands/models.py:271 apps/brands/models.py:323
-#: templates/products/partials/_used_filter_form.html:19
 msgid "Kategorija"
 msgstr ""
 
-#: apps/brands/models.py:272
 msgid "Kategorije"
 msgstr ""
 
-#: apps/brands/models.py:331
 msgid "Roditeljska potkategorija"
 msgstr ""
 
-#: apps/brands/models.py:347 apps/products/models.py:118
 msgid "Potkategorija"
 msgstr ""
 
-#: apps/brands/models.py:348
 msgid "Potkategorije"
 msgstr ""
 
-#: apps/brands/models.py:382 apps/brands/models.py:388
 msgid "Subcategory hijerarhija ne sme imati cikličnu referencu."
 msgstr ""
 
-#: apps/brands/models.py:394
 msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
-#: apps/brands/views.py:51 apps/products/models.py:370
-#: apps/products/views.py:92
+msgid "Radne mašine"
+msgstr ""
+
 msgid "Motor"
 msgstr ""
 
-#: apps/brands/views.py:52 apps/products/models.py:371
-#: apps/products/views.py:93
 msgid "Transmisija"
 msgstr ""
 
-#: apps/brands/views.py:53 apps/products/models.py:372
-#: apps/products/views.py:94
 msgid "Hidraulika"
 msgstr ""
 
-#: apps/brands/views.py:54 apps/brands/views.py:55 apps/products/models.py:373
-#: apps/products/views.py:95 apps/products/views.py:96
 msgid "Ostalo"
 msgstr ""
 
-#: apps/brands/views.py:118
 msgid "Jeegee brand nije konfigurisan u sistemu."
 msgstr "A Jeegee márka nincs konfigurálva a rendszerben."
 
-#: apps/brands/views.py:163
 msgid "Kategorija nije pronađena."
 msgstr "A kategória nem található."
 
-#: apps/brands/views.py:215
 msgid "Potkategorija nije pronađena."
 msgstr "Az alkategória nem található."
 
-#: apps/brands/views.py:221 apps/brands/views.py:236
 msgid "Početna"
 msgstr "Kezdőlap"
 
-#: apps/brands/views.py:226 apps/brands/views.py:241
-#: templates/brands/jeegee_prikljucna.html:4
 msgid "Priključna mehanizacija"
 msgstr "Függesztett gépek"
 
-#: apps/media_pipeline/apps.py:21
+msgid "HZM brand nije konfigurisan u sistemu."
+msgstr ""
+
+msgid "Tulip brand nije konfigurisan u sistemu."
+msgstr ""
+
 msgid "Media pipeline"
 msgstr ""
 
-#: apps/media_pipeline/pdf_utils.py:85
 msgid "PDF brošura je prazna ili nije priložena."
 msgstr ""
 
-#: apps/media_pipeline/pdf_utils.py:90
 #, python-format
 msgid ""
 "PDF brošura je veća od %(limit)d MB. Maksimalna dozvoljena veličina je "
 "%(limit)d MB."
 msgstr ""
 
-#: apps/media_pipeline/pdf_utils.py:104
 #, python-format
 msgid "Nedozvoljen tip fajla: %(mime)s. Dozvoljen je samo PDF format."
 msgstr ""
 
-#: apps/media_pipeline/pdf_utils.py:120
 #, python-format
 msgid "PDF brošura ima %(pages)d stranica. Maksimum je %(limit)d."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:59
 msgid "Slika je prazna ili nije priložena."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:64
 #, python-format
 msgid ""
 "Slika je veća od %(limit)d MB. Maksimalna dozvoljena veličina je %(limit)d "
 "MB."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:77
 #, python-format
 msgid "Nedozvoljen tip slike: %(mime)s. Dozvoljeni tipovi: %(allowed)s."
 msgstr ""
 
-#: apps/media_pipeline/utils.py:100
 msgid "Slika je oštećena ili nije validan format."
 msgstr ""
 
-#: apps/products/apps.py:14 apps/products/models.py:175
 msgid "Proizvodi"
 msgstr ""
 
-#: apps/products/models.py:90
 msgid "Novo"
 msgstr ""
 
-#: apps/products/models.py:91
 msgid "Polovno"
 msgstr ""
 
-#: apps/products/models.py:94
 msgid "Nacrt"
 msgstr ""
 
-#: apps/products/models.py:95 apps/products/models.py:170
 msgid "Objavljen"
 msgstr ""
 
-#: apps/products/models.py:96
 msgid "Arhiviran"
 msgstr ""
 
-#: apps/products/models.py:129
 msgid "Ključne karakteristike"
 msgstr ""
 
-#: apps/products/models.py:134
 msgid "Glavna slika"
 msgstr ""
 
-#: apps/products/models.py:140
 msgid "Godina"
 msgstr ""
 
-#: apps/products/models.py:142 templates/products/partials/_filter_form.html:44
-#: templates/products/partials/_used_filter_form.html:45
 msgid "Cena (EUR)"
 msgstr ""
 
-#: apps/products/models.py:149
 msgid "Konjska snaga"
 msgstr ""
 
-#: apps/products/models.py:154
 msgid "Stanje"
 msgstr ""
 
-#: apps/products/models.py:162
 msgid "Status"
 msgstr ""
 
-#: apps/products/models.py:174 apps/products/models.py:285
-#: apps/products/models.py:325 apps/products/models.py:379
-#: apps/products/models.py:423 apps/products/models.py:471
-#: apps/products/models.py:522
 msgid "Proizvod"
 msgstr ""
 
-#: apps/products/models.py:220 apps/products/models.py:236
 msgid "Svaka stavka mora biti string."
 msgstr ""
 
-#: apps/products/models.py:224 apps/products/models.py:240
 msgid "Najviše 3 ključne karakteristike."
 msgstr ""
 
-#: apps/products/models.py:288
 msgid "Slika"
 msgstr ""
 
-#: apps/products/models.py:292 apps/products/models.py:344
-#: apps/products/models.py:390 apps/products/models.py:485
-#: apps/products/models.py:530
 msgid "Redosled"
 msgstr ""
 
-#: apps/products/models.py:293
 msgid "Alt tekst"
 msgstr ""
 
-#: apps/products/models.py:297
 msgid "Slika proizvoda"
 msgstr ""
 
-#: apps/products/models.py:298
 msgid "Slike proizvoda"
 msgstr ""
 
-#: apps/products/models.py:328
-#: templates/products/partials/_variants_selector.html:11
-#: templates/products/partials/_variants_selector.html:19
-#: templates/products/partials/_variants_selector.html:28
 msgid "Kod"
 msgstr ""
 
-#: apps/products/models.py:330
 msgid "Slika varijante"
 msgstr ""
 
-#: apps/products/models.py:348
 msgid "Varijanta"
 msgstr ""
 
-#: apps/products/models.py:349
 msgid "Varijante"
 msgstr ""
 
-#: apps/products/models.py:382
 msgid "Sekcija"
 msgstr ""
 
-#: apps/products/models.py:388
 msgid "Naziv specifikacije"
 msgstr ""
 
-#: apps/products/models.py:389
 msgid "Vrednost"
 msgstr ""
 
-#: apps/products/models.py:398
 msgid "Specifikacija"
 msgstr ""
 
-#: apps/products/models.py:399
 msgid "Specifikacije"
 msgstr ""
 
-#: apps/products/models.py:426
 msgid "PDF brošura"
 msgstr ""
 
-#: apps/products/models.py:431
 msgid "Cover thumbnail"
 msgstr ""
 
-#: apps/products/models.py:437
 msgid "Naslov brošure"
 msgstr ""
 
-#: apps/products/models.py:441
 msgid "Brošura"
 msgstr ""
 
-#: apps/products/models.py:442
 msgid "Brošure"
 msgstr ""
 
-#: apps/products/models.py:456
 #, python-format
 msgid "Brošura — %(name)s"
 msgstr ""
 
-#: apps/products/models.py:474
 msgid "Fotografija"
 msgstr ""
 
-#: apps/products/models.py:482
 msgid "Citat"
 msgstr ""
 
-#: apps/products/models.py:483
 msgid "Ime autora"
 msgstr ""
 
-#: apps/products/models.py:484
 msgid "Lokacija"
 msgstr ""
 
-#: apps/products/models.py:489
 msgid "Testimonijal"
 msgstr ""
 
-#: apps/products/models.py:490
 msgid "Testimonijali"
 msgstr ""
 
-#: apps/products/models.py:528 apps/products/models.py:534
 msgid "Sličan proizvod"
 msgstr ""
 
-#: apps/products/models.py:535
 msgid "Slični proizvodi"
 msgstr ""
 
-#: apps/products/models.py:567
 msgid "Sličan proizvod ne sme biti isti kao izvorni proizvod."
 msgstr ""
 
-#: apps/products/views.py:381
 msgid "Najnovije prvo (datum dodavanja)"
 msgstr ""
 
-#: apps/products/views.py:382
 msgid "Cena: rastuće"
 msgstr ""
 
-#: apps/products/views.py:383
 msgid "Cena: opadajuće"
 msgstr ""
 
-#: apps/products/views.py:384
 msgid "Godina: opadajuće"
 msgstr ""
 
-#: templates/base.html:19
 msgid "Preskoči na sadržaj"
 msgstr ""
 
-#: templates/base.html:25
 msgid "Dobrodošli."
 msgstr ""
 
-#: templates/base.html:32
 msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
 
-#: templates/brands/brand_coming_soon.html:4
-#: templates/brands/brand_detail.html:4
-#: templates/brands/jeegee_prikljucna.html:4
-#: templates/products/product_detail.html:4
 msgid "Ćorić Agrar"
 msgstr "Ćorić Agrar"
 
-#: templates/brands/brand_coming_soon.html:6
-#: templates/brands/brand_coming_soon.html:19
 #, python-format
 msgid "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
 msgstr ""
 
-#: templates/brands/brand_coming_soon.html:20
 msgid "Nazad na Home"
 msgstr ""
 
-#: templates/brands/brand_detail.html:10
 #, python-format
 msgid "Hero sekcija — %(name)s"
 msgstr ""
 
-#: templates/brands/brand_detail.html:27
 msgid "Modeli brenda"
 msgstr ""
 
-#: templates/brands/jeegee_prikljucna.html:6
+msgid ""
+"Pregled HZM radnih mašina po kategorijama — mini utovarivači, utovarivači "
+"bez teleskopa, teleskopski utovarivači, telehendleri."
+msgstr ""
+
+#, python-format
+msgid "%(brand)s radne mašine"
+msgstr ""
+
+#, python-format
+msgid "%(brand)s hero"
+msgstr "%(brand)s hero"
+
+#, python-format
+msgid "Preuzmi %(brand)s katalog"
+msgstr "%(brand)s katalógus letöltése"
+
+msgid "Preuzmi katalog"
+msgstr "Katalógus letöltése"
+
 #, python-format
 msgid ""
 "Pregled priključne mehanizacije %(brand)s po kategorijama — osnovna obrada "
@@ -523,524 +404,404 @@ msgstr ""
 "%(brand)s függesztett gépek áttekintése kategóriánként — alapvető "
 "talajművelés, talajelőkészítés, vetőgépek."
 
-#: templates/brands/jeegee_prikljucna.html:11
 #, python-format
 msgid "%(brand)s priključna mehanizacija"
 msgstr "%(brand)s függesztett gépek"
 
-#: templates/brands/jeegee_prikljucna.html:15
-#, python-format
-msgid "%(brand)s hero"
-msgstr "%(brand)s hero"
-
-#: templates/brands/jeegee_prikljucna.html:36
-#, python-format
-msgid "Preuzmi %(brand)s katalog"
-msgstr "%(brand)s katalógus letöltése"
-
-#: templates/brands/jeegee_prikljucna.html:39
 msgid "PDF dokument sa kompletnom ponudom priključne mehanizacije."
 msgstr "PDF dokumentum a függesztett gépek teljes kínálatával."
 
-#: templates/brands/jeegee_prikljucna.html:47
-#: templates/brands/partials/_catalog_cta.html:5
-#: templates/brands/partials/_catalog_cta.html:12
-msgid "Preuzmi katalog"
-msgstr "Katalógus letöltése"
-
-#: templates/brands/partials/_breadcrumb.html:4
 msgid "Putanja navigacije"
 msgstr "Morzsamenü"
 
-#: templates/brands/partials/_catalog_cta.html:4
 msgid "KATALOG"
 msgstr ""
 
-#: templates/brands/partials/_catalog_cta.html:6
 #, python-format
 msgid "Kompletan PDF katalog modela brenda %(brand)s."
 msgstr ""
 
-#: templates/brands/partials/_category_showcase.html:3
 msgid "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
 msgstr "FÜGGESZTETT GÉPEK KATEGÓRIÁI"
 
-#: templates/brands/partials/_category_showcase.html:7
 msgid "Pregled po kategorijama"
 msgstr "Áttekintés kategóriánként"
 
-#: templates/brands/partials/_category_showcase.html:27
 #, python-format
 msgid "Pogledaj kategoriju: %(category)s"
 msgstr "Kategória megtekintése: %(category)s"
 
-#: templates/brands/partials/_category_showcase.html:29
 msgid "POGLEDAJ KATEGORIJU"
 msgstr "KATEGÓRIA MEGTEKINTÉSE"
 
-#: templates/brands/partials/_category_showcase.html:34
 msgid "Kategorije priključne mehanizacije su u pripremi."
 msgstr "A függesztett gépek kategóriái előkészítés alatt állnak."
 
-#: templates/brands/partials/_model_grid.html:4
+msgid "KATEGORIJE RADNIH MAŠINA"
+msgstr ""
+
+msgid "Kategorije radnih mašina su u pripremi."
+msgstr ""
+
 msgid "MODELI"
 msgstr "MODELLEK"
 
-#: templates/brands/partials/_model_grid.html:11
 #, python-format
 msgid "Pogledaj model: %(product)s"
 msgstr "Modell megtekintése: %(product)s"
 
-#: templates/brands/partials/_model_grid.html:20
-#: templates/brands/partials/_series_grid.html:14
-#: templates/products/partials/_filter_form.html:38
-#: templates/products/partials/_results_grid.html:24
-#: templates/products/partials/_similar_products.html:18
 msgid "KS"
 msgstr ""
 
-#: templates/brands/partials/_model_grid.html:26
-#: templates/brands/partials/_series_extended.html:28
-#: templates/brands/partials/_series_grid.html:16
-#: templates/products/partials/_results_grid.html:30
-#: templates/products/partials/_similar_products.html:20
-#: templates/products/partials/_used_results_grid.html:33
 msgid "OPŠIRNIJE"
 msgstr "RÉSZLETEK"
 
-#: templates/brands/partials/_model_grid.html:30
 msgid "Nema dostupnih modela u ovoj kategoriji."
 msgstr "Nincsenek elérhető modellek ebben a kategóriában."
 
-#: templates/brands/partials/_series_extended.html:32
-#: templates/brands/partials/_series_grid.html:20
 msgid "Modeli ove serije su u pripremi."
 msgstr ""
 
-#: templates/brands/partials/_series_section.html:13
 msgid "Modeli ovog brenda su u pripremi."
 msgstr ""
 
-#: templates/brands/partials/_statistics_medallions.html:3
 msgid "STATISTIKE"
 msgstr ""
 
-#: templates/brands/partials/_subcategory_showcase.html:3
 msgid "POTKATEGORIJE"
 msgstr "ALKATEGÓRIÁK"
 
-#: templates/brands/partials/_subcategory_showcase.html:22
 #, python-format
 msgid "Pogledaj potkategoriju: %(subcategory)s"
 msgstr "Alkategória megtekintése: %(subcategory)s"
 
-#: templates/brands/partials/_subcategory_showcase.html:24
 msgid "POGLEDAJ"
 msgstr "MEGTEKINTÉS"
 
-#: templates/brands/partials/_subcategory_showcase.html:28
 msgid "Nema dostupnih potkategorija."
 msgstr "Nincsenek elérhető alkategóriák."
 
-#: templates/partials/_testimonials_slider.html:3
+msgid "UPOREDNE DIMENZIJE"
+msgstr ""
+
+msgid "Uporedne dimenzije"
+msgstr ""
+
+msgid "Uporedne dimenzije Tulip MIX prikolica"
+msgstr ""
+
+msgid "MODELI PRIKOLICA"
+msgstr ""
+
+#, python-format
+msgid "Opširnije o modelu: %(name)s"
+msgstr ""
+
+msgid "Modeli prikolica su u pripremi."
+msgstr ""
+
+msgid "MIX prikolice"
+msgstr ""
+
+msgid ""
+"Tulip MIX prikolice — pregled modela sa uporednim dimenzijama i iskustvima "
+"korisnika."
+msgstr ""
+
+#, python-format
+msgid "%(brand)s MIX prikolice"
+msgstr ""
+
 msgid "Iz prve ruke"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:4
 msgid "IZ PRVE RUKE"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:9
 msgid "karusel"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:10
 msgid "Testimonijali korisnika"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:16
 msgid "slajd"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:17
 #, python-format
 msgid "%(counter)s od %(total)s"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:36
 msgid "Prethodni"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:41
 msgid "Pauziraj"
 msgstr ""
 
-#: templates/partials/_testimonials_slider.html:47
 msgid "Sledeći"
 msgstr ""
 
-#: templates/partials/footer.html:9 templates/partials/header.html:71
 msgid "Pocetna"
 msgstr ""
 
-#: templates/partials/footer.html:15
 msgid "Prijatelj koji razume zemlju!"
 msgstr ""
 
-#: templates/partials/footer.html:25 templates/partials/header.html:90
-#: templates/products/used_machinery_listing.html:4
-#: templates/products/used_machinery_listing.html:11
 msgid "Polovna mehanizacija"
 msgstr ""
 
-#: templates/partials/footer.html:26
 msgid "Rezervni delovi"
 msgstr ""
 
-#: templates/partials/footer.html:35
 msgid "Lorem ipsum dolor sit amet (vest 1)"
 msgstr ""
 
-#: templates/partials/footer.html:36
 msgid "Lorem ipsum dolor sit amet (vest 2)"
 msgstr ""
 
-#: templates/partials/footer.html:37
 msgid "Lorem ipsum dolor sit amet (vest 3)"
 msgstr ""
 
-#: templates/partials/footer.html:48 templates/partials/header.html:19
 msgid "Vojvodjanska 1, Basaid, Srbija"
 msgstr ""
 
-#: templates/partials/footer.html:71
 msgid "Sva prava zadrzana."
 msgstr ""
 
-#: templates/partials/header.html:4
 msgid "Kontakt informacije"
 msgstr ""
 
-#: templates/partials/header.html:11
 msgid "Pokazi kontakt informacije"
 msgstr ""
 
-#: templates/partials/header.html:22
 msgid "Telefon prodaje"
 msgstr ""
 
-#: templates/partials/header.html:27
 msgid "Telefon servisa"
 msgstr ""
 
-#: templates/partials/header.html:28 templates/partials/header.html:93
 msgid "Servis"
 msgstr ""
 
-#: templates/partials/header.html:49
 msgid "Glavna navigacija"
 msgstr ""
 
-#: templates/partials/header.html:64
 msgid "Otvori meni"
 msgstr ""
 
-#: templates/partials/header.html:87
 msgid "Prikljucna mehanizacija (Jeegee)"
 msgstr ""
 
-#: templates/partials/header.html:88
 msgid "Radne masine (HZM)"
 msgstr ""
 
-#: templates/partials/header.html:89
 msgid "MIX prikolice (Tulip)"
 msgstr ""
 
-#: templates/partials/header.html:94
 msgid "Price sa polja"
 msgstr ""
 
-#: templates/partials/header.html:95
 msgid "O nama"
 msgstr ""
 
-#: templates/partials/header.html:96
 msgid "Kontakt"
 msgstr ""
 
-#: templates/partials/header.html:101
 msgid "Otvori pretragu"
 msgstr ""
 
-#: templates/partials/language_switcher.html:6
 msgid "Izaberi jezik"
 msgstr ""
 
-#: templates/partials/language_switcher.html:14
 msgid "Promeni jezik"
 msgstr ""
 
-#: templates/partials/language_switcher_nav.html:10
-#: templates/partials/language_switcher_nav.html:12
-#: templates/partials/language_switcher_nav.html:14
 #, python-format
 msgid "Prebaci na %(language)s"
 msgstr ""
 
-#: templates/products/partials/_brand_header.html:3
 msgid "BRENDOVI"
 msgstr ""
 
-#: templates/products/partials/_brand_header.html:4
 msgid "Brendovi traktora"
 msgstr ""
 
-#: templates/products/partials/_brand_header.html:11
 #, python-format
 msgid "%(name)s — pregled brenda"
 msgstr ""
 
-#: templates/products/partials/_brand_header.html:22
 msgid "Nema brendova trenutno."
 msgstr ""
 
-#: templates/products/partials/_brochure_card.html:2
 msgid "BROŠURE"
 msgstr ""
 
-#: templates/products/partials/_brochure_card.html:4
 msgid "Preuzmite brošuru"
 msgid_plural "Preuzmite brošure"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/products/partials/_brochure_card.html:16
 msgid "PDF"
 msgstr ""
 
-#: templates/products/partials/_brochure_card.html:23
 msgid "PREUZMI"
 msgstr ""
 
-#: templates/products/partials/_description.html:2
 msgid "OPIS PROIZVODA"
 msgstr ""
 
-#: templates/products/partials/_description.html:3
 msgid "Opis proizvoda"
 msgstr ""
 
-#: templates/products/partials/_empty_state.html:4
 msgid "Nema modela koji odgovaraju vašim kriterijumima"
 msgstr ""
 
-#: templates/products/partials/_empty_state.html:5
 msgid ""
 "Probajte da proširite opseg filtera ili poništite filtere i pregledajte "
 "celokupnu ponudu."
 msgstr ""
 
-#: templates/products/partials/_empty_state.html:9
-#: templates/products/partials/_filter_form.html:72
-#: templates/products/partials/_used_filter_form.html:111
 msgid "RESETUJ FILTERE"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:3
-#: templates/products/partials/_used_filter_form.html:3
 msgid "FILTERI"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:4
 msgid "Filteri pretrage"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:19
 msgid "Snaga (KS)"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:29
 msgid "Snaga minimum (konjske snage)"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:30
 msgid "Snaga maksimum (konjske snage)"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:54
-#: templates/products/partials/_used_filter_form.html:55
 msgid "Cena minimum (EUR)"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:55
-#: templates/products/partials/_used_filter_form.html:56
 msgid "Cena maksimum (EUR)"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:63
-#: templates/products/partials/_results_grid.html:27
-#: templates/products/partials/_used_filter_form.html:64
-#: templates/products/partials/_used_results_grid.html:30
 msgid "EUR"
 msgstr ""
 
-#: templates/products/partials/_filter_form.html:78
-#: templates/products/partials/_used_filter_form.html:117
 msgid "Učitavanje rezultata…"
 msgstr ""
 
-#: templates/products/partials/_gallery_carousel.html:2
 msgid "GALERIJA"
 msgstr ""
 
-#: templates/products/partials/_gallery_carousel.html:3
 msgid "Galerija slika"
 msgstr ""
 
-#: templates/products/partials/_results_grid.html:13
 #, python-format
 msgid "%(name)s — pregled modela"
 msgstr ""
 
-#: templates/products/partials/_results_grid.html:37
-#: templates/products/partials/_used_results_grid.html:40
 msgid "Paginacija"
 msgstr ""
 
-#: templates/products/partials/_results_grid.html:45
-#: templates/products/partials/_used_results_grid.html:48
 msgid "Prethodna"
 msgstr ""
 
-#: templates/products/partials/_results_grid.html:48
-#: templates/products/partials/_used_results_grid.html:51
 #, python-format
 msgid "Strana %(current)s od %(total)s"
 msgstr ""
 
-#: templates/products/partials/_results_grid.html:57
-#: templates/products/partials/_used_results_grid.html:60
 msgid "Sledeća"
 msgstr ""
 
-#: templates/products/partials/_results_grid.html:71
-#: templates/products/partials/_used_results_grid.html:70
 #, python-format
 msgid "Pronađen %(counter)s model."
 msgid_plural "Pronađeno %(counter)s modela."
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/products/partials/_similar_products.html:2
 msgid "SLIČNI MODELI"
 msgstr ""
 
-#: templates/products/partials/_similar_products.html:3
 msgid "Možda će vas zanimati i"
 msgstr ""
 
-#: templates/products/partials/_specs_accordion.html:2
 msgid "SPECIFIKACIJE"
 msgstr ""
 
-#: templates/products/partials/_specs_accordion.html:3
 msgid "Tehničke specifikacije"
 msgstr ""
 
-#: templates/products/partials/_used_empty_state.html:4
 msgid "Trenutno nemamo polovne mehanizacije u ponudi"
 msgstr ""
 
-#: templates/products/partials/_used_empty_state.html:5
 msgid ""
 "Pogledajte našu ponudu novih traktora ili promenite kriterijume pretrage."
 msgstr ""
 
-#: templates/products/partials/_used_empty_state.html:9
 msgid "POGLEDAJ NOVE TRAKTORE"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:4
 msgid "Filteri pretrage polovne mehanizacije"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:24
 msgid "Sve kategorije"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:37
 msgid "Svi brendovi"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:70
 msgid "Godina proizvodnje"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:80
 msgid "Godina minimum"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:81
 msgid "Godina maksimum"
 msgstr ""
 
-#: templates/products/partials/_used_filter_form.html:96
 msgid "Sortiraj po"
 msgstr ""
 
-#: templates/products/partials/_used_results_grid.html:13
 #, python-format
 msgid "%(name)s — pregled polovnog modela"
 msgstr ""
 
-#: templates/products/partials/_used_results_grid.html:25
 msgid "Godina proizvodnje:"
 msgstr ""
 
-#: templates/products/partials/_variants_selector.html:2
 msgid "VARIJANTE"
 msgstr ""
 
-#: templates/products/partials/_variants_selector.html:3
 msgid "Varijante proizvoda"
 msgstr ""
 
-#: templates/products/partials/_variants_selector.html:4
 msgid "Kliknite na varijantu za uvećani prikaz slike."
 msgstr ""
 
-#: templates/products/partials/_variants_selector.html:13
 #, python-format
 msgid "Otvori uvećani prikaz: %(name)s"
 msgstr ""
 
-#: templates/products/tractor_listing.html:6
 msgid ""
 "Filtrirajte traktore po snazi i ceni — kompletna ponuda svih brendova Ćorić "
 "Agrar-a."
 msgstr ""
 
-#: templates/products/tractor_listing.html:12
 msgid "Pronađite traktor koji odgovara vašoj farmi i budžetu."
 msgstr ""
 
-#: templates/products/tractor_listing.html:24
 msgid "Rezultati pretrage"
 msgstr ""
 
-#: templates/products/used_machinery_listing.html:6
 msgid ""
 "Polovna poljoprivredna mehanizacija — filtrirajte po kategoriji, brendu, "
 "ceni i godini proizvodnje."
 msgstr ""
 
-#: templates/products/used_machinery_listing.html:12
 msgid ""
 "Pregled polovnih mašina iz naše ponude — filtrirajte po kategoriji, brendu, "
 "ceni i godini proizvodnje."
 msgstr ""
 
-#: templates/products/used_machinery_listing.html:20
 msgid "Rezultati pretrage polovne mehanizacije"
 msgstr ""

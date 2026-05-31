@@ -1,0 +1,36 @@
+{% load i18n %}
+
+{% include "partials/section_eyebrow.html" with text=_("KATEGORIJE RADNIH MAŠINA") tag="div" %}
+
+<h2 id="hzm-subcategories-title" class="coric-category-showcase__title">
+  {% translate "Pregled po kategorijama" %}
+</h2>
+
+<div class="coric-category-showcase" data-testid="hzm-subcategory-showcase-grid">
+  {% for sub in subcategories %}
+    <article class="coric-category-card"
+             aria-labelledby="sub-card-{{ sub.slug }}-title"
+             data-testid="hzm-subcategory-card-{{ sub.slug }}">
+      {% if sub.icon %}
+        <div class="coric-category-card__icon" aria-hidden="true">
+          <i class="{{ sub.icon }}"></i>
+        </div>
+      {% endif %}
+      <h3 id="sub-card-{{ sub.slug }}-title"
+          class="coric-category-card__title">{{ sub.name }}</h3>
+      {% if sub.description %}
+        <p class="coric-category-card__description">{{ sub.description|truncatewords:25 }}</p>
+      {% endif %}
+      <a href="{{ sub.get_absolute_url }}"
+         class="coric-button coric-button--primary coric-category-card__cta"
+         aria-label="{% blocktranslate with category=sub.name %}Pogledaj kategoriju: {{ category }}{% endblocktranslate %}"
+         data-testid="hzm-subcategory-cta-{{ sub.slug }}">
+        {% translate "POGLEDAJ KATEGORIJU" %}
+      </a>
+    </article>
+  {% empty %}
+    <p class="coric-empty-state">
+      {% translate "Kategorije radnih mašina su u pripremi." %}
+    </p>
+  {% endfor %}
+</div>

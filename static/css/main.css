@@ -36,3 +36,6 @@
 
 /* Components CSS imports (Story 2.11) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/breadcrumb.css');
+
+/* Components CSS imports (Story 2.12) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/comparison-table.css');

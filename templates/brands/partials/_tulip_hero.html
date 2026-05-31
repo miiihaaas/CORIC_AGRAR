@@ -1,0 +1,10 @@
+{% load i18n %}
+{# Tulip hero — variant="green" (SM-D9: CSS NEMA --tulip varijantu; brand-specifične #}
+{# varijante su Story 9-10 polish scope). #}
+<div class="coric-brand-hero" data-testid="tulip-hero">
+  {% if brand.logo %}
+    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant="green" bullets="" %}
+  {% else %}
+    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant="green" bullets="" %}
+  {% endif %}
+</div>

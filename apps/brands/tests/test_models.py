@@ -138,9 +138,10 @@ def test_subcategory_category_cascade_on_delete():
 
     cat = _make_category()
     Subcategory.objects.create(category=cat, name="Plugovi")
+    cat_pk = cat.pk
 
     cat.delete()
-    assert Subcategory.objects.count() == 0, (
+    assert Subcategory.objects.filter(category_id=cat_pk).count() == 0, (
         "Subcategory mora biti CASCADE obrisana sa Category."
     )
 
@@ -154,9 +155,9 @@ def test_subcategory_parent_cascade_on_delete():
     l2 = Subcategory.objects.create(category=cat, parent=l1, name="L2")
     Subcategory.objects.create(category=cat, parent=l2, name="L3")
 
-    assert Subcategory.objects.count() == 3
+    assert Subcategory.objects.filter(category=cat).count() == 3
     l1.delete()
-    assert Subcategory.objects.count() == 0, (
+    assert Subcategory.objects.filter(category=cat).count() == 0, (
         "Brisanje parent Subcategory mora CASCADE obrisati ceo subtree."
     )
 
