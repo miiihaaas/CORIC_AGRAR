@@ -1,0 +1,37 @@
+{% load i18n %}
+
+{% include "partials/section_eyebrow.html" with text=_("KATEGORIJE PRIKLJUČNE MEHANIZACIJE") tag="div" %}
+
+<h2 id="jeegee-prikljucna-categories-title"
+    class="coric-category-showcase__title">
+  {% translate "Pregled po kategorijama" %}
+</h2>
+
+<div class="coric-category-showcase" data-testid="category-showcase-grid">
+  {% for category in categories %}
+    <article class="coric-category-card"
+             aria-labelledby="cat-card-{{ category.slug }}-title"
+             data-testid="category-card-{{ category.slug }}">
+      {% if category.icon %}
+        <div class="coric-category-card__icon" aria-hidden="true">
+          <i class="{{ category.icon }}"></i>
+        </div>
+      {% endif %}
+      <h3 id="cat-card-{{ category.slug }}-title"
+          class="coric-category-card__title">{{ category.name }}</h3>
+      {% if category.description %}
+        <p class="coric-category-card__description">{{ category.description|truncatewords:25 }}</p>
+      {% endif %}
+      <a href="/{{ LANGUAGE_CODE }}/mehanizacija/prikljucna/{{ category.slug }}/"
+         class="coric-button coric-button--primary coric-category-card__cta"
+         aria-label="{% blocktranslate with category=category.name %}Pogledaj kategoriju: {{ category }}{% endblocktranslate %}"
+         data-testid="category-card-cta-{{ category.slug }}">
+        {% translate "POGLEDAJ KATEGORIJU" %}
+      </a>
+    </article>
+  {% empty %}
+    <p class="coric-empty-state">
+      {% translate "Kategorije priključne mehanizacije su u pripremi." %}
+    </p>
+  {% endfor %}
+</div>

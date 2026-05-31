@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 19:30+0000\n"
+"POT-Creation-Date: 2026-05-31 05:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,25 +183,29 @@ msgstr ""
 msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
-#: apps/brands/views.py:41 apps/products/models.py:370
+#: apps/brands/views.py:50 apps/products/models.py:370
 #: apps/products/views.py:92
 msgid "Motor"
 msgstr ""
 
-#: apps/brands/views.py:42 apps/products/models.py:371
+#: apps/brands/views.py:51 apps/products/models.py:371
 #: apps/products/views.py:93
 msgid "Transmisija"
 msgstr ""
 
-#: apps/brands/views.py:43 apps/products/models.py:372
+#: apps/brands/views.py:52 apps/products/models.py:372
 #: apps/products/views.py:94
 msgid "Hidraulika"
 msgstr ""
 
-#: apps/brands/views.py:44 apps/brands/views.py:45 apps/products/models.py:373
+#: apps/brands/views.py:53 apps/brands/views.py:54 apps/products/models.py:373
 #: apps/products/views.py:95 apps/products/views.py:96
 msgid "Ostalo"
 msgstr ""
+
+#: apps/brands/views.py:117
+msgid "Jeegee brand nije konfigurisan u sistemu."
+msgstr "A Jeegee márka nincs konfigurálva a rendszerben."
 
 #: apps/media_pipeline/apps.py:21
 msgid "Media pipeline"
@@ -469,9 +473,10 @@ msgstr ""
 
 #: templates/brands/brand_coming_soon.html:4
 #: templates/brands/brand_detail.html:4
+#: templates/brands/jeegee_prikljucna.html:4
 #: templates/products/product_detail.html:4
 msgid "Ćorić Agrar"
-msgstr ""
+msgstr "Ćorić Agrar"
 
 #: templates/brands/brand_coming_soon.html:6
 #: templates/brands/brand_coming_soon.html:19
@@ -492,19 +497,71 @@ msgstr ""
 msgid "Modeli brenda"
 msgstr ""
 
-#: templates/brands/partials/_catalog_cta.html:4
-msgid "KATALOG"
-msgstr ""
+#: templates/brands/jeegee_prikljucna.html:4
+msgid "Priključna mehanizacija"
+msgstr "Függesztett gépek"
 
+#: templates/brands/jeegee_prikljucna.html:6
+#, python-format
+msgid ""
+"Pregled priključne mehanizacije %(brand)s po kategorijama — osnovna obrada "
+"zemljišta, priprema zemljišta, mašine za setvu."
+msgstr "%(brand)s függesztett gépek áttekintése kategóriánként — alapvető talajművelés, talajelőkészítés, vetőgépek."
+
+#: templates/brands/jeegee_prikljucna.html:11
+#, python-format
+msgid "%(brand)s priključna mehanizacija"
+msgstr "%(brand)s függesztett gépek"
+
+#: templates/brands/jeegee_prikljucna.html:15
+#, python-format
+msgid "%(brand)s hero"
+msgstr "%(brand)s hero"
+
+#: templates/brands/jeegee_prikljucna.html:36
+#, python-format
+msgid "Preuzmi %(brand)s katalog"
+msgstr "%(brand)s katalógus letöltése"
+
+#: templates/brands/jeegee_prikljucna.html:39
+msgid "PDF dokument sa kompletnom ponudom priključne mehanizacije."
+msgstr "PDF dokumentum a függesztett gépek teljes kínálatával."
+
+#: templates/brands/jeegee_prikljucna.html:47
 #: templates/brands/partials/_catalog_cta.html:5
 #: templates/brands/partials/_catalog_cta.html:12
 msgid "Preuzmi katalog"
+msgstr "Katalógus letöltése"
+
+#: templates/brands/partials/_catalog_cta.html:4
+msgid "KATALOG"
 msgstr ""
 
 #: templates/brands/partials/_catalog_cta.html:6
 #, python-format
 msgid "Kompletan PDF katalog modela brenda %(brand)s."
 msgstr ""
+
+#: templates/brands/partials/_category_showcase.html:3
+msgid "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
+msgstr "FÜGGESZTETT GÉPEK KATEGÓRIÁI"
+
+#: templates/brands/partials/_category_showcase.html:7
+msgid "Pregled po kategorijama"
+msgstr "Áttekintés kategóriánként"
+
+#: templates/brands/partials/_category_showcase.html:27
+#, python-format
+msgid "Pogledaj kategoriju: %(category)s"
+msgstr "Kategória megtekintése: %(category)s"
+
+#: templates/brands/partials/_category_showcase.html:29
+msgid "POGLEDAJ KATEGORIJU"
+msgstr "KATEGÓRIA MEGTEKINTÉSE"
+
+#: templates/brands/partials/_category_showcase.html:34
+msgid "Kategorije priključne mehanizacije su u pripremi."
+msgstr "A függesztett gépek kategóriái előkészítés alatt állnak."
 
 #: templates/brands/partials/_series_extended.html:28
 #: templates/brands/partials/_series_grid.html:16
@@ -673,7 +730,7 @@ msgstr ""
 msgid "Promeni jezik"
 msgstr ""
 
-#: templates/partials/language_switcher_nav.html:13
+#: templates/partials/language_switcher_nav.html:15
 #, python-format
 msgid "Prebaci na %(language)s"
 msgstr ""

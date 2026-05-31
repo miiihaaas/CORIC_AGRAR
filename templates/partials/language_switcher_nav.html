@@ -1,7 +1,18 @@
 {% load i18n %}
 <ul class="coric-nav__language-switcher" role="list">
+  {# get_available_languages je self-populating (radi bez i18n context processor-a #}
+  {# u izolovanim render testovima). lang_name iz njega je Django-prevedeni naziv #}
+  {# (pod sr locale-om vraca ne-latinicni tekst), pa za aria-label izvodimo latinicni #}
+  {# naziv iz lang_code umesto da koristimo lang_name. #}
   {% get_available_languages as available_languages %}
   {% for lang_code, lang_name in available_languages %}
+    {% if lang_code == "sr" %}
+      {% blocktranslate asvar lang_aria with language="Srpski" %}Prebaci na {{ language }}{% endblocktranslate %}
+    {% elif lang_code == "hu" %}
+      {% blocktranslate asvar lang_aria with language="Magyar" %}Prebaci na {{ language }}{% endblocktranslate %}
+    {% else %}
+      {% blocktranslate asvar lang_aria with language="English" %}Prebaci na {{ language }}{% endblocktranslate %}
+    {% endif %}
     <li>
       <form action="{% url 'set_language' %}" method="post" class="coric-language-switcher__form">
         {% csrf_token %}
@@ -10,7 +21,7 @@
         <button type="submit"
                 class="coric-language-switcher__btn{% if LANGUAGE_CODE == lang_code %} coric-language-switcher__btn--current{% endif %}"
                 {% if LANGUAGE_CODE == lang_code %}aria-current="page"{% endif %}
-                aria-label="{% blocktranslate with language=lang_name %}Prebaci na {{ language }}{% endblocktranslate %}">
+                aria-label="{{ lang_aria }}">
           {{ lang_code|upper }}
         </button>
       </form>

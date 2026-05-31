@@ -1,0 +1,11 @@
+{% load i18n %}
+{# Jeegee hero — fiksna PLAVA varijanta Repeating Element-a. #}
+{# NIJE REUSE Story 2-6 _hero_section.html (per SM-D4) — Jeegee variant je hardcoded, #}
+{# NEMA conditional brand_color → variant branching iz Story 2-6. #}
+<div class="coric-brand-hero" data-testid="jeegee-hero">
+  {% if brand.logo %}
+    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant="jeegee" bullets="" %}
+  {% else %}
+    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant="jeegee" bullets="" %}
+  {% endif %}
+</div>

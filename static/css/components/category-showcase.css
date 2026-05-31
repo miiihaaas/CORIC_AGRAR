@@ -1,0 +1,75 @@
+/* category-showcase.css — Story 2.10 */
+/* Kanonski coric-category-card BEM (3-card / 4-card / N-card showcase grid). */
+/* REUSE-uju Story 2-11 + 2-12. Sve vrednosti kroz var(--token) iz tokens.css. */
+
+.coric-category-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-scale-5);
+  margin-top: var(--spacing-scale-5);
+  margin-bottom: var(--spacing-section);
+}
+
+.coric-category-showcase__title {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-5);
+}
+
+.coric-category-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-3);
+  padding: var(--spacing-scale-5);
+  background-color: var(--color-neutral-white);
+  border-radius: var(--rounded-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.coric-category-card:hover,
+.coric-category-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
+}
+
+.coric-category-card__icon {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-jeegee-blue);
+  text-align: center;
+}
+
+.coric-category-card__title {
+  font-size: var(--typography-scale-h3);
+  color: var(--color-brand-green-800);
+  margin: 0;
+}
+
+.coric-category-card__description {
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  flex-grow: 1;
+}
+
+.coric-category-card__cta {
+  align-self: flex-start;
+  margin-top: var(--spacing-scale-3);
+}
+
+.coric-empty-state {
+  text-align: center;
+  padding: var(--spacing-scale-5);
+  color: var(--color-neutral-gray-700);
+  font-style: italic;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-category-card {
+    transition: none;
+  }
+  .coric-category-card:hover,
+  .coric-category-card:focus-within {
+    transform: none;
+  }
+}

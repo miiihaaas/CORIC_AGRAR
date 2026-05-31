@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n media_tags static %}
+
+{% block title %}{{ brand.name }} {% translate "Priključna mehanizacija" %} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% blocktranslate with brand=brand.name %}Pregled priključne mehanizacije {{ brand }} po kategorijama — osnovna obrada zemljišta, priprema zemljišta, mašine za setvu.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+  <section class="coric-brand-detail coric-jeegee-prikljucna"
+           data-testid="jeegee-prikljucna-page"
+           aria-label="{% blocktranslate with brand=brand.name %}{{ brand }} priključna mehanizacija{% endblocktranslate %}">
+
+    {# 1. Hero overlay sekcija (h1 dolazi iz hero_overlay_card partial-a) #}
+    <section id="jeegee-prikljucna-hero"
+             aria-label="{% blocktranslate with brand=brand.name %}{{ brand }} hero{% endblocktranslate %}"
+             class="coric-jeegee-prikljucna__hero-section">
+      {% include "brands/partials/_jeegee_hero.html" %}
+    </section>
+
+    {# 2. 3-card category showcase #}
+    <section id="jeegee-prikljucna-categories"
+             aria-labelledby="jeegee-prikljucna-categories-title"
+             class="coric-jeegee-prikljucna__categories-section">
+      {% include "brands/partials/_category_showcase.html" %}
+    </section>
+
+    {# 3. Opciono catalog CTA banner (samo ako brand.catalog_pdf postoji) #}
+    {% if brand.catalog_pdf %}
+      <section id="jeegee-prikljucna-catalog-cta"
+               aria-labelledby="jeegee-prikljucna-catalog-cta-title"
+               class="coric-jeegee-prikljucna__catalog-cta-section">
+        {% include "partials/wave_divider.html" with position="top" %}
+        <div class="coric-catalog-cta-banner">
+          <h2 id="jeegee-prikljucna-catalog-cta-title"
+              class="coric-catalog-cta-banner__title">
+            {% blocktranslate with brand=brand.name %}Preuzmi {{ brand }} katalog{% endblocktranslate %}
+          </h2>
+          <p class="coric-catalog-cta-banner__description">
+            {% translate "PDF dokument sa kompletnom ponudom priključne mehanizacije." %}
+          </p>
+          <a href="{{ brand.catalog_pdf.url }}"
+             target="_blank"
+             rel="noopener noreferrer"
+             download
+             class="coric-button coric-button--primary"
+             data-testid="jeegee-catalog-download">
+            {% translate "Preuzmi katalog" %}
+          </a>
+        </div>
+      </section>
+    {% endif %}
+
+  </section>
+{% endblock content %}

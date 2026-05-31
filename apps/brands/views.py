@@ -12,11 +12,20 @@ grupisane po brendu. View-layer-only coupling, no model dependency.
 from __future__ import annotations
 
 from django.db.models import Case, CharField, IntegerField, Prefetch, Value, When
+from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView
 
-from apps.brands.models import Brand, Series
+from apps.brands.models import Brand, Category, Series
 from apps.products.models import Product, ProductSpecification, ProductTestimonial
+
+# Story 2.10 — Jeegee priključna mehanizacija landing strana
+_JEEGEE_BRAND_SLUG = "jeegee"
+_PRIKLJUCNA_CATEGORY_SLUGS = (
+    "osnovna-obrada-zemljista",
+    "priprema-zemljista",
+    "masine-za-setvu",
+)
 
 
 class BrandDetailView(DetailView):
@@ -80,5 +89,46 @@ class BrandDetailView(DetailView):
             )
             .select_related("product")
             .order_by("order", "-created_at")[:10]
+        )
+        return ctx
+
+
+class JeegeePrikljucnaView(DetailView):
+    """Jeegee priključna mehanizacija landing strana — Story 2.10.
+
+    Statička landing strana sa 3-card category showcase grid. NEMA HTMX,
+    NEMA filtera, NEMA paginacije. View NE query-uje Product — samo Brand + Category.
+
+    get_object() hardcoduje Jeegee Brand lookup (slug='jeegee') jer URL je
+    statički bez slug kwarg-a (SM-D3); raise Http404 ako brand nije seed-ovan
+    (SM-D7). get_template_names() koristi brand_coming_soon.html ako
+    is_coming_soon=True (REUSE Story 2-6 SM-D19 pattern).
+    """
+
+    model = Brand
+    context_object_name = "brand"
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        try:
+            return queryset.get(slug=_JEEGEE_BRAND_SLUG)
+        except Brand.DoesNotExist as exc:
+            raise Http404(_("Jeegee brand nije konfigurisan u sistemu.")) from exc
+
+    def get_template_names(self):
+        if getattr(self, "object", None) is not None and self.object.is_coming_soon:
+            return ["brands/brand_coming_soon.html"]
+        return ["brands/jeegee_prikljucna.html"]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        if self.object.is_coming_soon:
+            return ctx
+        ctx["categories"] = list(
+            Category.objects.filter(
+                is_for=Category.CategoryScope.MEHANIZACIJA,
+                slug__in=_PRIKLJUCNA_CATEGORY_SLUGS,
+            ).order_by("display_order", "name")
         )
         return ctx

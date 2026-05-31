@@ -30,3 +30,6 @@
 
 /* Components CSS imports (Story 2.9) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/used-machinery-listing.css');
+
+/* Components CSS imports (Story 2.10) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/category-showcase.css');
