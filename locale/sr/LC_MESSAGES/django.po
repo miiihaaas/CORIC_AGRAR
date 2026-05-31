@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 15:38+0000\n"
+"POT-Creation-Date: 2026-05-31 18:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -203,7 +203,7 @@ msgid "Slika je oštećena ili nije validan format."
 msgstr ""
 
 msgid "Proizvodi"
-msgstr ""
+msgstr "Proizvodi"
 
 msgid "Novo"
 msgstr ""
@@ -239,6 +239,9 @@ msgid "Stanje"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Search vektor"
 msgstr ""
 
 msgid "Proizvod"
@@ -430,9 +433,6 @@ msgstr "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
 msgid "Pregled po kategorijama"
 msgstr "Pregled po kategorijama"
 
-msgid "Pregled modela"
-msgstr "Pregled modela"
-
 #, python-format
 msgid "Pogledaj kategoriju: %(category)s"
 msgstr "Pogledaj kategoriju: %(category)s"
@@ -498,6 +498,9 @@ msgstr "Uporedne dimenzije Tulip MIX prikolica"
 
 msgid "MODELI PRIKOLICA"
 msgstr "MODELI PRIKOLICA"
+
+msgid "Pregled modela"
+msgstr "Pregled modela"
 
 #, python-format
 msgid "Opširnije o modelu: %(name)s"
@@ -615,7 +618,16 @@ msgid "Kontakt"
 msgstr ""
 
 msgid "Otvori pretragu"
-msgstr ""
+msgstr "Otvori pretragu"
+
+msgid "Pretraga"
+msgstr "Pretraga"
+
+msgid "Pretraži proizvode…"
+msgstr "Pretraži proizvode…"
+
+msgid "Pretraga u toku…"
+msgstr "Pretraga u toku…"
 
 msgid "Izaberi jezik"
 msgstr ""
@@ -824,3 +836,36 @@ msgstr ""
 
 msgid "Rezultati pretrage polovne mehanizacije"
 msgstr "Rezultati pretrage polovne mehanizacije"
+
+msgid "Predlozi pretrage"
+msgstr "Predlozi pretrage"
+
+msgid "Vidi sve"
+msgstr "Vidi sve"
+
+msgid "Objave"
+msgstr "Objave"
+
+#, python-format
+msgid "%(counter)s predlog."
+msgid_plural "%(counter)s predloga."
+msgstr[0] "%(counter)s predlog."
+msgstr[1] "%(counter)s predloga."
+msgstr[2] "%(counter)s predloga."
+
+msgid "Unesi makar 2 znaka."
+msgstr "Unesi makar 2 znaka."
+
+#, python-format
+msgid "Nema rezultata za „%(query)s\"."
+msgstr "Nema rezultata za „%(query)s\"."
+
+msgid "Popularne kategorije"
+msgstr "Popularne kategorije"
+
+msgid "Popularni brendovi"
+msgstr "Popularni brendovi"
+
+#, python-format
+msgid "Rezultati pretrage za „%(query)s\""
+msgstr "Rezultati pretrage za „%(query)s\""

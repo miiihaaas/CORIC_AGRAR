@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 15:38+0000\n"
+"POT-Creation-Date: 2026-05-31 18:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -238,6 +238,9 @@ msgid "Stanje"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Search vektor"
 msgstr ""
 
 msgid "Proizvod"
@@ -493,6 +496,9 @@ msgstr ""
 msgid "MODELI PRIKOLICA"
 msgstr ""
 
+msgid "Pregled modela"
+msgstr ""
+
 #, python-format
 msgid "Opširnije o modelu: %(name)s"
 msgstr ""
@@ -608,6 +614,15 @@ msgstr ""
 
 msgid "Otvori pretragu"
 msgstr ""
+
+msgid "Pretraga"
+msgstr "Search"
+
+msgid "Pretraži proizvode…"
+msgstr "Search products…"
+
+msgid "Pretraga u toku…"
+msgstr "Searching…"
 
 msgid "Izaberi jezik"
 msgstr ""
@@ -805,3 +820,35 @@ msgstr ""
 
 msgid "Rezultati pretrage polovne mehanizacije"
 msgstr ""
+
+msgid "Predlozi pretrage"
+msgstr "Search suggestions"
+
+msgid "Vidi sve"
+msgstr "See all"
+
+msgid "Objave"
+msgstr "Posts"
+
+#, python-format
+msgid "%(counter)s predlog."
+msgid_plural "%(counter)s predloga."
+msgstr[0] "%(counter)s suggestion."
+msgstr[1] "%(counter)s suggestions."
+
+msgid "Unesi makar 2 znaka."
+msgstr "Enter at least 2 characters."
+
+#, python-format
+msgid "Nema rezultata za „%(query)s\"."
+msgstr "No results for “%(query)s”."
+
+msgid "Popularne kategorije"
+msgstr "Popular categories"
+
+msgid "Popularni brendovi"
+msgstr "Popular brands"
+
+#, python-format
+msgid "Rezultati pretrage za „%(query)s\""
+msgstr "Search results for “%(query)s”"

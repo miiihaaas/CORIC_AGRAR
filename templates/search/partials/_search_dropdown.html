@@ -1,0 +1,69 @@
+{% load i18n media_tags %}
+
+{% comment %}
+  Story 2.13 — dropdown rezultati grupisani po tipu (Proizvodi / Objave).
+  Render-uje SADRŽAJ unutar #coric-search-results (HTMX target iz header.html).
+  Grupa se renderuje SAMO ako ima rezultata → Objave nevidljiva u v1 (SM-D3 forward-compat).
+  „Vidi sve" testid je per-grupa (search-see-all-{group_key}, IMP-6).
+{% endcomment %}
+
+<ul class="coric-search-dropdown__list"
+    role="listbox"
+    aria-label="{% translate 'Predlozi pretrage' %}"
+    data-testid="search-dropdown-list">
+  {% if grouped.proizvodi %}
+    <li role="presentation" class="coric-search-dropdown__group-heading">{% translate "Proizvodi" %}</li>
+    {% for product in grouped.proizvodi %}
+      <li role="option"
+          class="coric-search-dropdown__option"
+          id="search-opt-{{ product.slug }}"
+          data-testid="search-option-{{ product.slug }}">
+        <a href="{{ product.get_absolute_url }}" class="coric-search-dropdown__link">
+          {% if product.main_image %}
+            <span class="coric-search-dropdown__thumb">
+              {% responsive_picture product.main_image alt=product.name sizes="48px" loading="lazy" css_class="coric-search-dropdown__img" %}
+            </span>
+          {% endif %}
+          <span class="coric-search-dropdown__text">
+            <span class="coric-search-dropdown__name">{{ product.name }}</span>
+            <span class="coric-search-dropdown__brand">{{ product.brand.name }}</span>
+          </span>
+        </a>
+      </li>
+    {% endfor %}
+    <li role="presentation" class="coric-search-dropdown__see-all-wrap">
+      <a href="{% url 'search:results' %}?q={{ query|urlencode }}"
+         class="coric-search-dropdown__see-all"
+         data-testid="search-see-all-proizvodi">{% translate "Vidi sve" %}</a>
+    </li>
+  {% endif %}
+
+  {% comment %}SM-D3 forward-compat — Objave grupa prazna u v1; render samo ako ima rezultata.
+  Epic 5 popunjava grouped.objave bez refaktora ovog bloka (search-see-all-objave testid).{% endcomment %}
+  {% if grouped.objave %}
+    <li role="presentation" class="coric-search-dropdown__group-heading">{% translate "Objave" %}</li>
+    {% for post in grouped.objave %}
+      <li role="option"
+          class="coric-search-dropdown__option"
+          id="search-opt-objava-{{ post.slug }}"
+          data-testid="search-option-{{ post.slug }}">
+        <a href="{{ post.get_absolute_url }}" class="coric-search-dropdown__link">
+          <span class="coric-search-dropdown__text">
+            <span class="coric-search-dropdown__name">{{ post.title }}</span>
+          </span>
+        </a>
+      </li>
+    {% endfor %}
+    <li role="presentation" class="coric-search-dropdown__see-all-wrap">
+      <a href="{% url 'search:results' %}?q={{ query|urlencode }}"
+         class="coric-search-dropdown__see-all"
+         data-testid="search-see-all-objave">{% translate "Vidi sve" %}</a>
+    </li>
+  {% endif %}
+</ul>
+
+{% comment %}SM-D14 OOB guard — OOB div SAMO za HTMX response; sprečava plain-text render
+u non-HTMX full-page render-u. Target je #aria-live singleton (base.html htmx_aria tag).{% endcomment %}
+{% if request.htmx %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% blocktranslate count counter=suggestion_count %}{{ counter }} predlog.{% plural %}{{ counter }} predloga.{% endblocktranslate %}</div>
+{% endif %}

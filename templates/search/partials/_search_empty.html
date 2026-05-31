@@ -1,0 +1,49 @@
+{% load i18n %}
+
+{% comment %}
+  Story 2.13 — empty-state (SM-D13/D18 + IMP-4).
+  - too_short (< 2 znaka): NON-plural „Unesi makar 2 znaka." BEZ CTA (EXPERIENCE.md 248).
+  - 0 rezultata (≥ 2 znaka): „Nema rezultata za ..." + CTA blok popularnih kategorija + brendova.
+  - {{ query }} auto-escaped (Django default — XSS guard, AC7).
+{% endcomment %}
+
+<div class="coric-search-empty" data-testid="search-empty-state">
+  {% if too_short %}
+    <p class="coric-search-empty__hint">{% translate "Unesi makar 2 znaka." %}</p>
+  {% else %}
+    <p class="coric-search-empty__message">{% blocktranslate %}Nema rezultata za „{{ query }}".{% endblocktranslate %}</p>
+    <div class="coric-search-empty__cta">
+      {% if popular_categories %}
+        <div class="coric-search-empty__cta-group">
+          <p class="coric-search-empty__cta-heading">{% translate "Popularne kategorije" %}</p>
+          <ul class="coric-search-empty__cta-list">
+            {% for category in popular_categories %}
+              <li><a href="{{ category.url }}" class="coric-search-empty__cta-link">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% if header_brands %}
+        <div class="coric-search-empty__cta-group">
+          <p class="coric-search-empty__cta-heading">{% translate "Popularni brendovi" %}</p>
+          <ul class="coric-search-empty__cta-list">
+            {% for brand in header_brands %}
+              <li><a href="{{ brand.get_absolute_url }}" class="coric-search-empty__cta-link">{{ brand.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% comment %}SM-D14 OOB guard — DVE RAZLIČITE poruke (IMP-4):
+  - too_short → NON-plural fiksna instrukcija (NEMA brojač).
+  - 0 rezultata → plural „{n} predloga." (counter=0) — isti msgid kao _search_dropdown.html.{% endcomment %}
+{% if request.htmx %}
+  {% if too_short %}
+    <div hx-swap-oob="innerHTML:#aria-live">{% translate "Unesi makar 2 znaka." %}</div>
+  {% else %}
+    <div hx-swap-oob="innerHTML:#aria-live">{% blocktranslate count counter=suggestion_count %}{{ counter }} predlog.{% plural %}{{ counter }} predloga.{% endblocktranslate %}</div>
+  {% endif %}
+{% endif %}

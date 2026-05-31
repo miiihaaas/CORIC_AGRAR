@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n media_tags %}
+
+{% comment %}
+  Story 2.13 — „Vidi sve" full strana (SM-D16).
+  Reflected-XSS guard (IMP-5): title + h1 koriste golo {{ query }} (Django auto-escape ON →
+  <script> postaje &lt;script&gt;); see-all/refine href koristi {{ query|urlencode }}
+  (%3Cscript%3E). NIKAD |safe na query.
+  Single <h1> (single-h1 regression guard mirror Story 2.8 AC3).
+  NEMA OOB aria-live (non-HTMX render — partial-i guard-uju {% if request.htmx %}).
+{% endcomment %}
+
+{% block title %}{% blocktranslate %}Rezultati pretrage za „{{ query }}"{% endblocktranslate %} | Ćorić Agrar{% endblock %}
+
+{% block content %}
+  <section class="coric-search-results-page" data-testid="search-results-page" aria-labelledby="search-results-title">
+    <header class="coric-search-results-page__header">
+      <h1 id="search-results-title" class="coric-search-results-page__title">{% blocktranslate %}Rezultati pretrage za „{{ query }}"{% endblocktranslate %}</h1>
+    </header>
+
+    {% if too_short %}
+      <p class="coric-search-empty__hint">{% translate "Unesi makar 2 znaka." %}</p>
+    {% elif suggestion_count == 0 %}
+      {% include "search/partials/_search_empty.html" %}
+    {% else %}
+      {% if grouped.proizvodi %}
+        <section class="coric-search-results-page__group" aria-label="{% translate 'Proizvodi' %}">
+          <h2 class="coric-search-results-page__group-heading">{% translate "Proizvodi" %}</h2>
+          <ul class="coric-search-results-page__list" role="list">
+            {% for product in grouped.proizvodi %}
+              <li class="coric-search-results-page__item" data-testid="search-result-{{ product.slug }}">
+                <a href="{{ product.get_absolute_url }}" class="coric-search-results-page__link">
+                  {% if product.main_image %}
+                    {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-search-results-page__img" %}
+                  {% endif %}
+                  <span class="coric-search-results-page__name">{{ product.name }}</span>
+                  <span class="coric-search-results-page__brand">{{ product.brand.name }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+          {% comment %}IMP-5 — refine href u URL kontekstu MORA biti urlencode (%3Cscript%3E).{% endcomment %}
+          <a href="{% url 'search:results' %}?q={{ query|urlencode }}"
+             class="coric-search-results-page__refine"
+             data-testid="search-refine-proizvodi"
+             rel="nofollow">{% translate "Vidi sve" %}</a>
+        </section>
+      {% endif %}
+    {% endif %}
+  </section>
+{% endblock content %}

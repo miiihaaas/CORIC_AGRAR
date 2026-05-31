@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",  # NOVO Story 2.13 — SearchVectorField + GinIndex system checks (SM-D6)
     "django_htmx",  # NOVO Story 1.6 — request.htmx detection
     "django_bootstrap5",  # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
     "apps.brands",  # NOVO Story 2.1 — Brand/Series/Category/Subcategory domain app
     "apps.products",  # NOVO Story 2.2 — Product i related modeli (POSLE brands per dep rule)
+    "apps.search",  # NOVO Story 2.13 — site-wide search (POSLE products; search → products dep, SM-D2)
     "sorl.thumbnail",  # NOVO Story 2.3 — third-party paket POSLE domain app-ova (utility lib)
     "apps.media_pipeline",  # NOVO Story 2.3 — utility app POSLE sorl.thumbnail (koristi njegove template tags)
 ]

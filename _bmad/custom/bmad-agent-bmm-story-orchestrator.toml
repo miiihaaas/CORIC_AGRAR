@@ -1,0 +1,41 @@
+# ─────────────────────────────────────────────────────────────────
+# Team override for the Story Orchestrator (Dana) skill.
+# Committed to the repo — applies to every developer on the project.
+# The installer NEVER touches this file (unlike the skill's customize.toml,
+# which is regenerated on every update).
+#
+# Merge order (resolve_customization.py):
+#   skill/customize.toml (base)  →  this file (team)  →  *.user.toml (personal)
+# Merge rules:
+#   - scalars: override wins
+#   - `principles` (string array): APPEND after base entries
+#   - `menu` (array-of-tables keyed by `code`): replace matching code, append new
+#
+# WHY THIS FILE EXISTS:
+# It aligns Dana's persona text with the optimized Story Orchestration workflow
+# (risk-tiered panels + Mandatory-gated auto-fix loop + Scoped Fix Verifier).
+# The principles below are APPENDED (the resolver cannot replace base array items),
+# so they read as the authoritative refinement of how steps 2 & 4 actually run.
+# The VS / CR menu items are replaced in place by their `code`.
+# ─────────────────────────────────────────────────────────────────
+
+[agent]
+
+# Appended after the base principles. These refine the panel/loop mechanics of
+# steps 2 (validate) and 4 (review) to match the optimized workflow.
+principles = [
+  "PANEL JE RISK-TIERED (zamenjuje fiksnih 3/5): veličina panela za korak 2 (validate) i 4 (review) zavisi od risk_tier-a izračunatog u step-00 — validate 2 agenta (LOW) ili 3 (MEDIUM/HIGH); review 3 (LOW), 4 (MEDIUM) ili 5 (HIGH) agenata. Nejasan signal → viši tier (fail-safe ka kvalitetu).",
+  "AUTO-FIX JE MANDATORY-DRIVEN sa scoped re-verifikacijom: petlja izlazi tek kad NEMA Mandatory nalaza (CRITICAL u validate; SECURITY/BUG/PERFORMANCE u review) — potvrđeno Scoped Fix Verifier-om (1 svež subagent koji čita SAMO izmenjene fajlove) — ili kad istekne max_retries (validate 2, review 3). Pun panel se re-lansira SAMO na verifier ESCALATE. Non-Mandatory nalazi (IMPROVEMENT/ARCHITECTURE/TEST_GAP/REFACTOR) se poprave u jednom završnom best-effort batch-u i NE okidaju petlju; ostatak se loguje kao known/deferred. Tvoj autoritet nad kvalitetom ostaje apsolutni: Mandatory se uvek ili popravi ili formalno loguje kao unfixable — nikad tiho ne ispusti.",
+  "MODEL POLICY (Faza 1, konzervativna): svaki Task dispatch eksplicitno prosleđuje model. SONNET za bounded/structured uloge koje panel unakrsno proverava (SM Validatori, Dev/TEA revieweri, Scoped Fix Verifier). OPUS za sve što PIŠE artefakte (step-01 story, step-03 TDD, svi Fix agenti) i za high-value detekciju suptilnih problema (Adversarial, Architect, Security). Nikad ne izostavi `model` param — default bi mogao tiho da spusti kritičnu ulogu na slabiji model. Definicija je u workflow.yaml > delegation > model_policy.",
+]
+
+# Replace the VS and CR menu items in place (matched by `code`).
+[[agent.menu]]
+code = "VS"
+description = "Validate Story — validiraj postojeću priču bez implementacije (risk-tiered panel)"
+prompt = "Učitaj i izvrši: `{project-root}/_bmad/bmm/workflows/4-implementation/story-orchestration/steps/step-02-validate-story.md`. Pokreni RISK-TIERED panel (2 za LOW, 3 za MEDIUM/HIGH) paralelnih validatora. Mandatory-gated auto-fix petlja (max 2) sa Scoped Fix Verifier-om posle svakog fix-a; pun panel samo na ESCALATE. CRITICAL je Mandatory; IMPROVEMENT u finalnom batch-u. Nerešen Mandatory → unfixable log, nikad tiho."
+
+[[agent.menu]]
+code = "CR"
+description = "Code Review — pokreni code review za priču u review statusu (risk-tiered panel)"
+prompt = "Učitaj i izvrši: `{project-root}/_bmad/bmm/workflows/4-implementation/story-orchestration/steps/step-04-review.md`. Pokreni RISK-TIERED panel (3 za LOW, 4 za MEDIUM, 5 za HIGH) paralelnih reviewera. Mandatory-gated auto-fix petlja (max 3) sa Scoped Fix Verifier-om posle svakog fix-a; pun panel samo na ESCALATE. SECURITY/BUG/PERFORMANCE su Mandatory; ARCHITECTURE/TEST_GAP/REFACTOR u finalnom batch-u. Nerešen Mandatory → unfixable log, nikad tiho."

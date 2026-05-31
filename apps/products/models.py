@@ -29,6 +29,8 @@ Out-of-scope za 2.2 (defer references):
 from __future__ import annotations
 
 from django.conf import settings
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 from django.db import models
@@ -168,6 +170,11 @@ class Product(SluggedModel, TimestampedModel):
     # NOTE I4: NEMA db_index=True — composite index `products_product_pub_created_idx`
     # ima `is_published` kao leftmost field.
     is_published = models.BooleanField(_("Objavljen"), default=False)
+    # Story 2.13 (SM-D8) — search_vector ostaje UVEK NULL u v1 (annotation-at-query-time,
+    # bez trigger/signal/save populacije). Field + GIN indeks su forward-compat skelet ka
+    # materijalizovanom (trigger) pristupu u v1.1. Runtime FTS upit ide kroz annotation
+    # alias `search` u apps/search/search.py — NE kroz ovu NULL kolonu (C3/SM-D8).
+    search_vector = SearchVectorField(_("Search vektor"), null=True, editable=False)
 
     class Meta:
         ordering = ["-created_at"]
@@ -186,6 +193,9 @@ class Product(SluggedModel, TimestampedModel):
                 fields=["condition", "is_published"],
                 name="products_product_condition_pub_idx",
             ),
+            # Story 2.13 (SM-D20/C1) — GIN indeks na search_vector; ime 19 char ≤30
+            # (Django Index.max_name_length). NE _ProductIndex subclass (on je models.Index).
+            GinIndex(fields=["search_vector"], name="products_search_gin"),
         ]
 
     def __str__(self) -> str:

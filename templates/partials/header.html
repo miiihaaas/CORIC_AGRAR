@@ -94,16 +94,41 @@
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Price sa polja" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "O nama" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Kontakt" %}</a></li>
-        <li class="nav-item">
-          {# IMP-3: NO aria-expanded (button not wired za toggle until Story 2.13). #}
+        <li class="nav-item coric-nav__search-item">
+          {# Story 2.13 — IMP-3 dug zatvoren: button wired (aria-expanded/aria-controls/data-search-toggle). #}
           <button type="button"
                   class="coric-nav__search-toggle"
+                  data-search-toggle
+                  aria-expanded="false"
+                  aria-controls="coric-search-panel"
                   aria-label="{% translate "Otvori pretragu" %}">
             <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/>
               <path d="m21 21-4.35-4.35"/>
             </svg>
           </button>
+          {# SM-D12 — expand panel mount; GET-only (NEMA csrf_token, SM-D17). #}
+          <div id="coric-search-panel" class="coric-search-panel" hidden>
+            <form role="search"
+                  hx-get="{% url 'search:dropdown' %}"
+                  hx-trigger="keyup changed delay:300ms"
+                  hx-target="#coric-search-results"
+                  hx-swap="innerHTML"
+                  hx-indicator="#coric-search-loading"
+                  class="coric-search-panel__form">
+              <input type="search" name="q" minlength="2" autocomplete="off"
+                     class="coric-search-panel__input"
+                     aria-label="{% translate "Pretraga" %}"
+                     placeholder="{% translate "Pretraži proizvode…" %}"
+                     data-search-input>
+              <div id="coric-search-loading" class="coric-search-panel__loading htmx-indicator" aria-hidden="true">
+                <span class="spinner-border spinner-border-sm" role="status">
+                  <span class="visually-hidden">{% translate "Pretraga u toku…" %}</span>
+                </span>
+              </div>
+              <div id="coric-search-results" class="coric-search-panel__results" data-testid="search-results-container"></div>
+            </form>
+          </div>
         </li>
         <li class="nav-item">
           {# CRITICAL-1: NOVI partial language_switcher_nav.html (CSP-safe, form-per-locale). #}
@@ -113,3 +138,6 @@
     </div>
   </div>
 </nav>
+
+{% comment %}Story 2.13 — search expand/collapse + Esc-to-close + listbox keyboard nav (SM-D12/AC9). defer: izvršava se posle DOM parse-a; ne zavisi od HTMX vendor-a u init momentu.{% endcomment %}
+<script src="{% static 'js/search-expand.js' %}" defer></script>

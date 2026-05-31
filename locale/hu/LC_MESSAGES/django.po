@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 15:38+0000\n"
+"POT-Creation-Date: 2026-05-31 18:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -238,6 +238,9 @@ msgid "Stanje"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Search vektor"
 msgstr ""
 
 msgid "Proizvod"
@@ -493,6 +496,9 @@ msgstr ""
 msgid "MODELI PRIKOLICA"
 msgstr ""
 
+msgid "Pregled modela"
+msgstr ""
+
 #, python-format
 msgid "Opširnije o modelu: %(name)s"
 msgstr ""
@@ -608,6 +614,15 @@ msgstr ""
 
 msgid "Otvori pretragu"
 msgstr ""
+
+msgid "Pretraga"
+msgstr "Keresés"
+
+msgid "Pretraži proizvode…"
+msgstr "Termékek keresése…"
+
+msgid "Pretraga u toku…"
+msgstr "Keresés folyamatban…"
 
 msgid "Izaberi jezik"
 msgstr ""
@@ -805,3 +820,35 @@ msgstr ""
 
 msgid "Rezultati pretrage polovne mehanizacije"
 msgstr ""
+
+msgid "Predlozi pretrage"
+msgstr "Keresési javaslatok"
+
+msgid "Vidi sve"
+msgstr "Összes megtekintése"
+
+msgid "Objave"
+msgstr "Bejegyzések"
+
+#, python-format
+msgid "%(counter)s predlog."
+msgid_plural "%(counter)s predloga."
+msgstr[0] "%(counter)s javaslat."
+msgstr[1] "%(counter)s javaslat."
+
+msgid "Unesi makar 2 znaka."
+msgstr "Írjon be legalább 2 karaktert."
+
+#, python-format
+msgid "Nema rezultata za „%(query)s\"."
+msgstr "Nincs találat erre: „%(query)s”."
+
+msgid "Popularne kategorije"
+msgstr "Népszerű kategóriák"
+
+msgid "Popularni brendovi"
+msgstr "Népszerű márkák"
+
+#, python-format
+msgid "Rezultati pretrage za „%(query)s\""
+msgstr "Keresési eredmények erre: „%(query)s”"
