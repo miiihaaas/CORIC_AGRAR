@@ -443,6 +443,7 @@ def test_ac5_root_redirects_to_default_lang():
     )
 
 
+@pytest.mark.django_db  # Story 3.1: root `/` sada renderuje DB-backed HomeView (pages:home)
 def test_ac5_sr_hu_en_routes_200():
     """AC5 / AC9.8-10: GET /sr/, /hu/, /en/ moraju vratiti 200."""
     client = _get_test_client()
@@ -515,14 +516,18 @@ def test_ac5_admin_inside_i18n_patterns():
     )
 
 
-def test_ac5_apps_core_urls_included():
-    """AC5 / Interface contract § 3.5: `include('apps.core.urls')` MORA biti UNUTAR
-    `i18n_patterns()` (root path za home view).
+def test_ac5_apps_pages_urls_included():
+    """AC5 / Story 3.1 (C1 migracija): root path (home view) se uključuje kroz
+    `include('apps.pages.urls')` UNUTAR `i18n_patterns()`.
+
+    Story 3.1 je relocirao home view iz `apps.core` u `apps.pages` (HomeView) i
+    uklonio `apps.core.urls` include (core više nema URL-ova) — root `/` sada
+    rezolvuje `pages:home`.
     """
     src = _read_urls_source()
-    assert re.search(r'include\s*\(\s*[\'"]apps\.core\.urls[\'"]', src), (
-        "config/urls.py ne sadrzi `include('apps.core.urls')`. "
-        "AC5 / Interface contract § 3.5: root URL-ovi se ukljucuju kroz apps.core.urls."
+    assert re.search(r'include\s*\(\s*[\'"]apps\.pages\.urls[\'"]', src), (
+        "config/urls.py ne sadrzi `include('apps.pages.urls')`. "
+        "AC5 / Story 3.1: root URL (home) se uključuje kroz apps.pages.urls (pages:home)."
     )
 
 
@@ -618,6 +623,7 @@ def test_ac6_base_html_default_content():
     )
 
 
+@pytest.mark.django_db  # Story 3.1: root `/` sada renderuje DB-backed HomeView (pages:home)
 def test_ac6_render_html_lang_matches_url_locale():
     """AC6: rendered HTML <html lang> matchuje URL locale prefix.
 

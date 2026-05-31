@@ -1,0 +1,14 @@
+{% load i18n %}
+{# Polovna mehanizacija baner — Section Eyebrow + h2 + opis + CTA → products:used_machinery_list. #}
+<section class="coric-home-section coric-home-banner" aria-labelledby="home-polovna-title">
+  {% include "partials/section_eyebrow.html" with text=_("POLOVNA MEHANIZACIJA") tag="div" %}
+  <h2 id="home-polovna-title" class="coric-home-section__title">
+    {% translate "Proverena polovna mehanizacija" %}
+  </h2>
+  <p class="coric-home-banner__text">
+    {% translate "Pažljivo odabrana i tehnički proverena polovna mehanizacija — vrednost po pristupačnoj ceni, sa garancijom poverenja Ćorić Agrar tima." %}
+  </p>
+  <a href="{% url 'products:used_machinery_list' %}" class="coric-button coric-button--primary coric-home-banner__cta">
+    {% translate "Pogledaj polovnu mehanizaciju" %}
+  </a>
+</section>

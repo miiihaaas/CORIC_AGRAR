@@ -1,0 +1,48 @@
+{% load i18n media_tags %}
+{# Traktori sekcija — svi aktivni Traktori brendovi kao kartice (logo + reprezentativna slika + „OPŠIRNIJE" CTA). 3 klikabilne zone po kartici → brands:detail. #}
+<section class="coric-home-section coric-home-traktori" aria-labelledby="home-traktori-title">
+  {% include "partials/section_eyebrow.html" with text=_("TRAKTORI") tag="div" %}
+  <h2 id="home-traktori-title" class="coric-home-section__title">
+    {% translate "Naši brendovi" %}
+  </h2>
+
+  <div class="coric-brand-grid" data-testid="home-brand-grid">
+    {% for brand in traktori_brands %}
+      {% url 'brands:detail' slug=brand.slug as brand_url %}
+      <article class="coric-brand-card" aria-labelledby="home-brand-{{ brand.slug }}-title">
+        {% if brand.is_coming_soon %}
+          <span class="coric-pill-badge coric-pill-badge--coming-soon" role="status">{% translate "Uskoro" %}</span>
+        {% endif %}
+
+        {# Klik zona 1 — brand logo → brand strana. #}
+        {% if brand.logo %}
+          <a href="{{ brand_url }}"
+             class="coric-brand-card__logo-link"
+             aria-label="{% blocktranslate with brand=brand.name %}Pogledaj brend: {{ brand }}{% endblocktranslate %}">
+            {% responsive_picture brand.logo alt=brand.name sizes="(max-width: 768px) 50vw, 200px" loading="lazy" css_class="coric-brand-card__logo" format='PNG' %}
+          </a>
+        {% endif %}
+
+        {# Klik zona 2 — reprezentativna slika (iz Prefetch to_attr) → brand strana. ITEM-5 guard. #}
+        {% if brand.published_products and brand.published_products.0.main_image %}
+          <a href="{{ brand_url }}"
+             class="coric-brand-card__image-link"
+             aria-label="{% blocktranslate with brand=brand.name %}Pogledaj brend: {{ brand }}{% endblocktranslate %}">
+            {% responsive_picture brand.published_products.0.main_image alt=brand.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-brand-card__image" %}
+          </a>
+        {% else %}
+          <div class="coric-brand-card__image coric-brand-card__image--placeholder" aria-hidden="true"></div>
+        {% endif %}
+
+        <h3 id="home-brand-{{ brand.slug }}-title" class="coric-brand-card__title">{{ brand.name }}</h3>
+
+        {# Klik zona 3 — „OPŠIRNIJE" CTA → brand strana. #}
+        <a href="{{ brand_url }}" class="coric-button coric-button--primary coric-brand-card__cta">
+          {% translate "OPŠIRNIJE" %}
+        </a>
+      </article>
+    {% empty %}
+      <p class="coric-empty-state">{% translate "Brendovi će uskoro biti dostupni." %}</p>
+    {% endfor %}
+  </div>
+</section>

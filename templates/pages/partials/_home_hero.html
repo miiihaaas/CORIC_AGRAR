@@ -1,0 +1,15 @@
+{% load i18n static %}
+{# Home hero — full-width foto-pozadina + green-800 overlay card (slogan h1 + brand lockup + Repeating Element watermark). SM-D9: variant="green". SM-D10: slogan FIKSAN, foto-pozadina static asset. #}
+<section class="coric-home-hero" aria-label="{% translate "Ćorić Agrar — uvodna sekcija" %}">
+  {# Dekorativna foto-pozadina — eager (above-the-fold LCP). alt="" + aria-hidden (dekorativna). #}
+  {# OQ-1 PRODUCTION BLOCKER: realna hero fotografija pre produkcije; v1 placeholder. #}
+  <img src="{% static 'img/home/hero-traktor.jpg' %}"
+       alt=""
+       aria-hidden="true"
+       loading="eager"
+       class="coric-home-hero__bg">
+  <div class="coric-home-hero__overlay">
+    {% static 'img/coric-agrar-logo-transp-light-200.png' as brand_logo_static %}
+    {% include "partials/hero_overlay_card.html" with title=_("Prijatelj koji razume zemlju!") brand_logo=brand_logo_static brand_logo_alt=_("Ćorić Agrar logo") variant="green" bullets="" %}
+  </div>
+</section>

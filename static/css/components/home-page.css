@@ -1,0 +1,231 @@
+/* ============================================================================
+ * home-page.css — Story 3.1 Home strana sekcijski layout + baneri.
+ *
+ * JEDINA nova CSS komponenta za Home. Radne mašine grid REUSE-uje
+ * category-showcase.css (coric-category-card); pill-badge REUSE-uje
+ * brand-listing.css (coric-pill-badge). Sve vrednosti kroz var(--token).
+ * coric- BEM prefiks na svim klasama.
+ * ========================================================================= */
+
+/* === Sekcijski wrapper === */
+.coric-home-section {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);
+}
+
+.coric-home-section__title {
+  font-size: var(--typography-scale-h2);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-6);
+}
+
+/* === Hero === */
+.coric-home-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--spacing-scale-8) var(--spacing-container-gutter-mobile);
+  overflow: hidden;
+}
+
+.coric-home-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* OQ-1 PRODUCTION BLOCKER: realna hero fotografija se dodaje pre produkcije;
+     green-800 je fallback dok se slika ne učita / ako nedostaje. */
+  background-color: var(--color-brand-green-800);
+}
+
+.coric-home-hero__overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--spacing-container-max-width);
+}
+
+/* === Baneri (Priključna / Polovna) === */
+.coric-home-banner {
+  text-align: center;
+  background-color: var(--color-neutral-cream);
+  border-radius: var(--rounded-lg);
+}
+
+.coric-home-banner__text {
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-neutral-gray-700);
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto var(--spacing-scale-6);
+}
+
+.coric-home-banner__cta {
+  display: inline-block;
+}
+
+/* === O nama intro === */
+.coric-home-about {
+  text-align: center;
+}
+
+.coric-home-about__text {
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-neutral-gray-700);
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto var(--spacing-scale-6);
+}
+
+.coric-home-about__cta {
+  display: inline-block;
+}
+
+/* === Traktori brand grid === */
+.coric-brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-scale-6);
+}
+
+.coric-brand-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-scale-3);
+  padding: var(--spacing-scale-5);
+  background-color: var(--color-neutral-white);
+  border: 1px solid var(--color-neutral-gray-300);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.coric-brand-card:hover,
+.coric-brand-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.coric-brand-card__logo-link,
+.coric-brand-card__image-link {
+  display: block;
+  width: 100%;
+}
+
+.coric-brand-card__logo {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.coric-brand-card__image {
+  width: 100%;
+  border-radius: var(--rounded-md);
+}
+
+.coric-brand-card__image--placeholder {
+  width: 100%;
+  min-height: 160px;
+  background-color: var(--color-neutral-gray-100);
+  border-radius: var(--rounded-md);
+}
+
+.coric-brand-card__title {
+  font-size: var(--typography-scale-h3);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin: 0;
+}
+
+.coric-brand-card__cta {
+  margin-top: auto;
+}
+
+/* === Priče sa polja preview === */
+.coric-home-blog-preview {
+  position: relative;
+  background-color: var(--color-brand-green-800);
+}
+
+.coric-home-blog-preview .coric-home-section__title {
+  color: var(--color-neutral-white);
+}
+
+.coric-home-blog-preview__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-scale-6);
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+}
+
+.coric-home-blog-card {
+  padding: var(--spacing-scale-5);
+  background-color: var(--color-neutral-white);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.coric-home-blog-meta {
+  font-size: var(--typography-scale-caption);
+  letter-spacing: var(--typography-tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-accent-gold-500);
+  margin-bottom: var(--spacing-scale-2);
+}
+
+.coric-home-blog-heading {
+  font-size: var(--typography-scale-h4);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-3);
+}
+
+.coric-home-blog-text {
+  font-size: var(--typography-scale-small);
+  line-height: var(--typography-line-height-base);
+  color: var(--color-neutral-gray-700);
+  margin: 0;
+}
+
+/* === Disabled placeholder CTA (SM-D14) === */
+.coric-home-about__cta[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+/* === Responsive: desktop multi-col + veći hero === */
+@media (min-width: 768px) {
+  .coric-home-section {
+    padding: var(--spacing-section) var(--spacing-container-gutter-desktop);
+  }
+
+  .coric-home-hero {
+    min-height: 80vh;
+  }
+
+  .coric-home-blog-preview__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* === Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  .coric-brand-card {
+    transition: none;
+  }
+
+  .coric-brand-card:hover,
+  .coric-brand-card:focus-within {
+    transform: none;
+  }
+}

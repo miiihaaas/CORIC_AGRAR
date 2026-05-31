@@ -6,7 +6,7 @@ Test scope (4 tests):
 - test_coming_soon_template_used — get_template_names() override vraća brand_coming_soon.html
 - test_coming_soon_renders_single_h1_with_brand_name — TAČNO 1 <h1> sa brand.name
 - test_coming_soon_renders_pill_badge_uskoro — <span class="coric-pill-badge--coming-soon" role="status">
-- test_coming_soon_renders_nazad_na_home_cta — <a href="{% url 'core:home' %}">
+- test_coming_soon_renders_nazad_na_home_cta — <a href="{% url 'pages:home' %}">
 
 Pokrenuti sa:
     docker compose -f compose/local.yml exec django uv run pytest \\
@@ -101,7 +101,7 @@ def test_coming_soon_renders_pill_badge_uskoro(client):
 
 
 def test_coming_soon_renders_nazad_na_home_cta(client):
-    """AC2.5: CTA "Nazad na Home" linkuje na {% url 'core:home' %}."""
+    """AC2.5: CTA "Nazad na Home" linkuje na {% url 'pages:home' %}."""
     activate("sr")
     brand = BrandFactory.create_coming_soon(name="Future Brand")
 
@@ -109,10 +109,10 @@ def test_coming_soon_renders_nazad_na_home_cta(client):
     response = client.get(url)
     html = response.content.decode("utf-8")
 
-    # Home URL u sr locale — kroz reverse('core:home') / i18n_patterns
+    # Home URL u sr locale — kroz reverse('pages:home') / i18n_patterns
     from django.urls import reverse
 
-    home_url = reverse("core:home")  # za aktivan locale (sr), trebao bi biti '/sr/'
+    home_url = reverse("pages:home")  # za aktivan locale (sr), trebao bi biti '/sr/'
 
     # CTA mora biti <a href="..."> sa "Nazad na Home" tekstom
     cta_pattern = re.compile(
@@ -120,8 +120,8 @@ def test_coming_soon_renders_nazad_na_home_cta(client):
         re.IGNORECASE | re.DOTALL,
     )
     assert cta_pattern.search(html), (
-        f"CTA 'Nazad na Home' MORA biti <a href='{home_url}'> (rezolvuje 'core:home' URL name). "
-        f"Verifikuj da je 'core:home' URL name registrovan i da template koristi {{% url 'core:home' %}}."
+        f"CTA 'Nazad na Home' MORA biti <a href='{home_url}'> (rezolvuje 'pages:home' URL name). "
+        f"Verifikuj da je 'pages:home' URL name registrovan i da template koristi {{% url 'pages:home' %}}."
     )
 
     # Coming-soon template NE SME renderovati statistike/serije/testimonijale (sve odsutne)

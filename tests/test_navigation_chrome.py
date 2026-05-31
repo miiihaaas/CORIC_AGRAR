@@ -447,23 +447,23 @@ def test_ac3_nav_has_position_sticky_and_z_index_1020():
     )
 
 
-# AC-3: logo wrap u {% url 'core:home' %} (CRITICAL-9)
+# AC-3: logo wrap u {% url 'pages:home' %} (CRITICAL-9)
 def test_ac3_header_logo_uses_core_home_url_namespace():
-    """AC3 + CRITICAL-9: header.html mora koristiti `{% url 'core:home' %}` na logo link-u.
+    """AC3 + CRITICAL-9: header.html mora koristiti `{% url 'pages:home' %}` na logo link-u.
 
     apps/core/urls.py ima `app_name = 'core'` + `path('', home, name='home')`;
-    URL name je `core:home` (fully qualified namespace).
+    URL name je `pages:home` (fully qualified namespace).
     """
     src = _read_partial(PARTIAL_HEADER)
-    # Positive grep za core:home
-    assert re.search(r"\{%\s*url\s+['\"]core:home['\"]", src), (
-        "header.html NE koristi `{% url 'core:home' %}`. "
-        "AC3 + CRITICAL-9 — namespace `core:home` je mandatory."
+    # Positive grep za pages:home
+    assert re.search(r"\{%\s*url\s+['\"]pages:home['\"]", src), (
+        "header.html NE koristi `{% url 'pages:home' %}`. "
+        "AC3 + CRITICAL-9 — namespace `pages:home` je mandatory."
     )
     # Negative grep za bare 'home' bez namespace-a
     assert not re.search(r"\{%\s*url\s+['\"]home['\"]\s*%\}", src), (
         "header.html koristi `{% url 'home' %}` bez namespace-a — "
-        "CRITICAL-9 mandira `core:home`."
+        "CRITICAL-9 mandira `pages:home`."
     )
 
 
@@ -736,16 +736,16 @@ def test_ac6_footer_renders_lorem_ipsum_news_placeholder_with_todo():
     )
 
 
-# AC-6 + BONUS-2: footer logo wrapped u {% url 'core:home' %}
+# AC-6 + BONUS-2: footer logo wrapped u {% url 'pages:home' %}
 def test_ac6_footer_logo_wrapped_in_core_home_link():
-    """AC6 + BONUS-2 iter 3: footer logo mora biti wrapped u `<a href="{% url 'core:home' %}">`.
+    """AC6 + BONUS-2 iter 3: footer logo mora biti wrapped u `<a href="{% url 'pages:home' %}">`.
 
     Parity sa header logo-om (konzistentna UX expectation da klik na logo navigira na home).
     """
     src = _read_partial(PARTIAL_FOOTER)
-    # Mora postojati {% url 'core:home' %} u footer.html
-    assert re.search(r"\{%\s*url\s+['\"]core:home['\"]", src), (
-        "footer.html NE koristi `{% url 'core:home' %}`. "
+    # Mora postojati {% url 'pages:home' %} u footer.html
+    assert re.search(r"\{%\s*url\s+['\"]pages:home['\"]", src), (
+        "footer.html NE koristi `{% url 'pages:home' %}`. "
         "AC6 + BONUS-2 iter 3 — footer logo mora biti home link za parity sa header logo-om."
     )
 

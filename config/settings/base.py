@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "apps.brands",  # NOVO Story 2.1 — Brand/Series/Category/Subcategory domain app
     "apps.products",  # NOVO Story 2.2 — Product i related modeli (POSLE brands per dep rule)
     "apps.search",  # NOVO Story 2.13 — site-wide search (POSLE products; search → products dep, SM-D2)
+    "apps.pages",  # NOVO Story 3.1 — top-level app (Home/About/Contact); READ-ONLY agregacija domain modela (POSLE products)
     "sorl.thumbnail",  # NOVO Story 2.3 — third-party paket POSLE domain app-ova (utility lib)
     "apps.media_pipeline",  # NOVO Story 2.3 — utility app POSLE sorl.thumbnail (koristi njegove template tags)
 ]

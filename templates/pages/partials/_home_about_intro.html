@@ -1,0 +1,21 @@
+{% load i18n %}
+{# „O nama" intro blok — Section Eyebrow + h2 + kratak tekst + „Saznaj više" CTA. #}
+<section class="coric-home-section coric-home-about" aria-labelledby="home-about-title">
+  {% include "partials/section_eyebrow.html" with text=_("O NAMA") tag="div" %}
+  <h2 id="home-about-title" class="coric-home-section__title">
+    {% translate "Ko je Ćorić Agrar" %}
+  </h2>
+  <p class="coric-home-about__text">
+    {% translate "Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva." %}
+  </p>
+  {# SM-D11 + SM-D14: pages:about URL ne postoji još (Story 3-2) — KANONSKI PLACEHOLDER-CTA (disabled, van tab-reda). #}
+  {# TODO Story 3-2: zameni href="#"+aria-disabled sa {% url 'pages:about' %} (ukloni aria-disabled/tabindex). #}
+  <a href="#"
+     class="coric-button coric-button--primary coric-home-about__cta"
+     role="button"
+     aria-disabled="true"
+     tabindex="-1"
+     data-testid="home-about-cta">
+    {% translate "Saznaj više" %}
+  </a>
+</section>

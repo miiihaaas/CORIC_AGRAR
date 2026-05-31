@@ -199,8 +199,8 @@ class TestBreadcrumb:
 
         cat, l1, _children = intermediate_setup
         content = Client().get(_l1_url(cat.slug, l1.slug)).content.decode()
-        # "Početna" link → core:home pattern
-        home_url = reverse("core:home")
+        # "Početna" link → pages:home pattern
+        home_url = reverse("pages:home")
         assert f'href="{home_url}"' in content
 
 

@@ -1,0 +1,14 @@
+{% load i18n %}
+{# Priključna mehanizacija (Jeegee) baner — Section Eyebrow + h2 + opis + CTA → brands:jeegee_prikljucna. #}
+<section class="coric-home-section coric-home-banner" aria-labelledby="home-prikljucna-title">
+  {% include "partials/section_eyebrow.html" with text=_("PRIKLJUČNA MEHANIZACIJA") tag="div" %}
+  <h2 id="home-prikljucna-title" class="coric-home-section__title">
+    {% translate "Jeegee priključna oprema" %}
+  </h2>
+  <p class="coric-home-banner__text">
+    {% translate "Kompletan asortiman priključne mehanizacije za svaku obradu zemlje — pouzdano, precizno i prilagođeno vašem traktoru." %}
+  </p>
+  <a href="{% url 'brands:jeegee_prikljucna' %}" class="coric-button coric-button--primary coric-home-banner__cta">
+    {% translate "Pogledaj priključnu mehanizaciju" %}
+  </a>
+</section>

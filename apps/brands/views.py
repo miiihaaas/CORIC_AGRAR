@@ -251,7 +251,7 @@ class SubcategoryListView(TemplateView):
         items = [
             {
                 "label": _("Početna"),
-                "url": reverse("core:home"),
+                "url": reverse("pages:home"),
                 "is_current": False,
             },
             root_item,

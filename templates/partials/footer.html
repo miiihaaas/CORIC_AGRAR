@@ -4,9 +4,9 @@
   <div class="container">
     <div class="coric-footer__top">
       <div class="row">
-        {# Kolona 1 — Logo + slogan. BONUS-2: logo wrapped u {% url 'core:home' %}. #}
+        {# Kolona 1 — Logo + slogan. BONUS-2: logo wrapped u {% url 'pages:home' %} (Story 3.1 migracija). #}
         <div class="col-md-3 coric-footer__col">
-          <a href="{% url 'core:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Pocetna" %}">
+          <a href="{% url 'pages:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Pocetna" %}">
             <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}"
                  alt="Coric Agrar"
                  class="coric-footer__logo">

@@ -1005,6 +1005,7 @@ def test_ac8_django_client_serves_woff2():
     )
 
 
+@pytest.mark.django_db  # Story 3.1: GET /sr/ sada renderuje DB-backed HomeView (pages:home)
 def test_ac8_render_home_includes_tokens_css_link():
     """AC8: GET /sr/ → 200 + HTML sadrži `<link href="/static/css/tokens.css">` (apsolutan URL, ne /sr/static/...)."""
     pytest.importorskip(

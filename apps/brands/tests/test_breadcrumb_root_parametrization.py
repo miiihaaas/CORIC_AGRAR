@@ -79,8 +79,8 @@ def test_hzm_subcategory_breadcrumb_full_trail_no_duplicate(client):
 
     # Item-by-item
     assert labels[0] == "Početna", f"Stavka 1 MORA biti 'Početna', dobio {labels[0]!r}."
-    assert trail[0]["url"] == reverse("core:home"), (
-        "Stavka 'Početna' MORA linkovati na core:home."
+    assert trail[0]["url"] == reverse("pages:home"), (
+        "Stavka 'Početna' MORA linkovati na pages:home."
     )
 
     assert labels[1] == "Radne mašine", (

@@ -1,0 +1,32 @@
+{% load i18n %}
+{# „Priče sa polja" preview — wave divider gore + foto-pozadina + blog kartice. #}
+<section class="coric-home-section coric-home-blog-preview" aria-labelledby="home-price-title">
+  {% include "partials/wave_divider.html" with position="top" %}
+  {% include "partials/section_eyebrow.html" with text=_("PRIČE SA POLJA") tag="div" %}
+  <h2 id="home-price-title" class="coric-home-section__title">
+    {% translate "Priče sa polja" %}
+  </h2>
+
+  <div class="coric-home-blog-preview__grid">
+    {% if latest_posts %}
+      {% for post in latest_posts %}
+        <article class="coric-home-blog-card">
+          <h3 class="coric-home-blog-heading">{{ post.title }}</h3>
+          <p class="coric-home-blog-text">{{ post.excerpt }}</p>
+        </article>
+      {% endfor %}
+    {% else %}
+      {# EPIC-5-PLACEHOLDER: zameniti realnim Post karticama kad Story 5-4 doda Post model + footer dynamic vesti. Forward-compat: latest_posts queryset će automatski preći na {% if %} granu. #}
+      <article class="coric-home-blog-card" aria-label="{% translate "Demonstrativni sadržaj — placeholder dok blog nije objavljen" %}">
+        <p class="coric-home-blog-meta">{% translate "Lorem ipsum datum" %}</p>
+        <h3 class="coric-home-blog-heading">{% translate "Lorem ipsum dolor sit amet" %}</h3>
+        <p class="coric-home-blog-text">{% translate "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena." %}</p>
+      </article>
+      <article class="coric-home-blog-card" aria-label="{% translate "Demonstrativni sadržaj — placeholder dok blog nije objavljen" %}">
+        <p class="coric-home-blog-meta">{% translate "Lorem ipsum datum" %}</p>
+        <h3 class="coric-home-blog-heading">{% translate "Lorem ipsum dolor sit amet" %}</h3>
+        <p class="coric-home-blog-text">{% translate "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena." %}</p>
+      </article>
+    {% endif %}
+  </div>
+</section>

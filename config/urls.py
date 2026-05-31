@@ -27,7 +27,7 @@ urlpatterns += i18n_patterns(
     path("", include("apps.brands.urls")),
     path("", include("apps.products.urls")),
     path("", include("apps.search.urls")),  # NOVO Story 2.13 — pretraga/ + htmx/pretraga/ (SM-D2)
-    path("", include("apps.core.urls")),
+    path("", include("apps.pages.urls")),  # NOVO Story 3.1 — root `/` → HomeView (pages:home); zamenjuje core:home
     prefix_default_language=True,
 )
 

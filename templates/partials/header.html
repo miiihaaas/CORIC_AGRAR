@@ -48,8 +48,8 @@
      role="navigation"
      aria-label="{% translate "Glavna navigacija" %}">
   <div class="container">
-    {# CRITICAL-9: URL namespace 'core:home'. CRITICAL-8: logo asset u static/img/. #}
-    <a class="navbar-brand coric-nav__logo" href="{% url 'core:home' %}">
+    {# CRITICAL-9: URL namespace 'pages:home' (Story 3.1 migracija). CRITICAL-8: logo asset u static/img/. #}
+    <a class="navbar-brand coric-nav__logo" href="{% url 'pages:home' %}">
       <img src="{% static 'img/coric-agrar-logo-transp-200.png' %}"
            alt="Coric Agrar"
            class="coric-nav__logo-img">
@@ -68,7 +68,7 @@
     <div class="collapse navbar-collapse" id="coricMainNav">
       <ul class="navbar-nav ms-auto coric-nav__list">
         <li class="nav-item">
-          <a class="nav-link coric-nav__link" href="{% url 'core:home' %}">{% translate "Pocetna" %}</a>
+          <a class="nav-link coric-nav__link" href="{% url 'pages:home' %}">{% translate "Pocetna" %}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link coric-nav__link" href="#">{% translate "Traktori" %}</a>

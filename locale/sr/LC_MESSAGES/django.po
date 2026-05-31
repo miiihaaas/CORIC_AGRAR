@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 18:57+0000\n"
+"POT-Creation-Date: 2026-05-31 21:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgid "Brend boja"
 msgstr ""
 
 msgid "Uskoro"
-msgstr ""
+msgstr "Uskoro"
 
 msgid "Kreiran"
 msgstr ""
@@ -523,6 +523,126 @@ msgstr ""
 msgid "%(brand)s MIX prikolice"
 msgstr "%(brand)s MIX prikolice"
 
+msgid "Ćorić Agrar — Prijatelj koji razume zemlju"
+msgstr "Ćorić Agrar — Prijatelj koji razume zemlju"
+
+msgid ""
+"Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, "
+"radne mašine i polovna mehanizacija."
+msgstr "Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, radne mašine i polovna mehanizacija."
+
+msgid "O NAMA"
+msgstr "O NAMA"
+
+#| msgid "Ćorić Agrar"
+msgid "Ko je Ćorić Agrar"
+msgstr "Ko je Ćorić Agrar"
+
+msgid ""
+"Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od "
+"traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas "
+"dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva."
+msgstr "Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva."
+
+msgid "Saznaj više"
+msgstr "Saznaj više"
+
+msgid "Ćorić Agrar — uvodna sekcija"
+msgstr "Ćorić Agrar — uvodna sekcija"
+
+msgid "Prijatelj koji razume zemlju!"
+msgstr "Prijatelj koji razume zemlju!"
+
+#| msgid "Ćorić Agrar"
+msgid "Ćorić Agrar logo"
+msgstr "Ćorić Agrar logo"
+
+msgid "POLOVNA MEHANIZACIJA"
+msgstr "POLOVNA MEHANIZACIJA"
+
+#| msgid "Filteri pretrage polovne mehanizacije"
+msgid "Proverena polovna mehanizacija"
+msgstr "Proverena polovna mehanizacija"
+
+msgid ""
+"Pažljivo odabrana i tehnički proverena polovna mehanizacija — vrednost po "
+"pristupačnoj ceni, sa garancijom poverenja Ćorić Agrar tima."
+msgstr "Pažljivo odabrana i tehnički proverena polovna mehanizacija — vrednost po pristupačnoj ceni, sa garancijom poverenja Ćorić Agrar tima."
+
+#| msgid "Filteri pretrage polovne mehanizacije"
+msgid "Pogledaj polovnu mehanizaciju"
+msgstr "Pogledaj polovnu mehanizaciju"
+
+msgid "PRIČE SA POLJA"
+msgstr "PRIČE SA POLJA"
+
+msgid "Priče sa polja"
+msgstr "Priče sa polja"
+
+msgid "Demonstrativni sadržaj — placeholder dok blog nije objavljen"
+msgstr "Demonstrativni sadržaj — placeholder dok blog nije objavljen"
+
+msgid "Lorem ipsum datum"
+msgstr "Lorem ipsum datum"
+
+msgid "Lorem ipsum dolor sit amet"
+msgstr "Lorem ipsum dolor sit amet"
+
+msgid ""
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni "
+"tekst dok rubrika Priče sa polja ne bude objavljena."
+msgstr "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena."
+
+#| msgid "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
+msgid "PRIKLJUČNA MEHANIZACIJA"
+msgstr "PRIKLJUČNA MEHANIZACIJA"
+
+msgid "Jeegee priključna oprema"
+msgstr "Jeegee priključna oprema"
+
+msgid ""
+"Kompletan asortiman priključne mehanizacije za svaku obradu zemlje — "
+"pouzdano, precizno i prilagođeno vašem traktoru."
+msgstr "Kompletan asortiman priključne mehanizacije za svaku obradu zemlje — pouzdano, precizno i prilagođeno vašem traktoru."
+
+#| msgid "Priključna mehanizacija"
+msgid "Pogledaj priključnu mehanizaciju"
+msgstr "Pogledaj priključnu mehanizaciju"
+
+msgid "RADNE MAŠINE"
+msgstr "RADNE MAŠINE"
+
+#| msgid "Radne mašine"
+msgid "HZM radne mašine"
+msgstr "HZM radne mašine"
+
+#| msgid "Radne mašine"
+msgid "Radne mašine — %(cat)s"
+msgstr "Radne mašine — %(cat)s"
+
+#| msgid "Radne mašine"
+msgid "Pogledaj radne mašine"
+msgstr "Pogledaj radne mašine"
+
+#| msgid "Kategorije radnih mašina su u pripremi."
+msgid "Radne mašine su u pripremi."
+msgstr "Radne mašine su u pripremi."
+
+msgid "TRAKTORI"
+msgstr "TRAKTORI"
+
+#| msgid "Svi brendovi"
+msgid "Naši brendovi"
+msgstr "Naši brendovi"
+
+#| msgid "Pogledaj model: %(product)s"
+msgid "Pogledaj brend: %(brand)s"
+msgstr "Pogledaj brend: %(brand)s"
+
+#| msgid "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
+msgid "Brendovi će uskoro biti dostupni."
+msgstr "Brendovi će uskoro biti dostupni."
+
 msgid "Iz prve ruke"
 msgstr ""
 
@@ -552,9 +672,6 @@ msgid "Sledeći"
 msgstr ""
 
 msgid "Pocetna"
-msgstr ""
-
-msgid "Prijatelj koji razume zemlju!"
 msgstr ""
 
 msgid "Polovna mehanizacija"

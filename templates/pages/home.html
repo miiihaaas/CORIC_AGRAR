@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% translate "Ćorić Agrar — Prijatelj koji razume zemlju" %}{% endblock %}
+
+{% block meta_description %}{% translate "Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, radne mašine i polovna mehanizacija." %}{% endblock %}
+
+{% block content %}
+  {% include "pages/partials/_home_hero.html" %}
+  {% include "pages/partials/_home_about_intro.html" %}
+  {% include "pages/partials/_home_traktori.html" %}
+  {% include "pages/partials/_home_prikljucna_banner.html" %}
+  {% include "pages/partials/_home_radne_masine.html" %}
+  {% include "pages/partials/_home_polovna_banner.html" %}
+  {% include "pages/partials/_home_price_sa_polja.html" %}
+{% endblock content %}

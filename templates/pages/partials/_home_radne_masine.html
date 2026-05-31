@@ -1,0 +1,30 @@
+{% load i18n %}
+{# Radne mašine (HZM) sekcija — HZM potkategorije sa Repeating Element po kartici. JEDAN zajednički CTA → brands:hzm_radne_masine (ITEM-3 LOCK: NE per-subcategory deep-link). #}
+<section class="coric-home-section coric-home-radne-masine" aria-labelledby="home-radne-masine-title">
+  {% include "partials/section_eyebrow.html" with text=_("RADNE MAŠINE") tag="div" %}
+  <h2 id="home-radne-masine-title" class="coric-home-section__title">
+    {% translate "HZM radne mašine" %}
+  </h2>
+
+  {% url 'brands:hzm_radne_masine' as hzm_url %}
+  <div class="coric-category-showcase" data-testid="home-radne-masine-grid">
+    {% for sub in hzm_subcategories %}
+      <article class="coric-category-card" aria-labelledby="home-hzm-{{ sub.slug }}-title">
+        {# Repeating Element po kategoriji — SM-D9 variant="green" (dekorativan, aria-hidden u partial-u). #}
+        {% include "partials/repeating_element.html" with variant="green" %}
+        <h3 id="home-hzm-{{ sub.slug }}-title" class="coric-category-card__title">{{ sub.name }}</h3>
+        {% if sub.description %}
+          <p class="coric-category-card__description">{{ sub.description|truncatewords:20 }}</p>
+        {% endif %}
+        {# ITEM-3 LOCK: zajednički statički CTA ka HZM landing — NE sub.get_absolute_url. #}
+        <a href="{{ hzm_url }}"
+           class="coric-button coric-button--primary coric-category-card__cta"
+           aria-label="{% blocktranslate with cat=sub.name %}Radne mašine — {{ cat }}{% endblocktranslate %}">
+          {% translate "Pogledaj radne mašine" %}
+        </a>
+      </article>
+    {% empty %}
+      <p class="coric-empty-state">{% translate "Radne mašine su u pripremi." %}</p>
+    {% endfor %}
+  </div>
+</section>

@@ -443,6 +443,7 @@ def test_ac2_skip_link_translated():
 # =============================================================================
 
 
+@pytest.mark.django_db  # Story 3.1: GET /sr/ sada renderuje DB-backed HomeView (pages:home)
 def test_ac3_aria_live_region_present():
     """AC3: rendered HTML MORA sadržati TAČNO JEDAN aria-live div (singleton).
 
@@ -930,6 +931,7 @@ def test_ac9_django_check_passes():
     )
 
 
+@pytest.mark.django_db  # Story 3.1: GET /sr/ sada renderuje DB-backed HomeView (pages:home)
 def test_ac9_render_home_includes_skip_link():
     """AC9.9: GET /sr/ → rendered HTML sadrži skip link sa sr translation 'Preskoči na sadržaj'."""
     html = _render_home_sr()
@@ -946,6 +948,7 @@ def test_ac9_render_home_includes_skip_link():
     )
 
 
+@pytest.mark.django_db  # Story 3.1: GET /sr/ sada renderuje DB-backed HomeView (pages:home)
 def test_ac9_render_home_includes_aria_live():
     """AC9.9: GET /sr/ → rendered HTML sadrži aria-live div (kompletan ARIA atribute set)."""
     html = _render_home_sr()
@@ -961,6 +964,7 @@ def test_ac9_render_home_includes_aria_live():
     )
 
 
+@pytest.mark.django_db  # Story 3.1: GET /sr/ sada renderuje DB-backed HomeView (pages:home)
 def test_ac9_render_home_includes_bootstrap_css():
     """AC9.9: GET /sr/ → rendered HTML sadrži Bootstrap CSS link (regex accepts CDN ili local).
 
@@ -996,6 +1000,7 @@ def test_ac9_no_inline_event_handlers():
 # =============================================================================
 
 
+@pytest.mark.django_db  # Story 3.1: GET /sr/ sada renderuje DB-backed HomeView (pages:home)
 def test_base_html_no_google_cdn_links():
     """Anti-pattern: base.html SOURCE + rendered output NE SMEJU sadržati Google CDN linkove.
 
