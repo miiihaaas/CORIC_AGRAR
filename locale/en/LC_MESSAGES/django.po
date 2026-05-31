@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 05:39+0000\n"
+"POT-Creation-Date: 2026-05-31 11:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,29 +183,46 @@ msgstr ""
 msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
-#: apps/brands/views.py:50 apps/products/models.py:370
+#: apps/brands/views.py:51 apps/products/models.py:370
 #: apps/products/views.py:92
 msgid "Motor"
 msgstr ""
 
-#: apps/brands/views.py:51 apps/products/models.py:371
+#: apps/brands/views.py:52 apps/products/models.py:371
 #: apps/products/views.py:93
 msgid "Transmisija"
 msgstr ""
 
-#: apps/brands/views.py:52 apps/products/models.py:372
+#: apps/brands/views.py:53 apps/products/models.py:372
 #: apps/products/views.py:94
 msgid "Hidraulika"
 msgstr ""
 
-#: apps/brands/views.py:53 apps/brands/views.py:54 apps/products/models.py:373
+#: apps/brands/views.py:54 apps/brands/views.py:55 apps/products/models.py:373
 #: apps/products/views.py:95 apps/products/views.py:96
 msgid "Ostalo"
 msgstr ""
 
-#: apps/brands/views.py:117
+#: apps/brands/views.py:118
 msgid "Jeegee brand nije konfigurisan u sistemu."
 msgstr "The Jeegee brand is not configured in the system."
+
+#: apps/brands/views.py:163
+msgid "Kategorija nije pronađena."
+msgstr "Category not found."
+
+#: apps/brands/views.py:215
+msgid "Potkategorija nije pronađena."
+msgstr "Subcategory not found."
+
+#: apps/brands/views.py:221 apps/brands/views.py:236
+msgid "Početna"
+msgstr "Home"
+
+#: apps/brands/views.py:226 apps/brands/views.py:241
+#: templates/brands/jeegee_prikljucna.html:4
+msgid "Priključna mehanizacija"
+msgstr "Attached machinery"
 
 #: apps/media_pipeline/apps.py:21
 msgid "Media pipeline"
@@ -497,16 +514,14 @@ msgstr ""
 msgid "Modeli brenda"
 msgstr ""
 
-#: templates/brands/jeegee_prikljucna.html:4
-msgid "Priključna mehanizacija"
-msgstr "Attached machinery"
-
 #: templates/brands/jeegee_prikljucna.html:6
 #, python-format
 msgid ""
 "Pregled priključne mehanizacije %(brand)s po kategorijama — osnovna obrada "
 "zemljišta, priprema zemljišta, mašine za setvu."
-msgstr "Overview of %(brand)s attached machinery by category — primary tillage, soil preparation, seeding machines."
+msgstr ""
+"Overview of %(brand)s attached machinery by category — primary tillage, soil "
+"preparation, seeding machines."
 
 #: templates/brands/jeegee_prikljucna.html:11
 #, python-format
@@ -532,6 +547,10 @@ msgstr "PDF document with the complete range of attached machinery."
 #: templates/brands/partials/_catalog_cta.html:12
 msgid "Preuzmi katalog"
 msgstr "Download catalog"
+
+#: templates/brands/partials/_breadcrumb.html:4
+msgid "Putanja navigacije"
+msgstr "Breadcrumb"
 
 #: templates/brands/partials/_catalog_cta.html:4
 msgid "KATALOG"
@@ -563,24 +582,39 @@ msgstr "VIEW CATEGORY"
 msgid "Kategorije priključne mehanizacije su u pripremi."
 msgstr "Attached machinery categories are being prepared."
 
+#: templates/brands/partials/_model_grid.html:4
+msgid "MODELI"
+msgstr "MODELS"
+
+#: templates/brands/partials/_model_grid.html:11
+#, python-format
+msgid "Pogledaj model: %(product)s"
+msgstr "View model: %(product)s"
+
+#: templates/brands/partials/_model_grid.html:20
+#: templates/brands/partials/_series_grid.html:14
+#: templates/products/partials/_filter_form.html:38
+#: templates/products/partials/_results_grid.html:24
+#: templates/products/partials/_similar_products.html:18
+msgid "KS"
+msgstr ""
+
+#: templates/brands/partials/_model_grid.html:26
 #: templates/brands/partials/_series_extended.html:28
 #: templates/brands/partials/_series_grid.html:16
 #: templates/products/partials/_results_grid.html:30
 #: templates/products/partials/_similar_products.html:20
 #: templates/products/partials/_used_results_grid.html:33
 msgid "OPŠIRNIJE"
-msgstr ""
+msgstr "DETAILS"
+
+#: templates/brands/partials/_model_grid.html:30
+msgid "Nema dostupnih modela u ovoj kategoriji."
+msgstr "No models available in this category."
 
 #: templates/brands/partials/_series_extended.html:32
 #: templates/brands/partials/_series_grid.html:20
 msgid "Modeli ove serije su u pripremi."
-msgstr ""
-
-#: templates/brands/partials/_series_grid.html:14
-#: templates/products/partials/_filter_form.html:38
-#: templates/products/partials/_results_grid.html:24
-#: templates/products/partials/_similar_products.html:18
-msgid "KS"
 msgstr ""
 
 #: templates/brands/partials/_series_section.html:13
@@ -590,6 +624,23 @@ msgstr ""
 #: templates/brands/partials/_statistics_medallions.html:3
 msgid "STATISTIKE"
 msgstr ""
+
+#: templates/brands/partials/_subcategory_showcase.html:3
+msgid "POTKATEGORIJE"
+msgstr "SUBCATEGORIES"
+
+#: templates/brands/partials/_subcategory_showcase.html:22
+#, python-format
+msgid "Pogledaj potkategoriju: %(subcategory)s"
+msgstr "View subcategory: %(subcategory)s"
+
+#: templates/brands/partials/_subcategory_showcase.html:24
+msgid "POGLEDAJ"
+msgstr "VIEW"
+
+#: templates/brands/partials/_subcategory_showcase.html:28
+msgid "Nema dostupnih potkategorija."
+msgstr "No subcategories available."
 
 #: templates/partials/_testimonials_slider.html:3
 msgid "Iz prve ruke"
@@ -730,7 +781,9 @@ msgstr ""
 msgid "Promeni jezik"
 msgstr ""
 
-#: templates/partials/language_switcher_nav.html:15
+#: templates/partials/language_switcher_nav.html:10
+#: templates/partials/language_switcher_nav.html:12
+#: templates/partials/language_switcher_nav.html:14
 #, python-format
 msgid "Prebaci na %(language)s"
 msgstr ""

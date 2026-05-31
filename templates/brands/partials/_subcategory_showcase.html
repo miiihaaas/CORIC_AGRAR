@@ -1,0 +1,30 @@
+{% load i18n %}
+
+{% include "partials/section_eyebrow.html" with text=_("POTKATEGORIJE") tag="div" %}
+
+<div class="coric-category-showcase" data-testid="subcategory-showcase-grid">
+  {% for subcategory in children %}
+    <article class="coric-category-card"
+             aria-labelledby="subcat-card-{{ subcategory.slug }}-title"
+             data-testid="subcategory-card-{{ subcategory.slug }}">
+      {% if subcategory.icon %}
+        <div class="coric-category-card__icon" aria-hidden="true">
+          <i class="{{ subcategory.icon }}"></i>
+        </div>
+      {% endif %}
+      <h2 id="subcat-card-{{ subcategory.slug }}-title"
+          class="coric-category-card__title">{{ subcategory.name }}</h2>
+      {% if subcategory.description %}
+        <p class="coric-category-card__description">{{ subcategory.description|truncatewords:25 }}</p>
+      {% endif %}
+      <a href="{{ subcategory.get_absolute_url }}"
+         class="coric-button coric-button--primary coric-category-card__cta"
+         aria-label="{% blocktranslate with subcategory=subcategory.name %}Pogledaj potkategoriju: {{ subcategory }}{% endblocktranslate %}"
+         data-testid="subcategory-card-cta-{{ subcategory.slug }}">
+        {% translate "POGLEDAJ" %}
+      </a>
+    </article>
+  {% empty %}
+    <p class="coric-empty-state">{% translate "Nema dostupnih potkategorija." %}</p>
+  {% endfor %}
+</div>

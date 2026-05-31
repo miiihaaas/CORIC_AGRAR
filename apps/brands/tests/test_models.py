@@ -364,14 +364,15 @@ def test_brand_get_absolute_url_returns_path():
 
 
 def test_subcategory_get_absolute_url_raises_not_implemented():
-    """Subcategory.get_absolute_url() raise-uje NotImplementedError u 2.1 (BR-12)."""
+    """Story 2.11: Subcategory.get_absolute_url() implementiran (NotImplementedError uklonjen)."""
     from apps.brands.models import Subcategory
 
     cat = _make_category()
     sub = Subcategory.objects.create(category=cat, name="Test")
 
-    with pytest.raises(NotImplementedError):
-        sub.get_absolute_url()
+    url = sub.get_absolute_url()
+    assert isinstance(url, str)
+    assert url.endswith(f"/mehanizacija/prikljucna/{cat.slug}/{sub.slug}/")
 
 
 # =============================================================================
@@ -388,7 +389,9 @@ def test_subcategory_get_depth_returns_chain_length():
     l2 = Subcategory.objects.create(category=cat, parent=l1, name="L2")
     l3 = Subcategory.objects.create(category=cat, parent=l2, name="L3")
 
-    assert l1.get_depth() == 1, f"Top-level Subcategory depth mora biti 1, dobio: {l1.get_depth()}"
+    assert l1.get_depth() == 1, (
+        f"Top-level Subcategory depth mora biti 1, dobio: {l1.get_depth()}"
+    )
     assert l2.get_depth() == 2, f"L2 depth mora biti 2, dobio: {l2.get_depth()}"
     assert l3.get_depth() == 3, f"L3 depth mora biti 3, dobio: {l3.get_depth()}"
 

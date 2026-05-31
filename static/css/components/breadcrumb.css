@@ -1,0 +1,51 @@
+/* breadcrumb.css — coric-breadcrumb komponenta (Story 2.11). */
+/* Token-only; NEMA magic vrednosti. Sve referencirane custom-property su */
+/* definisane u tokens.css (BUG-1 fix, Review-Fix iter 1). */
+
+.coric-breadcrumb {
+  margin-bottom: var(--spacing-scale-4);
+  font-size: var(--typography-scale-small);
+}
+
+.coric-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-scale-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coric-breadcrumb__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-scale-2);
+}
+
+.coric-breadcrumb__item + .coric-breadcrumb__item::before {
+  content: "\203A";
+  color: var(--color-semantic-text-muted);
+}
+
+.coric-breadcrumb__link {
+  color: var(--color-brand-green-600);
+  text-decoration: none;
+}
+
+.coric-breadcrumb__link:hover {
+  color: var(--color-accent-gold-500);
+  text-decoration: underline;
+}
+
+/* Mirror sibling :focus-visible pattern (tractor-listing.css / brand-listing.css):
+   literal 2px outline + offset; color via existing --color-semantic-focus-ring token. */
+.coric-breadcrumb__link:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.coric-breadcrumb__current {
+  color: var(--color-semantic-text-muted);
+  font-weight: var(--typography-weight-bold);
+}

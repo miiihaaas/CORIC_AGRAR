@@ -409,9 +409,12 @@ class Subcategory(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self) -> str:
-        """Subcategory URL pattern definiše se u Story 2.11."""
-        # TODO Story 2.11: implement subcategory_path URL pattern sa variable depth
-        raise NotImplementedError("Subcategory URL pattern defined in Story 2.11")
+        depth = self.get_depth()
+        slugs = [a.slug for a in self.get_ancestors_chain()] + [self.slug]
+        kwargs = {"category_slug": self.category.slug}
+        for index, slug in enumerate(slugs, start=1):
+            kwargs[f"l{index}_slug"] = slug
+        return reverse(f"brands:subcategory_listing_l{depth}", kwargs=kwargs)
 
     # ------------------------------------------------------------------
     # AC11 helper metode

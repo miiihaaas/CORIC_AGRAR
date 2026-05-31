@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<nav class="coric-breadcrumb"
+     aria-label="{% translate 'Putanja navigacije' %}"
+     data-testid="breadcrumb-nav">
+  <ol class="coric-breadcrumb__list">
+    {% for item in breadcrumb_items %}
+      {% if item.is_current %}
+        <li class="coric-breadcrumb__item">
+          <span class="coric-breadcrumb__current"
+                aria-current="page"
+                data-testid="breadcrumb-current">{{ item.label }}</span>
+        </li>
+      {% else %}
+        <li class="coric-breadcrumb__item">
+          <a class="coric-breadcrumb__link" href="{{ item.url }}">{{ item.label }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</nav>

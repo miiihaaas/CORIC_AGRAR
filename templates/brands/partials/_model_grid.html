@@ -1,0 +1,31 @@
+{% load i18n media_tags %}
+
+{% include "partials/section_eyebrow.html" with text=_("MODELI") tag="div" %}
+
+<div class="coric-tractor-results" data-testid="model-grid">
+  {% for product in products %}
+    <article class="coric-product-card" data-testid="model-card-{{ product.slug }}">
+      <a href="{{ product.get_absolute_url }}"
+         class="coric-product-card__link"
+         aria-label="{% blocktranslate with product=product.name %}Pogledaj model: {{ product }}{% endblocktranslate %}">
+        {% if product.main_image %}
+          <div class="coric-product-card__image-wrap">
+            {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 33vw" %}
+          </div>
+        {% endif %}
+        <div class="coric-product-card__body">
+          <h2 class="coric-product-card__title">{{ product.name }}</h2>
+          {% if product.horse_power is not None %}
+            <p class="coric-product-card__spec">{{ product.horse_power }} {% translate "KS" %}</p>
+          {% endif %}
+          {% if product.price_eur is not None %}
+            <p class="coric-product-card__spec">&euro; {{ product.price_eur }}</p>
+          {% endif %}
+        </div>
+        <span class="coric-product-card__cta">{% translate "OPŠIRNIJE" %}</span>
+      </a>
+    </article>
+  {% empty %}
+    <p class="coric-empty-state">{% translate "Nema dostupnih modela u ovoj kategoriji." %}</p>
+  {% endfor %}
+</div>

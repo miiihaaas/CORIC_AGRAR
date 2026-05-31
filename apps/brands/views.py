@@ -13,10 +13,11 @@ from __future__ import annotations
 
 from django.db.models import Case, CharField, IntegerField, Prefetch, Value, When
 from django.http import Http404
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 
-from apps.brands.models import Brand, Category, Series
+from apps.brands.models import Brand, Category, Series, Subcategory
 from apps.products.models import Product, ProductSpecification, ProductTestimonial
 
 # Story 2.10 — Jeegee priključna mehanizacija landing strana
@@ -132,3 +133,151 @@ class JeegeePrikljucnaView(DetailView):
             ).order_by("display_order", "name")
         )
         return ctx
+
+
+class SubcategoryListView(TemplateView):
+    """Subcategory drill-down listing — Story 2.11.
+
+    Varijabilan-depth path (L1/L2/L3) → Category root + Subcategory chain.
+    Intermediate vs leaf je data-driven (children win, SM-D3/AC14). Cross-boundary
+    Product read za leaf model grid (SM-D13, read-only).
+    """
+
+    template_name = "brands/subcategory_listing.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        category_slug = kwargs["category_slug"]
+        subcat_slugs = [
+            kwargs[key]
+            for key in ("l1_slug", "l2_slug", "l3_slug")
+            if kwargs.get(key) is not None
+        ]
+
+        try:
+            category = Category.objects.get(
+                slug=category_slug,
+                is_for=Category.CategoryScope.MEHANIZACIJA,
+            )
+        except Category.DoesNotExist as exc:
+            raise Http404(_("Kategorija nije pronađena.")) from exc
+
+        current = self._resolve_chain(category, subcat_slugs)
+
+        if current is None:
+            children = list(
+                category.subcategories.filter(parent=None).order_by(
+                    "display_order", "name"
+                )
+            )
+            for child in children:
+                child.category = category
+                child.parent = None
+            ctx["current_title"] = category.name
+            # REFACTOR-4: single breadcrumb builder handles current is None
+            # (category-root) branch internally.
+            ctx["breadcrumb_items"] = self._build_breadcrumb(category, None)
+            ctx["is_leaf"] = False
+            ctx["children"] = children
+            return ctx
+
+        ctx["current_title"] = current.name
+        ctx["breadcrumb_items"] = self._build_breadcrumb(category, current)
+
+        children = list(current.children.order_by("display_order", "name"))
+        if children:
+            for child in children:
+                child.category = category
+                child.parent = current
+            ctx["is_leaf"] = False
+            ctx["children"] = children
+        else:
+            ctx["is_leaf"] = True
+            ctx["products"] = list(
+                Product.objects.filter(
+                    subcategory=current,
+                    is_published=True,
+                ).select_related("brand")
+            )
+        return ctx
+
+    def _resolve_chain(self, category, subcat_slugs):
+        current = None
+        for index, slug in enumerate(subcat_slugs):
+            try:
+                if index == 0:
+                    current = Subcategory.objects.select_related(
+                        "category", "parent"
+                    ).get(
+                        category=category,
+                        parent=None,
+                        slug=slug,
+                    )
+                else:
+                    current = Subcategory.objects.select_related(
+                        "category", "parent"
+                    ).get(
+                        parent=current,
+                        slug=slug,
+                    )
+            except Subcategory.DoesNotExist as exc:
+                raise Http404(_("Potkategorija nije pronađena.")) from exc
+        return current
+
+    def _build_breadcrumb(self, category, current):
+        """Build the root-first breadcrumb trail (SM-D9).
+
+        REFACTOR-4 (Review-Fix iter 1): single builder for both the
+        category-root case (``current is None`` — reached via
+        ``subcategory_listing_category``; the Category itself is the current
+        non-link tail) and the intermediate/leaf cases (walk the resolved
+        Subcategory ancestor chain). The first two fixed items (Početna,
+        Priključna mehanizacija) are shared by both — single source of truth,
+        collapsing the previous ``_build_category_breadcrumb`` duplicate.
+        """
+        items = [
+            {
+                "label": _("Početna"),
+                "url": reverse("core:home"),
+                "is_current": False,
+            },
+            {
+                "label": _("Priključna mehanizacija"),
+                "url": reverse("brands:jeegee_prikljucna"),
+                "is_current": False,
+            },
+        ]
+
+        if current is None:
+            # Category root → the Category itself is the current (non-link) item.
+            items.append({"label": category.name, "url": None, "is_current": True})
+            return items
+
+        # Intermediate/leaf: Category is a link, then each Subcategory ancestor,
+        # then the current node as the non-link tail.
+        items.append(
+            {
+                "label": category.name,
+                "url": self._category_breadcrumb_url(category, current),
+                "is_current": False,
+            }
+        )
+        for ancestor in current.get_ancestors_chain():
+            items.append(
+                {
+                    "label": ancestor.name,
+                    "url": ancestor.get_absolute_url(),
+                    "is_current": False,
+                }
+            )
+        items.append({"label": current.name, "url": None, "is_current": True})
+        return items
+
+    @staticmethod
+    def _category_breadcrumb_url(category, current):
+        ancestors = current.get_ancestors_chain()
+        root = ancestors[0] if ancestors else current
+        return reverse(
+            "brands:subcategory_listing_l1",
+            kwargs={"category_slug": category.slug, "l1_slug": root.slug},
+        )

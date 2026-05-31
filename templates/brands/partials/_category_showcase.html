@@ -22,7 +22,7 @@
       {% if category.description %}
         <p class="coric-category-card__description">{{ category.description|truncatewords:25 }}</p>
       {% endif %}
-      <a href="/{{ LANGUAGE_CODE }}/mehanizacija/prikljucna/{{ category.slug }}/"
+      <a href="{% url 'brands:subcategory_listing_category' category_slug=category.slug %}"
          class="coric-button coric-button--primary coric-category-card__cta"
          aria-label="{% blocktranslate with category=category.name %}Pogledaj kategoriju: {{ category }}{% endblocktranslate %}"
          data-testid="category-card-cta-{{ category.slug }}">

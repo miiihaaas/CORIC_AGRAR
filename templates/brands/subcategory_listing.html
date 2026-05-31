@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <section class="coric-subcategory-listing"
+           data-testid="subcategory-listing-page"
+           aria-labelledby="subcategory-listing-title">
+    {% include "brands/partials/_breadcrumb.html" %}
+    <h1 id="subcategory-listing-title"
+        class="coric-subcategory-listing__title">{{ current_title }}</h1>
+    {% if is_leaf %}
+      {% include "brands/partials/_model_grid.html" %}
+    {% else %}
+      {% include "brands/partials/_subcategory_showcase.html" %}
+    {% endif %}
+  </section>
+{% endblock content %}
