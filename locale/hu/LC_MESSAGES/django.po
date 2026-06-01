@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 12:12+0000\n"
+"POT-Creation-Date: 2026-06-01 14:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,6 +236,44 @@ msgstr ""
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr ""
 
+#: apps/forms/forms.py:19 templates/forms/partials/_contact_form_fields.html:37
+msgid "Ime i prezime"
+msgstr "Teljes név"
+
+#: apps/forms/forms.py:22
+msgid "Unesite ime i prezime."
+msgstr "Adja meg a teljes nevét."
+
+#: apps/forms/forms.py:33 apps/pages/models.py:60
+#: templates/forms/partials/_contact_form_fields.html:53
+#: templates/pages/partials/_contact_info.html:38
+msgid "E-pošta"
+msgstr "E-mail"
+
+#: apps/forms/forms.py:36
+msgid "Unesite e-poštu."
+msgstr "Adja meg az e-mail-címét."
+
+#: apps/forms/forms.py:37
+msgid "Unesite ispravnu e-poštu."
+msgstr "Adjon meg egy érvényes e-mail-címet."
+
+#: apps/forms/forms.py:49 apps/forms/models.py:44
+#: templates/emails/lead_received.html:24
+#: templates/forms/partials/_contact_form_fields.html:69
+msgid "Telefon"
+msgstr "Telefon"
+
+#: apps/forms/forms.py:61 apps/forms/models.py:45
+#: templates/emails/lead_received.html:38
+#: templates/forms/partials/_contact_form_fields.html:83
+msgid "Poruka"
+msgstr "Üzenet"
+
+#: apps/forms/forms.py:63
+msgid "Unesite poruku."
+msgstr "Adjon meg egy üzenetet."
+
 #: apps/forms/models.py:32
 msgid "Opšti kontakt"
 msgstr ""
@@ -264,16 +302,6 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: apps/forms/models.py:44 templates/emails/lead_received.html:24
-#: templates/pages/partials/_contact_form.html:51
-msgid "Telefon"
-msgstr "Telefon"
-
-#: apps/forms/models.py:45 templates/emails/lead_received.html:38
-#: templates/pages/partials/_contact_form.html:62
-msgid "Poruka"
-msgstr "Üzenet"
-
 #: apps/forms/models.py:46
 msgid "Dodatni podaci"
 msgstr ""
@@ -294,22 +322,22 @@ msgstr ""
 msgid "Lead-ovi"
 msgstr ""
 
-#: apps/forms/notifications.py:33
+#: apps/forms/notifications.py:36
 #, python-format
 msgid "[Ćorić Agrar] Novi servisni zahtev: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:35
+#: apps/forms/notifications.py:38
 #, python-format
 msgid "[Ćorić Agrar] Upit za rezervni deo: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:37
+#: apps/forms/notifications.py:40
 #, python-format
 msgid "[Ćorić Agrar] Upit za model: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:38
+#: apps/forms/notifications.py:41
 #, python-format
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
@@ -383,11 +411,6 @@ msgstr "Szerviz telefon"
 msgid ""
 "PLACEHOLDER — privremena vrednost dok biznis ne unese realni broj servisa."
 msgstr ""
-
-#: apps/pages/models.py:60 templates/pages/partials/_contact_form.html:38
-#: templates/pages/partials/_contact_info.html:38
-msgid "E-pošta"
-msgstr "E-mail"
 
 #: apps/pages/models.py:64 templates/pages/partials/_contact_info.html:48
 msgid "Radno vreme"
@@ -898,6 +921,34 @@ msgstr ""
 msgid "Primljeno"
 msgstr ""
 
+#: templates/forms/partials/_contact_form_fields.html:7
+msgid "POŠALJITE UPIT"
+msgstr "KÜLDJÖN ÜZENETET"
+
+#: templates/forms/partials/_contact_form_fields.html:9
+msgid "Pošaljite nam upit"
+msgstr "Küldjön nekünk üzenetet"
+
+#: templates/forms/partials/_contact_form_fields.html:15
+msgid "Greška pri slanju, proverite polja:"
+msgstr "Hiba a küldéskor, ellenőrizze a mezőket:"
+
+#: templates/forms/partials/_contact_form_fields.html:98
+msgid "Pošalji upit"
+msgstr "Üzenet küldése"
+
+#: templates/forms/partials/_contact_form_fields.html:107
+msgid "Greška pri slanju, proverite polja."
+msgstr "Hiba a küldéskor, ellenőrizze a mezőket."
+
+#: templates/forms/partials/contact_success.html:6
+msgid "Hvala! Vaš upit je primljen."
+msgstr "Köszönjük! Megkaptuk az üzenetét."
+
+#: templates/forms/partials/contact_success.html:11
+msgid "Upit je poslat."
+msgstr "Üzenet elküldve."
+
 #: templates/pages/about.html:4
 msgid "O nama — Ćorić Agrar"
 msgstr "Rólunk — Ćorić Agrar"
@@ -1073,30 +1124,6 @@ msgid ""
 msgstr ""
 "Ma a régió gazdálkodóinak elismert partnere vagyunk — teljes gépkínálattal, "
 "használt felszereléssel és olyan támogatással, amely az eladás után is tart."
-
-#: templates/pages/partials/_contact_form.html:5
-msgid "POŠALJITE UPIT"
-msgstr "KÜLDJÖN ÜZENETET"
-
-#: templates/pages/partials/_contact_form.html:7
-msgid "Pošaljite nam upit"
-msgstr "Küldjön nekünk üzenetet"
-
-#: templates/pages/partials/_contact_form.html:12
-msgid ""
-"Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
-"poštom."
-msgstr ""
-"Az űrlap hamarosan elérhető lesz. Addig is keressen minket telefonon vagy e-"
-"mailben."
-
-#: templates/pages/partials/_contact_form.html:25
-msgid "Ime i prezime"
-msgstr "Teljes név"
-
-#: templates/pages/partials/_contact_form.html:77
-msgid "Pošalji upit"
-msgstr "Üzenet küldése"
 
 #: templates/pages/partials/_contact_info.html:6
 msgid "KONTAKTIRAJTE NAS"
@@ -1711,3 +1738,10 @@ msgstr "Népszerű márkák"
 #, python-format
 msgid "Rezultati pretrage za „%(query)s\""
 msgstr "Keresési eredmények erre: „%(query)s”"
+
+#~ msgid ""
+#~ "Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
+#~ "poštom."
+#~ msgstr ""
+#~ "Az űrlap hamarosan elérhető lesz. Addig is keressen minket telefonon vagy "
+#~ "e-mailben."

@@ -1,0 +1,111 @@
+{% load i18n %}
+{# Story 4.2 — kontakt forma (fields + bound errors). ROOT je <section id="contact-form-section"> (hx-swap target, SM-D6). Reuse na GET stranici (pages/_contact_form.html include) I na error rerender-u (contact_submit). Standalone-renderable; NIJE full page. #}
+<section id="contact-form-section"
+         class="coric-contact-form"
+         aria-labelledby="contact-form-title">
+  <div class="coric-contact-form__inner">
+    {% include "partials/section_eyebrow.html" with text=_("POŠALJITE UPIT") tag="div" %}
+    <h2 id="contact-form-title" class="coric-contact-form__title">
+      {% translate "Pošaljite nam upit" %}
+    </h2>
+
+    {% if form.errors %}
+      <div class="coric-contact-form__alert" role="alert" aria-live="assertive">
+        <p class="coric-contact-form__alert-title">
+          {% translate "Greška pri slanju, proverite polja:" %}
+        </p>
+        <ul class="coric-contact-form__alert-list">
+          {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post"
+          hx-post="{% url 'forms:contact_submit' %}"
+          hx-target="#contact-form-section"
+          hx-swap="outerHTML"
+          data-testid="contact-form"
+          class="coric-contact-form__form">
+      {% csrf_token %}
+
+      <div class="coric-contact-form__field">
+        <label for="contact-name" class="coric-contact-form__label">
+          {% translate "Ime i prezime" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="text"
+               id="contact-name"
+               name="name"
+               class="coric-contact-form__input"
+               value="{{ form.name.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.name.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="contact-email" class="coric-contact-form__label">
+          {% translate "E-pošta" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="email"
+               id="contact-email"
+               name="email"
+               class="coric-contact-form__input"
+               value="{{ form.email.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.email.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="contact-phone" class="coric-contact-form__label">
+          {% translate "Telefon" %}
+        </label>
+        <input type="tel"
+               id="contact-phone"
+               name="phone"
+               class="coric-contact-form__input"
+               value="{{ form.phone.value|default:'' }}">
+        {% for error in form.phone.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="contact-message" class="coric-contact-form__label">
+          {% translate "Poruka" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <textarea id="contact-message"
+                  name="message"
+                  class="coric-contact-form__textarea"
+                  rows="5"
+                  required
+                  aria-required="true">{{ form.message.value|default:'' }}</textarea>
+        {% for error in form.message.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <button type="submit"
+              class="coric-button coric-button--primary coric-contact-form__submit"
+              data-testid="contact-submit">{% translate "Pošalji upit" %}</button>
+
+      <span class="coric-contact-form__indicator htmx-indicator" aria-hidden="true">
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+      </span>
+    </form>
+  </div>
+</section>
+{% if request.htmx and form.errors %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Greška pri slanju, proverite polja." %}</div>
+{% endif %}

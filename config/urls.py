@@ -28,6 +28,7 @@ urlpatterns += i18n_patterns(
     path("", include("apps.products.urls")),
     path("", include("apps.search.urls")),  # NOVO Story 2.13 — pretraga/ + htmx/pretraga/ (SM-D2)
     path("", include("apps.pages.urls")),  # NOVO Story 3.1 — root `/` → HomeView (pages:home); zamenjuje core:home
+    path("", include("apps.forms.urls")),  # NOVO Story 4.2 — htmx/forme/kontakt/ (kontakt forma submit)
     prefix_default_language=True,
 )
 

@@ -16,6 +16,31 @@ Refs:
 from __future__ import annotations
 
 import pytest
+from django.core.cache import cache
+from django.urls import reverse
+from django.utils.translation import activate
+
+_LOCMEM_CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+}
+
+
+@pytest.fixture(autouse=True)
+def _pin_and_clear_ratelimit_cache(settings):
+    """Pinuje locmem `default` cache (deterministični django-ratelimit backend) i čisti
+    brojač PRE i POSLE svakog forms testa.
+
+    KRITIČNO za izolaciju: `htmx_post` koristi FIKSAN default IP (`203.0.113.7`), a
+    LocMemCache je process-global → bez ovog clear-a ratelimit brojač za taj IP curi
+    KROZ testove (success/error testovi u test_contact_view.py / _aria_live.py /
+    _email_failure.py dele isti IP, ukupno >5 POST-ova u istom minutu → spurious 429 u
+    GREEN fazi). Autouse na nivou forms conftest-a garantuje svežu 5/m kvotu po testu
+    (SM-D10 / Task 3.3). Ratelimit-specifični test dodatno potvrđuje 5-ok/6-ti-429 granicu.
+    """
+    settings.CACHES = _LOCMEM_CACHES
+    cache.clear()
+    yield
+    cache.clear()
 
 
 @pytest.fixture
@@ -40,3 +65,47 @@ def superuser(django_user_model):
         email="admin@example.com",
         password="tea-pass-12345",
     )
+
+
+# ── Story 4.2 (Opšta kontakt forma) — RED phase fixtures ─────────────────────
+
+
+@pytest.fixture
+def valid_contact_payload() -> dict:
+    """Validan POST payload za ContactForm (Task 1.1). Puni dijakritik u `name`."""
+    return {
+        "name": "Marko Marković",
+        "email": "marko@example.com",
+        "phone": "+381641234567",
+        "message": "Zanima me traktor.",
+    }
+
+
+@pytest.fixture
+def contact_submit_url() -> str:
+    """Reverse `forms:contact_submit` pod aktivnim `sr` (i18n_patterns prefiks /sr/).
+
+    Hoist-ovan iz 4 test fajla (_submit_url duplikacija) — jedinstven izvor URL-a.
+    """
+    activate("sr")
+    return reverse("forms:contact_submit")
+
+
+@pytest.fixture
+def htmx_post(client):
+    """Helper: HTMX POST sa `HX-Request` header-om da `request.htmx` bude True.
+
+    Django test client `HTTP_HX_REQUEST="true"` → django_htmx HtmxMiddleware postavlja
+    `request.htmx`. REMOTE_ADDR fiksiran (ratelimit key='ip' stabilnost).
+    """
+
+    def _post(url: str, data: dict, *, ip: str = "203.0.113.7", **extra):
+        return client.post(
+            url,
+            data,
+            HTTP_HX_REQUEST="true",
+            REMOTE_ADDR=ip,
+            **extra,
+        )
+
+    return _post

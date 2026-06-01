@@ -120,6 +120,14 @@ CONTACT_EMAIL_TO = env("CONTACT_EMAIL_TO", default="")
 SERVICE_EMAIL_TO = env("SERVICE_EMAIL_TO", default="")
 PARTS_EMAIL_TO = env("PARTS_EMAIL_TO", default="")
 
+# ── Cache (ratelimit backend) — Story 4.2 (SM-D10) ───────────────────────────
+# django-ratelimit koristi Django `default` cache za brojanje zahteva po IP-u.
+# locmem je dovoljan za v1 (single-process dev/test); prod skaliranje (shared
+# cache) je Epic 9/4.6 odluka — NE Redis sada (YAGNI, project-context.md:84).
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+}
+
 # ── Auth ─────────────────────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {

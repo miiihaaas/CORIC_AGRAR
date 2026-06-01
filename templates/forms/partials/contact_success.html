@@ -1,0 +1,12 @@
+{% load i18n %}
+{# Story 4.2 — success swap partial. ROOT element čisto zamenjuje <section id="contact-form-section"> (hx-swap=outerHTML). Standalone-renderable; NIJE full page. #}
+<section id="contact-form-section" class="coric-contact-form coric-contact-form--success">
+  <div class="coric-contact-form__inner">
+    <p class="coric-contact-form__success" role="status">
+      {% translate "Hvala! Vaš upit je primljen." %}
+    </p>
+  </div>
+</section>
+{% if request.htmx %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Upit je poslat." %}</div>
+{% endif %}

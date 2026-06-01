@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 12:12+0000\n"
+"POT-Creation-Date: 2026-06-01 14:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -237,6 +237,44 @@ msgstr "HZM brand nije konfigurisan u sistemu."
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr "Tulip brand nije konfigurisan u sistemu."
 
+#: apps/forms/forms.py:19 templates/forms/partials/_contact_form_fields.html:37
+msgid "Ime i prezime"
+msgstr "Ime i prezime"
+
+#: apps/forms/forms.py:22
+msgid "Unesite ime i prezime."
+msgstr "Unesite ime i prezime."
+
+#: apps/forms/forms.py:33 apps/pages/models.py:60
+#: templates/forms/partials/_contact_form_fields.html:53
+#: templates/pages/partials/_contact_info.html:38
+msgid "E-pošta"
+msgstr "E-pošta"
+
+#: apps/forms/forms.py:36
+msgid "Unesite e-poštu."
+msgstr "Unesite e-poštu."
+
+#: apps/forms/forms.py:37
+msgid "Unesite ispravnu e-poštu."
+msgstr "Unesite ispravnu e-poštu."
+
+#: apps/forms/forms.py:49 apps/forms/models.py:44
+#: templates/emails/lead_received.html:24
+#: templates/forms/partials/_contact_form_fields.html:69
+msgid "Telefon"
+msgstr "Telefon"
+
+#: apps/forms/forms.py:61 apps/forms/models.py:45
+#: templates/emails/lead_received.html:38
+#: templates/forms/partials/_contact_form_fields.html:83
+msgid "Poruka"
+msgstr "Poruka"
+
+#: apps/forms/forms.py:63
+msgid "Unesite poruku."
+msgstr "Unesite poruku."
+
 #: apps/forms/models.py:32
 msgid "Opšti kontakt"
 msgstr ""
@@ -265,16 +303,6 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: apps/forms/models.py:44 templates/emails/lead_received.html:24
-#: templates/pages/partials/_contact_form.html:51
-msgid "Telefon"
-msgstr "Telefon"
-
-#: apps/forms/models.py:45 templates/emails/lead_received.html:38
-#: templates/pages/partials/_contact_form.html:62
-msgid "Poruka"
-msgstr "Poruka"
-
 #: apps/forms/models.py:46
 msgid "Dodatni podaci"
 msgstr ""
@@ -295,22 +323,22 @@ msgstr ""
 msgid "Lead-ovi"
 msgstr ""
 
-#: apps/forms/notifications.py:33
+#: apps/forms/notifications.py:36
 #, python-format
 msgid "[Ćorić Agrar] Novi servisni zahtev: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:35
+#: apps/forms/notifications.py:38
 #, python-format
 msgid "[Ćorić Agrar] Upit za rezervni deo: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:37
+#: apps/forms/notifications.py:40
 #, python-format
 msgid "[Ćorić Agrar] Upit za model: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:38
+#: apps/forms/notifications.py:41
 #, python-format
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
@@ -384,11 +412,6 @@ msgstr "Telefon servisa"
 msgid ""
 "PLACEHOLDER — privremena vrednost dok biznis ne unese realni broj servisa."
 msgstr ""
-
-#: apps/pages/models.py:60 templates/pages/partials/_contact_form.html:38
-#: templates/pages/partials/_contact_info.html:38
-msgid "E-pošta"
-msgstr "E-pošta"
 
 #: apps/pages/models.py:64 templates/pages/partials/_contact_info.html:48
 msgid "Radno vreme"
@@ -903,6 +926,34 @@ msgstr ""
 msgid "Primljeno"
 msgstr ""
 
+#: templates/forms/partials/_contact_form_fields.html:7
+msgid "POŠALJITE UPIT"
+msgstr "POŠALJITE UPIT"
+
+#: templates/forms/partials/_contact_form_fields.html:9
+msgid "Pošaljite nam upit"
+msgstr "Pošaljite nam upit"
+
+#: templates/forms/partials/_contact_form_fields.html:15
+msgid "Greška pri slanju, proverite polja:"
+msgstr "Greška pri slanju, proverite polja:"
+
+#: templates/forms/partials/_contact_form_fields.html:98
+msgid "Pošalji upit"
+msgstr "Pošalji upit"
+
+#: templates/forms/partials/_contact_form_fields.html:107
+msgid "Greška pri slanju, proverite polja."
+msgstr "Greška pri slanju, proverite polja."
+
+#: templates/forms/partials/contact_success.html:6
+msgid "Hvala! Vaš upit je primljen."
+msgstr "Hvala! Vaš upit je primljen."
+
+#: templates/forms/partials/contact_success.html:11
+msgid "Upit je poslat."
+msgstr "Upit je poslat."
+
 #: templates/pages/about.html:4
 msgid "O nama — Ćorić Agrar"
 msgstr "O nama — Ćorić Agrar"
@@ -1075,30 +1126,6 @@ msgstr ""
 "Danas smo prepoznatljiv partner poljoprivrednika širom regiona — sa "
 "kompletnom ponudom mehanizacije, polovne opreme i podrškom koja traje i "
 "posle prodaje."
-
-#: templates/pages/partials/_contact_form.html:5
-msgid "POŠALJITE UPIT"
-msgstr "POŠALJITE UPIT"
-
-#: templates/pages/partials/_contact_form.html:7
-msgid "Pošaljite nam upit"
-msgstr "Pošaljite nam upit"
-
-#: templates/pages/partials/_contact_form.html:12
-msgid ""
-"Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
-"poštom."
-msgstr ""
-"Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
-"poštom."
-
-#: templates/pages/partials/_contact_form.html:25
-msgid "Ime i prezime"
-msgstr "Ime i prezime"
-
-#: templates/pages/partials/_contact_form.html:77
-msgid "Pošalji upit"
-msgstr "Pošalji upit"
 
 #: templates/pages/partials/_contact_info.html:6
 msgid "KONTAKTIRAJTE NAS"
@@ -1725,3 +1752,10 @@ msgstr "Popularni brendovi"
 #, python-format
 msgid "Rezultati pretrage za „%(query)s\""
 msgstr "Rezultati pretrage za „%(query)s\""
+
+#~ msgid ""
+#~ "Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
+#~ "poštom."
+#~ msgstr ""
+#~ "Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
+#~ "poštom."

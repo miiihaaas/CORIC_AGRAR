@@ -198,6 +198,49 @@
   margin-top: var(--spacing-scale-2);
 }
 
+/* === Forma — error/success stanja + HTMX indikator (Story 4.2) === */
+.coric-contact-form__alert {
+  padding: var(--spacing-scale-4);
+  margin-bottom: var(--spacing-scale-6);
+  border-radius: var(--rounded-md);
+  background-color: var(--color-neutral-cream);
+  color: var(--color-semantic-error);
+  border-left: var(--spacing-scale-1) solid var(--color-semantic-error);
+}
+
+.coric-contact-form__alert-title {
+  font-weight: var(--typography-weight-bold);
+  margin: 0 0 var(--spacing-scale-2);
+}
+
+.coric-contact-form__alert-list {
+  margin: 0;
+  padding-left: var(--spacing-scale-5);
+}
+
+.coric-contact-form__error {
+  margin: var(--spacing-scale-1) 0 0;
+  font-size: var(--typography-scale-caption);
+  color: var(--color-semantic-error);
+}
+
+.coric-contact-form__success {
+  padding: var(--spacing-scale-5);
+  border-radius: var(--rounded-md);
+  background-color: var(--color-neutral-cream);
+  color: var(--color-brand-green-800);
+  font-size: var(--typography-scale-body);
+  font-weight: var(--typography-weight-bold);
+  text-align: center;
+}
+
+.coric-contact-form__indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--spacing-scale-3);
+  color: var(--color-brand-green-600);
+}
+
 /* === Mapa (responsive aspect-ratio iframe) === */
 .coric-contact-map {
   margin-bottom: var(--spacing-scale-4);
