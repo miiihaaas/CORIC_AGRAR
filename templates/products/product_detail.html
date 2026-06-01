@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static media_tags %}
+{% load i18n media_tags static %}
 
 {% block title %}{{ product.name }} | {{ product.brand.name }} | {% translate "Ćorić Agrar" %}{% endblock %}
 
@@ -9,6 +9,11 @@
   <article class="coric-product-detail" data-testid="product-detail-page">
     <section id="product-hero" aria-labelledby="product-hero-title">
       {% include "products/partials/_hero_section.html" %}
+      <p class="coric-product-detail__cta">
+        <a href="#product-inquiry"
+           class="coric-button coric-button--primary coric-product-detail__cta-link"
+           data-testid="product-inquiry-cta">{% translate "Pošalji upit" %}</a>
+      </p>
     </section>
 
     {% if product.description %}
@@ -54,6 +59,8 @@
       </section>
     {% endif %}
 
-    {% block product_detail_inquiry %}{% endblock %}
+    {% block product_detail_inquiry %}
+      {% include "forms/partials/_model_inquiry_form_fields.html" %}
+    {% endblock product_detail_inquiry %}
   </article>
 {% endblock content %}

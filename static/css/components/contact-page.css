@@ -241,6 +241,34 @@
   color: var(--color-brand-green-600);
 }
 
+/* === Model-inquiry forma (Story 4.3) — REUSE coric-contact-form__* + dodaci === */
+#product-inquiry {
+  scroll-margin-top: var(--spacing-scale-8);
+}
+
+.coric-model-inquiry__model-value {
+  background-color: var(--color-neutral-cream);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+}
+
+.coric-model-inquiry__emergency {
+  margin-top: var(--spacing-scale-4);
+  text-align: center;
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+}
+
+.coric-model-inquiry__emergency-link {
+  color: var(--color-brand-green-800);
+  font-weight: var(--typography-weight-bold);
+}
+
+.coric-model-inquiry__emergency-link:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
 /* === Mapa (responsive aspect-ratio iframe) === */
 .coric-contact-map {
   margin-bottom: var(--spacing-scale-4);

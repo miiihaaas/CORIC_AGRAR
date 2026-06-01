@@ -1,0 +1,134 @@
+{% load i18n %}
+{# Story 4.3 — model-inquiry forma (fields + bound errors). ROOT je <section id="product-inquiry"> (hx-swap target, SM-D5). Renderuje se kroz {% include %} na product detail GET-u (NEMA bound `form`) I na error rerender-u (model_inquiry_submit). SVA polja kroz SIROVI <input>/<textarea> (NIKAD {{ form.X }}) — na GET-u nema bound form, pa `form.X.value|default:''` degradira graciozno. Standalone-renderable; NIJE full page. #}
+<section id="product-inquiry"
+         class="coric-contact-form"
+         aria-labelledby="product-inquiry-title">
+  <div class="coric-contact-form__inner">
+    {% include "partials/section_eyebrow.html" with text=_("POŠALJITE UPIT") tag="div" %}
+    <h2 id="product-inquiry-title" class="coric-contact-form__title">
+      {% translate "Pošaljite upit za ovaj model" %}
+    </h2>
+
+    {% if product_not_found %}
+      <div class="coric-contact-form__alert" role="alert" aria-live="assertive">
+        <p class="coric-contact-form__alert-title">
+          {% translate "Proizvod nije pronađen." %}
+        </p>
+      </div>
+    {% elif form.errors %}
+      <div class="coric-contact-form__alert" role="alert" aria-live="assertive">
+        <p class="coric-contact-form__alert-title">
+          {% translate "Greška pri slanju, proverite polja:" %}
+        </p>
+        <ul class="coric-contact-form__alert-list">
+          {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <div class="coric-contact-form__field coric-model-inquiry__model">
+      <span class="coric-contact-form__label">{% translate "Model" %}</span>
+      <input type="text"
+             class="coric-contact-form__input coric-model-inquiry__model-value"
+             value="{{ product.name }}"
+             readonly
+             aria-readonly="true"
+             tabindex="-1">
+    </div>
+
+    <form method="post"
+          hx-post="{% url 'forms:model_inquiry_submit' %}"
+          hx-target="#product-inquiry"
+          hx-swap="outerHTML"
+          data-testid="model-inquiry-form"
+          class="coric-contact-form__form">
+      {% csrf_token %}
+      {% if form.product_slug.value %}
+        <input type="hidden" name="product_slug" value="{{ form.product_slug.value }}">
+      {% else %}
+        <input type="hidden" name="product_slug" value="{{ product.slug|default:'' }}">
+      {% endif %}
+
+      <div class="coric-contact-form__field">
+        <label for="inquiry-name" class="coric-contact-form__label">
+          {% translate "Ime i prezime" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="text"
+               id="inquiry-name"
+               name="name"
+               class="coric-contact-form__input"
+               value="{{ form.name.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.name.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="inquiry-email" class="coric-contact-form__label">
+          {% translate "E-pošta" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="email"
+               id="inquiry-email"
+               name="email"
+               class="coric-contact-form__input"
+               value="{{ form.email.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.email.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="inquiry-phone" class="coric-contact-form__label">
+          {% translate "Telefon" %}
+        </label>
+        <input type="tel"
+               id="inquiry-phone"
+               name="phone"
+               class="coric-contact-form__input"
+               value="{{ form.phone.value|default:'' }}">
+        {% for error in form.phone.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="inquiry-message" class="coric-contact-form__label">
+          {% translate "Poruka" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <textarea id="inquiry-message"
+                  name="message"
+                  class="coric-contact-form__textarea"
+                  rows="5"
+                  required
+                  aria-required="true">{{ form.message.value|default:'' }}</textarea>
+        {% for error in form.message.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <button type="submit"
+              class="coric-button coric-button--primary coric-contact-form__submit"
+              data-testid="model-inquiry-submit">{% translate "Pošalji upit" %}</button>
+
+      <span class="coric-contact-form__indicator htmx-indicator" aria-hidden="true">
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+      </span>
+    </form>
+  </div>
+</section>
+{% if request.htmx and product_not_found %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Proizvod nije pronađen." %}</div>
+{% elif request.htmx and form.errors %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Greška pri slanju, proverite polja." %}</div>
+{% endif %}

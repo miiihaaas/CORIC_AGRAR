@@ -1,0 +1,17 @@
+{% load i18n %}
+{# Story 4.3 — success swap partial. ROOT element čisto zamenjuje <section id="product-inquiry"> (hx-swap=outerHTML). Sadrži telefon za hitne pozive kao klikabilan tel: link (AC6). Standalone-renderable; NIJE full page. #}
+{# TODO (Story 3-4/8-9): zameni hardkodovan tel broj sa {% site_setting "phone" %} kad SiteSettings dinamičko vezivanje bude dostupno (SM-D9). #}
+<section id="product-inquiry" class="coric-contact-form coric-contact-form--success">
+  <div class="coric-contact-form__inner">
+    <p class="coric-contact-form__success" role="status">
+      {% translate "Hvala! Vaš upit za model je primljen. Javićemo vam se uskoro." %}
+    </p>
+    <p class="coric-model-inquiry__emergency">
+      {% translate "Za hitne upite pozovite:" %}
+      <a href="tel:+381641234567" class="coric-model-inquiry__emergency-link">+381 64 123 4567</a>
+    </p>
+  </div>
+</section>
+{% if request.htmx %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Upit za model je poslat." %}</div>
+{% endif %}

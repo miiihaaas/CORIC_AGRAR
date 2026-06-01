@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 14:15+0000\n"
+"POT-Creation-Date: 2026-06-01 15:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -237,41 +237,46 @@ msgstr "HZM brand nije konfigurisan u sistemu."
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr "Tulip brand nije konfigurisan u sistemu."
 
-#: apps/forms/forms.py:19 templates/forms/partials/_contact_form_fields.html:37
+#: apps/forms/forms.py:23 apps/forms/forms.py:82
+#: templates/forms/partials/_contact_form_fields.html:40
+#: templates/forms/partials/_model_inquiry_form_fields.html:61
 msgid "Ime i prezime"
 msgstr "Ime i prezime"
 
-#: apps/forms/forms.py:22
+#: apps/forms/forms.py:26 apps/forms/forms.py:85
 msgid "Unesite ime i prezime."
 msgstr "Unesite ime i prezime."
 
-#: apps/forms/forms.py:33 apps/pages/models.py:60
-#: templates/forms/partials/_contact_form_fields.html:53
+#: apps/forms/forms.py:37 apps/forms/forms.py:96 apps/pages/models.py:60
+#: templates/forms/partials/_contact_form_fields.html:56
+#: templates/forms/partials/_model_inquiry_form_fields.html:77
 #: templates/pages/partials/_contact_info.html:38
 msgid "E-pošta"
 msgstr "E-pošta"
 
-#: apps/forms/forms.py:36
+#: apps/forms/forms.py:40 apps/forms/forms.py:99
 msgid "Unesite e-poštu."
 msgstr "Unesite e-poštu."
 
-#: apps/forms/forms.py:37
+#: apps/forms/forms.py:41 apps/forms/forms.py:100
 msgid "Unesite ispravnu e-poštu."
 msgstr "Unesite ispravnu e-poštu."
 
-#: apps/forms/forms.py:49 apps/forms/models.py:44
+#: apps/forms/forms.py:53 apps/forms/forms.py:112 apps/forms/models.py:44
 #: templates/emails/lead_received.html:24
-#: templates/forms/partials/_contact_form_fields.html:69
+#: templates/forms/partials/_contact_form_fields.html:72
+#: templates/forms/partials/_model_inquiry_form_fields.html:93
 msgid "Telefon"
 msgstr "Telefon"
 
-#: apps/forms/forms.py:61 apps/forms/models.py:45
+#: apps/forms/forms.py:65 apps/forms/forms.py:124 apps/forms/models.py:45
 #: templates/emails/lead_received.html:38
-#: templates/forms/partials/_contact_form_fields.html:83
+#: templates/forms/partials/_contact_form_fields.html:86
+#: templates/forms/partials/_model_inquiry_form_fields.html:107
 msgid "Poruka"
 msgstr "Poruka"
 
-#: apps/forms/forms.py:63
+#: apps/forms/forms.py:67 apps/forms/forms.py:126
 msgid "Unesite poruku."
 msgstr "Unesite poruku."
 
@@ -338,7 +343,7 @@ msgstr ""
 msgid "[Ćorić Agrar] Upit za model: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:41
+#: apps/forms/notifications.py:43
 #, python-format
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
@@ -927,6 +932,7 @@ msgid "Primljeno"
 msgstr ""
 
 #: templates/forms/partials/_contact_form_fields.html:7
+#: templates/forms/partials/_model_inquiry_form_fields.html:7
 msgid "POŠALJITE UPIT"
 msgstr "POŠALJITE UPIT"
 
@@ -935,16 +941,32 @@ msgid "Pošaljite nam upit"
 msgstr "Pošaljite nam upit"
 
 #: templates/forms/partials/_contact_form_fields.html:15
+#: templates/forms/partials/_model_inquiry_form_fields.html:21
 msgid "Greška pri slanju, proverite polja:"
 msgstr "Greška pri slanju, proverite polja:"
 
-#: templates/forms/partials/_contact_form_fields.html:98
+#: templates/forms/partials/_contact_form_fields.html:101
+#: templates/forms/partials/_model_inquiry_form_fields.html:122
+#: templates/products/product_detail.html:15
 msgid "Pošalji upit"
 msgstr "Pošalji upit"
 
-#: templates/forms/partials/_contact_form_fields.html:107
+#: templates/forms/partials/_contact_form_fields.html:110
+#: templates/forms/partials/_model_inquiry_form_fields.html:131
 msgid "Greška pri slanju, proverite polja."
 msgstr "Greška pri slanju, proverite polja."
+
+#: templates/forms/partials/_model_inquiry_form_fields.html:9
+msgid "Pošaljite upit za ovaj model"
+msgstr "Pošaljite upit za ovaj model"
+
+#: templates/forms/partials/_model_inquiry_form_fields.html:15
+msgid "Proizvod nije pronađen."
+msgstr "Proizvod nije pronađen."
+
+#: templates/forms/partials/_model_inquiry_form_fields.html:37
+msgid "Model"
+msgstr "Model"
 
 #: templates/forms/partials/contact_success.html:6
 msgid "Hvala! Vaš upit je primljen."
@@ -953,6 +975,18 @@ msgstr "Hvala! Vaš upit je primljen."
 #: templates/forms/partials/contact_success.html:11
 msgid "Upit je poslat."
 msgstr "Upit je poslat."
+
+#: templates/forms/partials/model_inquiry_success.html:7
+msgid "Hvala! Vaš upit za model je primljen. Javićemo vam se uskoro."
+msgstr "Hvala! Vaš upit za model je primljen. Javićemo vam se uskoro."
+
+#: templates/forms/partials/model_inquiry_success.html:10
+msgid "Za hitne upite pozovite:"
+msgstr "Za hitne upite pozovite:"
+
+#: templates/forms/partials/model_inquiry_success.html:16
+msgid "Upit za model je poslat."
+msgstr "Upit za model je poslat."
 
 #: templates/pages/about.html:4
 msgid "O nama — Ćorić Agrar"

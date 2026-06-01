@@ -109,3 +109,41 @@ def htmx_post(client):
         )
 
     return _post
+
+
+# ── Story 4.3 (Model Inquiry forma) — RED phase fixtures ─────────────────────
+
+
+@pytest.fixture
+def model_inquiry_payload() -> dict:
+    """Validan POST payload za ModelInquiryForm (Task 1.1) BEZ `product_slug`.
+
+    `product_slug` se popunjava per-test iz fixture product-a (`{**model_inquiry_payload,
+    "product_slug": product.slug}`) jer slug zavisi od kreiranog Product-a u svakom testu.
+    Puni dijakritik u `name`/`message` (project-context anti-šišana-latinica).
+    """
+    return {
+        "name": "Marko Marković",
+        "email": "marko@example.com",
+        "phone": "+381641234567",
+        "message": "Zanima me ovaj model.",
+    }
+
+
+@pytest.fixture
+def model_inquiry_submit_url() -> str:
+    """Reverse `forms:model_inquiry_submit` pod aktivnim `sr` (i18n_patterns prefiks /sr/)."""
+    activate("sr")
+    return reverse("forms:model_inquiry_submit")
+
+
+@pytest.fixture
+def published_product(db):
+    """Objavljen Product „Agri Tracking TB804" — kanonski model-inquiry fixture.
+
+    Hoist-ovan iz ~25 inline `ProductFactory.create(name="Agri Tracking TB804")` poziva
+    kroz 4.3 test fajlove (TEA cleanup). `db` zavisnost jer factory dira DB.
+    """
+    from apps.products.tests.factories import ProductFactory
+
+    return ProductFactory.create(name="Agri Tracking TB804")

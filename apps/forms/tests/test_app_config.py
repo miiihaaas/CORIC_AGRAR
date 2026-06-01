@@ -57,20 +57,28 @@ def test_apps_forms_after_domain_apps():
     )
 
 
-# AC3: dep boundary — apps/forms/ NIGDE ne importuje products/brands/search/catalog/blog
+# AC3: dep boundary — apps/forms/ NIGDE ne importuje brands/search/catalog/blog;
+# products SAMO u views.py (READ-ONLY izuzetak — 4.3 SM-D6, dokumentovan u project-context.md)
 def test_dep_boundary_forms_does_not_import_other_domain_apps():
     """Statički grep import izvora apps/forms/ — forms koristi SAMO apps.core
-    (+ Django/anymail). Import products/brands/search/catalog/blog KRŠI invariantu
-    (architecture.md:739; project-context.md:665; SM-D3a)."""
+    (+ Django/anymail). Import brands/search/catalog/blog KRŠI invariantu
+    (architecture.md:739; project-context.md:665; SM-D3a). `products` je dozvoljen
+    SAMO u views.py kao READ-ONLY view-layer query (4.3 SM-D6 — mirror brands→products
+    2.6 SM-D16 izuzetka; NEMA .save/.create, NEMA FK)."""
     forms_dir = Path(settings.BASE_DIR) / "apps" / "forms"
     assert forms_dir.exists(), (
         f"apps/forms/ direktorijum MORA postojati ({forms_dir}). RED: app još ne postoji."
     )
 
-    forbidden = ("products", "brands", "search", "catalog", "blog")
-    # match: `from apps.products...` / `import apps.products` (i bare `import products` itd.)
+    forbidden = ("brands", "search", "catalog", "blog")
+    # match: `from apps.brands...` / `import apps.brands` (i bare `import brands` itd.)
     pattern = re.compile(
         r"^\s*(from|import)\s+(apps\.)?(" + "|".join(forbidden) + r")\b",
+        re.MULTILINE,
+    )
+    # products import je dozvoljen SAMO u views.py (4.3 SM-D6 READ-ONLY izuzetak)
+    products_pattern = re.compile(
+        r"^\s*(from|import)\s+(apps\.)?products\b",
         re.MULTILINE,
     )
     offenders = []
@@ -80,7 +88,38 @@ def test_dep_boundary_forms_does_not_import_other_domain_apps():
         text = py.read_text(encoding="utf-8")
         if pattern.search(text):
             offenders.append(str(py.relative_to(forms_dir)))
+        if products_pattern.search(text) and py.name != "views.py":
+            offenders.append(str(py.relative_to(forms_dir)))
     assert offenders == [], (
-        f"apps/forms/ NE SME importovati products/brands/search/catalog/blog "
-        f"(dep boundary — SM-D3a). Prekršioci: {offenders}."
+        f"apps/forms/ NE SME importovati brands/search/catalog/blog (bilo gde) ni products "
+        f"(van views.py) — dep boundary SM-D3a + 4.3 SM-D6. Prekršioci: {offenders}."
+    )
+
+
+# AC3 (SM-D6 READ-ONLY invarijanta): forms→products je SAMO read-only query-layer —
+# NIGDE u apps/forms/ NE SME postojati .save()/.create() na Product instanci/manageru
+def test_dep_boundary_forms_does_not_write_to_product():
+    """Statički grep — forms→products izuzetak je READ-ONLY (SM-D6): NEMA `Product.objects.create`,
+    NEMA `Product(...).save()`, NEMA `.save()`/`.create()` na Product instanci. Lead.data čuva slug-u-JSON,
+    NE FK. Ovo zaključava invarijantu da forms ne piše u products domen (mirror brands→products 2.6 SM-D16)."""
+    forms_dir = Path(settings.BASE_DIR) / "apps" / "forms"
+    write_patterns = (
+        re.compile(r"Product\.objects\.create\b"),
+        re.compile(r"Product\.objects\.bulk_create\b"),
+        re.compile(r"Product\([^)]*\)\.save\b"),
+        re.compile(r"\bproduct\.save\("),
+        re.compile(r"\bproduct\.create\("),
+        re.compile(r"\bproduct\.delete\("),
+    )
+    offenders = []
+    for py in forms_dir.rglob("*.py"):
+        if "tests" in py.parts:
+            continue
+        text = py.read_text(encoding="utf-8")
+        for pat in write_patterns:
+            if pat.search(text):
+                offenders.append(f"{py.relative_to(forms_dir)} :: {pat.pattern}")
+    assert offenders == [], (
+        f"apps/forms/ forms→products izuzetak je READ-ONLY (SM-D6) — NE SME pozivati "
+        f".save()/.create()/.delete() na Product. Prekršioci: {offenders}."
     )

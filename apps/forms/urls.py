@@ -14,4 +14,9 @@ app_name = "forms"
 
 urlpatterns = [
     path("htmx/forme/kontakt/", views.contact_submit, name="contact_submit"),
+    path(
+        "htmx/forme/upit-za-model/",
+        views.model_inquiry_submit,
+        name="model_inquiry_submit",
+    ),
 ]

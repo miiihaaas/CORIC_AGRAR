@@ -37,7 +37,9 @@ def _build_subject(lead: Lead) -> str:
     if lead.form_type == Lead.FormType.PART_REQUEST:
         return _("[Ćorić Agrar] Upit za rezervni deo: %(name)s") % {"name": lead.name}
     if lead.form_type == Lead.FormType.MODEL_INQUIRY:
-        return _("[Ćorić Agrar] Upit za model: %(name)s") % {"name": lead.name}
+        return _("[Ćorić Agrar] Upit za model: %(name)s") % {
+            "name": lead.data.get("product_name", lead.name)
+        }
     return _("[Ćorić Agrar] Novi kontakt: %(name)s") % {"name": lead.name}
 
 

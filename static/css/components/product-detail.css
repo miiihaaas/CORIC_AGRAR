@@ -21,6 +21,12 @@
   width: 100%;
 }
 
+/* === CTA (skroluj-do-model-inquiry-forme — Story 4.3) === */
+.coric-product-detail__cta {
+  text-align: center;
+  margin-top: var(--spacing-scale-5);
+}
+
 /* === Description === */
 .coric-product-description__body {
   font-size: var(--typography-scale-body);

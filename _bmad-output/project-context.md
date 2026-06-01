@@ -663,6 +663,14 @@ App dependency rules (iz architecture.md):
     i ne krši arhitektonsku invariantu jednosmerne zavisnosti. Vidi Story 2.6
     Decision SM-D16 za rationale.
 - ❌ `forms` ne sme importovati `catalog` / `blog` direktno
+  - **Exception** (Story 4.3+): `apps/forms/views.py` SME importovati `Product`
+    (i read-only query-ovati ga) iz `apps.products.models` za model-inquiry
+    server-side re-validaciju slug-a (`Product.objects.filter(is_published=True,
+    slug=...)`). Izuzetak je **view-layer-only, READ-ONLY (NEMA `.save()` /
+    `.create()` na Product), NEMA FK iz forms → products, NEMA model
+    dependency.** Product referenca perzistira u `Lead.data["product_slug"]`
+    (slug-u-JSON, NIJE FK) per 4-1 SM-D3a. Coupling ne krši arhitektonsku
+    invariantu jednosmerne zavisnosti. Vidi Story 4.3 SM-D6 za rationale.
 - ❌ Domain apps ne smeju importovati iz `admin_ext`
 
 ### 🚫 Anti-pattern: Bare except
