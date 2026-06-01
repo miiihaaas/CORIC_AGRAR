@@ -2,8 +2,8 @@
 
 `pages` je top-level app KOJEM je dozvoljeno da importuje domain modele
 (`brands`/`products`) READ-ONLY — agregacijski sloj za Home + statičke strane
-(architecture.md: HomeView/AboutView/ContactView). NEMA modela u v1
-(SiteSettings dolazi tek Story 3.4) → NEMA migracija.
+(architecture.md: HomeView/AboutView/ContactView). Sadrži `SiteSettings`
+singleton config model (Story 3.4) + migracije.
 """
 
 from django.apps import AppConfig

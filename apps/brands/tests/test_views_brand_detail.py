@@ -184,7 +184,8 @@ def test_assert_num_queries_equals_5(client, django_assert_num_queries):
 
     # Django Client GET wraps full request/response cycle; assertNumQueries
     # broji samo DB query-je (ne template render — koji ne radi query-je kroz prefetched relations).
-    with django_assert_num_queries(5):
+    # Story 3.4: 5 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
+    with django_assert_num_queries(6):
         response = client.get(url)
         assert response.status_code == 200
 

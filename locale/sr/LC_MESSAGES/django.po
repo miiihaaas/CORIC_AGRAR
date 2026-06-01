@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 05:41+0000\n"
+"POT-Creation-Date: 2026-06-01 08:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,7 +48,7 @@ msgstr ""
 msgid "Opis"
 msgstr ""
 
-#: apps/brands/models.py:86
+#: apps/brands/models.py:86 apps/pages/models.py:37
 msgid "Slogan"
 msgstr ""
 
@@ -138,13 +138,13 @@ msgid "Serije"
 msgstr ""
 
 #: apps/brands/models.py:248 templates/partials/footer.html:23
-#: templates/partials/header.html:74 templates/products/tractor_listing.html:4
+#: templates/partials/header.html:82 templates/products/tractor_listing.html:4
 #: templates/products/tractor_listing.html:11
 msgid "Traktori"
 msgstr ""
 
 #: apps/brands/models.py:249 templates/partials/footer.html:24
-#: templates/partials/header.html:84
+#: templates/partials/header.html:92
 msgid "Mehanizacija"
 msgstr ""
 
@@ -221,7 +221,7 @@ msgstr "Kategorija nije pronađena."
 msgid "Potkategorija nije pronađena."
 msgstr "Potkategorija nije pronađena."
 
-#: apps/brands/views.py:253 templates/partials/header.html:71
+#: apps/brands/views.py:253 templates/partials/header.html:79
 msgid "Početna"
 msgstr "Početna"
 
@@ -280,6 +280,72 @@ msgstr ""
 
 #: apps/media_pipeline/utils.py:100
 msgid "Slika je oštećena ili nije validan format."
+msgstr ""
+
+#: apps/pages/models.py:32
+msgid "Naziv firme"
+msgstr ""
+
+#: apps/pages/models.py:42 templates/pages/partials/_contact_info.html:14
+msgid "Adresa"
+msgstr "Adresa"
+
+#: apps/pages/models.py:47 templates/pages/partials/_contact_info.html:20
+#: templates/pages/partials/_contact_info.html:24
+#: templates/partials/header.html:23
+msgid "Telefon prodaje"
+msgstr "Telefon prodaje"
+
+#: apps/pages/models.py:52 templates/pages/partials/_contact_info.html:29
+#: templates/pages/partials/_contact_info.html:33
+#: templates/partials/header.html:29
+msgid "Telefon servisa"
+msgstr "Telefon servisa"
+
+#: apps/pages/models.py:56
+msgid ""
+"PLACEHOLDER — privremena vrednost dok biznis ne unese realni broj servisa."
+msgstr ""
+
+#: apps/pages/models.py:60 templates/pages/partials/_contact_form.html:38
+#: templates/pages/partials/_contact_info.html:38
+msgid "E-pošta"
+msgstr "E-pošta"
+
+#: apps/pages/models.py:64 templates/pages/partials/_contact_info.html:48
+msgid "Radno vreme"
+msgstr "Radno vreme"
+
+#: apps/pages/models.py:66
+msgid "Jedan red po liniji (npr. „Ponedeljak–Petak: 08–16h“)."
+msgstr ""
+
+#: apps/pages/models.py:69
+msgid "Facebook URL"
+msgstr "Facebook URL"
+
+#: apps/pages/models.py:72
+msgid ""
+"PLACEHOLDER — prazno dok biznis ne unese realni Facebook URL; link se "
+"sakriva kad je prazno."
+msgstr ""
+
+#: apps/pages/models.py:77
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: apps/pages/models.py:80
+msgid ""
+"PLACEHOLDER — prazno dok biznis ne unese realni Instagram URL; link se "
+"sakriva kad je prazno."
+msgstr ""
+
+#: apps/pages/models.py:86 apps/pages/models.py:87
+msgid "Podešavanja sajta"
+msgstr ""
+
+#: apps/pages/models.py:113
+msgid "SiteSettings singleton ne sme da se briše."
 msgstr ""
 
 #: apps/products/apps.py:14 apps/products/models.py:182
@@ -763,7 +829,9 @@ msgstr "Kontakt — Ćorić Agrar"
 msgid ""
 "Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, "
 "radno vreme i lokacija na mapi. Pošaljite nam upit."
-msgstr "Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, radno vreme i lokacija na mapi. Pošaljite nam upit."
+msgstr ""
+"Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, "
+"radno vreme i lokacija na mapi. Pošaljite nam upit."
 
 #: templates/pages/contact.html:11
 msgid "Kontaktirajte nas"
@@ -819,7 +887,7 @@ msgid "O nama — uvodna sekcija"
 msgstr "O nama — uvodna sekcija"
 
 #: templates/pages/partials/_about_hero.html:13
-#: templates/partials/header.html:95
+#: templates/partials/header.html:103
 msgid "O nama"
 msgstr "O nama"
 
@@ -934,11 +1002,6 @@ msgstr ""
 msgid "Ime i prezime"
 msgstr "Ime i prezime"
 
-#: templates/pages/partials/_contact_form.html:38
-#: templates/pages/partials/_contact_info.html:36
-msgid "E-pošta"
-msgstr "E-pošta"
-
 #: templates/pages/partials/_contact_form.html:51
 msgid "Telefon"
 msgstr "Telefon"
@@ -960,64 +1023,15 @@ msgstr "KONTAKTIRAJTE NAS"
 msgid "Kontakt informacije"
 msgstr "Kontakt informacije"
 
-#: templates/pages/partials/_contact_info.html:14
-msgid "Adresa"
-msgstr "Adresa"
-
-#: templates/pages/partials/_contact_info.html:15
-#: templates/pages/partials/_contact_map.html:21
-msgid "Vojvođanska 1, Basaid, Srbija"
-msgstr "Vojvođanska 1, Basaid, Srbija"
-
-#: templates/pages/partials/_contact_info.html:20
-#: templates/pages/partials/_contact_info.html:23
-#: templates/partials/header.html:22
-msgid "Telefon prodaje"
-msgstr "Telefon prodaje"
-
-#: templates/pages/partials/_contact_info.html:28
-#: templates/pages/partials/_contact_info.html:31
-#: templates/partials/header.html:27
-msgid "Telefon servisa"
-msgstr "Telefon servisa"
-
-#: templates/pages/partials/_contact_info.html:39
+#: templates/pages/partials/_contact_info.html:42
 msgid "Pošaljite e-poštu"
 msgstr "Pošaljite e-poštu"
 
-#: templates/pages/partials/_contact_info.html:45
-msgid "Radno vreme"
-msgstr "Radno vreme"
-
-#: templates/pages/partials/_contact_info.html:48
-msgid "Ponedeljak–Petak"
-msgstr "Ponedeljak–Petak"
-
-#: templates/pages/partials/_contact_info.html:49
-msgid "08–16h"
-msgstr "08–16h"
-
-#: templates/pages/partials/_contact_info.html:52
-msgid "Subota"
-msgstr "Subota"
-
-#: templates/pages/partials/_contact_info.html:53
-msgid "08–13h"
-msgstr "08–13h"
-
-#: templates/pages/partials/_contact_info.html:56
-msgid "Nedelja"
-msgstr "Nedelja"
-
-#: templates/pages/partials/_contact_info.html:57
-msgid "Zatvoreno"
-msgstr "Zatvoreno"
-
-#: templates/pages/partials/_contact_info.html:64
+#: templates/pages/partials/_contact_info.html:59
 msgid "Facebook"
 msgstr "Facebook"
 
-#: templates/pages/partials/_contact_info.html:69
+#: templates/pages/partials/_contact_info.html:67
 msgid "Instagram"
 msgstr "Instagram"
 
@@ -1033,7 +1047,11 @@ msgstr "Naša lokacija"
 msgid "Mapa lokacije Ćorić Agrar"
 msgstr "Mapa lokacije Ćorić Agrar"
 
-#: templates/pages/partials/_contact_map.html:25
+#: templates/pages/partials/_contact_map.html:23
+msgid "Vojvođanska 1, Basaid, Srbija"
+msgstr "Vojvođanska 1, Basaid, Srbija"
+
+#: templates/pages/partials/_contact_map.html:27
 msgid "Otvori lokaciju u Google Mapama"
 msgstr "Otvori lokaciju u Google Mapama"
 
@@ -1220,7 +1238,7 @@ msgstr ""
 msgid "Pocetna"
 msgstr ""
 
-#: templates/partials/footer.html:25 templates/partials/header.html:90
+#: templates/partials/footer.html:25 templates/partials/header.html:98
 #: templates/products/used_machinery_listing.html:4
 #: templates/products/used_machinery_listing.html:11
 msgid "Polovna mehanizacija"
@@ -1242,11 +1260,7 @@ msgstr ""
 msgid "Lorem ipsum dolor sit amet (vest 3)"
 msgstr ""
 
-#: templates/partials/footer.html:48 templates/partials/header.html:19
-msgid "Vojvodjanska 1, Basaid, Srbija"
-msgstr ""
-
-#: templates/partials/footer.html:71
+#: templates/partials/footer.html:79
 msgid "Sva prava zadrzana."
 msgstr ""
 
@@ -1254,51 +1268,51 @@ msgstr ""
 msgid "Pokazi kontakt informacije"
 msgstr ""
 
-#: templates/partials/header.html:28 templates/partials/header.html:93
+#: templates/partials/header.html:30 templates/partials/header.html:101
 msgid "Servis"
 msgstr ""
 
-#: templates/partials/header.html:49
+#: templates/partials/header.html:57
 msgid "Glavna navigacija"
 msgstr ""
 
-#: templates/partials/header.html:64
+#: templates/partials/header.html:72
 msgid "Otvori meni"
 msgstr ""
 
-#: templates/partials/header.html:87
+#: templates/partials/header.html:95
 msgid "Prikljucna mehanizacija (Jeegee)"
 msgstr ""
 
-#: templates/partials/header.html:88
+#: templates/partials/header.html:96
 msgid "Radne masine (HZM)"
 msgstr ""
 
-#: templates/partials/header.html:89
+#: templates/partials/header.html:97
 msgid "MIX prikolice (Tulip)"
 msgstr "MIX prikolice (Tulip)"
 
-#: templates/partials/header.html:94
+#: templates/partials/header.html:102
 msgid "Price sa polja"
 msgstr ""
 
-#: templates/partials/header.html:96
+#: templates/partials/header.html:104
 msgid "Kontakt"
 msgstr ""
 
-#: templates/partials/header.html:104
+#: templates/partials/header.html:112
 msgid "Otvori pretragu"
 msgstr "Otvori pretragu"
 
-#: templates/partials/header.html:121
+#: templates/partials/header.html:129
 msgid "Pretraga"
 msgstr "Pretraga"
 
-#: templates/partials/header.html:122
+#: templates/partials/header.html:130
 msgid "Pretraži proizvode…"
 msgstr "Pretraži proizvode…"
 
-#: templates/partials/header.html:126
+#: templates/partials/header.html:134
 msgid "Pretraga u toku…"
 msgstr "Pretraga u toku…"
 

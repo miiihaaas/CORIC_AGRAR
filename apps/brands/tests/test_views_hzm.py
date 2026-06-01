@@ -116,7 +116,8 @@ def test_hzm_query_budget_two_queries(client, django_assert_num_queries):
     get_context_data — Dev empirijski lock-uje TAČAN broj posle GREEN iter 1.
     """
     activate("sr")
-    with django_assert_num_queries(3):
+    # Story 3.4: 3 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
+    with django_assert_num_queries(4):
         response = client.get(_HZM_URL)
         assert response.status_code == 200
 

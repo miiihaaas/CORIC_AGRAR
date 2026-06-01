@@ -245,9 +245,10 @@ class TestSubcategoryListingViewQueryBudget:
             resp = client.get(_l1_url(cat.slug, l1.slug))
             assert resp.status_code == 200
         # EXACT lock (post-GREEN, SM-D12) — tightened from `<= 4`.
-        assert len(ctx.captured_queries) == _AC10_INTERMEDIATE_LOCKED, (
+        # Story 3.4: +1 za SiteSettings chrome upit (header/footer site_setting tag, 1/request).
+        assert len(ctx.captured_queries) == _AC10_INTERMEDIATE_LOCKED + 1, (
             f"intermediate render used {len(ctx.captured_queries)} queries "
-            f"(locked {_AC10_INTERMEDIATE_LOCKED}):\n"
+            f"(locked {_AC10_INTERMEDIATE_LOCKED} + 1 SiteSettings):\n"
             + "\n".join(q["sql"] for q in ctx.captured_queries)
         )
 
@@ -262,9 +263,10 @@ class TestSubcategoryListingViewQueryBudget:
             resp = client.get(_l1_url(cat.slug, l1.slug))
             assert resp.status_code == 200
         # EXACT lock (post-GREEN, SM-D12) — tightened from `<= 4`.
-        assert len(ctx.captured_queries) == _AC10_LEAF_LOCKED, (
+        # Story 3.4: +1 za SiteSettings chrome upit (header/footer site_setting tag, 1/request).
+        assert len(ctx.captured_queries) == _AC10_LEAF_LOCKED + 1, (
             f"leaf render used {len(ctx.captured_queries)} queries "
-            f"(locked {_AC10_LEAF_LOCKED}):\n"
+            f"(locked {_AC10_LEAF_LOCKED} + 1 SiteSettings):\n"
             + "\n".join(q["sql"] for q in ctx.captured_queries)
         )
 

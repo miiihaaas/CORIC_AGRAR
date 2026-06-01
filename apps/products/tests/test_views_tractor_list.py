@@ -68,7 +68,8 @@ def test_tractor_list_query_budget(client, django_assert_num_queries):
     # Empirical reveal: 3 = Brand list + Paginator COUNT + Product page slice (sa
     # select_related brand/series/subcategory). Middleware sessions/auth NE generišu
     # SQL upite za anonimni GET (Django session middleware lazy-loads samo na write).
-    with django_assert_num_queries(3):
+    # Story 3.4: 3 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
+    with django_assert_num_queries(4):
         response = client.get("/sr/traktori/", HTTP_HOST="localhost")
         assert response.status_code == 200
 

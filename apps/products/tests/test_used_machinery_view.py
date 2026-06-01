@@ -205,7 +205,8 @@ def test_ac1_assertNumQueries_initial_render_under_budget(client, django_assert_
     # SM-D27 — Dev empirically locked posle GREEN iter 1: actual = 4 queries
     # (1 categories dropdown + 1 brands dropdown + 1 Product COUNT + 1 Product slice)
     # NO middleware overhead in test runs — Django test client bypasses some middleware.
-    with django_assert_num_queries(4):
+    # Story 3.4: 4 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
+    with django_assert_num_queries(5):
         response = client.get("/sr/mehanizacija/polovna/", HTTP_HOST="localhost")
         assert response.status_code == 200
 

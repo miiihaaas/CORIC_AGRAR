@@ -319,6 +319,7 @@ def test_ac1_base_html_footer_between_main_and_aria_live():
 
 
 # AC-2: header partial rendera .coric-top-header sa role="banner"
+@pytest.mark.django_db  # Story 3.4: header sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac2_top_header_has_role_banner():
     """AC2 + CRITICAL-CASCADE-1 iter 2: `.coric-top-header` mora imati `role="banner"`.
 
@@ -387,6 +388,7 @@ def test_ac2_top_header_mobile_height_auto_override_in_sticky_nav_css():
 
 
 # AC-2: top header rendera <a href="tel:...">  za prodaja i servis telefon
+@pytest.mark.django_db  # Story 3.4: header sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac2_top_header_renders_tel_links_for_sales_and_service():
     """AC2: top header mora imati 2× `<a href="tel:...">` link-a (prodaja + servis)."""
     html = _render_partial("partials/header.html")
@@ -403,6 +405,7 @@ def test_ac2_top_header_renders_tel_links_for_sales_and_service():
 
 
 # AC-3: nav ima navbar-expand-md klasu (CRITICAL-3, NE -lg)
+@pytest.mark.django_db  # Story 3.4: header sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac3_nav_uses_navbar_expand_md_not_lg():
     """AC3 + CRITICAL-3: `.coric-nav` mora imati `navbar-expand-md` klasu (NE `-lg`).
 
@@ -683,6 +686,7 @@ def test_ac5_sticky_nav_js_toggles_body_coric_nav_shrunk():
 
 
 # AC-6: footer ima role="contentinfo"
+@pytest.mark.django_db  # Story 3.4: footer sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac6_footer_has_role_contentinfo():
     """AC6: `<footer>` mora imati `role="contentinfo"` (eksplicitno za starije AT-ove)."""
     html = _render_partial("partials/footer.html")
@@ -693,6 +697,7 @@ def test_ac6_footer_has_role_contentinfo():
 
 
 # AC-6: footer ima 4 col-md-3 kolone i 3 section_eyebrow include-a (PROIZVODI, NAJNOVIJE VESTI, KONTAKT)
+@pytest.mark.django_db  # Story 3.4: footer sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac6_footer_renders_4_columns_with_3_section_eyebrows():
     """AC6: footer mora imati 4 `col-md-3` kolone + 3 Section Eyebrow include-a sa
     eksplicitnim heading-ovima ('PROIZVODI', 'NAJNOVIJE VESTI', 'KONTAKT').
@@ -819,6 +824,7 @@ def test_ac7_header_css_has_forced_colors_override():
 
 
 # AC-8: header.html rendera role="banner" + role="navigation" (top-header + nav)
+@pytest.mark.django_db  # Story 3.4: header sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac8_header_renders_banner_and_navigation_landmarks():
     """AC8: rendered header.html mora imati `role="banner"` (top-header) + `role="navigation"` (nav)."""
     html = _render_partial("partials/header.html")
@@ -834,6 +840,7 @@ def test_ac8_header_renders_banner_and_navigation_landmarks():
 
 
 # AC-8: tačno 1× role="banner" per partial (WAI-ARIA APG compliance)
+@pytest.mark.django_db  # Story 3.4: header sada čita SiteSettings (site_setting tag) → DB pristup.
 def test_ac8_header_has_exactly_one_banner_landmark():
     """AC8: rendered header.html mora imati TAČNO 1× `role="banner"`.
 

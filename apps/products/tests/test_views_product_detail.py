@@ -104,7 +104,8 @@ def test_assert_num_queries_exactly_7(client, django_assert_num_queries):
 
     url = f"/sr/proizvod/{product.slug}/"
 
-    with django_assert_num_queries(7):
+    # Story 3.4: 7 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
+    with django_assert_num_queries(8):
         response = client.get(url, HTTP_HOST="localhost")
         assert response.status_code == 200
 

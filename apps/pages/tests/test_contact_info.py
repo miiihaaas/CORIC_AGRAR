@@ -110,7 +110,18 @@ def test_contact_info_social_links_have_aria_label(client):
 
     Social linkovi nose samo SVG ikonu (aria-hidden), pa accessible naziv MORA doći
     iz aria-label-a — inače je link nedostupan za screen reader (WCAG 2.1 AA).
+
+    Story 3-4 SM-D8a: social linkovi su HIDE-WHEN-EMPTY (prazan seed → ne renderuju
+    se). Da bi se a11y atribut proverio, popuni social URL-ove (kao što biznis radi
+    kroz admin) pa potvrdi da renderovani linkovi imaju aria-label.
     """
+    from apps.pages.models import SiteSettings
+
+    obj = SiteSettings.load()
+    obj.social_facebook = "https://facebook.com/coricagrar"
+    obj.social_instagram = "https://instagram.com/coricagrar"
+    obj.save()
+
     html = _contact_html(client)
     social_links = _SOCIAL_LINK_RE.findall(html)
     assert social_links, (

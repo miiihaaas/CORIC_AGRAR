@@ -117,7 +117,8 @@ def test_assert_num_queries_initial_render_under_budget(client, django_assert_nu
     activate("sr")
     url = "/sr/mehanizacija/prikljucna/"
 
-    with django_assert_num_queries(2):
+    # Story 3.4: 2 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
+    with django_assert_num_queries(3):
         response = client.get(url)
         assert response.status_code == 200
 
