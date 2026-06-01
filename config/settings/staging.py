@@ -15,6 +15,11 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Bez HSTS na staging-u (HSTS pin-uje host na HTTPS — ne želiš to na staging domenu)
 
+# ── Email backend override (Story 4.1) ──────────────────────────────────────
+# Eksplicitan assignment POSLE `from .base import *` override-uje base consolemail
+# default (EMAIL_CONFIG/vars().update). anymail Resend (ANYMAIL dict u base; SM-D6).
+EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+
 # ── Static files storage override za staging ─────────────────────────────────
 # Staging je production-like — manifest se koristi za realan test cache-busting-a.
 STORAGES = {

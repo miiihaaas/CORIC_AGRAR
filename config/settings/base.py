@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.pages",  # NOVO Story 3.1 — top-level app (Home/About/Contact); READ-ONLY agregacija domain modela (POSLE products)
     "sorl.thumbnail",  # NOVO Story 2.3 — third-party paket POSLE domain app-ova (utility lib)
     "apps.media_pipeline",  # NOVO Story 2.3 — utility app POSLE sorl.thumbnail (koristi njegove template tags)
+    "apps.forms",  # NOVO Story 4.1 — lead-gen forms app (samostalan top-level; POSLE domain app-ova, SM-D1)
 ]
 
 MIDDLEWARE = [
@@ -99,6 +100,25 @@ vars().update(EMAIL_CONFIG)
 # Cleanup: EMAIL_CONFIG dict je pokupljen kao Django setting (uppercase module attribute)
 # nakon vars().update(); brisemo ga da se ne pojavi kao spurious setting.
 del EMAIL_CONFIG
+
+# ── Email — Story 4.1 (lead-gen forme) ───────────────────────────────────────
+# DEFAULT_FROM_EMAIL: eksplicitan sender (NE Django default „webmaster@localhost").
+# Staging/prod šalje kroz anymail Resend backend (EMAIL_BACKEND override u tim modulima);
+# real key/verifikovan sender domen = OQ-4 (biznis/ops input).
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@coricagrar.rs")
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Sync send timeout (sekunde) — hung Resend/SMTP konekcija NE sme blokirati worker.
+EMAIL_TIMEOUT = 10
+
+# django-anymail (Resend) — RESEND_API_KEY iz env (prazan default u dev/test; SM-D2).
+ANYMAIL = {"RESEND_API_KEY": env("ANYMAIL_RESEND_API_KEY", default="")}
+
+# Per-segment recipient-i (send_lead_email bira po lead.form_type — SM-D7).
+# Bezbedan prazan default za dev/test (prazan recipient → service tretira kao failed send, C1).
+CONTACT_EMAIL_TO = env("CONTACT_EMAIL_TO", default="")
+SERVICE_EMAIL_TO = env("SERVICE_EMAIL_TO", default="")
+PARTS_EMAIL_TO = env("PARTS_EMAIL_TO", default="")
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [

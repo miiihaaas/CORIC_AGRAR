@@ -26,6 +26,11 @@ SECURE_HSTS_PRELOAD = True
 SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 
+# ── Email backend override (Story 4.1) ──────────────────────────────────────
+# Eksplicitan assignment POSLE `from .base import *` override-uje base consolemail
+# default (EMAIL_CONFIG/vars().update). anymail Resend (ANYMAIL dict u base; SM-D6).
+EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+
 # ── Static files storage override za prod ────────────────────────────────────
 # Prod koristi Whitenoise CompressedManifestStaticFilesStorage:
 # - hash u filename (tokens.<hash>.css) → cache-busting + max-age=1y

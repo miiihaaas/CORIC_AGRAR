@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 10:57+0000\n"
+"POT-Creation-Date: 2026-06-01 12:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,6 +236,84 @@ msgstr "HZM brand nije konfigurisan u sistemu."
 #: apps/brands/views.py:391
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr "Tulip brand nije konfigurisan u sistemu."
+
+#: apps/forms/models.py:32
+msgid "Opšti kontakt"
+msgstr ""
+
+#: apps/forms/models.py:33
+msgid "Upit za model"
+msgstr ""
+
+#: apps/forms/models.py:34
+msgid "Servisni zahtev"
+msgstr ""
+
+#: apps/forms/models.py:35
+msgid "Upit za rezervni deo"
+msgstr ""
+
+#: apps/forms/models.py:40 templates/emails/lead_received.html:11
+msgid "Tip forme"
+msgstr ""
+
+#: apps/forms/models.py:42 templates/emails/lead_received.html:15
+msgid "Ime"
+msgstr ""
+
+#: apps/forms/models.py:43
+msgid "Email"
+msgstr ""
+
+#: apps/forms/models.py:44 templates/emails/lead_received.html:24
+#: templates/pages/partials/_contact_form.html:51
+msgid "Telefon"
+msgstr "Telefon"
+
+#: apps/forms/models.py:45 templates/emails/lead_received.html:38
+#: templates/pages/partials/_contact_form.html:62
+msgid "Poruka"
+msgstr "Poruka"
+
+#: apps/forms/models.py:46
+msgid "Dodatni podaci"
+msgstr ""
+
+#: apps/forms/models.py:48
+msgid "IP adresa"
+msgstr ""
+
+#: apps/forms/models.py:51
+msgid "Jezik"
+msgstr ""
+
+#: apps/forms/models.py:56
+msgid "Lead"
+msgstr ""
+
+#: apps/forms/models.py:57
+msgid "Lead-ovi"
+msgstr ""
+
+#: apps/forms/notifications.py:33
+#, python-format
+msgid "[Ćorić Agrar] Novi servisni zahtev: %(name)s"
+msgstr ""
+
+#: apps/forms/notifications.py:35
+#, python-format
+msgid "[Ćorić Agrar] Upit za rezervni deo: %(name)s"
+msgstr ""
+
+#: apps/forms/notifications.py:37
+#, python-format
+msgid "[Ćorić Agrar] Upit za model: %(name)s"
+msgstr ""
+
+#: apps/forms/notifications.py:38
+#, python-format
+msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
+msgstr ""
 
 #: apps/media_pipeline/apps.py:21
 msgid "Media pipeline"
@@ -809,6 +887,22 @@ msgstr ""
 msgid "%(brand)s MIX prikolice"
 msgstr "%(brand)s MIX prikolice"
 
+#: templates/emails/base_email.html:25
+msgid "Automatska poruka — Ćorić Agrar sajt."
+msgstr ""
+
+#: templates/emails/lead_received.html:6
+msgid "Novi upit sa sajta"
+msgstr ""
+
+#: templates/emails/lead_received.html:19
+msgid "Email adresa"
+msgstr ""
+
+#: templates/emails/lead_received.html:44
+msgid "Primljeno"
+msgstr ""
+
 #: templates/pages/about.html:4
 msgid "O nama — Ćorić Agrar"
 msgstr "O nama — Ćorić Agrar"
@@ -1001,14 +1095,6 @@ msgstr ""
 #: templates/pages/partials/_contact_form.html:25
 msgid "Ime i prezime"
 msgstr "Ime i prezime"
-
-#: templates/pages/partials/_contact_form.html:51
-msgid "Telefon"
-msgstr "Telefon"
-
-#: templates/pages/partials/_contact_form.html:62
-msgid "Poruka"
-msgstr "Poruka"
 
 #: templates/pages/partials/_contact_form.html:77
 msgid "Pošalji upit"

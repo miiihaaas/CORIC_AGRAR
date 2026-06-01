@@ -92,8 +92,8 @@ dev elopment_status:
   # ============================================================
   # Epic 4: Lead-gen Forms & Email Delivery
   # ============================================================
-  epic-4: backlog
-  4-1-lead-model-smtp-setup: backlog
+  epic-4: in-progress
+  4-1-lead-model-smtp-setup: done
   4-2-opsta-kontakt-forma-fr-5: backlog
   4-3-model-inquiry-form-sa-auto-popunjenim-modelom: backlog
   4-4-servisni-zahtev-form-sa-foto-upload-om: backlog
