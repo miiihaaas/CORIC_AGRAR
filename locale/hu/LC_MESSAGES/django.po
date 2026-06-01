@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 04:14+0000\n"
+"POT-Creation-Date: 2026-06-01 05:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -750,6 +750,20 @@ msgstr ""
 "A Ćorić Agrar története — mezőgazdasági gépészetre szakosodott családi "
 "vállalkozás. Ismerje meg utunkat, értékeinket és csapatunkat."
 
+#: templates/pages/contact.html:4
+msgid "Kontakt — Ćorić Agrar"
+msgstr "Kapcsolat — Ćorić Agrar"
+
+#: templates/pages/contact.html:6
+msgid ""
+"Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, "
+"radno vreme i lokacija na mapi. Pošaljite nam upit."
+msgstr "Lépjen kapcsolatba a Ćorić Agrarral — cím, értékesítési és szerviz telefonszámok, e-mail, nyitvatartás és helyszín a térképen. Küldjön nekünk üzenetet."
+
+#: templates/pages/contact.html:11
+msgid "Kontaktirajte nas"
+msgstr "Lépjen kapcsolatba velünk"
+
 #: templates/pages/home.html:4
 msgid "Ćorić Agrar — Prijatelj koji razume zemlju"
 msgstr "Ćorić Agrar — Prijatelj koji razume zemlju"
@@ -826,8 +840,8 @@ msgid ""
 msgstr ""
 "A Ćorić Agrar családi vállalkozás, amely már évek óta megbízható gépekkel "
 "szolgálja ki a régió gazdálkodóit. Utunk egy kis műhelyből indult, egyszerű "
-"gondolattal: olyan felszerelést adni a gazdának, amelyben megbízhat, és olyan "
-"támogatást, amelyre a legnehezebb pillanatokban is számíthat."
+"gondolattal: olyan felszerelést adni a gazdának, amelyben megbízhat, és "
+"olyan támogatást, amelyre a legnehezebb pillanatokban is számíthat."
 
 #: templates/pages/partials/_about_story.html:18
 msgid ""
@@ -838,8 +852,8 @@ msgid ""
 msgstr ""
 "Idővel a traktorok, munkagép-felszerelések, munkagépek és használt gépek "
 "elismert partnerévé váltunk. Minden terméket gondosan választunk ki, és "
-"minden vásárlót az eladás után is figyelemmel kísérünk — mert hisszük, hogy a "
-"bizalom a mezőn elért eredményekből épül, nem ígéretekből."
+"minden vásárlót az eladás után is figyelemmel kísérünk — mert hisszük, hogy "
+"a bizalom a mezőn elért eredményekből épül, nem ígéretekből."
 
 #: templates/pages/partials/_about_story.html:21
 msgid ""
@@ -895,8 +909,130 @@ msgid ""
 "posle prodaje."
 msgstr ""
 "Ma a régió gazdálkodóinak elismert partnere vagyunk — teljes gépkínálattal, "
-"használt felszereléssel és olyan támogatással, amely az eladás után is "
-"tart."
+"használt felszereléssel és olyan támogatással, amely az eladás után is tart."
+
+#: templates/pages/partials/_contact_form.html:5
+msgid "POŠALJITE UPIT"
+msgstr "KÜLDJÖN ÜZENETET"
+
+#: templates/pages/partials/_contact_form.html:7
+msgid "Pošaljite nam upit"
+msgstr "Küldjön nekünk üzenetet"
+
+#: templates/pages/partials/_contact_form.html:12
+msgid ""
+"Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
+"poštom."
+msgstr ""
+"Az űrlap hamarosan elérhető lesz. Addig is keressen minket telefonon vagy e-"
+"mailben."
+
+#: templates/pages/partials/_contact_form.html:25
+msgid "Ime i prezime"
+msgstr "Teljes név"
+
+#: templates/pages/partials/_contact_form.html:38
+#: templates/pages/partials/_contact_info.html:36
+msgid "E-pošta"
+msgstr "E-mail"
+
+#: templates/pages/partials/_contact_form.html:51
+msgid "Telefon"
+msgstr "Telefon"
+
+#: templates/pages/partials/_contact_form.html:62
+msgid "Poruka"
+msgstr "Üzenet"
+
+#: templates/pages/partials/_contact_form.html:77
+msgid "Pošalji upit"
+msgstr "Üzenet küldése"
+
+#: templates/pages/partials/_contact_info.html:6
+msgid "KONTAKTIRAJTE NAS"
+msgstr "LÉPJEN KAPCSOLATBA VELÜNK"
+
+#: templates/pages/partials/_contact_info.html:8
+#: templates/partials/header.html:4
+msgid "Kontakt informacije"
+msgstr "Kapcsolati információk"
+
+#: templates/pages/partials/_contact_info.html:14
+msgid "Adresa"
+msgstr "Cím"
+
+#: templates/pages/partials/_contact_info.html:15
+#: templates/pages/partials/_contact_map.html:21
+msgid "Vojvođanska 1, Basaid, Srbija"
+msgstr "Vojvođanska 1, Basaid, Szerbia"
+
+#: templates/pages/partials/_contact_info.html:20
+#: templates/pages/partials/_contact_info.html:23
+#: templates/partials/header.html:22
+msgid "Telefon prodaje"
+msgstr "Értékesítési telefon"
+
+#: templates/pages/partials/_contact_info.html:28
+#: templates/pages/partials/_contact_info.html:31
+#: templates/partials/header.html:27
+msgid "Telefon servisa"
+msgstr "Szerviz telefon"
+
+#: templates/pages/partials/_contact_info.html:39
+msgid "Pošaljite e-poštu"
+msgstr "E-mail küldése"
+
+#: templates/pages/partials/_contact_info.html:45
+msgid "Radno vreme"
+msgstr "Nyitvatartás"
+
+#: templates/pages/partials/_contact_info.html:48
+msgid "Ponedeljak–Petak"
+msgstr "Hétfő–Péntek"
+
+#: templates/pages/partials/_contact_info.html:49
+msgid "08–16h"
+msgstr "08–16h"
+
+#: templates/pages/partials/_contact_info.html:52
+msgid "Subota"
+msgstr "Szombat"
+
+#: templates/pages/partials/_contact_info.html:53
+msgid "08–13h"
+msgstr "08–13h"
+
+#: templates/pages/partials/_contact_info.html:56
+msgid "Nedelja"
+msgstr "Vasárnap"
+
+#: templates/pages/partials/_contact_info.html:57
+msgid "Zatvoreno"
+msgstr "Zárva"
+
+#: templates/pages/partials/_contact_info.html:64
+msgid "Facebook"
+msgstr "Facebook"
+
+#: templates/pages/partials/_contact_info.html:69
+msgid "Instagram"
+msgstr "Instagram"
+
+#: templates/pages/partials/_contact_map.html:6
+msgid "NAŠA LOKACIJA"
+msgstr "A HELYSZÍNÜNK"
+
+#: templates/pages/partials/_contact_map.html:8
+msgid "Naša lokacija"
+msgstr "Helyszínünk"
+
+#: templates/pages/partials/_contact_map.html:13
+msgid "Mapa lokacije Ćorić Agrar"
+msgstr "A Ćorić Agrar helyszínének térképe"
+
+#: templates/pages/partials/_contact_map.html:25
+msgid "Otvori lokaciju u Google Mapama"
+msgstr "Helyszín megnyitása a Google Térképen"
 
 #: templates/pages/partials/_home_about_intro.html:4
 msgid "O NAMA"
@@ -1111,20 +1247,8 @@ msgstr ""
 msgid "Sva prava zadrzana."
 msgstr ""
 
-#: templates/partials/header.html:4
-msgid "Kontakt informacije"
-msgstr ""
-
 #: templates/partials/header.html:11
 msgid "Pokazi kontakt informacije"
-msgstr ""
-
-#: templates/partials/header.html:22
-msgid "Telefon prodaje"
-msgstr ""
-
-#: templates/partials/header.html:27
-msgid "Telefon servisa"
 msgstr ""
 
 #: templates/partials/header.html:28 templates/partials/header.html:93

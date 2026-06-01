@@ -1,0 +1,270 @@
+/* ============================================================================
+ * contact-page.css — Story 3.3 „Kontakt" strana (kontakt-info / forma-skelet /
+ * Google Maps static iframe).
+ *
+ * JEDINA nova CSS komponenta za Kontakt. REUSE: section-eyebrow.css,
+ * pill-button.css (submit dugme). Sve vrednosti boja/spacing/radius kroz
+ * var(--token); layout vrednosti (aspect-ratio/px/%) dozvoljene. coric- BEM
+ * prefiks na svim klasama. NEMA url() (mapa je iframe, NE CSS bg). 0 JS.
+ * ========================================================================= */
+
+/* === Wrapper === */
+.coric-contact {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);
+}
+
+.coric-contact__header {
+  text-align: center;
+  margin-bottom: var(--spacing-scale-8);
+}
+
+.coric-contact__title {
+  font-size: var(--typography-scale-h1);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  margin: 0;
+}
+
+/* === Info + forma kolone (mobile stack → desktop 2-kolone) === */
+.coric-contact__columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-scale-6);
+}
+
+/* === Kontakt-info === */
+.coric-contact-info {
+  margin-bottom: var(--spacing-section-mobile);
+}
+
+.coric-contact-info__inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.coric-contact-info__title,
+.coric-contact-form__title,
+.coric-contact-map__title {
+  font-size: var(--typography-scale-h2);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-6);
+}
+
+.coric-contact-info__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-scale-5);
+  margin-bottom: var(--spacing-scale-6);
+}
+
+.coric-contact-info__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-1);
+}
+
+.coric-contact-info__label {
+  font-size: var(--typography-scale-caption);
+  font-weight: var(--typography-weight-bold);
+  letter-spacing: var(--typography-tracking-wide);
+  color: var(--color-brand-green-600);
+  margin: 0;
+}
+
+.coric-contact-info__address {
+  font-size: var(--typography-scale-body);
+  font-style: normal;
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-neutral-gray-700);
+}
+
+.coric-contact-info__value {
+  font-size: var(--typography-scale-body);
+  color: var(--color-brand-green-800);
+  text-decoration: none;
+}
+
+.coric-contact-info__value:hover,
+.coric-contact-info__value:focus-visible {
+  text-decoration: underline;
+}
+
+.coric-contact-info__hours {
+  margin-bottom: var(--spacing-scale-6);
+}
+
+.coric-contact-info__hours-list {
+  margin: var(--spacing-scale-2) 0 0;
+}
+
+.coric-contact-info__hours-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-scale-4);
+  padding: var(--spacing-scale-1) 0;
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+}
+
+.coric-contact-info__social {
+  display: flex;
+  gap: var(--spacing-scale-3);
+}
+
+.coric-contact-info__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  color: var(--color-brand-green-800);
+  background-color: var(--color-neutral-cream);
+}
+
+.coric-contact-info__social-link:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+/* === Forma (skelet) === */
+.coric-contact-form {
+  margin-bottom: var(--spacing-section-mobile);
+}
+
+.coric-contact-form__inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.coric-contact-form__hint {
+  padding: var(--spacing-scale-4);
+  margin-bottom: var(--spacing-scale-6);
+  border-radius: var(--rounded-md);
+  background-color: var(--color-neutral-cream);
+  color: var(--color-neutral-gray-700);
+  font-size: var(--typography-scale-body);
+  border-left: var(--spacing-scale-1) solid var(--color-accent-gold-500);
+}
+
+.coric-contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-scale-1);
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-contact-form__label {
+  font-size: var(--typography-scale-caption);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+}
+
+.coric-contact-form__required {
+  color: var(--color-accent-gold-500);
+}
+
+.coric-contact-form__input,
+.coric-contact-form__textarea {
+  width: 100%;
+  padding: var(--spacing-scale-3);
+  border: 1px solid var(--color-neutral-gray-500);
+  border-radius: var(--rounded-sm);
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  background-color: var(--color-neutral-white);
+}
+
+.coric-contact-form__input:disabled,
+.coric-contact-form__textarea:disabled,
+.coric-contact-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.coric-contact-form__input:focus-visible,
+.coric-contact-form__textarea:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.coric-contact-form__submit {
+  margin-top: var(--spacing-scale-2);
+}
+
+/* === Mapa (responsive aspect-ratio iframe) === */
+.coric-contact-map {
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-contact-map__inner {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+}
+
+.coric-contact-map__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.coric-contact-map__iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.coric-contact-map__fallback {
+  margin-top: var(--spacing-scale-4);
+  text-align: center;
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+}
+
+.coric-contact-map__fallback-address {
+  font-style: normal;
+  margin-bottom: var(--spacing-scale-2);
+}
+
+.coric-contact-map__fallback-link {
+  color: var(--color-brand-green-800);
+  font-weight: var(--typography-weight-bold);
+}
+
+.coric-contact-map__fallback-link:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+/* === Responsive (mobile stack → desktop 2-kolone info+forma) === */
+@media (min-width: 768px) {
+  .coric-contact {
+    padding: var(--spacing-section) var(--spacing-container-gutter-desktop);
+  }
+
+  /* AC7: info i forma sekcije side-by-side; mapa ostaje full-width ispod. */
+  .coric-contact__columns {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: var(--spacing-scale-8);
+  }
+
+  .coric-contact__columns .coric-contact-info,
+  .coric-contact__columns .coric-contact-form {
+    margin-bottom: 0;
+  }
+
+  .coric-contact-info__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-scale-6);
+  }
+}

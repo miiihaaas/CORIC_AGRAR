@@ -2,11 +2,12 @@
 
 from django.urls import path
 
-from apps.pages.views import AboutView, HomeView
+from apps.pages.views import AboutView, ContactView, HomeView
 
 app_name = "pages"
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("o-nama/", AboutView.as_view(), name="about"),
+    path("kontakt/", ContactView.as_view(), name="contact"),
 ]

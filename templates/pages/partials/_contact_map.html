@@ -1,0 +1,30 @@
+{% load i18n %}
+{# Google Maps static iframe (NULA JS) + C2 tekstualni fallback. Literalni placeholder Embed src ka Basaid — BEZ env-var (YAGNI; prost Embed nema secret/API ključ). #}
+{# CSP-NOTE(Epic 9): when django-csp enabled, add frame-src https://www.google.com + img-src *.google.com *.gstatic.com *.googleapis.com #}
+<section class="coric-contact-map" aria-labelledby="contact-map-title">
+  <div class="coric-contact-map__inner">
+    {% include "partials/section_eyebrow.html" with text=_("NAŠA LOKACIJA") tag="div" %}
+    <h2 id="contact-map-title" class="coric-contact-map__title">
+      {% translate "Naša lokacija" %}
+    </h2>
+
+    <div class="coric-contact-map__frame">
+      <iframe class="coric-contact-map__iframe"
+              title="{% translate 'Mapa lokacije Ćorić Agrar' %}"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2776.0!2d20.4!3d45.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sBasaid!5e0!3m2!1ssr!2srs!4v0000000000000"
+              width="640"
+              height="360"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+
+    {# C2 FALLBACK (uvek u DOM-u, čist HTML/CSS — kad iframe blokiran: privacy/firewall/buduća CSP). #}
+    <div class="coric-contact-map__fallback">
+      <address class="coric-contact-map__fallback-address">{% translate "Vojvođanska 1, Basaid, Srbija" %}</address>
+      <a class="coric-contact-map__fallback-link"
+         rel="noopener noreferrer"
+         target="_blank"
+         href="https://maps.google.com/?q=Vojvo%C4%91anska+1,+Basaid,+Srbija">{% translate "Otvori lokaciju u Google Mapama" %}</a>
+    </div>
+  </div>
+</section>

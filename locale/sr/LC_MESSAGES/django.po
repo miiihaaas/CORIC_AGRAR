@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 04:14+0000\n"
+"POT-Creation-Date: 2026-06-01 05:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -755,6 +755,20 @@ msgstr ""
 "Priča kompanije Ćorić Agrar — porodična firma posvećena poljoprivrednoj "
 "mehanizaciji. Upoznajte naš put, vrednosti i tim."
 
+#: templates/pages/contact.html:4
+msgid "Kontakt — Ćorić Agrar"
+msgstr "Kontakt — Ćorić Agrar"
+
+#: templates/pages/contact.html:6
+msgid ""
+"Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, "
+"radno vreme i lokacija na mapi. Pošaljite nam upit."
+msgstr "Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, radno vreme i lokacija na mapi. Pošaljite nam upit."
+
+#: templates/pages/contact.html:11
+msgid "Kontaktirajte nas"
+msgstr "Kontaktirajte nas"
+
 #: templates/pages/home.html:4
 msgid "Ćorić Agrar — Prijatelj koji razume zemlju"
 msgstr "Ćorić Agrar — Prijatelj koji razume zemlju"
@@ -899,6 +913,129 @@ msgstr ""
 "Danas smo prepoznatljiv partner poljoprivrednika širom regiona — sa "
 "kompletnom ponudom mehanizacije, polovne opreme i podrškom koja traje i "
 "posle prodaje."
+
+#: templates/pages/partials/_contact_form.html:5
+msgid "POŠALJITE UPIT"
+msgstr "POŠALJITE UPIT"
+
+#: templates/pages/partials/_contact_form.html:7
+msgid "Pošaljite nam upit"
+msgstr "Pošaljite nam upit"
+
+#: templates/pages/partials/_contact_form.html:12
+msgid ""
+"Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
+"poštom."
+msgstr ""
+"Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
+"poštom."
+
+#: templates/pages/partials/_contact_form.html:25
+msgid "Ime i prezime"
+msgstr "Ime i prezime"
+
+#: templates/pages/partials/_contact_form.html:38
+#: templates/pages/partials/_contact_info.html:36
+msgid "E-pošta"
+msgstr "E-pošta"
+
+#: templates/pages/partials/_contact_form.html:51
+msgid "Telefon"
+msgstr "Telefon"
+
+#: templates/pages/partials/_contact_form.html:62
+msgid "Poruka"
+msgstr "Poruka"
+
+#: templates/pages/partials/_contact_form.html:77
+msgid "Pošalji upit"
+msgstr "Pošalji upit"
+
+#: templates/pages/partials/_contact_info.html:6
+msgid "KONTAKTIRAJTE NAS"
+msgstr "KONTAKTIRAJTE NAS"
+
+#: templates/pages/partials/_contact_info.html:8
+#: templates/partials/header.html:4
+msgid "Kontakt informacije"
+msgstr "Kontakt informacije"
+
+#: templates/pages/partials/_contact_info.html:14
+msgid "Adresa"
+msgstr "Adresa"
+
+#: templates/pages/partials/_contact_info.html:15
+#: templates/pages/partials/_contact_map.html:21
+msgid "Vojvođanska 1, Basaid, Srbija"
+msgstr "Vojvođanska 1, Basaid, Srbija"
+
+#: templates/pages/partials/_contact_info.html:20
+#: templates/pages/partials/_contact_info.html:23
+#: templates/partials/header.html:22
+msgid "Telefon prodaje"
+msgstr "Telefon prodaje"
+
+#: templates/pages/partials/_contact_info.html:28
+#: templates/pages/partials/_contact_info.html:31
+#: templates/partials/header.html:27
+msgid "Telefon servisa"
+msgstr "Telefon servisa"
+
+#: templates/pages/partials/_contact_info.html:39
+msgid "Pošaljite e-poštu"
+msgstr "Pošaljite e-poštu"
+
+#: templates/pages/partials/_contact_info.html:45
+msgid "Radno vreme"
+msgstr "Radno vreme"
+
+#: templates/pages/partials/_contact_info.html:48
+msgid "Ponedeljak–Petak"
+msgstr "Ponedeljak–Petak"
+
+#: templates/pages/partials/_contact_info.html:49
+msgid "08–16h"
+msgstr "08–16h"
+
+#: templates/pages/partials/_contact_info.html:52
+msgid "Subota"
+msgstr "Subota"
+
+#: templates/pages/partials/_contact_info.html:53
+msgid "08–13h"
+msgstr "08–13h"
+
+#: templates/pages/partials/_contact_info.html:56
+msgid "Nedelja"
+msgstr "Nedelja"
+
+#: templates/pages/partials/_contact_info.html:57
+msgid "Zatvoreno"
+msgstr "Zatvoreno"
+
+#: templates/pages/partials/_contact_info.html:64
+msgid "Facebook"
+msgstr "Facebook"
+
+#: templates/pages/partials/_contact_info.html:69
+msgid "Instagram"
+msgstr "Instagram"
+
+#: templates/pages/partials/_contact_map.html:6
+msgid "NAŠA LOKACIJA"
+msgstr "NAŠA LOKACIJA"
+
+#: templates/pages/partials/_contact_map.html:8
+msgid "Naša lokacija"
+msgstr "Naša lokacija"
+
+#: templates/pages/partials/_contact_map.html:13
+msgid "Mapa lokacije Ćorić Agrar"
+msgstr "Mapa lokacije Ćorić Agrar"
+
+#: templates/pages/partials/_contact_map.html:25
+msgid "Otvori lokaciju u Google Mapama"
+msgstr "Otvori lokaciju u Google Mapama"
 
 #: templates/pages/partials/_home_about_intro.html:4
 msgid "O NAMA"
@@ -1113,20 +1250,8 @@ msgstr ""
 msgid "Sva prava zadrzana."
 msgstr ""
 
-#: templates/partials/header.html:4
-msgid "Kontakt informacije"
-msgstr ""
-
 #: templates/partials/header.html:11
 msgid "Pokazi kontakt informacije"
-msgstr ""
-
-#: templates/partials/header.html:22
-msgid "Telefon prodaje"
-msgstr ""
-
-#: templates/partials/header.html:27
-msgid "Telefon servisa"
 msgstr ""
 
 #: templates/partials/header.html:28 templates/partials/header.html:93

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% translate "Kontakt — Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% translate "Kontaktirajte Ćorić Agrar — adresa, telefoni prodaje i servisa, e-pošta, radno vreme i lokacija na mapi. Pošaljite nam upit." %}{% endblock %}
+
+{% block content %}
+  <div class="coric-contact">
+    <header class="coric-contact__header">
+      <h1 class="coric-contact__title">{% translate "Kontaktirajte nas" %}</h1>
+    </header>
+    {# AC7: info + forma 2-kolone desktop / stack mobile (@media min-width:768px); mapa full-width ispod. DOM red info→forma→mapa očuvan. #}
+    <div class="coric-contact__columns">
+      {% include "pages/partials/_contact_info.html" %}
+      {% include "pages/partials/_contact_form.html" %}
+    </div>
+    {% include "pages/partials/_contact_map.html" %}
+  </div>
+{% endblock content %}

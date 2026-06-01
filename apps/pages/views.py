@@ -109,3 +109,22 @@ class AboutView(TemplateView):
     """
 
     template_name = "pages/about.html"
+
+
+class ContactView(TemplateView):
+    """„Kontakt" statička strana (Story 3.3).
+
+    Čisto GET-only READ-ONLY render strana — kontakt-info + Google Maps static
+    iframe + forward-compat skelet forme (disabled polja + CSRF, BEZ funkcionalnog
+    submit-a). Sadržaj je hardcoded-translatable do Story 3-4 (SiteSettings); NE
+    agregira domain modele (SM-D1/SM-D5).
+
+    GET-only DETERMINISTIČKI (C3/SM-D4): `http_method_names` izostavlja `post` →
+    `View.dispatch` vraća HTTP 405 za POST. Forma je skelet (disabled submit);
+    funkcionalan submit (Lead/email/HTMX) dolazi iz Epic 4 (Story 4.2 — ZASEBAN
+    `apps/forms` endpoint `/htmx/forme/kontakt/`), NE na ContactView. NE dodavati
+    `post()` metod.
+    """
+
+    template_name = "pages/contact.html"
+    http_method_names = ["get", "head", "options"]
