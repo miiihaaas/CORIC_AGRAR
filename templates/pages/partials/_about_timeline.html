@@ -1,0 +1,45 @@
+{% load i18n %}
+{# Vremenska lenta — Section Eyebrow + h2 + semantička <ol data-timeline> sa 3 događaja. #}
+{# Tekst (godina/naslov/opis) je SEMANTIČKI HTML (NE SVG <text>). Dekorativni čvorovi/linija su CSS #}
+{# <span aria-hidden="true">. Reveal: hidden stanje gejtovano `.coric-js` markerom (timeline-reveal.js), #}
+{# pa bez JS-a segmenti ostaju vidljivi (NO-JS fallback, AC6). #}
+<section class="coric-about-timeline" aria-labelledby="about-timeline-title">
+  <div class="coric-about-timeline__inner">
+    {% include "partials/section_eyebrow.html" with text=_("VREMENSKA LENTA") tag="div" %}
+    <h2 id="about-timeline-title" class="coric-about-timeline__title">
+      {% translate "Naš put kroz godine" %}
+    </h2>
+    <ol class="coric-about-timeline__list" data-timeline>
+      <li class="coric-about-timeline__segment" data-timeline-segment>
+        <span class="coric-about-timeline__node" aria-hidden="true"></span>
+        <span class="coric-about-timeline__year">2008</span>
+        <h3 class="coric-about-timeline__event-title">
+          {% translate "Početak priče" %}
+        </h3>
+        <p class="coric-about-timeline__event-text">
+          {% translate "Iz male porodične radionice krećemo sa prodajom i servisom poljoprivredne mehanizacije, sa fokusom na domaćine kojima je pouzdanost važnija od svega." %}
+        </p>
+      </li>
+      <li class="coric-about-timeline__segment" data-timeline-segment>
+        <span class="coric-about-timeline__node" aria-hidden="true"></span>
+        <span class="coric-about-timeline__year">2015</span>
+        <h3 class="coric-about-timeline__event-title">
+          {% translate "Širenje ponude" %}
+        </h3>
+        <p class="coric-about-timeline__event-text">
+          {% translate "Proširujemo asortiman na priključnu opremu i radne mašine vodećih brendova i otvaramo veći prodajno-servisni prostor za rastuću mrežu kupaca." %}
+        </p>
+      </li>
+      <li class="coric-about-timeline__segment" data-timeline-segment>
+        <span class="coric-about-timeline__node" aria-hidden="true"></span>
+        <span class="coric-about-timeline__year">2024</span>
+        <h3 class="coric-about-timeline__event-title">
+          {% translate "Pouzdan partner regiona" %}
+        </h3>
+        <p class="coric-about-timeline__event-text">
+          {% translate "Danas smo prepoznatljiv partner poljoprivrednika širom regiona — sa kompletnom ponudom mehanizacije, polovne opreme i podrškom koja traje i posle prodaje." %}
+        </p>
+      </li>
+    </ol>
+  </div>
+</section>

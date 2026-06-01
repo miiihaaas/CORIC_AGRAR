@@ -1,0 +1,24 @@
+{% load i18n static %}
+{# „Naša priča" — bela pozadina + transparentni uvećani logo kao DEKORATIVNI watermark (<img aria-hidden, NE CSS bg) + Section Eyebrow + h2 + paragrafi translatable copy (SM-D5 Lorem Ipsum do CMS Story 8.8). #}
+<section class="coric-about-story" aria-labelledby="about-story-title">
+  {# Dekorativni watermark logo — iza teksta, čisto dekorativan (prazan alt + aria-hidden). #}
+  <img src="{% static 'img/coric-agrar-logo-transp-200.png' %}"
+       alt=""
+       aria-hidden="true"
+       class="coric-about-story__watermark">
+  <div class="coric-about-story__inner">
+    {% include "partials/section_eyebrow.html" with text=_("NAŠA PRIČA") tag="div" %}
+    <h2 id="about-story-title" class="coric-about-story__title">
+      {% translate "Porodica koja razume zemlju" %}
+    </h2>
+    <p class="coric-about-story__text">
+      {% translate "Ćorić Agrar je porodična firma koja već godinama opslužuje poljoprivrednike širom regiona pouzdanom mehanizacijom. Naš put počeo je iz male radionice, sa jednostavnom idejom: domaćinu pružiti opremu kojoj može da veruje i podršku na koju može da računa kad je najpotrebnije." %}
+    </p>
+    <p class="coric-about-story__text">
+      {% translate "Vremenom smo izrasli u prepoznatljivog partnera za traktore, priključnu opremu, radne mašine i polovnu mehanizaciju. Svaki proizvod biramo pažljivo, a svakog kupca pratimo i posle prodaje — jer verujemo da se poverenje gradi rezultatima na polju, a ne obećanjima." %}
+    </p>
+    <p class="coric-about-story__text">
+      {% translate "Danas, kao i prvog dana, vodi nas ista vrednost: prijatelj koji razume zemlju. Tu smo da rastemo zajedno sa vama, sezonu za sezonom." %}
+    </p>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% translate "O nama — Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% translate "Priča kompanije Ćorić Agrar — porodična firma posvećena poljoprivrednoj mehanizaciji. Upoznajte naš put, vrednosti i tim." %}{% endblock %}
+
+{% block content %}
+  {% include "pages/partials/_about_hero.html" %}
+  {% include "pages/partials/_about_story.html" %}
+  {% include "pages/partials/_about_timeline.html" %}
+  {% include "pages/partials/_about_gallery.html" %}
+{% endblock content %}
+
+{% block scripts %}{{ block.super }}
+  <script src="{% static 'js/timeline-reveal.js' %}" defer></script>
+{% endblock scripts %}

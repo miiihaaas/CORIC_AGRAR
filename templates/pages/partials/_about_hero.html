@@ -1,0 +1,15 @@
+{% load i18n static %}
+{# „O nama" hero — full-screen foto-pozadina + green-800 overlay card (naslov h1 + brand lockup + Repeating Element watermark). SM-D5/SM-D6: variant="green", foto-pozadina static asset kao dekorativni <img> (NE CSS bg). #}
+<section class="coric-about-hero" aria-label="{% translate "O nama — uvodna sekcija" %}">
+  {# Dekorativna foto-pozadina — eager (above-the-fold LCP). alt="" + aria-hidden (dekorativna). #}
+  {# OQ-2 PRODUCTION BLOCKER: realna hero fotografija pre produkcije; v1 placeholder. #}
+  <img src="{% static 'img/about/hero-o-nama.jpg' %}"
+       alt=""
+       aria-hidden="true"
+       loading="eager"
+       class="coric-about-hero__bg">
+  <div class="coric-about-hero__overlay">
+    {% static 'img/coric-agrar-logo-transp-light-200.png' as brand_logo_static %}
+    {% include "partials/hero_overlay_card.html" with title=_("O nama") brand_logo=brand_logo_static brand_logo_alt=_("Ćorić Agrar logo") variant="green" bullets="" %}
+  </div>
+</section>

@@ -1,0 +1,63 @@
+{% load i18n static %}
+{# Masonry galerija — Section Eyebrow + h2 + CSS column-count masonry sa 6 GLightbox linkova. #}
+{# REUSE Story 2-5: lightbox-init.js (site-wide u base.html) inicijalizuje `.glightbox` na DOMContentLoaded — NULA novog JS. #}
+{# data-gallery="o-nama-galerija" grupiše slike za prev/next navigaciju. Opisni alt (informativna galerija). #}
+{# OQ-2 PRODUCTION BLOCKER: realne fotografije pre produkcije; v1 placeholder slike. #}
+<section class="coric-about-gallery" aria-labelledby="about-galerija-title">
+  <div class="coric-about-gallery__inner">
+    {% include "partials/section_eyebrow.html" with text=_("GALERIJA") tag="div" %}
+    <h2 id="about-galerija-title" class="coric-about-gallery__title">
+      {% translate "Iz našeg dvorišta i sa polja" %}
+    </h2>
+    <div class="coric-about-gallery__grid">
+      <a class="glightbox coric-about-gallery__item"
+         href="{% static 'img/about/gallery/foto-1.jpg' %}"
+         data-gallery="o-nama-galerija">
+        <img src="{% static 'img/about/gallery/foto-1.jpg' %}"
+             alt="{% translate "Traktor na radu u polju tokom setve" %}"
+             loading="lazy"
+             class="coric-about-gallery__img">
+      </a>
+      <a class="glightbox coric-about-gallery__item"
+         href="{% static 'img/about/gallery/foto-2.jpg' %}"
+         data-gallery="o-nama-galerija">
+        <img src="{% static 'img/about/gallery/foto-2.jpg' %}"
+             alt="{% translate "Priključna oprema spremna za isporuku" %}"
+             loading="lazy"
+             class="coric-about-gallery__img">
+      </a>
+      <a class="glightbox coric-about-gallery__item"
+         href="{% static 'img/about/gallery/foto-3.jpg' %}"
+         data-gallery="o-nama-galerija">
+        <img src="{% static 'img/about/gallery/foto-3.jpg' %}"
+             alt="{% translate "Servisni tim Ćorić Agrar u radionici" %}"
+             loading="lazy"
+             class="coric-about-gallery__img">
+      </a>
+      <a class="glightbox coric-about-gallery__item"
+         href="{% static 'img/about/gallery/foto-4.jpg' %}"
+         data-gallery="o-nama-galerija">
+        <img src="{% static 'img/about/gallery/foto-4.jpg' %}"
+             alt="{% translate "Radna mašina na prodajnom prostoru" %}"
+             loading="lazy"
+             class="coric-about-gallery__img">
+      </a>
+      <a class="glightbox coric-about-gallery__item"
+         href="{% static 'img/about/gallery/foto-5.jpg' %}"
+         data-gallery="o-nama-galerija">
+        <img src="{% static 'img/about/gallery/foto-5.jpg' %}"
+             alt="{% translate "Detalj traktorske kabine i upravljača" %}"
+             loading="lazy"
+             class="coric-about-gallery__img">
+      </a>
+      <a class="glightbox coric-about-gallery__item"
+         href="{% static 'img/about/gallery/foto-6.jpg' %}"
+         data-gallery="o-nama-galerija">
+        <img src="{% static 'img/about/gallery/foto-6.jpg' %}"
+             alt="{% translate "Polovna mehanizacija pripremljena za prodaju" %}"
+             loading="lazy"
+             class="coric-about-gallery__img">
+      </a>
+    </div>
+  </div>
+</section>

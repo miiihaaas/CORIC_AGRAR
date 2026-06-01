@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 21:05+0000\n"
+"POT-Creation-Date: 2026-06-01 04:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,367 +19,525 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: apps/brands/apps.py:15 apps/brands/models.py:105
 msgid "Brendovi"
 msgstr ""
 
+#: apps/brands/models.py:69 apps/brands/models.py:179 apps/brands/models.py:251
+#: apps/brands/models.py:333 apps/products/models.py:122
+#: apps/products/models.py:337
 msgid "Naziv"
 msgstr ""
 
+#: apps/brands/models.py:70 apps/brands/models.py:180 apps/brands/models.py:252
+#: apps/brands/models.py:334
 msgid "Slug"
 msgstr ""
 
+#: apps/brands/models.py:72
 msgid "Logo"
 msgstr ""
 
+#: apps/brands/models.py:79
 msgid "Hero slika"
 msgstr ""
 
+#: apps/brands/models.py:85 apps/brands/models.py:181 apps/brands/models.py:253
+#: apps/brands/models.py:335 apps/products/models.py:128
+#: apps/products/models.py:352
 msgid "Opis"
 msgstr ""
 
+#: apps/brands/models.py:86
 msgid "Slogan"
 msgstr ""
 
+#: apps/brands/models.py:87
+#: templates/brands/partials/_statistics_medallions.html:2
 msgid "Statistike"
 msgstr ""
 
+#: apps/brands/models.py:89
 msgid "Katalog (PDF)"
 msgstr "Katalog (PDF)"
 
+#: apps/brands/models.py:95
 msgid "Brend boja"
 msgstr ""
 
+#: apps/brands/models.py:98 templates/brands/brand_coming_soon.html:4
+#: templates/brands/brand_coming_soon.html:18
+#: templates/pages/partials/_home_traktori.html:14
 msgid "Uskoro"
 msgstr "Uskoro"
 
+#: apps/brands/models.py:99
 msgid "Kreiran"
 msgstr ""
 
+#: apps/brands/models.py:100
 msgid "Ažuriran"
 msgstr ""
 
+#: apps/brands/models.py:104 apps/brands/models.py:177
+#: apps/products/models.py:104
+#: templates/products/partials/_used_filter_form.html:32
 msgid "Brend"
 msgstr ""
 
+#: apps/brands/models.py:122
 msgid "Hex format mora biti #RRGGBB."
 msgstr ""
 
+#: apps/brands/models.py:127 apps/products/models.py:226
+#: apps/products/models.py:242
 msgid "Mora biti lista."
 msgstr ""
 
+#: apps/brands/models.py:131
 msgid "Svaka stavka mora biti dict."
 msgstr ""
 
+#: apps/brands/models.py:135
 msgid "Statistike ne smeju imati više od 4 stavke."
 msgstr ""
 
+#: apps/brands/models.py:170
 msgid "Grid"
 msgstr ""
 
+#: apps/brands/models.py:171
 msgid "Extended"
 msgstr ""
 
+#: apps/brands/models.py:183
 msgid "Režim prikaza"
 msgstr ""
 
+#: apps/brands/models.py:189 apps/brands/models.py:261
+#: apps/brands/models.py:340
 msgid "Redosled prikaza"
 msgstr ""
 
+#: apps/brands/models.py:191 apps/brands/models.py:266
+#: apps/brands/models.py:342
 msgid "Kreirana"
 msgstr ""
 
+#: apps/brands/models.py:192 apps/brands/models.py:267
+#: apps/brands/models.py:343
 msgid "Ažurirana"
 msgstr ""
 
+#: apps/brands/models.py:197 apps/products/models.py:112
 msgid "Serija"
 msgstr ""
 
+#: apps/brands/models.py:198
 msgid "Serije"
 msgstr ""
 
+#: apps/brands/models.py:248 templates/partials/footer.html:23
+#: templates/partials/header.html:74 templates/products/tractor_listing.html:4
+#: templates/products/tractor_listing.html:11
 msgid "Traktori"
 msgstr ""
 
+#: apps/brands/models.py:249 templates/partials/footer.html:24
+#: templates/partials/header.html:84
 msgid "Mehanizacija"
 msgstr ""
 
+#: apps/brands/models.py:255
 msgid "Tip kataloga"
 msgstr "Tip kataloga"
 
+#: apps/brands/models.py:264 apps/brands/models.py:337
 msgid "Ikona (Bootstrap Icons class)"
 msgstr ""
 
+#: apps/brands/models.py:271 apps/brands/models.py:323
+#: templates/products/partials/_used_filter_form.html:19
 msgid "Kategorija"
 msgstr ""
 
+#: apps/brands/models.py:272
 msgid "Kategorije"
 msgstr ""
 
+#: apps/brands/models.py:331
 msgid "Roditeljska potkategorija"
 msgstr ""
 
+#: apps/brands/models.py:347 apps/products/models.py:120
 msgid "Potkategorija"
 msgstr ""
 
+#: apps/brands/models.py:348
 msgid "Potkategorije"
 msgstr ""
 
+#: apps/brands/models.py:382 apps/brands/models.py:388
 msgid "Subcategory hijerarhija ne sme imati cikličnu referencu."
 msgstr ""
 
+#: apps/brands/models.py:394
 msgid "Subcategory hijerarhija ne sme prelaziti 3 nivoa dubine."
 msgstr ""
 
+#: apps/brands/views.py:40 templates/brands/hzm_radne_masine.html:4
 msgid "Radne mašine"
 msgstr "Radne mašine"
 
+#: apps/brands/views.py:63 apps/products/models.py:380
+#: apps/products/views.py:92
 msgid "Motor"
 msgstr ""
 
+#: apps/brands/views.py:64 apps/products/models.py:381
+#: apps/products/views.py:93
 msgid "Transmisija"
 msgstr ""
 
+#: apps/brands/views.py:65 apps/products/models.py:382
+#: apps/products/views.py:94
 msgid "Hidraulika"
 msgstr ""
 
+#: apps/brands/views.py:66 apps/brands/views.py:67 apps/products/models.py:383
+#: apps/products/views.py:95 apps/products/views.py:96
 msgid "Ostalo"
 msgstr ""
 
+#: apps/brands/views.py:130
 msgid "Jeegee brand nije konfigurisan u sistemu."
 msgstr "Jeegee brand nije konfigurisan u sistemu."
 
+#: apps/brands/views.py:175
 msgid "Kategorija nije pronađena."
 msgstr "Kategorija nije pronađena."
 
+#: apps/brands/views.py:236
 msgid "Potkategorija nije pronađena."
 msgstr "Potkategorija nije pronađena."
 
+#: apps/brands/views.py:253 templates/partials/header.html:71
 msgid "Početna"
 msgstr "Početna"
 
+#: apps/brands/views.py:319 templates/brands/jeegee_prikljucna.html:4
 msgid "Priključna mehanizacija"
 msgstr "Priključna mehanizacija"
 
+#: apps/brands/views.py:345
 msgid "HZM brand nije konfigurisan u sistemu."
 msgstr "HZM brand nije konfigurisan u sistemu."
 
+#: apps/brands/views.py:391
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr "Tulip brand nije konfigurisan u sistemu."
 
+#: apps/media_pipeline/apps.py:21
 msgid "Media pipeline"
 msgstr ""
 
+#: apps/media_pipeline/pdf_utils.py:85
 msgid "PDF brošura je prazna ili nije priložena."
 msgstr ""
 
+#: apps/media_pipeline/pdf_utils.py:90
 #, python-format
 msgid ""
 "PDF brošura je veća od %(limit)d MB. Maksimalna dozvoljena veličina je "
 "%(limit)d MB."
 msgstr ""
 
+#: apps/media_pipeline/pdf_utils.py:104
 #, python-format
 msgid "Nedozvoljen tip fajla: %(mime)s. Dozvoljen je samo PDF format."
 msgstr ""
 
+#: apps/media_pipeline/pdf_utils.py:120
 #, python-format
 msgid "PDF brošura ima %(pages)d stranica. Maksimum je %(limit)d."
 msgstr ""
 
+#: apps/media_pipeline/utils.py:59
 msgid "Slika je prazna ili nije priložena."
 msgstr ""
 
+#: apps/media_pipeline/utils.py:64
 #, python-format
 msgid ""
 "Slika je veća od %(limit)d MB. Maksimalna dozvoljena veličina je %(limit)d "
 "MB."
 msgstr ""
 
+#: apps/media_pipeline/utils.py:77
 #, python-format
 msgid "Nedozvoljen tip slike: %(mime)s. Dozvoljeni tipovi: %(allowed)s."
 msgstr ""
 
+#: apps/media_pipeline/utils.py:100
 msgid "Slika je oštećena ili nije validan format."
 msgstr ""
 
+#: apps/products/apps.py:14 apps/products/models.py:182
+#: templates/search/partials/_search_dropdown.html:15
+#: templates/search/search_results.html:27
+#: templates/search/search_results.html:28
 msgid "Proizvodi"
 msgstr "Proizvodi"
 
+#: apps/products/models.py:92
 msgid "Novo"
 msgstr ""
 
+#: apps/products/models.py:93
 msgid "Polovno"
 msgstr ""
 
+#: apps/products/models.py:96
 msgid "Nacrt"
 msgstr ""
 
+#: apps/products/models.py:97 apps/products/models.py:172
 msgid "Objavljen"
 msgstr ""
 
+#: apps/products/models.py:98
 msgid "Arhiviran"
 msgstr ""
 
+#: apps/products/models.py:131
 msgid "Ključne karakteristike"
 msgstr ""
 
+#: apps/products/models.py:136
 msgid "Glavna slika"
 msgstr ""
 
+#: apps/products/models.py:142
 msgid "Godina"
 msgstr ""
 
+#: apps/products/models.py:144 templates/products/partials/_filter_form.html:44
+#: templates/products/partials/_used_filter_form.html:45
 msgid "Cena (EUR)"
 msgstr ""
 
+#: apps/products/models.py:151
 msgid "Konjska snaga"
 msgstr ""
 
+#: apps/products/models.py:156
 msgid "Stanje"
 msgstr ""
 
+#: apps/products/models.py:164
 msgid "Status"
 msgstr ""
 
+#: apps/products/models.py:177
 msgid "Search vektor"
 msgstr ""
 
+#: apps/products/models.py:181 apps/products/models.py:295
+#: apps/products/models.py:335 apps/products/models.py:389
+#: apps/products/models.py:433 apps/products/models.py:481
+#: apps/products/models.py:532
 msgid "Proizvod"
 msgstr ""
 
+#: apps/products/models.py:230 apps/products/models.py:246
 msgid "Svaka stavka mora biti string."
 msgstr ""
 
+#: apps/products/models.py:234 apps/products/models.py:250
 msgid "Najviše 3 ključne karakteristike."
 msgstr ""
 
+#: apps/products/models.py:298
 msgid "Slika"
 msgstr ""
 
+#: apps/products/models.py:302 apps/products/models.py:354
+#: apps/products/models.py:400 apps/products/models.py:495
+#: apps/products/models.py:540
 msgid "Redosled"
 msgstr ""
 
+#: apps/products/models.py:303
 msgid "Alt tekst"
 msgstr ""
 
+#: apps/products/models.py:307
 msgid "Slika proizvoda"
 msgstr ""
 
+#: apps/products/models.py:308
 msgid "Slike proizvoda"
 msgstr ""
 
+#: apps/products/models.py:338
+#: templates/products/partials/_variants_selector.html:11
+#: templates/products/partials/_variants_selector.html:19
+#: templates/products/partials/_variants_selector.html:28
 msgid "Kod"
 msgstr ""
 
+#: apps/products/models.py:340
 msgid "Slika varijante"
 msgstr ""
 
+#: apps/products/models.py:358
 msgid "Varijanta"
 msgstr ""
 
+#: apps/products/models.py:359
 msgid "Varijante"
 msgstr ""
 
+#: apps/products/models.py:392
 msgid "Sekcija"
 msgstr ""
 
+#: apps/products/models.py:398
 msgid "Naziv specifikacije"
 msgstr ""
 
+#: apps/products/models.py:399
 msgid "Vrednost"
 msgstr ""
 
+#: apps/products/models.py:408
+#: templates/brands/partials/_tulip_comparison_table.html:14
 msgid "Specifikacija"
 msgstr "Specifikacija"
 
+#: apps/products/models.py:409
 msgid "Specifikacije"
 msgstr ""
 
+#: apps/products/models.py:436
 msgid "PDF brošura"
 msgstr ""
 
+#: apps/products/models.py:441
 msgid "Cover thumbnail"
 msgstr ""
 
+#: apps/products/models.py:447
 msgid "Naslov brošure"
 msgstr ""
 
+#: apps/products/models.py:451
 msgid "Brošura"
 msgstr ""
 
+#: apps/products/models.py:452
 msgid "Brošure"
 msgstr ""
 
+#: apps/products/models.py:466
 #, python-format
 msgid "Brošura — %(name)s"
 msgstr ""
 
+#: apps/products/models.py:484
 msgid "Fotografija"
 msgstr ""
 
+#: apps/products/models.py:492
 msgid "Citat"
 msgstr ""
 
+#: apps/products/models.py:493
 msgid "Ime autora"
 msgstr ""
 
+#: apps/products/models.py:494
 msgid "Lokacija"
 msgstr ""
 
+#: apps/products/models.py:499
 msgid "Testimonijal"
 msgstr ""
 
+#: apps/products/models.py:500
 msgid "Testimonijali"
 msgstr ""
 
+#: apps/products/models.py:538 apps/products/models.py:544
 msgid "Sličan proizvod"
 msgstr ""
 
+#: apps/products/models.py:545
 msgid "Slični proizvodi"
 msgstr ""
 
+#: apps/products/models.py:577
 msgid "Sličan proizvod ne sme biti isti kao izvorni proizvod."
 msgstr ""
 
+#: apps/products/views.py:381
 msgid "Najnovije prvo (datum dodavanja)"
 msgstr "Najnovije prvo (datum dodavanja)"
 
+#: apps/products/views.py:382
 msgid "Cena: rastuće"
 msgstr "Cena: rastuće"
 
+#: apps/products/views.py:383
 msgid "Cena: opadajuće"
 msgstr "Cena: opadajuće"
 
+#: apps/products/views.py:384
 msgid "Godina: opadajuće"
 msgstr "Godina: opadajuće"
 
+#: templates/base.html:19
 msgid "Preskoči na sadržaj"
 msgstr ""
 
+#: templates/base.html:25
 msgid "Dobrodošli."
 msgstr ""
 
+#: templates/base.html:32
 msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
 
+#: templates/brands/brand_coming_soon.html:4
+#: templates/brands/brand_detail.html:4
+#: templates/brands/hzm_radne_masine.html:4
+#: templates/brands/jeegee_prikljucna.html:4
+#: templates/brands/tulip_mix_prikolice.html:4
+#: templates/products/product_detail.html:4
 msgid "Ćorić Agrar"
 msgstr "Ćorić Agrar"
 
+#: templates/brands/brand_coming_soon.html:6
+#: templates/brands/brand_coming_soon.html:19
 #, python-format
 msgid "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
 msgstr "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
 
+#: templates/brands/brand_coming_soon.html:20
 msgid "Nazad na Home"
 msgstr ""
 
+#: templates/brands/brand_detail.html:10
 #, python-format
 msgid "Hero sekcija — %(name)s"
 msgstr ""
 
+#: templates/brands/brand_detail.html:27
 msgid "Modeli brenda"
 msgstr ""
 
+#: templates/brands/hzm_radne_masine.html:6
 msgid ""
 "Pregled HZM radnih mašina po kategorijama — mini utovarivači, utovarivači "
 "bez teleskopa, teleskopski utovarivači, telehendleri."
@@ -387,21 +545,34 @@ msgstr ""
 "Pregled HZM radnih mašina po kategorijama — mini utovarivači, utovarivači "
 "bez teleskopa, teleskopski utovarivači, telehendleri."
 
+#: templates/brands/hzm_radne_masine.html:11
 #, python-format
 msgid "%(brand)s radne mašine"
 msgstr "%(brand)s radne mašine"
 
+#: templates/brands/hzm_radne_masine.html:15
+#: templates/brands/jeegee_prikljucna.html:15
+#: templates/brands/tulip_mix_prikolice.html:15
 #, python-format
 msgid "%(brand)s hero"
 msgstr "%(brand)s hero"
 
+#: templates/brands/hzm_radne_masine.html:35
+#: templates/brands/jeegee_prikljucna.html:36
+#: templates/brands/tulip_mix_prikolice.html:53
 #, python-format
 msgid "Preuzmi %(brand)s katalog"
 msgstr "Preuzmi %(brand)s katalog"
 
+#: templates/brands/hzm_radne_masine.html:43
+#: templates/brands/jeegee_prikljucna.html:47
+#: templates/brands/partials/_catalog_cta.html:5
+#: templates/brands/partials/_catalog_cta.html:12
+#: templates/brands/tulip_mix_prikolice.html:61
 msgid "Preuzmi katalog"
 msgstr "Preuzmi katalog"
 
+#: templates/brands/jeegee_prikljucna.html:6
 #, python-format
 msgid ""
 "Pregled priključne mehanizacije %(brand)s po kategorijama — osnovna obrada "
@@ -410,108 +581,156 @@ msgstr ""
 "Pregled priključne mehanizacije %(brand)s po kategorijama — osnovna obrada "
 "zemljišta, priprema zemljišta, mašine za setvu."
 
+#: templates/brands/jeegee_prikljucna.html:11
 #, python-format
 msgid "%(brand)s priključna mehanizacija"
 msgstr "%(brand)s priključna mehanizacija"
 
+#: templates/brands/jeegee_prikljucna.html:39
 msgid "PDF dokument sa kompletnom ponudom priključne mehanizacije."
 msgstr "PDF dokument sa kompletnom ponudom priključne mehanizacije."
 
+#: templates/brands/partials/_breadcrumb.html:4
 msgid "Putanja navigacije"
 msgstr "Putanja navigacije"
 
+#: templates/brands/partials/_catalog_cta.html:4
 msgid "KATALOG"
 msgstr "KATALOG"
 
+#: templates/brands/partials/_catalog_cta.html:6
 #, python-format
 msgid "Kompletan PDF katalog modela brenda %(brand)s."
 msgstr "Kompletan PDF katalog modela brenda %(brand)s."
 
+#: templates/brands/partials/_category_showcase.html:3
 msgid "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
 msgstr "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
 
+#: templates/brands/partials/_category_showcase.html:7
+#: templates/brands/partials/_hzm_subcategory_showcase.html:6
 msgid "Pregled po kategorijama"
 msgstr "Pregled po kategorijama"
 
+#: templates/brands/partials/_category_showcase.html:27
+#: templates/brands/partials/_hzm_subcategory_showcase.html:26
 #, python-format
 msgid "Pogledaj kategoriju: %(category)s"
 msgstr "Pogledaj kategoriju: %(category)s"
 
+#: templates/brands/partials/_category_showcase.html:29
+#: templates/brands/partials/_hzm_subcategory_showcase.html:28
 msgid "POGLEDAJ KATEGORIJU"
 msgstr "POGLEDAJ KATEGORIJU"
 
+#: templates/brands/partials/_category_showcase.html:34
 msgid "Kategorije priključne mehanizacije su u pripremi."
 msgstr "Kategorije priključne mehanizacije su u pripremi."
 
+#: templates/brands/partials/_hzm_subcategory_showcase.html:3
 msgid "KATEGORIJE RADNIH MAŠINA"
 msgstr "KATEGORIJE RADNIH MAŠINA"
 
+#: templates/brands/partials/_hzm_subcategory_showcase.html:33
 msgid "Kategorije radnih mašina su u pripremi."
 msgstr "Kategorije radnih mašina su u pripremi."
 
+#: templates/brands/partials/_model_grid.html:3
 msgid "MODELI"
 msgstr "MODELI"
 
+#: templates/brands/partials/_model_grid.html:10
 #, python-format
 msgid "Pogledaj model: %(product)s"
 msgstr "Pogledaj model: %(product)s"
 
+#: templates/brands/partials/_model_grid.html:19
+#: templates/brands/partials/_series_grid.html:14
+#: templates/products/partials/_filter_form.html:38
+#: templates/products/partials/_results_grid.html:24
+#: templates/products/partials/_similar_products.html:18
 msgid "KS"
 msgstr ""
 
+#: templates/brands/partials/_model_grid.html:25
+#: templates/brands/partials/_series_extended.html:28
+#: templates/brands/partials/_series_grid.html:16
+#: templates/brands/partials/_tulip_model_showcase.html:32
+#: templates/pages/partials/_home_traktori.html:41
+#: templates/products/partials/_results_grid.html:30
+#: templates/products/partials/_similar_products.html:20
+#: templates/products/partials/_used_results_grid.html:33
 msgid "OPŠIRNIJE"
 msgstr "OPŠIRNIJE"
 
+#: templates/brands/partials/_model_grid.html:29
 msgid "Nema dostupnih modela u ovoj kategoriji."
 msgstr "Nema dostupnih modela u ovoj kategoriji."
 
+#: templates/brands/partials/_series_extended.html:32
+#: templates/brands/partials/_series_grid.html:20
 msgid "Modeli ove serije su u pripremi."
 msgstr ""
 
+#: templates/brands/partials/_series_section.html:13
 msgid "Modeli ovog brenda su u pripremi."
 msgstr ""
 
+#: templates/brands/partials/_statistics_medallions.html:3
 msgid "STATISTIKE"
 msgstr ""
 
+#: templates/brands/partials/_subcategory_showcase.html:3
 msgid "POTKATEGORIJE"
 msgstr "POTKATEGORIJE"
 
+#: templates/brands/partials/_subcategory_showcase.html:22
 #, python-format
 msgid "Pogledaj potkategoriju: %(subcategory)s"
 msgstr "Pogledaj potkategoriju: %(subcategory)s"
 
+#: templates/brands/partials/_subcategory_showcase.html:24
 msgid "POGLEDAJ"
 msgstr "POGLEDAJ"
 
+#: templates/brands/partials/_subcategory_showcase.html:28
 msgid "Nema dostupnih potkategorija."
 msgstr "Nema dostupnih potkategorija."
 
+#: templates/brands/partials/_tulip_comparison_table.html:3
 msgid "UPOREDNE DIMENZIJE"
 msgstr "UPOREDNE DIMENZIJE"
 
+#: templates/brands/partials/_tulip_comparison_table.html:6
 msgid "Uporedne dimenzije"
 msgstr "Uporedne dimenzije"
 
+#: templates/brands/partials/_tulip_comparison_table.html:11
 msgid "Uporedne dimenzije Tulip MIX prikolica"
 msgstr "Uporedne dimenzije Tulip MIX prikolica"
 
+#: templates/brands/partials/_tulip_model_showcase.html:3
 msgid "MODELI PRIKOLICA"
 msgstr "MODELI PRIKOLICA"
 
+#: templates/brands/partials/_tulip_model_showcase.html:6
 msgid "Pregled modela"
 msgstr "Pregled modela"
 
+#: templates/brands/partials/_tulip_model_showcase.html:31
 #, python-format
 msgid "Opširnije o modelu: %(name)s"
 msgstr "Opširnije o modelu: %(name)s"
 
+#: templates/brands/partials/_tulip_model_showcase.html:38
 msgid "Modeli prikolica su u pripremi."
 msgstr "Modeli prikolica su u pripremi."
 
+#: templates/brands/tulip_mix_prikolice.html:4
 msgid "MIX prikolice"
 msgstr "MIX prikolice"
 
+#: templates/brands/tulip_mix_prikolice.html:6
 msgid ""
 "Tulip MIX prikolice — pregled modela sa uporednim dimenzijama i iskustvima "
 "korisnika."
@@ -519,280 +738,509 @@ msgstr ""
 "Tulip MIX prikolice — pregled modela sa uporednim dimenzijama i iskustvima "
 "korisnika."
 
+#: templates/brands/tulip_mix_prikolice.html:11
 #, python-format
 msgid "%(brand)s MIX prikolice"
 msgstr "%(brand)s MIX prikolice"
 
+#: templates/pages/about.html:4
+msgid "O nama — Ćorić Agrar"
+msgstr "O nama — Ćorić Agrar"
+
+#: templates/pages/about.html:6
+msgid ""
+"Priča kompanije Ćorić Agrar — porodična firma posvećena poljoprivrednoj "
+"mehanizaciji. Upoznajte naš put, vrednosti i tim."
+msgstr ""
+"Priča kompanije Ćorić Agrar — porodična firma posvećena poljoprivrednoj "
+"mehanizaciji. Upoznajte naš put, vrednosti i tim."
+
+#: templates/pages/home.html:4
 msgid "Ćorić Agrar — Prijatelj koji razume zemlju"
 msgstr "Ćorić Agrar — Prijatelj koji razume zemlju"
 
+#: templates/pages/home.html:6
 msgid ""
 "Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, "
 "radne mašine i polovna mehanizacija."
-msgstr "Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, radne mašine i polovna mehanizacija."
+msgstr ""
+"Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, "
+"radne mašine i polovna mehanizacija."
 
+#: templates/pages/partials/_about_gallery.html:8
+#: templates/products/partials/_gallery_carousel.html:2
+msgid "GALERIJA"
+msgstr "GALERIJA"
+
+#: templates/pages/partials/_about_gallery.html:10
+msgid "Iz našeg dvorišta i sa polja"
+msgstr "Iz našeg dvorišta i sa polja"
+
+#: templates/pages/partials/_about_gallery.html:17
+msgid "Traktor na radu u polju tokom setve"
+msgstr "Traktor na radu u polju tokom setve"
+
+#: templates/pages/partials/_about_gallery.html:25
+msgid "Priključna oprema spremna za isporuku"
+msgstr "Priključna oprema spremna za isporuku"
+
+#: templates/pages/partials/_about_gallery.html:33
+msgid "Servisni tim Ćorić Agrar u radionici"
+msgstr "Servisni tim Ćorić Agrar u radionici"
+
+#: templates/pages/partials/_about_gallery.html:41
+msgid "Radna mašina na prodajnom prostoru"
+msgstr "Radna mašina na prodajnom prostoru"
+
+#: templates/pages/partials/_about_gallery.html:49
+msgid "Detalj traktorske kabine i upravljača"
+msgstr "Detalj traktorske kabine i upravljača"
+
+#: templates/pages/partials/_about_gallery.html:57
+msgid "Polovna mehanizacija pripremljena za prodaju"
+msgstr "Polovna mehanizacija pripremljena za prodaju"
+
+#: templates/pages/partials/_about_hero.html:3
+msgid "O nama — uvodna sekcija"
+msgstr "O nama — uvodna sekcija"
+
+#: templates/pages/partials/_about_hero.html:13
+#: templates/partials/header.html:95
+msgid "O nama"
+msgstr "O nama"
+
+#: templates/pages/partials/_about_hero.html:13
+#: templates/pages/partials/_home_hero.html:13
+msgid "Ćorić Agrar logo"
+msgstr "Ćorić Agrar logo"
+
+#: templates/pages/partials/_about_story.html:10
+msgid "NAŠA PRIČA"
+msgstr "NAŠA PRIČA"
+
+#: templates/pages/partials/_about_story.html:12
+msgid "Porodica koja razume zemlju"
+msgstr "Porodica koja razume zemlju"
+
+#: templates/pages/partials/_about_story.html:15
+msgid ""
+"Ćorić Agrar je porodična firma koja već godinama opslužuje poljoprivrednike "
+"širom regiona pouzdanom mehanizacijom. Naš put počeo je iz male radionice, "
+"sa jednostavnom idejom: domaćinu pružiti opremu kojoj može da veruje i "
+"podršku na koju može da računa kad je najpotrebnije."
+msgstr ""
+"Ćorić Agrar je porodična firma koja već godinama opslužuje poljoprivrednike "
+"širom regiona pouzdanom mehanizacijom. Naš put počeo je iz male radionice, "
+"sa jednostavnom idejom: domaćinu pružiti opremu kojoj može da veruje i "
+"podršku na koju može da računa kad je najpotrebnije."
+
+#: templates/pages/partials/_about_story.html:18
+msgid ""
+"Vremenom smo izrasli u prepoznatljivog partnera za traktore, priključnu "
+"opremu, radne mašine i polovnu mehanizaciju. Svaki proizvod biramo pažljivo, "
+"a svakog kupca pratimo i posle prodaje — jer verujemo da se poverenje gradi "
+"rezultatima na polju, a ne obećanjima."
+msgstr ""
+"Vremenom smo izrasli u prepoznatljivog partnera za traktore, priključnu "
+"opremu, radne mašine i polovnu mehanizaciju. Svaki proizvod biramo pažljivo, "
+"a svakog kupca pratimo i posle prodaje — jer verujemo da se poverenje gradi "
+"rezultatima na polju, a ne obećanjima."
+
+#: templates/pages/partials/_about_story.html:21
+msgid ""
+"Danas, kao i prvog dana, vodi nas ista vrednost: prijatelj koji razume "
+"zemlju. Tu smo da rastemo zajedno sa vama, sezonu za sezonom."
+msgstr ""
+"Danas, kao i prvog dana, vodi nas ista vrednost: prijatelj koji razume "
+"zemlju. Tu smo da rastemo zajedno sa vama, sezonu za sezonom."
+
+#: templates/pages/partials/_about_timeline.html:8
+msgid "VREMENSKA LENTA"
+msgstr "VREMENSKA LENTA"
+
+#: templates/pages/partials/_about_timeline.html:10
+msgid "Naš put kroz godine"
+msgstr "Naš put kroz godine"
+
+#: templates/pages/partials/_about_timeline.html:17
+msgid "Početak priče"
+msgstr "Početak priče"
+
+#: templates/pages/partials/_about_timeline.html:20
+msgid ""
+"Iz male porodične radionice krećemo sa prodajom i servisom poljoprivredne "
+"mehanizacije, sa fokusom na domaćine kojima je pouzdanost važnija od svega."
+msgstr ""
+"Iz male porodične radionice krećemo sa prodajom i servisom poljoprivredne "
+"mehanizacije, sa fokusom na domaćine kojima je pouzdanost važnija od svega."
+
+#: templates/pages/partials/_about_timeline.html:27
+msgid "Širenje ponude"
+msgstr "Širenje ponude"
+
+#: templates/pages/partials/_about_timeline.html:30
+msgid ""
+"Proširujemo asortiman na priključnu opremu i radne mašine vodećih brendova i "
+"otvaramo veći prodajno-servisni prostor za rastuću mrežu kupaca."
+msgstr ""
+"Proširujemo asortiman na priključnu opremu i radne mašine vodećih brendova i "
+"otvaramo veći prodajno-servisni prostor za rastuću mrežu kupaca."
+
+#: templates/pages/partials/_about_timeline.html:37
+msgid "Pouzdan partner regiona"
+msgstr "Pouzdan partner regiona"
+
+#: templates/pages/partials/_about_timeline.html:40
+msgid ""
+"Danas smo prepoznatljiv partner poljoprivrednika širom regiona — sa "
+"kompletnom ponudom mehanizacije, polovne opreme i podrškom koja traje i "
+"posle prodaje."
+msgstr ""
+"Danas smo prepoznatljiv partner poljoprivrednika širom regiona — sa "
+"kompletnom ponudom mehanizacije, polovne opreme i podrškom koja traje i "
+"posle prodaje."
+
+#: templates/pages/partials/_home_about_intro.html:4
 msgid "O NAMA"
 msgstr "O NAMA"
 
-#| msgid "Ćorić Agrar"
+#: templates/pages/partials/_home_about_intro.html:6
 msgid "Ko je Ćorić Agrar"
 msgstr "Ko je Ćorić Agrar"
 
+#: templates/pages/partials/_home_about_intro.html:9
 msgid ""
 "Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od "
 "traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas "
 "dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva."
-msgstr "Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva."
+msgstr ""
+"Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od "
+"traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas "
+"dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva."
 
+#: templates/pages/partials/_home_about_intro.html:14
 msgid "Saznaj više"
 msgstr "Saznaj više"
 
+#: templates/pages/partials/_home_hero.html:3
 msgid "Ćorić Agrar — uvodna sekcija"
 msgstr "Ćorić Agrar — uvodna sekcija"
 
+#: templates/pages/partials/_home_hero.html:13
+#: templates/partials/footer.html:15
 msgid "Prijatelj koji razume zemlju!"
 msgstr "Prijatelj koji razume zemlju!"
 
-#| msgid "Ćorić Agrar"
-msgid "Ćorić Agrar logo"
-msgstr "Ćorić Agrar logo"
-
+#: templates/pages/partials/_home_polovna_banner.html:4
 msgid "POLOVNA MEHANIZACIJA"
 msgstr "POLOVNA MEHANIZACIJA"
 
-#| msgid "Filteri pretrage polovne mehanizacije"
+#: templates/pages/partials/_home_polovna_banner.html:6
 msgid "Proverena polovna mehanizacija"
 msgstr "Proverena polovna mehanizacija"
 
+#: templates/pages/partials/_home_polovna_banner.html:9
 msgid ""
 "Pažljivo odabrana i tehnički proverena polovna mehanizacija — vrednost po "
 "pristupačnoj ceni, sa garancijom poverenja Ćorić Agrar tima."
-msgstr "Pažljivo odabrana i tehnički proverena polovna mehanizacija — vrednost po pristupačnoj ceni, sa garancijom poverenja Ćorić Agrar tima."
+msgstr ""
+"Pažljivo odabrana i tehnički proverena polovna mehanizacija — vrednost po "
+"pristupačnoj ceni, sa garancijom poverenja Ćorić Agrar tima."
 
-#| msgid "Filteri pretrage polovne mehanizacije"
+#: templates/pages/partials/_home_polovna_banner.html:12
 msgid "Pogledaj polovnu mehanizaciju"
 msgstr "Pogledaj polovnu mehanizaciju"
 
+#: templates/pages/partials/_home_price_sa_polja.html:5
 msgid "PRIČE SA POLJA"
 msgstr "PRIČE SA POLJA"
 
+#: templates/pages/partials/_home_price_sa_polja.html:7
 msgid "Priče sa polja"
 msgstr "Priče sa polja"
 
+#: templates/pages/partials/_home_price_sa_polja.html:20
+#: templates/pages/partials/_home_price_sa_polja.html:25
 msgid "Demonstrativni sadržaj — placeholder dok blog nije objavljen"
 msgstr "Demonstrativni sadržaj — placeholder dok blog nije objavljen"
 
+#: templates/pages/partials/_home_price_sa_polja.html:21
+#: templates/pages/partials/_home_price_sa_polja.html:26
 msgid "Lorem ipsum datum"
 msgstr "Lorem ipsum datum"
 
+#: templates/pages/partials/_home_price_sa_polja.html:22
+#: templates/pages/partials/_home_price_sa_polja.html:27
 msgid "Lorem ipsum dolor sit amet"
 msgstr "Lorem ipsum dolor sit amet"
 
+#: templates/pages/partials/_home_price_sa_polja.html:23
+#: templates/pages/partials/_home_price_sa_polja.html:28
 msgid ""
 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni "
 "tekst dok rubrika Priče sa polja ne bude objavljena."
-msgstr "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena."
+msgstr ""
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni "
+"tekst dok rubrika Priče sa polja ne bude objavljena."
 
-#| msgid "KATEGORIJE PRIKLJUČNE MEHANIZACIJE"
+#: templates/pages/partials/_home_prikljucna_banner.html:4
 msgid "PRIKLJUČNA MEHANIZACIJA"
 msgstr "PRIKLJUČNA MEHANIZACIJA"
 
+#: templates/pages/partials/_home_prikljucna_banner.html:6
 msgid "Jeegee priključna oprema"
 msgstr "Jeegee priključna oprema"
 
+#: templates/pages/partials/_home_prikljucna_banner.html:9
 msgid ""
 "Kompletan asortiman priključne mehanizacije za svaku obradu zemlje — "
 "pouzdano, precizno i prilagođeno vašem traktoru."
-msgstr "Kompletan asortiman priključne mehanizacije za svaku obradu zemlje — pouzdano, precizno i prilagođeno vašem traktoru."
+msgstr ""
+"Kompletan asortiman priključne mehanizacije za svaku obradu zemlje — "
+"pouzdano, precizno i prilagođeno vašem traktoru."
 
-#| msgid "Priključna mehanizacija"
+#: templates/pages/partials/_home_prikljucna_banner.html:12
 msgid "Pogledaj priključnu mehanizaciju"
 msgstr "Pogledaj priključnu mehanizaciju"
 
+#: templates/pages/partials/_home_radne_masine.html:4
 msgid "RADNE MAŠINE"
 msgstr "RADNE MAŠINE"
 
-#| msgid "Radne mašine"
+#: templates/pages/partials/_home_radne_masine.html:6
 msgid "HZM radne mašine"
 msgstr "HZM radne mašine"
 
-#| msgid "Radne mašine"
+#: templates/pages/partials/_home_radne_masine.html:22
+#, python-format
 msgid "Radne mašine — %(cat)s"
 msgstr "Radne mašine — %(cat)s"
 
-#| msgid "Radne mašine"
+#: templates/pages/partials/_home_radne_masine.html:23
 msgid "Pogledaj radne mašine"
 msgstr "Pogledaj radne mašine"
 
-#| msgid "Kategorije radnih mašina su u pripremi."
+#: templates/pages/partials/_home_radne_masine.html:27
 msgid "Radne mašine su u pripremi."
 msgstr "Radne mašine su u pripremi."
 
+#: templates/pages/partials/_home_traktori.html:4
 msgid "TRAKTORI"
 msgstr "TRAKTORI"
 
-#| msgid "Svi brendovi"
+#: templates/pages/partials/_home_traktori.html:6
 msgid "Naši brendovi"
 msgstr "Naši brendovi"
 
-#| msgid "Pogledaj model: %(product)s"
+#: templates/pages/partials/_home_traktori.html:21
+#: templates/pages/partials/_home_traktori.html:30
+#, python-format
 msgid "Pogledaj brend: %(brand)s"
 msgstr "Pogledaj brend: %(brand)s"
 
-#| msgid "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
+#: templates/pages/partials/_home_traktori.html:45
 msgid "Brendovi će uskoro biti dostupni."
 msgstr "Brendovi će uskoro biti dostupni."
 
+#: templates/partials/_testimonials_slider.html:3
 msgid "Iz prve ruke"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:4
 msgid "IZ PRVE RUKE"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:9
 msgid "karusel"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:10
 msgid "Testimonijali korisnika"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:16
 msgid "slajd"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:17
 #, python-format
 msgid "%(counter)s od %(total)s"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:36
 msgid "Prethodni"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:41
 msgid "Pauziraj"
 msgstr ""
 
+#: templates/partials/_testimonials_slider.html:47
 msgid "Sledeći"
 msgstr ""
 
+#: templates/partials/footer.html:9
 msgid "Pocetna"
 msgstr ""
 
+#: templates/partials/footer.html:25 templates/partials/header.html:90
+#: templates/products/used_machinery_listing.html:4
+#: templates/products/used_machinery_listing.html:11
 msgid "Polovna mehanizacija"
 msgstr ""
 
+#: templates/partials/footer.html:26
 msgid "Rezervni delovi"
 msgstr ""
 
+#: templates/partials/footer.html:35
 msgid "Lorem ipsum dolor sit amet (vest 1)"
 msgstr ""
 
+#: templates/partials/footer.html:36
 msgid "Lorem ipsum dolor sit amet (vest 2)"
 msgstr ""
 
+#: templates/partials/footer.html:37
 msgid "Lorem ipsum dolor sit amet (vest 3)"
 msgstr ""
 
+#: templates/partials/footer.html:48 templates/partials/header.html:19
 msgid "Vojvodjanska 1, Basaid, Srbija"
 msgstr ""
 
+#: templates/partials/footer.html:71
 msgid "Sva prava zadrzana."
 msgstr ""
 
+#: templates/partials/header.html:4
 msgid "Kontakt informacije"
 msgstr ""
 
+#: templates/partials/header.html:11
 msgid "Pokazi kontakt informacije"
 msgstr ""
 
+#: templates/partials/header.html:22
 msgid "Telefon prodaje"
 msgstr ""
 
+#: templates/partials/header.html:27
 msgid "Telefon servisa"
 msgstr ""
 
+#: templates/partials/header.html:28 templates/partials/header.html:93
 msgid "Servis"
 msgstr ""
 
+#: templates/partials/header.html:49
 msgid "Glavna navigacija"
 msgstr ""
 
+#: templates/partials/header.html:64
 msgid "Otvori meni"
 msgstr ""
 
+#: templates/partials/header.html:87
 msgid "Prikljucna mehanizacija (Jeegee)"
 msgstr ""
 
+#: templates/partials/header.html:88
 msgid "Radne masine (HZM)"
 msgstr ""
 
+#: templates/partials/header.html:89
 msgid "MIX prikolice (Tulip)"
 msgstr "MIX prikolice (Tulip)"
 
+#: templates/partials/header.html:94
 msgid "Price sa polja"
 msgstr ""
 
-msgid "O nama"
-msgstr ""
-
+#: templates/partials/header.html:96
 msgid "Kontakt"
 msgstr ""
 
+#: templates/partials/header.html:104
 msgid "Otvori pretragu"
 msgstr "Otvori pretragu"
 
+#: templates/partials/header.html:121
 msgid "Pretraga"
 msgstr "Pretraga"
 
+#: templates/partials/header.html:122
 msgid "Pretraži proizvode…"
 msgstr "Pretraži proizvode…"
 
+#: templates/partials/header.html:126
 msgid "Pretraga u toku…"
 msgstr "Pretraga u toku…"
 
+#: templates/partials/language_switcher.html:6
 msgid "Izaberi jezik"
 msgstr ""
 
+#: templates/partials/language_switcher.html:14
 msgid "Promeni jezik"
 msgstr ""
 
+#: templates/partials/language_switcher_nav.html:10
+#: templates/partials/language_switcher_nav.html:12
+#: templates/partials/language_switcher_nav.html:14
 #, python-format
 msgid "Prebaci na %(language)s"
 msgstr ""
 
+#: templates/products/partials/_brand_header.html:3
 msgid "BRENDOVI"
 msgstr "BRENDOVI"
 
+#: templates/products/partials/_brand_header.html:4
 msgid "Brendovi traktora"
 msgstr "Brendovi traktora"
 
+#: templates/products/partials/_brand_header.html:11
 #, python-format
 msgid "%(name)s — pregled brenda"
 msgstr "%(name)s — pregled brenda"
 
+#: templates/products/partials/_brand_header.html:22
 msgid "Nema brendova trenutno."
 msgstr "Nema brendova trenutno."
 
+#: templates/products/partials/_brochure_card.html:2
 msgid "BROŠURE"
 msgstr ""
 
+#: templates/products/partials/_brochure_card.html:4
 msgid "Preuzmite brošuru"
 msgid_plural "Preuzmite brošure"
 msgstr[0] "Preuzmite brošuru"
 msgstr[1] "Preuzmite brošure"
 msgstr[2] "Preuzmite brošura"
 
+#: templates/products/partials/_brochure_card.html:16
 msgid "PDF"
 msgstr ""
 
+#: templates/products/partials/_brochure_card.html:23
 msgid "PREUZMI"
 msgstr "PREUZMI"
 
+#: templates/products/partials/_description.html:2
 msgid "OPIS PROIZVODA"
 msgstr ""
 
+#: templates/products/partials/_description.html:3
 msgid "Opis proizvoda"
 msgstr ""
 
+#: templates/products/partials/_empty_state.html:4
 msgid "Nema modela koji odgovaraju vašim kriterijumima"
 msgstr "Nema modela koji odgovaraju vašim kriterijumima"
 
+#: templates/products/partials/_empty_state.html:5
 msgid ""
 "Probajte da proširite opseg filtera ili poništite filtere i pregledajte "
 "celokupnu ponudu."
@@ -800,59 +1248,87 @@ msgstr ""
 "Probajte da proširite opseg filtera ili poništite filtere i pregledajte "
 "celokupnu ponudu."
 
+#: templates/products/partials/_empty_state.html:9
+#: templates/products/partials/_filter_form.html:72
+#: templates/products/partials/_used_filter_form.html:111
 msgid "RESETUJ FILTERE"
 msgstr "RESETUJ FILTERE"
 
+#: templates/products/partials/_filter_form.html:3
+#: templates/products/partials/_used_filter_form.html:3
 msgid "FILTERI"
 msgstr "FILTERI"
 
+#: templates/products/partials/_filter_form.html:4
 msgid "Filteri pretrage"
 msgstr "Filteri pretrage"
 
+#: templates/products/partials/_filter_form.html:19
 msgid "Snaga (KS)"
 msgstr "Snaga (KS)"
 
+#: templates/products/partials/_filter_form.html:29
 msgid "Snaga minimum (konjske snage)"
 msgstr "Snaga minimum (konjske snage)"
 
+#: templates/products/partials/_filter_form.html:30
 msgid "Snaga maksimum (konjske snage)"
 msgstr "Snaga maksimum (konjske snage)"
 
+#: templates/products/partials/_filter_form.html:54
+#: templates/products/partials/_used_filter_form.html:55
 msgid "Cena minimum (EUR)"
 msgstr "Cena minimum (EUR)"
 
+#: templates/products/partials/_filter_form.html:55
+#: templates/products/partials/_used_filter_form.html:56
 msgid "Cena maksimum (EUR)"
 msgstr "Cena maksimum (EUR)"
 
+#: templates/products/partials/_filter_form.html:63
+#: templates/products/partials/_results_grid.html:27
+#: templates/products/partials/_used_filter_form.html:64
+#: templates/products/partials/_used_results_grid.html:30
 msgid "EUR"
 msgstr "EUR"
 
+#: templates/products/partials/_filter_form.html:78
+#: templates/products/partials/_used_filter_form.html:117
 msgid "Učitavanje rezultata…"
 msgstr "Učitavanje rezultata…"
 
-msgid "GALERIJA"
-msgstr ""
-
+#: templates/products/partials/_gallery_carousel.html:3
 msgid "Galerija slika"
 msgstr ""
 
+#: templates/products/partials/_results_grid.html:13
 #, python-format
 msgid "%(name)s — pregled modela"
 msgstr "%(name)s — pregled modela"
 
+#: templates/products/partials/_results_grid.html:37
+#: templates/products/partials/_used_results_grid.html:40
 msgid "Paginacija"
 msgstr "Paginacija"
 
+#: templates/products/partials/_results_grid.html:45
+#: templates/products/partials/_used_results_grid.html:48
 msgid "Prethodna"
 msgstr "Prethodna"
 
+#: templates/products/partials/_results_grid.html:48
+#: templates/products/partials/_used_results_grid.html:51
 #, python-format
 msgid "Strana %(current)s od %(total)s"
 msgstr "Strana %(current)s od %(total)s"
 
+#: templates/products/partials/_results_grid.html:57
+#: templates/products/partials/_used_results_grid.html:60
 msgid "Sledeća"
 msgstr "Sledeća"
 
+#: templates/products/partials/_results_grid.html:71
+#: templates/products/partials/_used_results_grid.html:70
 #, python-format
 msgid "Pronađen %(counter)s model."
 msgid_plural "Pronađeno %(counter)s modela."
@@ -860,70 +1336,91 @@ msgstr[0] "Pronađen %(counter)s model."
 msgstr[1] "Pronađena %(counter)s modela."
 msgstr[2] "Pronađeno %(counter)s modela."
 
+#: templates/products/partials/_similar_products.html:2
 msgid "SLIČNI MODELI"
 msgstr ""
 
+#: templates/products/partials/_similar_products.html:3
 msgid "Možda će vas zanimati i"
 msgstr ""
 
+#: templates/products/partials/_specs_accordion.html:2
 msgid "SPECIFIKACIJE"
 msgstr ""
 
+#: templates/products/partials/_specs_accordion.html:3
 msgid "Tehničke specifikacije"
 msgstr ""
 
+#: templates/products/partials/_used_empty_state.html:4
 msgid "Trenutno nemamo polovne mehanizacije u ponudi"
 msgstr "Trenutno nemamo polovne mehanizacije u ponudi"
 
+#: templates/products/partials/_used_empty_state.html:5
 msgid ""
 "Pogledajte našu ponudu novih traktora ili promenite kriterijume pretrage."
 msgstr ""
 "Pogledajte našu ponudu novih traktora ili promenite kriterijume pretrage."
 
+#: templates/products/partials/_used_empty_state.html:9
 msgid "POGLEDAJ NOVE TRAKTORE"
 msgstr "POGLEDAJ NOVE TRAKTORE"
 
+#: templates/products/partials/_used_filter_form.html:4
 msgid "Filteri pretrage polovne mehanizacije"
 msgstr "Filteri pretrage polovne mehanizacije"
 
+#: templates/products/partials/_used_filter_form.html:24
 msgid "Sve kategorije"
 msgstr "Sve kategorije"
 
+#: templates/products/partials/_used_filter_form.html:37
 msgid "Svi brendovi"
 msgstr "Svi brendovi"
 
+#: templates/products/partials/_used_filter_form.html:70
 msgid "Godina proizvodnje"
 msgstr "Godina proizvodnje"
 
+#: templates/products/partials/_used_filter_form.html:80
 msgid "Godina minimum"
 msgstr "Godina minimum"
 
+#: templates/products/partials/_used_filter_form.html:81
 msgid "Godina maksimum"
 msgstr "Godina maksimum"
 
+#: templates/products/partials/_used_filter_form.html:96
 msgid "Sortiraj po"
 msgstr "Sortiraj po"
 
+#: templates/products/partials/_used_results_grid.html:13
 #, python-format
 msgid "%(name)s — pregled polovnog modela"
 msgstr "%(name)s — pregled polovnog modela"
 
+#: templates/products/partials/_used_results_grid.html:25
 msgid "Godina proizvodnje:"
 msgstr "Godina proizvodnje:"
 
+#: templates/products/partials/_variants_selector.html:2
 msgid "VARIJANTE"
 msgstr ""
 
+#: templates/products/partials/_variants_selector.html:3
 msgid "Varijante proizvoda"
 msgstr ""
 
+#: templates/products/partials/_variants_selector.html:4
 msgid "Kliknite na varijantu za uvećani prikaz slike."
 msgstr ""
 
+#: templates/products/partials/_variants_selector.html:13
 #, python-format
 msgid "Otvori uvećani prikaz: %(name)s"
 msgstr ""
 
+#: templates/products/tractor_listing.html:6
 msgid ""
 "Filtrirajte traktore po snazi i ceni — kompletna ponuda svih brendova Ćorić "
 "Agrar-a."
@@ -931,12 +1428,15 @@ msgstr ""
 "Filtrirajte traktore po snazi i ceni — kompletna ponuda svih brendova Ćorić "
 "Agrar-a."
 
+#: templates/products/tractor_listing.html:12
 msgid "Pronađite traktor koji odgovara vašoj farmi i budžetu."
 msgstr "Pronađite traktor koji odgovara vašoj farmi i budžetu."
 
+#: templates/products/tractor_listing.html:24
 msgid "Rezultati pretrage"
 msgstr "Rezultati pretrage"
 
+#: templates/products/used_machinery_listing.html:6
 msgid ""
 "Polovna poljoprivredna mehanizacija — filtrirajte po kategoriji, brendu, "
 "ceni i godini proizvodnje."
@@ -944,6 +1444,7 @@ msgstr ""
 "Polovna poljoprivredna mehanizacija — filtrirajte po kategoriji, brendu, "
 "ceni i godini proizvodnje."
 
+#: templates/products/used_machinery_listing.html:12
 msgid ""
 "Pregled polovnih mašina iz naše ponude — filtrirajte po kategoriji, brendu, "
 "ceni i godini proizvodnje."
@@ -951,18 +1452,26 @@ msgstr ""
 "Pregled polovnih mašina iz naše ponude — filtrirajte po kategoriji, brendu, "
 "ceni i godini proizvodnje."
 
+#: templates/products/used_machinery_listing.html:20
 msgid "Rezultati pretrage polovne mehanizacije"
 msgstr "Rezultati pretrage polovne mehanizacije"
 
+#: templates/search/partials/_search_dropdown.html:12
 msgid "Predlozi pretrage"
 msgstr "Predlozi pretrage"
 
+#: templates/search/partials/_search_dropdown.html:37
+#: templates/search/partials/_search_dropdown.html:61
+#: templates/search/search_results.html:47
 msgid "Vidi sve"
 msgstr "Vidi sve"
 
+#: templates/search/partials/_search_dropdown.html:45
 msgid "Objave"
 msgstr "Objave"
 
+#: templates/search/partials/_search_dropdown.html:70
+#: templates/search/partials/_search_empty.html:48
 #, python-format
 msgid "%(counter)s predlog."
 msgid_plural "%(counter)s predloga."
@@ -970,19 +1479,27 @@ msgstr[0] "%(counter)s predlog."
 msgstr[1] "%(counter)s predloga."
 msgstr[2] "%(counter)s predloga."
 
+#: templates/search/partials/_search_empty.html:12
+#: templates/search/partials/_search_empty.html:46
+#: templates/search/search_results.html:22
 msgid "Unesi makar 2 znaka."
 msgstr "Unesi makar 2 znaka."
 
+#: templates/search/partials/_search_empty.html:14
 #, python-format
 msgid "Nema rezultata za „%(query)s\"."
 msgstr "Nema rezultata za „%(query)s\"."
 
+#: templates/search/partials/_search_empty.html:18
 msgid "Popularne kategorije"
 msgstr "Popularne kategorije"
 
+#: templates/search/partials/_search_empty.html:28
 msgid "Popularni brendovi"
 msgstr "Popularni brendovi"
 
+#: templates/search/search_results.html:13
+#: templates/search/search_results.html:18
 #, python-format
 msgid "Rezultati pretrage za „%(query)s\""
 msgstr "Rezultati pretrage za „%(query)s\""

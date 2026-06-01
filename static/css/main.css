@@ -45,3 +45,6 @@
 
 /* Components CSS imports (Story 3.1) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/home-page.css');
+
+/* Components CSS imports (Story 3.2) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/about-page.css');

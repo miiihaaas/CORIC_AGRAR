@@ -68,7 +68,7 @@
     <div class="collapse navbar-collapse" id="coricMainNav">
       <ul class="navbar-nav ms-auto coric-nav__list">
         <li class="nav-item">
-          <a class="nav-link coric-nav__link" href="{% url 'pages:home' %}">{% translate "Pocetna" %}</a>
+          <a class="nav-link coric-nav__link" href="{% url 'pages:home' %}">{% translate "Početna" %}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link coric-nav__link" href="#">{% translate "Traktori" %}</a>
@@ -92,7 +92,7 @@
         </li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Servis" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Price sa polja" %}</a></li>
-        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "O nama" %}</a></li>
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:about' %}">{% translate "O nama" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Kontakt" %}</a></li>
         <li class="nav-item coric-nav__search-item">
           {# Story 2.13 — IMP-3 dug zatvoren: button wired (aria-expanded/aria-controls/data-search-toggle). #}

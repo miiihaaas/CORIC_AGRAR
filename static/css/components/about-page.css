@@ -1,0 +1,247 @@
+/* ============================================================================
+ * about-page.css — Story 3.2 „O nama" strana (hero / naša priča / vremenska
+ * lenta / masonry galerija).
+ *
+ * JEDINA nova CSS komponenta za About. REUSE: hero_overlay_card.css,
+ * section-eyebrow.css, repeating-element.css (hero), lightbox.css (galerija).
+ * Sve vrednosti kroz var(--token). coric- BEM prefiks na svim klasama.
+ * Hero foto-pozadina + watermark logo su <img> (NE CSS bg) — NEMA url().
+ * ========================================================================= */
+
+/* === Hero === */
+.coric-about-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--spacing-scale-8) var(--spacing-container-gutter-mobile);
+  overflow: hidden;
+}
+
+.coric-about-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* OQ-2 PRODUCTION BLOCKER: realna hero fotografija pre produkcije;
+     green-800 fallback dok se slika ne učita / ako nedostaje. */
+  background-color: var(--color-brand-green-800);
+}
+
+.coric-about-hero__overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--spacing-container-max-width);
+}
+
+/* === Naša priča === */
+.coric-about-story {
+  position: relative;
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);
+  background-color: var(--color-neutral-white);
+  overflow: hidden;
+}
+
+.coric-about-story__watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: 80%;
+  max-width: 720px;
+  transform: translate(-50%, -50%);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.coric-about-story__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.coric-about-story__title {
+  font-size: var(--typography-scale-h2);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-6);
+}
+
+.coric-about-story__text {
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-neutral-gray-700);
+  margin-bottom: var(--spacing-scale-5);
+}
+
+/* === Vremenska lenta === */
+.coric-about-timeline {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);
+}
+
+.coric-about-timeline__inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.coric-about-timeline__title {
+  font-size: var(--typography-scale-h2);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-8);
+}
+
+.coric-about-timeline__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Dekorativna vertikalna linija lente (CSS, aria-hidden čvorovi nose semantiku 0). */
+.coric-about-timeline__list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 7px;
+  width: 2px;
+  background-color: var(--color-brand-green-400);
+}
+
+.coric-about-timeline__segment {
+  position: relative;
+  padding-left: var(--spacing-scale-8);
+  margin-bottom: var(--spacing-scale-8);
+}
+
+.coric-about-timeline__node {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--rounded-full);
+  background-color: var(--color-accent-gold-500);
+}
+
+.coric-about-timeline__year {
+  display: block;
+  font-size: var(--typography-scale-caption);
+  font-weight: var(--typography-weight-bold);
+  letter-spacing: var(--typography-tracking-wide);
+  color: var(--color-brand-green-600);
+}
+
+.coric-about-timeline__event-title {
+  font-size: var(--typography-scale-h3);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  margin: var(--spacing-scale-1) 0 var(--spacing-scale-3);
+}
+
+.coric-about-timeline__event-text {
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-neutral-gray-700);
+  margin: 0;
+}
+
+/* Reveal — hidden stanje GEJTOVANO `.coric-js` markerom (timeline-reveal.js dodaje
+   na init). Bez JS-a marker se NE dodaje → segmenti su PUNO vidljivi (NO-JS fallback). */
+.coric-js .coric-about-timeline__segment {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 800ms ease-in-out, transform 800ms ease-in-out;
+}
+
+.coric-js .coric-about-timeline__segment.coric-is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-js .coric-about-timeline__segment {
+    transition: none;
+  }
+}
+
+/* === Masonry galerija (CSS column-count — NULA novog JS) === */
+.coric-about-gallery {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);
+}
+
+.coric-about-gallery__inner {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+}
+
+.coric-about-gallery__title {
+  font-size: var(--typography-scale-h2);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin-bottom: var(--spacing-scale-6);
+}
+
+.coric-about-gallery__grid {
+  column-count: 1;
+  column-gap: var(--spacing-scale-4);
+}
+
+.coric-about-gallery__item {
+  display: block;
+  margin-bottom: var(--spacing-scale-4);
+  break-inside: avoid;
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.coric-about-gallery__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* === Responsive (mobile stack → desktop) === */
+@media (min-width: 768px) {
+  .coric-about-hero {
+    min-height: 90vh;
+    padding: var(--spacing-scale-12) var(--spacing-container-gutter-desktop);
+  }
+
+  .coric-about-story,
+  .coric-about-timeline,
+  .coric-about-gallery {
+    padding: var(--spacing-section) var(--spacing-container-gutter-desktop);
+  }
+
+  .coric-about-gallery__grid {
+    column-count: 2;
+    column-gap: var(--spacing-scale-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .coric-about-gallery__grid {
+    column-count: 3;
+  }
+}

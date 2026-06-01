@@ -8,13 +8,8 @@
   <p class="coric-home-about__text">
     {% translate "Ćorić Agrar je porodična firma posvećena poljoprivrednoj mehanizaciji — od traktora i priključne opreme do radnih mašina i polovne mehanizacije. Uz nas dobijate pouzdanog partnera koji razume zemlju i potrebe svakog domaćinstva." %}
   </p>
-  {# SM-D11 + SM-D14: pages:about URL ne postoji još (Story 3-2) — KANONSKI PLACEHOLDER-CTA (disabled, van tab-reda). #}
-  {# TODO Story 3-2: zameni href="#"+aria-disabled sa {% url 'pages:about' %} (ukloni aria-disabled/tabindex). #}
-  <a href="#"
+  <a href="{% url 'pages:about' %}"
      class="coric-button coric-button--primary coric-home-about__cta"
-     role="button"
-     aria-disabled="true"
-     tabindex="-1"
      data-testid="home-about-cta">
     {% translate "Saznaj više" %}
   </a>

@@ -98,3 +98,14 @@ class HomeView(TemplateView):
         context["hzm_subcategories"] = hzm_subcategories
 
         return context
+
+
+class AboutView(TemplateView):
+    """„O nama" statička strana (Story 3.2).
+
+    Čisto READ-ONLY render strana — sadržaj je hardcoded-translatable Lorem
+    Ipsum do CMS-a (Epic 8 Story 8.8). NE agregira domain modele (SM-D1/SM-D5);
+    sadržaj (hero/priča/lenta/galerija) živi u template-u kroz `{% translate %}`.
+    """
+
+    template_name = "pages/about.html"
