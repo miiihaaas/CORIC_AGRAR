@@ -79,7 +79,7 @@
           <a class="nav-link coric-nav__link" href="{% url 'pages:home' %}">{% translate "Početna" %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link coric-nav__link" href="#">{% translate "Traktori" %}</a>
+          <a class="nav-link coric-nav__link" href="{% url 'products:tractor_list' %}">{% translate "Traktori" %}</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link coric-nav__link dropdown-toggle"
@@ -92,14 +92,16 @@
             {% translate "Mehanizacija" %}
           </a>
           <ul class="dropdown-menu coric-nav__dropdown" aria-labelledby="navbarDropdownMehanizacija">
-            <li><a class="dropdown-item" href="#">{% translate "Prikljucna mehanizacija (Jeegee)" %}</a></li>
-            <li><a class="dropdown-item" href="#">{% translate "Radne masine (HZM)" %}</a></li>
-            <li><a class="dropdown-item" href="#">{% translate "MIX prikolice (Tulip)" %}</a></li>
-            <li><a class="dropdown-item" href="#">{% translate "Polovna mehanizacija" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'brands:jeegee_prikljucna' %}">{% translate "Priključna mehanizacija (Jeegee)" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'brands:hzm_radne_masine' %}">{% translate "Radne mašine (HZM)" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'brands:tulip_mix_prikolice' %}">{% translate "MIX prikolice (Tulip)" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'products:used_machinery_list' %}">{% translate "Polovna mehanizacija" %}</a></li>
           </ul>
         </li>
+        {# TODO(Epic 4 / 4-4): wire to servis ruta kad nastane #}
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Servis" %}</a></li>
-        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Price sa polja" %}</a></li>
+        {# TODO(Epic 5 / 5-2): wire to blog index kad nastane #}
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Priče sa polja" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:about' %}">{% translate "O nama" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:contact' %}">{% translate "Kontakt" %}</a></li>
         <li class="nav-item coric-nav__search-item">

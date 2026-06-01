@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 08:38+0000\n"
+"POT-Creation-Date: 2026-06-01 10:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -343,7 +343,7 @@ msgstr ""
 msgid "Podešavanja sajta"
 msgstr ""
 
-#: apps/pages/models.py:113
+#: apps/pages/models.py:124
 msgid "SiteSettings singleton ne sme da se briše."
 msgstr ""
 
@@ -882,7 +882,7 @@ msgid "O nama — uvodna sekcija"
 msgstr "About us — intro section"
 
 #: templates/pages/partials/_about_hero.html:13
-#: templates/partials/header.html:103
+#: templates/partials/header.html:105
 msgid "O nama"
 msgstr "About us"
 
@@ -1108,6 +1108,7 @@ msgid "PRIČE SA POLJA"
 msgstr "PRIČE SA POLJA"
 
 #: templates/pages/partials/_home_price_sa_polja.html:7
+#: templates/partials/header.html:104
 msgid "Priče sa polja"
 msgstr "Priče sa polja"
 
@@ -1265,7 +1266,7 @@ msgstr ""
 msgid "Pokazi kontakt informacije"
 msgstr ""
 
-#: templates/partials/header.html:30 templates/partials/header.html:101
+#: templates/partials/header.html:30 templates/partials/header.html:102
 msgid "Servis"
 msgstr ""
 
@@ -1278,38 +1279,34 @@ msgid "Otvori meni"
 msgstr ""
 
 #: templates/partials/header.html:95
-msgid "Prikljucna mehanizacija (Jeegee)"
-msgstr ""
+msgid "Priključna mehanizacija (Jeegee)"
+msgstr "Attached machinery (Jeegee)"
 
 #: templates/partials/header.html:96
-msgid "Radne masine (HZM)"
-msgstr ""
+msgid "Radne mašine (HZM)"
+msgstr "Working machines (HZM)"
 
 #: templates/partials/header.html:97
 msgid "MIX prikolice (Tulip)"
 msgstr ""
 
-#: templates/partials/header.html:102
-msgid "Price sa polja"
-msgstr ""
-
-#: templates/partials/header.html:104
+#: templates/partials/header.html:106
 msgid "Kontakt"
 msgstr ""
 
-#: templates/partials/header.html:112
+#: templates/partials/header.html:114
 msgid "Otvori pretragu"
 msgstr ""
 
-#: templates/partials/header.html:129
+#: templates/partials/header.html:131
 msgid "Pretraga"
 msgstr "Search"
 
-#: templates/partials/header.html:130
+#: templates/partials/header.html:132
 msgid "Pretraži proizvode…"
 msgstr "Search products…"
 
-#: templates/partials/header.html:134
+#: templates/partials/header.html:136
 msgid "Pretraga u toku…"
 msgstr "Searching…"
 
