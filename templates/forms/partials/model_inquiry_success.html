@@ -12,6 +12,4 @@
     </p>
   </div>
 </section>
-{% if request.htmx %}
-  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Upit za model je poslat." %}</div>
-{% endif %}
+{% include "forms/partials/_oob_aria_live.html" with message=_("Upit za model je poslat.") %}

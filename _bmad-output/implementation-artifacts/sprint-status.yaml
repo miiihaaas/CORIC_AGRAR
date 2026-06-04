@@ -92,13 +92,13 @@ dev elopment_status:
   # ============================================================
   # Epic 4: Lead-gen Forms & Email Delivery
   # ============================================================
-  epic-4: in-progress
+  epic-4: done
   4-1-lead-model-smtp-setup: done
   4-2-opsta-kontakt-forma-fr-5: done
   4-3-model-inquiry-form-sa-auto-popunjenim-modelom: done
   4-4-servisni-zahtev-form-sa-foto-upload-om: done
   4-5-rezervni-delovi-form: done
-  4-6-htmx-form-patterns-aria-live-oob-rate-limiting: backlog
+  4-6-htmx-form-patterns-aria-live-oob-rate-limiting: done
   epic-4-retrospective: optional
 
   # ============================================================

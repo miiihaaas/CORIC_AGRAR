@@ -1,21 +1,35 @@
-"""Story 4.2 — `contact_submit` HTMX FBV (Opšta kontakt forma, FR-5).
+"""HTMX lead-gen submit endpoints (kanonski form pattern — Story 4.6 STANDARDIZACIJA).
 
-POST-only (`@require_POST` → GET vraća 405). Ratelimit `5/m` po IP-u sa
-**`block=False`** (NE `block=True` → 403): kad je limit pređen, `request.limited`
-je True i view na VRHU tela vraća `HttpResponse(status=429)` (SM-D9). Save-before-send:
-`Lead.objects.create(...)` PA TEK ONDA `send_lead_email(lead)` (4.1 ugovor; povratak
-se NE rollback-uje — AC5). Success/error oba vraćaju PARTIAL (HTTP 200) sa OOB
-aria-live najavom (guarded `{% if request.htmx %}`).
+Kanonski reusable HTMX-form pattern (AC8 — buduće forme ga REUSE-uju, npr.
+epics.md:746 kontakt strana „prati HTMX pattern iz Story 4.6"):
 
-Story 4.3 dodaje `model_inquiry_submit` (REUSE strukture): product se rezolvuje
-SERVER-SIDE iz trusted hidden `product_slug` (`Product.objects.filter(is_published=True,
-slug=...)`) — nepostojeći/unpublished → error partial 200, NE Lead, NE email (SM-D2/SM-D8).
-`data["product_name"]` + subject UVEK iz `Product.name` (DB), NIKAD iz POST stringa (spoofing).
+1. **`@htmx_form_endpoint`** dekorator (vidi dole) enkapsulira zajednički meta-prefiks:
+   `@require_POST` (SPOLJAŠNJI → GET = 405) + `@ratelimit(key="ip",
+   rate=FORM_RATELIMIT_RATE, block=False)` (UNUTRAŠNJI) + `request.limited → 429`
+   guard. Rate je `FORM_RATELIMIT_RATE = "5/m"` (jedno-mesto konstanta).
+2. **`forms/partials/_oob_aria_live.html`** `{% include %}` (parametrizovan `message`)
+   renderuje guarded OOB aria-live najavu (regija #2). Tri jednostavne forme +
+   4 success partiala koriste ga; `_model_inquiry_form_fields.html` zadržava svoj
+   tro-ishodni OOB INLINE (SM-D8 izuzetak — product_not_found + form.errors granjanje).
+3. Telo view-a (bind → invalid/valid → `Lead.objects.create` [+ atomic LeadAttachment]
+   → `send_lead_email`) divergira po formi (atomic vs ne, FILES vs ne, product
+   re-validacija) → NE ekstrahuje se (anti-YAGNI; callback-hell bi smanjio čitljivost).
 
-Refs: 4-2 AC2-AC7 + Task 6; 4-3 AC2-AC8 + Task 7; interface-contract § 2.
+Save-before-send: `Lead.objects.create(...)` PA TEK ONDA `send_lead_email(lead)`
+(4.1 ugovor; email failure se NE rollback-uje — AC5/C1, send_lead_email IZVAN atomic).
+Success/error oba vraćaju PARTIAL (HTTP 200) sa OOB aria-live najavom.
+
+`model_inquiry_submit`: product se rezolvuje SERVER-SIDE iz trusted hidden
+`product_slug` (`Product.objects.filter(is_published=True, slug=...)`) —
+nepostojeći/unpublished → error partial 200, NE Lead, NE email (SM-D2/SM-D8).
+`data["product_name"]` + subject UVEK iz `Product.name` (DB), NIKAD iz POST stringa.
+
+Refs: 4-2 AC2-AC7; 4-3 AC2-AC8; 4-6 AC2/AC3/AC4/AC8; interface-contract § 2/§ 3.
 """
 
 from __future__ import annotations
+
+from functools import wraps
 
 from django.db import transaction
 from django.http import HttpResponse
@@ -34,13 +48,47 @@ from apps.forms.models import Lead, LeadAttachment
 from apps.forms.notifications import send_lead_email
 from apps.products.models import Product
 
+# AC3 — behavior-preserving (SM-D3/SM-D9): rate ostaje "5/m". Centralizacija u JEDNU
+# konstantu čini buduću promenu jedno-mesto izmenom. epics.md:840/NFR-3 traže "10/15m"
+# = OQ-1 PRODUKT odluka (odložena follow-up; ova story je NE primenjuje jer bi
+# promenila ponašanje + oborila ~8 ratelimit testova).
+FORM_RATELIMIT_RATE = "5/m"
 
-@require_POST
-@ratelimit(key="ip", rate="5/m", block=False)
+
+def htmx_form_endpoint(view_func):
+    """Zajednički HTMX-form meta-prefiks (AC2). Kanonski pattern (AC8) za buduće forme.
+
+    Enkapsulira `@require_POST` + `@ratelimit(key="ip", rate=FORM_RATELIMIT_RATE,
+    block=False)` + `request.limited → HttpResponse(status=429)` guard — uklanjajući
+    duplirani prefiks iz sva 4 view-a (telo ostaje NETAKNUTO).
+
+    Kompozicija (EKSPLICITNO — redosled je LOCKED testovima, NE menjati):
+
+        require_POST( ratelimit(key="ip", rate=FORM_RATELIMIT_RATE, block=False)( guarded ) )
+
+    → `require_POST` je NAJSPOLJAŠNJIJI; `ratelimit` je UNUTRAŠNJI; `request.limited → 429`
+    guard se izvršava UNUTAR (posle) ratelimit wrappera. Razlog (NE menjati redosled):
+
+    1. `require_POST` se izvršava PRVI → GET vraća 405 PRE nego django_ratelimit pozove
+       `is_ratelimited(increment=True)` → GET NE troši 5/m budžet i 405 precedira 429.
+    2. ratelimit wrapper postavlja `request.limited` PRE nego guard pročita taj flag.
+
+    Pogrešan redosled bi ILI obrnuo 405-vs-429 precedenciju ILI nečujno isključio rate
+    limiting (security regresija). Vraća 429 (NE 403 — block=False, SM-D9).
+    """
+
+    @ratelimit(key="ip", rate=FORM_RATELIMIT_RATE, block=False)
+    @wraps(view_func)
+    def _guarded(request, *args, **kwargs):
+        if getattr(request, "limited", False):
+            return HttpResponse(status=429)  # NE 403 (block=False — SM-D9)
+        return view_func(request, *args, **kwargs)
+
+    return require_POST(_guarded)
+
+
+@htmx_form_endpoint
 def contact_submit(request):
-    if getattr(request, "limited", False):
-        return HttpResponse(status=429)
-
     form = ContactForm(request.POST)
     if not form.is_valid():
         return render(
@@ -61,12 +109,8 @@ def contact_submit(request):
     return render(request, "forms/partials/contact_success.html", {"lead": lead})
 
 
-@require_POST
-@ratelimit(key="ip", rate="5/m", block=False)
+@htmx_form_endpoint
 def model_inquiry_submit(request):
-    if getattr(request, "limited", False):
-        return HttpResponse(status=429)
-
     form = ModelInquiryForm(request.POST)
 
     # Server-side product re-validacija (SECURITY — NE veruj klijentu, SM-D2).
@@ -109,12 +153,8 @@ def model_inquiry_submit(request):
     return render(request, "forms/partials/model_inquiry_success.html", {})
 
 
-@require_POST
-@ratelimit(key="ip", rate="5/m", block=False)
+@htmx_form_endpoint
 def service_request_submit(request):
-    if getattr(request, "limited", False):
-        return HttpResponse(status=429)
-
     form = ServiceRequestForm(request.POST, request.FILES)
     if not form.is_valid():
         return render(
@@ -145,15 +185,11 @@ def service_request_submit(request):
     return render(request, "forms/partials/service_request_success.html", {"lead": lead})
 
 
-@require_POST
-@ratelimit(key="ip", rate="5/m", block=False)
+@htmx_form_endpoint
 def part_request_submit(request):
     """Story 4.5 — rezervni delovi HTMX submit (REUSE service_request_submit; SM-D7 NEMA
     apps.products import — model/deo su free text). Single-file slika kroz `request.FILES`.
     """
-    if getattr(request, "limited", False):
-        return HttpResponse(status=429)
-
     form = PartRequestForm(request.POST, request.FILES)
     if not form.is_valid():
         return render(

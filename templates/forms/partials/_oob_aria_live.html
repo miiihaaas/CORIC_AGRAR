@@ -1,0 +1,13 @@
+{% comment %}
+Story 4.6 (AC4 / SM-D4) — reusable OOB aria-live najava (regija #2).
+
+Guard `{% if request.htmx %}` je INTERNI; partial prima `message`. Renderuje
+BAJT-identičan string trenutnom inline OOB bloku:
+    <div hx-swap-oob="innerHTML:#aria-live">{message}</div>
+non-HTMX → prazan render (bez `hx-swap-oob`). Singleton ostaje `polite`
+(OOB NE postavlja `assertive`). Pozivalac obezbeđuje SPOLJAŠNJI uslov
+(npr. `form.errors`) oko `{% include %}`-a kad je potreban.
+
+KEEP-INLINE izuzetak: `_model_inquiry_form_fields.html` zadržava svoj tro-ishodni
+OOB blok INLINE (product_not_found + form.errors granjanje, SM-D8) — NE koristi ovaj include.
+{% endcomment %}{% if request.htmx %}<div hx-swap-oob="innerHTML:#aria-live">{{ message }}</div>{% endif %}

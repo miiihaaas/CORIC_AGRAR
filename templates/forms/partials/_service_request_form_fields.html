@@ -168,5 +168,5 @@
   </div>
 </section>
 {% if request.htmx and form.errors %}
-  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Greška pri slanju, proverite polja." %}</div>
+  {% include "forms/partials/_oob_aria_live.html" with message=_("Greška pri slanju, proverite polja.") %}
 {% endif %}
