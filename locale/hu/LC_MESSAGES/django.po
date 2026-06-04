@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 06:57+0000\n"
+"POT-Creation-Date: 2026-06-04 10:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/brands/apps.py:15 apps/brands/models.py:105
-msgid "Brendovi"
+#: apps/blog/apps.py:17
+msgid "Blog"
 msgstr ""
 
-#: apps/brands/models.py:69 apps/brands/models.py:179 apps/brands/models.py:251
+#: apps/blog/models.py:47 apps/blog/models.py:82 apps/brands/models.py:69
+#: apps/brands/models.py:179 apps/brands/models.py:251
 #: apps/brands/models.py:333 apps/products/models.py:122
 #: apps/products/models.py:337
 msgid "Naziv"
+msgstr ""
+
+#: apps/blog/models.py:48 apps/brands/models.py:85 apps/brands/models.py:181
+#: apps/brands/models.py:253 apps/brands/models.py:335
+#: apps/products/models.py:128 apps/products/models.py:352
+msgid "Opis"
+msgstr ""
+
+#: apps/blog/models.py:52 apps/blog/models.py:140 apps/brands/models.py:271
+#: apps/brands/models.py:323
+#: templates/products/partials/_used_filter_form.html:19
+msgid "Kategorija"
+msgstr ""
+
+#: apps/blog/models.py:53 apps/brands/models.py:272
+msgid "Kategorije"
+msgstr ""
+
+#: apps/blog/models.py:86
+msgid "Tag"
+msgstr ""
+
+#: apps/blog/models.py:87 apps/blog/models.py:146
+msgid "Tagovi"
+msgstr ""
+
+#: apps/blog/models.py:121 apps/products/models.py:96
+msgid "Nacrt"
+msgstr ""
+
+#: apps/blog/models.py:122
+#, fuzzy
+#| msgid "Objave"
+msgid "Objavljeno"
+msgstr "Bejegyzések"
+
+#: apps/blog/models.py:124
+msgid "Naslov"
+msgstr ""
+
+#: apps/blog/models.py:125
+msgid "Perex"
+msgstr ""
+
+#: apps/blog/models.py:126
+msgid "Telo"
+msgstr ""
+
+#: apps/blog/models.py:128 apps/products/models.py:136
+msgid "Glavna slika"
+msgstr ""
+
+#: apps/blog/models.py:154
+msgid "Autor"
+msgstr ""
+
+#: apps/blog/models.py:157 apps/products/models.py:164
+msgid "Status"
+msgstr ""
+
+#: apps/blog/models.py:163
+msgid "Datum objave"
+msgstr ""
+
+#: apps/blog/models.py:170
+#, fuzzy
+#| msgid "Objave"
+msgid "Objava"
+msgstr "Bejegyzések"
+
+#: apps/blog/models.py:171 templates/search/partials/_search_dropdown.html:45
+msgid "Objave"
+msgstr "Bejegyzések"
+
+#: apps/brands/apps.py:15 apps/brands/models.py:105
+msgid "Brendovi"
 msgstr ""
 
 #: apps/brands/models.py:70 apps/brands/models.py:180 apps/brands/models.py:252
@@ -39,12 +116,6 @@ msgstr ""
 
 #: apps/brands/models.py:79
 msgid "Hero slika"
-msgstr ""
-
-#: apps/brands/models.py:85 apps/brands/models.py:181 apps/brands/models.py:253
-#: apps/brands/models.py:335 apps/products/models.py:128
-#: apps/products/models.py:352
-msgid "Opis"
 msgstr ""
 
 #: apps/brands/models.py:86 apps/pages/models.py:37
@@ -153,15 +224,6 @@ msgstr ""
 
 #: apps/brands/models.py:264 apps/brands/models.py:337
 msgid "Ikona (Bootstrap Icons class)"
-msgstr ""
-
-#: apps/brands/models.py:271 apps/brands/models.py:323
-#: templates/products/partials/_used_filter_form.html:19
-msgid "Kategorija"
-msgstr ""
-
-#: apps/brands/models.py:272
-msgid "Kategorije"
 msgstr ""
 
 #: apps/brands/models.py:331
@@ -479,22 +541,22 @@ msgstr ""
 msgid "Prilozi"
 msgstr ""
 
-#: apps/forms/notifications.py:38
+#: apps/forms/notifications.py:49
 #, python-format
 msgid "[Ćorić Agrar] Novi servisni zahtev: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:40
+#: apps/forms/notifications.py:53
 #, python-format
 msgid "[Ćorić Agrar] Upit za rezervni deo: %(part)s (%(model)s)"
 msgstr ""
 
-#: apps/forms/notifications.py:45
+#: apps/forms/notifications.py:60
 #, python-format
 msgid "[Ćorić Agrar] Upit za model: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:48
+#: apps/forms/notifications.py:63
 #, python-format
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
@@ -620,10 +682,6 @@ msgstr ""
 msgid "Polovno"
 msgstr ""
 
-#: apps/products/models.py:96
-msgid "Nacrt"
-msgstr ""
-
 #: apps/products/models.py:97 apps/products/models.py:172
 msgid "Objavljen"
 msgstr ""
@@ -634,10 +692,6 @@ msgstr ""
 
 #: apps/products/models.py:131
 msgid "Ključne karakteristike"
-msgstr ""
-
-#: apps/products/models.py:136
-msgid "Glavna slika"
 msgstr ""
 
 #: apps/products/models.py:142
@@ -655,10 +709,6 @@ msgstr ""
 
 #: apps/products/models.py:156
 msgid "Stanje"
-msgstr ""
-
-#: apps/products/models.py:164
-msgid "Status"
 msgstr ""
 
 #: apps/products/models.py:177
@@ -1167,7 +1217,7 @@ msgstr "Üzenet küldése"
 msgid "Hvala! Vaš upit je primljen."
 msgstr "Köszönjük! Megkaptuk az üzenetét."
 
-#: templates/forms/partials/contact_success.html:11
+#: templates/forms/partials/contact_success.html:10
 msgid "Upit je poslat."
 msgstr "Üzenet elküldve."
 
@@ -1181,7 +1231,7 @@ msgstr ""
 msgid "Za hitne upite pozovite:"
 msgstr "Sürgős kérdés esetén hívja:"
 
-#: templates/forms/partials/model_inquiry_success.html:16
+#: templates/forms/partials/model_inquiry_success.html:15
 msgid "Upit za model je poslat."
 msgstr "A modellre vonatkozó érdeklődés elküldve."
 
@@ -1200,7 +1250,7 @@ msgstr ""
 msgid "Za hitne pozive:"
 msgstr "Sürgős kérdés esetén hívja:"
 
-#: templates/forms/partials/part_request_success.html:16
+#: templates/forms/partials/part_request_success.html:15
 #, fuzzy
 #| msgid "Upit za model je poslat."
 msgid "Upit za rezervni deo je poslat."
@@ -1221,7 +1271,7 @@ msgstr ""
 msgid "Za hitne kvarove pozovite:"
 msgstr "Sürgős kérdés esetén hívja:"
 
-#: templates/forms/partials/service_request_success.html:16
+#: templates/forms/partials/service_request_success.html:15
 #, fuzzy
 #| msgid "Upit za model je poslat."
 msgid "Servisni zahtev je poslat."
@@ -2020,10 +2070,6 @@ msgstr "Keresési javaslatok"
 #: templates/search/search_results.html:47
 msgid "Vidi sve"
 msgstr "Összes megtekintése"
-
-#: templates/search/partials/_search_dropdown.html:45
-msgid "Objave"
-msgstr "Bejegyzések"
 
 #: templates/search/partials/_search_dropdown.html:70
 #: templates/search/partials/_search_empty.html:48
