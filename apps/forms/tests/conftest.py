@@ -285,3 +285,35 @@ def non_image_file() -> SimpleUploadedFile:
         b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<< >>\nendobj\n",
         content_type="application/pdf",
     )
+
+
+# ── Story 4.5 (Rezervni delovi forma sa single-file foto upload-om) — RED ─────
+
+
+@pytest.fixture
+def part_request_payload() -> dict:
+    """Validan POST payload za PartRequestForm (Task 1.1) BEZ `photo`.
+
+    `photo` se dodaje per-test kao JEDAN `SimpleUploadedFile` (single-file, NE lista —
+    SM-D4): `{**part_request_payload, "photo": valid_image_jpeg}`. Pun dijakritik u
+    `name`/`tractor_model`/`part_name`/`extra_description`/`note`
+    (project-context anti-šišana-latinica). `email` je OBAVEZAN (SM-D3).
+    """
+    return {
+        "tractor_model": "Agri Tracking TB804",
+        "part_name": "Filter ulja",
+        "extra_description": "Original deo.",
+        "name": "Marko Marković",
+        "phone": "+381641234567",
+        "email": "marko@example.com",
+        "payment_method": "cod",
+        "delivery_method": "delivery",
+        "note": "Pozovite popodne.",
+    }
+
+
+@pytest.fixture
+def part_request_submit_url() -> str:
+    """Reverse `forms:part_request_submit` pod aktivnim `sr` (i18n_patterns prefiks /sr/)."""
+    activate("sr")
+    return reverse("forms:part_request_submit")

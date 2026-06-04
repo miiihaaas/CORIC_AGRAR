@@ -142,3 +142,17 @@ class ServiceView(TemplateView):
 
     template_name = "pages/service.html"
     http_method_names = ["get", "head", "options"]
+
+
+class PartRequestView(TemplateView):
+    """„Rezervni delovi" strana (Story 4.5, FR-23) — mirror `ServiceView`.
+
+    GET-only READ-ONLY render strana koja mount-uje aktivnu rezervni-delovi formu
+    kroz container partial (forms app vlasnik je render-a + submit endpoint-a — SM-D12).
+    POST ide na ZASEBAN `forms:part_request_submit` endpoint, NE na ovaj page view.
+
+    GET-only DETERMINISTIČKI: `http_method_names` izostavlja `post` → HTTP 405 za POST.
+    """
+
+    template_name = "pages/part-request.html"
+    http_method_names = ["get", "head", "options"]

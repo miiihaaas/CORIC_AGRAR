@@ -21,7 +21,7 @@ import smtplib
 
 from anymail.exceptions import AnymailError
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import BadHeaderError, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.html import strip_tags
@@ -32,17 +32,35 @@ from apps.forms.models import Lead
 logger = logging.getLogger(__name__)
 
 
+def _no_crlf(value: str) -> str:
+    """Defense-in-depth: izbaci CR/LF iz USER-supplied vrednosti koje idu u Subject header.
+
+    Story 4.5 PART_REQUEST interpolira slobodan tekst (`part_name`/`tractor_model`) u Subject.
+    CRLF u tom tekstu izaziva Django `BadHeaderError` (blokira header smuggling — dobro), ali bi
+    inače propagirao kao 500. Strip-ujemo \r/\n → razmak da subject bude čist i da greška NE nastane
+    (primarni catch u send_lead_email i dalje hvata BadHeaderError za sve ostale slučajeve — C1).
+    """
+    return (value or "").replace("\r", " ").replace("\n", " ")
+
+
 # Subject format po form_type (mapira epics.md:790/803/831 — sadrži "[Ćorić Agrar]")
 def _build_subject(lead: Lead) -> str:
     if lead.form_type == Lead.FormType.SERVICE_REQUEST:
-        return _("[Ćorić Agrar] Novi servisni zahtev: %(name)s") % {"name": lead.name}
+        return _("[Ćorić Agrar] Novi servisni zahtev: %(name)s") % {
+            "name": _no_crlf(lead.name)
+        }
     if lead.form_type == Lead.FormType.PART_REQUEST:
-        return _("[Ćorić Agrar] Upit za rezervni deo: %(name)s") % {"name": lead.name}
+        return _("[Ćorić Agrar] Upit za rezervni deo: %(part)s (%(model)s)") % {
+            # fallback na lead.name (OQ-6); CRLF-strip (defense-in-depth, security 4-5)
+            "part": _no_crlf(lead.data.get("part_name", lead.name)),
+            # fallback prazan string; CRLF-strip
+            "model": _no_crlf(lead.data.get("tractor_model", "")),
+        }
     if lead.form_type == Lead.FormType.MODEL_INQUIRY:
         return _("[Ćorić Agrar] Upit za model: %(name)s") % {
-            "name": lead.data.get("product_name", lead.name)
+            "name": _no_crlf(lead.data.get("product_name", lead.name))
         }
-    return _("[Ćorić Agrar] Novi kontakt: %(name)s") % {"name": lead.name}
+    return _("[Ćorić Agrar] Novi kontakt: %(name)s") % {"name": _no_crlf(lead.name)}
 
 
 def _resolve_recipient(lead: Lead) -> str:
@@ -106,8 +124,10 @@ def send_lead_email(lead: Lead) -> bool:
             message.attach(name, content, mimetype)
 
         message.send()
-    except (AnymailError, smtplib.SMTPException, OSError):
-        # Uži boundary ka third-party (Resend) / SMTP transport-u + attachment file-read (C1).
+    except (AnymailError, smtplib.SMTPException, OSError, BadHeaderError):
+        # Uži boundary ka third-party (Resend) / SMTP transport-u + attachment file-read +
+        # BadHeaderError (CRLF u user-supplied Subject vrednosti → Django blokira smuggling, ali
+        # mi degradiramo na return False umesto 500 — C1 za SVE form tipove, security 4-5) (C1).
         # Programski bug-ovi (TemplateDoesNotExist/TypeError/AttributeError) NAMERNO propagiraju.
         logger.exception(
             "send_lead_email: provider send ili attachment-read pao za lead pk=%s "

@@ -1,0 +1,220 @@
+{% load i18n %}
+{# Story 4.5 — rezervni delovi forma (fields + bound errors). ROOT je <section id="part-request-form-section"> (hx-swap target). Renderuje se kroz {% include %} na /servis/rezervni-delovi/ GET-u (NEMA bound `form`) I na error rerender-u (part_request_submit). SVA polja kroz SIROVI <input>/<select>/<textarea> (NIKAD {{ form.X }}) — na GET-u nema bound form, pa `form.X.value|default:''` degradira graciozno. Multipart enctype + hx-encoding za file upload. Single-file (NEMA `multiple` — SM-D4). Standalone-renderable; NIJE full page. #}
+<section id="part-request-form-section"
+         class="coric-contact-form"
+         aria-labelledby="part-request-form-title">
+  <div class="coric-contact-form__inner">
+    {% include "partials/section_eyebrow.html" with text=_("REZERVNI DELOVI") tag="div" %}
+    <h2 id="part-request-form-title" class="coric-contact-form__title">
+      {% translate "Poručite rezervni deo" %}
+    </h2>
+
+    {% if form.errors %}
+      <div class="coric-contact-form__alert" role="alert" aria-live="assertive">
+        <p class="coric-contact-form__alert-title">
+          {% translate "Greška pri slanju, proverite polja:" %}
+        </p>
+        <ul class="coric-contact-form__alert-list">
+          {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post"
+          enctype="multipart/form-data"
+          hx-post="{% url 'forms:part_request_submit' %}"
+          hx-target="#part-request-form-section"
+          hx-swap="outerHTML"
+          hx-encoding="multipart/form-data"
+          data-testid="part-request-form"
+          class="coric-contact-form__form">
+      {% csrf_token %}
+
+      <div class="coric-contact-form__field">
+        <label for="part-tractor-model" class="coric-contact-form__label">
+          {% translate "Model traktora" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="text"
+               id="part-tractor-model"
+               name="tractor_model"
+               class="coric-contact-form__input"
+               value="{{ form.tractor_model.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.tractor_model.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-name" class="coric-contact-form__label">
+          {% translate "Rezervni deo" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="text"
+               id="part-name"
+               name="part_name"
+               class="coric-contact-form__input"
+               value="{{ form.part_name.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.part_name.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-extra-description" class="coric-contact-form__label">
+          {% translate "Dodatni opis (opc.)" %}
+        </label>
+        <textarea id="part-extra-description"
+                  name="extra_description"
+                  class="coric-contact-form__textarea"
+                  rows="4">{{ form.extra_description.value|default:'' }}</textarea>
+        {% for error in form.extra_description.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-photo" class="coric-contact-form__label">
+          {% translate "Slika (opc., max 1, JPG/PNG)" %}
+        </label>
+        <input type="file"
+               id="part-photo"
+               name="photo"
+               class="coric-contact-form__input coric-service-form__file"
+               accept="image/jpeg,image/png">
+        {% for error in form.photo.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-name-full" class="coric-contact-form__label">
+          {% translate "Ime i prezime" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="text"
+               id="part-name-full"
+               name="name"
+               class="coric-contact-form__input"
+               value="{{ form.name.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.name.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-phone" class="coric-contact-form__label">
+          {% translate "Telefon" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="tel"
+               id="part-phone"
+               name="phone"
+               class="coric-contact-form__input"
+               value="{{ form.phone.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.phone.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-email" class="coric-contact-form__label">
+          {% translate "E-pošta" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <input type="email"
+               id="part-email"
+               name="email"
+               class="coric-contact-form__input"
+               value="{{ form.email.value|default:'' }}"
+               required
+               aria-required="true">
+        {% for error in form.email.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-payment-method" class="coric-contact-form__label">
+          {% translate "Način plaćanja" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <select id="part-payment-method"
+                name="payment_method"
+                class="coric-contact-form__input"
+                required
+                aria-required="true">
+          <option value="" {% if not form.payment_method.value %}selected{% endif %}>
+            {% translate "Izaberite način plaćanja" %}
+          </option>
+          <option value="cod" {% if form.payment_method.value == "cod" %}selected{% endif %}>
+            {% translate "Pouzeće" %}
+          </option>
+          <option value="proforma" {% if form.payment_method.value == "proforma" %}selected{% endif %}>
+            {% translate "Predračun" %}
+          </option>
+        </select>
+        {% for error in form.payment_method.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-delivery-method" class="coric-contact-form__label">
+          {% translate "Način preuzimanja" %} <span class="coric-contact-form__required" aria-hidden="true">*</span>
+        </label>
+        <select id="part-delivery-method"
+                name="delivery_method"
+                class="coric-contact-form__input"
+                required
+                aria-required="true">
+          <option value="" {% if not form.delivery_method.value %}selected{% endif %}>
+            {% translate "Izaberite način preuzimanja" %}
+          </option>
+          <option value="delivery" {% if form.delivery_method.value == "delivery" %}selected{% endif %}>
+            {% translate "Dostava" %}
+          </option>
+          <option value="pickup" {% if form.delivery_method.value == "pickup" %}selected{% endif %}>
+            {% translate "Lično preuzimanje" %}
+          </option>
+        </select>
+        {% for error in form.delivery_method.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="coric-contact-form__field">
+        <label for="part-note" class="coric-contact-form__label">
+          {% translate "Napomena (opc.)" %}
+        </label>
+        <textarea id="part-note"
+                  name="note"
+                  class="coric-contact-form__textarea"
+                  rows="4">{{ form.note.value|default:'' }}</textarea>
+        {% for error in form.note.errors %}
+          <p class="coric-contact-form__error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <button type="submit"
+              class="coric-button coric-button--primary coric-contact-form__submit"
+              data-testid="part-request-submit">{% translate "Pošalji upit" %}</button>
+
+      <span class="coric-contact-form__indicator htmx-indicator" aria-hidden="true">
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+      </span>
+    </form>
+  </div>
+</section>
+{% if request.htmx and form.errors %}
+  <div hx-swap-oob="innerHTML:#aria-live">{% translate "Greška pri slanju, proverite polja." %}</div>
+{% endif %}

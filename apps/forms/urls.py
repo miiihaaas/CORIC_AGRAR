@@ -24,4 +24,9 @@ urlpatterns = [
         views.service_request_submit,
         name="service_request_submit",
     ),
+    path(
+        "htmx/forme/rezervni-delovi/",
+        views.part_request_submit,
+        name="part_request_submit",
+    ),
 ]

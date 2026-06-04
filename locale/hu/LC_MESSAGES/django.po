@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 04:54+0000\n"
+"POT-Creation-Date: 2026-06-04 06:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -241,37 +241,44 @@ msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr ""
 
 #: apps/forms/forms.py:27 apps/forms/forms.py:86 apps/forms/forms.py:186
+#: apps/forms/forms.py:385
 #: templates/forms/partials/_contact_form_fields.html:40
 #: templates/forms/partials/_model_inquiry_form_fields.html:61
+#: templates/forms/partials/_part_request_form_fields.html:101
 #: templates/forms/partials/_service_request_form_fields.html:42
 msgid "Ime i prezime"
 msgstr "Teljes név"
 
 #: apps/forms/forms.py:30 apps/forms/forms.py:89 apps/forms/forms.py:189
+#: apps/forms/forms.py:388
 msgid "Unesite ime i prezime."
 msgstr "Adja meg a teljes nevét."
 
 #: apps/forms/forms.py:41 apps/forms/forms.py:100 apps/forms/forms.py:215
-#: apps/pages/models.py:60
+#: apps/forms/forms.py:414 apps/pages/models.py:60
 #: templates/forms/partials/_contact_form_fields.html:56
 #: templates/forms/partials/_model_inquiry_form_fields.html:77
+#: templates/forms/partials/_part_request_form_fields.html:133
 #: templates/forms/partials/_service_request_form_fields.html:74
 #: templates/pages/partials/_contact_info.html:38
 msgid "E-pošta"
 msgstr "E-mail"
 
-#: apps/forms/forms.py:44 apps/forms/forms.py:103
+#: apps/forms/forms.py:44 apps/forms/forms.py:103 apps/forms/forms.py:417
 msgid "Unesite e-poštu."
 msgstr "Adja meg az e-mail-címét."
 
 #: apps/forms/forms.py:45 apps/forms/forms.py:104 apps/forms/forms.py:217
+#: apps/forms/forms.py:418
 msgid "Unesite ispravnu e-poštu."
 msgstr "Adjon meg egy érvényes e-mail-címet."
 
 #: apps/forms/forms.py:57 apps/forms/forms.py:116 apps/forms/forms.py:200
-#: apps/forms/models.py:44 templates/emails/lead_received.html:24
+#: apps/forms/forms.py:399 apps/forms/models.py:44
+#: templates/emails/lead_received.html:24
 #: templates/forms/partials/_contact_form_fields.html:72
 #: templates/forms/partials/_model_inquiry_form_fields.html:93
+#: templates/forms/partials/_part_request_form_fields.html:117
 #: templates/forms/partials/_service_request_form_fields.html:58
 msgid "Telefon"
 msgstr "Telefon"
@@ -299,7 +306,7 @@ msgstr ""
 msgid "Radna mašina"
 msgstr "HZM radne mašine"
 
-#: apps/forms/forms.py:203
+#: apps/forms/forms.py:203 apps/forms/forms.py:402
 msgid "Unesite broj telefona."
 msgstr ""
 
@@ -332,12 +339,84 @@ msgstr ""
 msgid "Fotografije"
 msgstr ""
 
-#: apps/forms/forms.py:287
+#: apps/forms/forms.py:288
 msgid "Možete priložiti najviše 3 slike."
 msgstr ""
 
-#: apps/forms/forms.py:303
+#: apps/forms/forms.py:296 apps/forms/forms.py:481
 msgid "Slika je veća od 5 MB. Probajte manju."
+msgstr ""
+
+#: apps/forms/forms.py:327
+#: templates/forms/partials/_part_request_form_fields.html:160
+msgid "Pouzeće"
+msgstr ""
+
+#: apps/forms/forms.py:328
+#: templates/forms/partials/_part_request_form_fields.html:163
+msgid "Predračun"
+msgstr ""
+
+#: apps/forms/forms.py:331
+#: templates/forms/partials/_part_request_form_fields.html:184
+msgid "Dostava"
+msgstr ""
+
+#: apps/forms/forms.py:332
+#: templates/forms/partials/_part_request_form_fields.html:187
+msgid "Lično preuzimanje"
+msgstr ""
+
+#: apps/forms/forms.py:335
+#: templates/forms/partials/_part_request_form_fields.html:42
+msgid "Model traktora"
+msgstr ""
+
+#: apps/forms/forms.py:338
+#, fuzzy
+#| msgid "Unesite poruku."
+msgid "Unesite model traktora."
+msgstr "Adjon meg egy üzenetet."
+
+#: apps/forms/forms.py:349
+#: templates/forms/partials/_part_request_form_fields.html:58
+msgid "Rezervni deo"
+msgstr ""
+
+#: apps/forms/forms.py:352
+msgid "Unesite naziv rezervnog dela."
+msgstr ""
+
+#: apps/forms/forms.py:363
+#: templates/forms/partials/_part_request_form_fields.html:74
+msgid "Dodatni opis (opc.)"
+msgstr ""
+
+#: apps/forms/forms.py:374
+msgid "Slika (opc., max 1)"
+msgstr ""
+
+#: apps/forms/forms.py:430
+#: templates/forms/partials/_part_request_form_fields.html:149
+msgid "Način plaćanja"
+msgstr ""
+
+#: apps/forms/forms.py:433
+msgid "Izaberite način plaćanja."
+msgstr ""
+
+#: apps/forms/forms.py:444
+#: templates/forms/partials/_part_request_form_fields.html:173
+msgid "Način preuzimanja"
+msgstr ""
+
+#: apps/forms/forms.py:447
+msgid "Izaberite način preuzimanja."
+msgstr ""
+
+#: apps/forms/forms.py:458
+#: templates/forms/partials/_part_request_form_fields.html:197
+msgid "Napomena (opc.)"
 msgstr ""
 
 #: apps/forms/models.py:32
@@ -400,22 +479,22 @@ msgstr ""
 msgid "Prilozi"
 msgstr ""
 
-#: apps/forms/notifications.py:37
+#: apps/forms/notifications.py:38
 #, python-format
 msgid "[Ćorić Agrar] Novi servisni zahtev: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:39
+#: apps/forms/notifications.py:40
 #, python-format
-msgid "[Ćorić Agrar] Upit za rezervni deo: %(name)s"
+msgid "[Ćorić Agrar] Upit za rezervni deo: %(part)s (%(model)s)"
 msgstr ""
 
-#: apps/forms/notifications.py:41
+#: apps/forms/notifications.py:45
 #, python-format
 msgid "[Ćorić Agrar] Upit za model: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:44
+#: apps/forms/notifications.py:48
 #, python-format
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
@@ -1010,18 +1089,21 @@ msgstr "Küldjön nekünk üzenetet"
 
 #: templates/forms/partials/_contact_form_fields.html:15
 #: templates/forms/partials/_model_inquiry_form_fields.html:21
+#: templates/forms/partials/_part_request_form_fields.html:15
 #: templates/forms/partials/_service_request_form_fields.html:15
 msgid "Greška pri slanju, proverite polja:"
 msgstr "Hiba a küldéskor, ellenőrizze a mezőket:"
 
 #: templates/forms/partials/_contact_form_fields.html:101
 #: templates/forms/partials/_model_inquiry_form_fields.html:122
+#: templates/forms/partials/_part_request_form_fields.html:210
 #: templates/products/product_detail.html:15
 msgid "Pošalji upit"
 msgstr "Üzenet küldése"
 
 #: templates/forms/partials/_contact_form_fields.html:110
 #: templates/forms/partials/_model_inquiry_form_fields.html:133
+#: templates/forms/partials/_part_request_form_fields.html:219
 #: templates/forms/partials/_service_request_form_fields.html:171
 msgid "Greška pri slanju, proverite polja."
 msgstr "Hiba a küldéskor, ellenőrizze a mezőket."
@@ -1038,6 +1120,26 @@ msgstr "A termék nem található."
 #: templates/forms/partials/_model_inquiry_form_fields.html:37
 msgid "Model"
 msgstr "Modell"
+
+#: templates/forms/partials/_part_request_form_fields.html:7
+msgid "REZERVNI DELOVI"
+msgstr ""
+
+#: templates/forms/partials/_part_request_form_fields.html:9
+msgid "Poručite rezervni deo"
+msgstr ""
+
+#: templates/forms/partials/_part_request_form_fields.html:87
+msgid "Slika (opc., max 1, JPG/PNG)"
+msgstr ""
+
+#: templates/forms/partials/_part_request_form_fields.html:157
+msgid "Izaberite način plaćanja"
+msgstr ""
+
+#: templates/forms/partials/_part_request_form_fields.html:181
+msgid "Izaberite način preuzimanja"
+msgstr ""
 
 #: templates/forms/partials/_service_request_form_fields.html:7
 msgid "SERVISNI ZAHTEV"
@@ -1081,6 +1183,27 @@ msgstr "Sürgős kérdés esetén hívja:"
 
 #: templates/forms/partials/model_inquiry_success.html:16
 msgid "Upit za model je poslat."
+msgstr "A modellre vonatkozó érdeklődés elküldve."
+
+#: templates/forms/partials/part_request_success.html:7
+#, fuzzy
+#| msgid "Hvala! Vaš upit za model je primljen. Javićemo vam se uskoro."
+msgid "Hvala! Vaš upit za rezervni deo je primljen. Javićemo vam se uskoro."
+msgstr ""
+"Köszönjük! Megkaptuk a modellre vonatkozó érdeklődését. Hamarosan "
+"jelentkezünk."
+
+#: templates/forms/partials/part_request_success.html:10
+#: templates/pages/part-request.html:18
+#, fuzzy
+#| msgid "Za hitne upite pozovite:"
+msgid "Za hitne pozive:"
+msgstr "Sürgős kérdés esetén hívja:"
+
+#: templates/forms/partials/part_request_success.html:16
+#, fuzzy
+#| msgid "Upit za model je poslat."
+msgid "Upit za rezervni deo je poslat."
 msgstr "A modellre vonatkozó érdeklődés elküldve."
 
 #: templates/forms/partials/service_request_success.html:7
@@ -1144,6 +1267,29 @@ msgid ""
 msgstr ""
 "Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, "
 "radne mašine i polovna mehanizacija."
+
+#: templates/pages/part-request.html:4
+#, fuzzy
+#| msgid "O nama — Ćorić Agrar"
+msgid "Rezervni delovi — Ćorić Agrar"
+msgstr "Rólunk — Ćorić Agrar"
+
+#: templates/pages/part-request.html:6
+msgid ""
+"Rezervni delovi Ćorić Agrar — poručite rezervni deo za vašu mehanizaciju uz "
+"model traktora, opis i fotografiju. Javljamo vam se sa tačnom ponudom."
+msgstr ""
+
+#: templates/pages/part-request.html:11 templates/partials/footer.html:26
+msgid "Rezervni delovi"
+msgstr ""
+
+#: templates/pages/part-request.html:15
+msgid ""
+"Poručite rezervni deo za vašu mehanizaciju. Upišite model traktora i naziv "
+"dela, priložite fotografiju i izaberite način plaćanja i preuzimanja — "
+"javljamo vam se sa tačnom ponudom."
+msgstr ""
 
 #: templates/pages/partials/_about_gallery.html:8
 #: templates/products/partials/_gallery_carousel.html:2
@@ -1531,10 +1677,6 @@ msgstr ""
 #: templates/products/used_machinery_listing.html:4
 #: templates/products/used_machinery_listing.html:11
 msgid "Polovna mehanizacija"
-msgstr ""
-
-#: templates/partials/footer.html:26
-msgid "Rezervni delovi"
 msgstr ""
 
 #: templates/partials/footer.html:35

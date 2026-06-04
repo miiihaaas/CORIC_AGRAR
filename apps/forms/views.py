@@ -24,7 +24,12 @@ from django.utils.translation import get_language
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 
-from apps.forms.forms import ContactForm, ModelInquiryForm, ServiceRequestForm
+from apps.forms.forms import (
+    ContactForm,
+    ModelInquiryForm,
+    PartRequestForm,
+    ServiceRequestForm,
+)
 from apps.forms.models import Lead, LeadAttachment
 from apps.forms.notifications import send_lead_email
 from apps.products.models import Product
@@ -138,3 +143,44 @@ def service_request_submit(request):
             LeadAttachment.objects.create(lead=lead, file=f)
     send_lead_email(lead)  # save-before-send; povratak se NE rollback-uje
     return render(request, "forms/partials/service_request_success.html", {"lead": lead})
+
+
+@require_POST
+@ratelimit(key="ip", rate="5/m", block=False)
+def part_request_submit(request):
+    """Story 4.5 — rezervni delovi HTMX submit (REUSE service_request_submit; SM-D7 NEMA
+    apps.products import — model/deo su free text). Single-file slika kroz `request.FILES`.
+    """
+    if getattr(request, "limited", False):
+        return HttpResponse(status=429)
+
+    form = PartRequestForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return render(
+            request, "forms/partials/_part_request_form_fields.html", {"form": form}
+        )
+
+    # Lead + opciona slika su ATOMIČNI (mirror 4.4); send_lead_email IZVAN atomic
+    # bloka (email failure NE rollback-uje sačuvan lead — C1 / SM-D5).
+    with transaction.atomic():
+        lead = Lead.objects.create(
+            form_type=Lead.FormType.PART_REQUEST,
+            name=form.cleaned_data["name"],
+            phone=form.cleaned_data["phone"],
+            email=form.cleaned_data["email"],
+            message=form.cleaned_data["note"],  # napomena → Lead.message (SM-D2)
+            locale=get_language(),
+            ip_address=request.META.get("REMOTE_ADDR"),
+            data={
+                "tractor_model": form.cleaned_data["tractor_model"],
+                "part_name": form.cleaned_data["part_name"],
+                "extra_description": form.cleaned_data["extra_description"],  # prazan → ""
+                "payment_method": form.cleaned_data["payment_method"],
+                "delivery_method": form.cleaned_data["delivery_method"],
+            },
+        )
+        photo = form.cleaned_data.get("photo")
+        if photo:
+            LeadAttachment.objects.create(lead=lead, file=photo)
+    send_lead_email(lead)  # save-before-send; povratak se NE rollback-uje
+    return render(request, "forms/partials/part_request_success.html", {"lead": lead})

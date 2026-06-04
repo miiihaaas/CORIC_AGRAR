@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% translate "Rezervni delovi — Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% translate "Rezervni delovi Ćorić Agrar — poručite rezervni deo za vašu mehanizaciju uz model traktora, opis i fotografiju. Javljamo vam se sa tačnom ponudom." %}{% endblock %}
+
+{% block content %}
+  <div class="coric-contact">
+    <header class="coric-contact__header">
+      <h1 class="coric-contact__title">{% translate "Rezervni delovi" %}</h1>
+    </header>
+    <div class="coric-service__intro">
+      <p>
+        {% translate "Poručite rezervni deo za vašu mehanizaciju. Upišite model traktora i naziv dela, priložite fotografiju i izaberite način plaćanja i preuzimanja — javljamo vam se sa tačnom ponudom." %}
+      </p>
+      <p class="coric-model-inquiry__emergency">
+        {% translate "Za hitne pozive:" %}
+        <a href="tel:+381641234567" class="coric-model-inquiry__emergency-link">+381 64 123 4567</a>
+      </p>
+    </div>
+    {% include "pages/partials/_part_request_form.html" %}
+  </div>
+{% endblock content %}
