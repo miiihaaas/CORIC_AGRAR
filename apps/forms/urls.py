@@ -19,4 +19,9 @@ urlpatterns = [
         views.model_inquiry_submit,
         name="model_inquiry_submit",
     ),
+    path(
+        "htmx/forme/servis/",
+        views.service_request_submit,
+        name="service_request_submit",
+    ),
 ]

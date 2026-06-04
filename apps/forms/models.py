@@ -63,3 +63,31 @@ class Lead(TimestampedModel):
 
     def __str__(self) -> str:
         return f"{self.get_form_type_display()}: {self.name}"
+
+
+class LeadAttachment(models.Model):
+    """Story 4.4 — child model za multi-file foto upload na servisnom lead-u (SM-D1/SM-D3).
+
+    JEDAN `FileField` na Lead-u ne može držati 3 fajla, pa attachment-i žive u zasebnom
+    child modelu (FK→Lead CASCADE). NE nasleđuje `TimestampedModel` (SM-D3 — `lead.created_at`
+    je dovoljan; YAGNI). Validacija (MIME+Pillow+size+count) je u `ServiceRequestForm.clean_photos`
+    PRE save-a — `FileField` (NE `ImageField`) jer je double-check u formi (SM-D3).
+    """
+
+    lead = models.ForeignKey(
+        Lead,
+        on_delete=models.CASCADE,
+        related_name="attachments",
+        verbose_name=_("Lead"),
+    )
+    file = models.FileField(
+        upload_to="leads/attachments/%Y/%m/",
+        verbose_name=_("Datoteka"),
+    )
+
+    class Meta:
+        verbose_name = _("Prilog")
+        verbose_name_plural = _("Prilozi")
+
+    def __str__(self) -> str:
+        return f"Prilog uz {self.lead_id}: {self.file.name}"

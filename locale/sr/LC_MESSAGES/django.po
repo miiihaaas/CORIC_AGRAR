@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 15:57+0000\n"
+"POT-Creation-Date: 2026-06-04 04:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -204,10 +204,12 @@ msgstr ""
 msgid "Hidraulika"
 msgstr ""
 
-#: apps/brands/views.py:66 apps/brands/views.py:67 apps/products/models.py:383
-#: apps/products/views.py:95 apps/products/views.py:96
+#: apps/brands/views.py:66 apps/brands/views.py:67 apps/forms/forms.py:183
+#: apps/products/models.py:383 apps/products/views.py:95
+#: apps/products/views.py:96
+#: templates/forms/partials/_service_request_form_fields.html:108
 msgid "Ostalo"
-msgstr ""
+msgstr "Ostalo"
 
 #: apps/brands/views.py:130
 msgid "Jeegee brand nije konfigurisan u sistemu."
@@ -225,7 +227,9 @@ msgstr "Potkategorija nije pronađena."
 msgid "Početna"
 msgstr "Početna"
 
-#: apps/brands/views.py:319 templates/brands/jeegee_prikljucna.html:4
+#: apps/brands/views.py:319 apps/forms/forms.py:181
+#: templates/brands/jeegee_prikljucna.html:4
+#: templates/forms/partials/_service_request_form_fields.html:102
 msgid "Priključna mehanizacija"
 msgstr "Priključna mehanizacija"
 
@@ -237,113 +241,178 @@ msgstr "HZM brand nije konfigurisan u sistemu."
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr "Tulip brand nije konfigurisan u sistemu."
 
-#: apps/forms/forms.py:23 apps/forms/forms.py:82
+#: apps/forms/forms.py:27 apps/forms/forms.py:86 apps/forms/forms.py:186
 #: templates/forms/partials/_contact_form_fields.html:40
 #: templates/forms/partials/_model_inquiry_form_fields.html:61
+#: templates/forms/partials/_service_request_form_fields.html:42
 msgid "Ime i prezime"
 msgstr "Ime i prezime"
 
-#: apps/forms/forms.py:26 apps/forms/forms.py:85
+#: apps/forms/forms.py:30 apps/forms/forms.py:89 apps/forms/forms.py:189
 msgid "Unesite ime i prezime."
 msgstr "Unesite ime i prezime."
 
-#: apps/forms/forms.py:37 apps/forms/forms.py:96 apps/pages/models.py:60
+#: apps/forms/forms.py:41 apps/forms/forms.py:100 apps/forms/forms.py:215
+#: apps/pages/models.py:60
 #: templates/forms/partials/_contact_form_fields.html:56
 #: templates/forms/partials/_model_inquiry_form_fields.html:77
+#: templates/forms/partials/_service_request_form_fields.html:74
 #: templates/pages/partials/_contact_info.html:38
 msgid "E-pošta"
 msgstr "E-pošta"
 
-#: apps/forms/forms.py:40 apps/forms/forms.py:99
+#: apps/forms/forms.py:44 apps/forms/forms.py:103
 msgid "Unesite e-poštu."
 msgstr "Unesite e-poštu."
 
-#: apps/forms/forms.py:41 apps/forms/forms.py:100
+#: apps/forms/forms.py:45 apps/forms/forms.py:104 apps/forms/forms.py:217
 msgid "Unesite ispravnu e-poštu."
 msgstr "Unesite ispravnu e-poštu."
 
-#: apps/forms/forms.py:53 apps/forms/forms.py:112 apps/forms/models.py:44
-#: templates/emails/lead_received.html:24
+#: apps/forms/forms.py:57 apps/forms/forms.py:116 apps/forms/forms.py:200
+#: apps/forms/models.py:44 templates/emails/lead_received.html:24
 #: templates/forms/partials/_contact_form_fields.html:72
 #: templates/forms/partials/_model_inquiry_form_fields.html:93
+#: templates/forms/partials/_service_request_form_fields.html:58
 msgid "Telefon"
 msgstr "Telefon"
 
-#: apps/forms/forms.py:65 apps/forms/forms.py:124 apps/forms/models.py:45
+#: apps/forms/forms.py:69 apps/forms/forms.py:128 apps/forms/models.py:45
 #: templates/emails/lead_received.html:38
 #: templates/forms/partials/_contact_form_fields.html:86
 #: templates/forms/partials/_model_inquiry_form_fields.html:107
 msgid "Poruka"
 msgstr "Poruka"
 
-#: apps/forms/forms.py:67 apps/forms/forms.py:126
+#: apps/forms/forms.py:71 apps/forms/forms.py:130
 msgid "Unesite poruku."
 msgstr "Unesite poruku."
 
+#: apps/forms/forms.py:180
+#: templates/forms/partials/_service_request_form_fields.html:99
+msgid "Traktor"
+msgstr "Traktor"
+
+#: apps/forms/forms.py:182
+#: templates/forms/partials/_service_request_form_fields.html:105
+msgid "Radna mašina"
+msgstr "Radna mašina"
+
+#: apps/forms/forms.py:203
+msgid "Unesite broj telefona."
+msgstr "Unesite broj telefona."
+
+#: apps/forms/forms.py:226
+#: templates/forms/partials/_service_request_form_fields.html:88
+msgid "Vrsta mehanizacije"
+msgstr "Vrsta mehanizacije"
+
+#: apps/forms/forms.py:229
+msgid "Izaberite vrstu mehanizacije."
+msgstr "Izaberite vrstu mehanizacije."
+
+#: apps/forms/forms.py:240
+#: templates/forms/partials/_service_request_form_fields.html:118
+msgid "Brend i model"
+msgstr "Brend i model"
+
+#: apps/forms/forms.py:251
+#: templates/forms/partials/_service_request_form_fields.html:132
+msgid "Opis kvara"
+msgstr "Opis kvara"
+
+#: apps/forms/forms.py:253
+msgid "Opišite kvar."
+msgstr "Opišite kvar."
+
+#: apps/forms/forms.py:265
+msgid "Fotografije"
+msgstr "Fotografije"
+
+#: apps/forms/forms.py:287
+msgid "Možete priložiti najviše 3 slike."
+msgstr "Možete priložiti najviše 3 slike."
+
+#: apps/forms/forms.py:303
+msgid "Slika je veća od 5 MB. Probajte manju."
+msgstr "Slika je veća od 5 MB. Probajte manju."
+
 #: apps/forms/models.py:32
 msgid "Opšti kontakt"
-msgstr ""
+msgstr "Opšti kontakt"
 
 #: apps/forms/models.py:33
 msgid "Upit za model"
-msgstr ""
+msgstr "Upit za model"
 
 #: apps/forms/models.py:34
 msgid "Servisni zahtev"
-msgstr ""
+msgstr "Servisni zahtev"
 
 #: apps/forms/models.py:35
 msgid "Upit za rezervni deo"
-msgstr ""
+msgstr "Upit za rezervni deo"
 
 #: apps/forms/models.py:40 templates/emails/lead_received.html:11
 msgid "Tip forme"
-msgstr ""
+msgstr "Tip forme"
 
 #: apps/forms/models.py:42 templates/emails/lead_received.html:15
 msgid "Ime"
-msgstr ""
+msgstr "Ime"
 
 #: apps/forms/models.py:43
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: apps/forms/models.py:46
 msgid "Dodatni podaci"
-msgstr ""
+msgstr "Dodatni podaci"
 
 #: apps/forms/models.py:48
 msgid "IP adresa"
-msgstr ""
+msgstr "IP adresa"
 
 #: apps/forms/models.py:51
 msgid "Jezik"
-msgstr ""
+msgstr "Jezik"
 
-#: apps/forms/models.py:56
+#: apps/forms/models.py:56 apps/forms/models.py:81
 msgid "Lead"
-msgstr ""
+msgstr "Lead"
 
 #: apps/forms/models.py:57
 msgid "Lead-ovi"
-msgstr ""
+msgstr "Lead-ovi"
 
-#: apps/forms/notifications.py:36
+#: apps/forms/models.py:85
+msgid "Datoteka"
+msgstr "Datoteka"
+
+#: apps/forms/models.py:89
+msgid "Prilog"
+msgstr "Prilog"
+
+#: apps/forms/models.py:90
+msgid "Prilozi"
+msgstr "Prilozi"
+
+#: apps/forms/notifications.py:37
 #, python-format
 msgid "[Ćorić Agrar] Novi servisni zahtev: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:38
+#: apps/forms/notifications.py:39
 #, python-format
 msgid "[Ćorić Agrar] Upit za rezervni deo: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:40
+#: apps/forms/notifications.py:41
 #, python-format
 msgid "[Ćorić Agrar] Upit za model: %(name)s"
 msgstr ""
 
-#: apps/forms/notifications.py:43
+#: apps/forms/notifications.py:44
 #, python-format
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
@@ -942,6 +1011,7 @@ msgstr "Pošaljite nam upit"
 
 #: templates/forms/partials/_contact_form_fields.html:15
 #: templates/forms/partials/_model_inquiry_form_fields.html:21
+#: templates/forms/partials/_service_request_form_fields.html:15
 msgid "Greška pri slanju, proverite polja:"
 msgstr "Greška pri slanju, proverite polja:"
 
@@ -952,7 +1022,8 @@ msgid "Pošalji upit"
 msgstr "Pošalji upit"
 
 #: templates/forms/partials/_contact_form_fields.html:110
-#: templates/forms/partials/_model_inquiry_form_fields.html:131
+#: templates/forms/partials/_model_inquiry_form_fields.html:133
+#: templates/forms/partials/_service_request_form_fields.html:171
 msgid "Greška pri slanju, proverite polja."
 msgstr "Greška pri slanju, proverite polja."
 
@@ -961,12 +1032,33 @@ msgid "Pošaljite upit za ovaj model"
 msgstr "Pošaljite upit za ovaj model"
 
 #: templates/forms/partials/_model_inquiry_form_fields.html:15
+#: templates/forms/partials/_model_inquiry_form_fields.html:131
 msgid "Proizvod nije pronađen."
 msgstr "Proizvod nije pronađen."
 
 #: templates/forms/partials/_model_inquiry_form_fields.html:37
 msgid "Model"
 msgstr "Model"
+
+#: templates/forms/partials/_service_request_form_fields.html:7
+msgid "SERVISNI ZAHTEV"
+msgstr "SERVISNI ZAHTEV"
+
+#: templates/forms/partials/_service_request_form_fields.html:9
+msgid "Prijavite kvar"
+msgstr "Prijavite kvar"
+
+#: templates/forms/partials/_service_request_form_fields.html:96
+msgid "Izaberite vrstu mehanizacije"
+msgstr "Izaberite vrstu mehanizacije"
+
+#: templates/forms/partials/_service_request_form_fields.html:147
+msgid "Fotografije kvara (do 3, JPG/PNG)"
+msgstr "Fotografije kvara (do 3, JPG/PNG)"
+
+#: templates/forms/partials/_service_request_form_fields.html:162
+msgid "Pošalji zahtev"
+msgstr "Pošalji zahtev"
 
 #: templates/forms/partials/contact_success.html:6
 msgid "Hvala! Vaš upit je primljen."
@@ -987,6 +1079,19 @@ msgstr "Za hitne upite pozovite:"
 #: templates/forms/partials/model_inquiry_success.html:16
 msgid "Upit za model je poslat."
 msgstr "Upit za model je poslat."
+
+#: templates/forms/partials/service_request_success.html:7
+msgid "Hvala! Vaš servisni zahtev je primljen. Javićemo vam se uskoro."
+msgstr "Hvala! Vaš servisni zahtev je primljen. Javićemo vam se uskoro."
+
+#: templates/forms/partials/service_request_success.html:10
+#: templates/pages/service.html:18
+msgid "Za hitne kvarove pozovite:"
+msgstr "Za hitne kvarove pozovite:"
+
+#: templates/forms/partials/service_request_success.html:16
+msgid "Servisni zahtev je poslat."
+msgstr "Servisni zahtev je poslat."
 
 #: templates/pages/about.html:4
 msgid "O nama — Ćorić Agrar"
@@ -1344,6 +1449,26 @@ msgstr "Pogledaj brend: %(brand)s"
 #: templates/pages/partials/_home_traktori.html:45
 msgid "Brendovi će uskoro biti dostupni."
 msgstr "Brendovi će uskoro biti dostupni."
+
+#: templates/pages/service.html:4
+msgid "Servisna podrška — Ćorić Agrar"
+msgstr "Servisna podrška — Ćorić Agrar"
+
+#: templates/pages/service.html:6
+msgid ""
+"Servisna podrška Ćorić Agrar — prijavite kvar na mehanizaciji uz "
+"fotografiju. Naš servis vas zove nazad sa svim informacijama."
+msgstr ""
+
+#: templates/pages/service.html:11
+msgid "Servisna podrška"
+msgstr "Servisna podrška"
+
+#: templates/pages/service.html:15
+msgid ""
+"Prijavite kvar na vašoj mehanizaciji. Priložite fotografiju sa telefona — "
+"naš servis tako ima sve informacije pre nego što vas pozove."
+msgstr ""
 
 #: templates/partials/_testimonials_slider.html:3
 msgid "Iz prve ruke"

@@ -15,8 +15,11 @@ Refs:
 
 from __future__ import annotations
 
+import io
+
 import pytest
 from django.core.cache import cache
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils.translation import activate
 
@@ -41,6 +44,18 @@ def _pin_and_clear_ratelimit_cache(settings):
     cache.clear()
     yield
     cache.clear()
+
+
+@pytest.fixture(autouse=True)
+def _isolate_media_root(settings, tmp_path):
+    """Per-test MEDIA_ROOT isolation (established project pattern — media_pipeline/products).
+
+    Story 4.4 LeadAttachment file-upload testovi pišu realne fajlove kroz FileSystemStorage
+    (NEMA transakcionog rollback-a za disk). Bez per-test tmp_path izolacije, `kvar.jpg`
+    basename curi KROZ testove → FileSystemStorage dodaje random suffix → testovi koji
+    asertuju TAČAN basename (`name == "kvar.jpg"`) padaju nedeterministički.
+    """
+    settings.MEDIA_ROOT = str(tmp_path)
 
 
 @pytest.fixture
@@ -147,3 +162,126 @@ def published_product(db):
     from apps.products.tests.factories import ProductFactory
 
     return ProductFactory.create(name="Agri Tracking TB804")
+
+
+# ── Story 4.4 (Servisni zahtev forma sa foto upload-om) — RED phase fixtures ──
+
+
+def _pillow_upload(fmt: str, content_type: str, filename: str) -> SimpleUploadedFile:
+    """Generiše VALIDNU malu sliku kroz Pillow in-memory → SimpleUploadedFile.
+
+    Mala (10×10) validna slika koja PROLAZI `validate_image_mime` MIME-signature +
+    Pillow `verify()` (za jpeg/png; webp se odbija na nivou `allowed_mimes`, NE
+    na signature/verify grani — slika je validna, samo nije dozvoljen tip).
+    """
+    from PIL import Image
+
+    buffer = io.BytesIO()
+    Image.new("RGB", (10, 10), color=(34, 64, 47)).save(buffer, format=fmt)
+    buffer.seek(0)
+    return SimpleUploadedFile(filename, buffer.read(), content_type=content_type)
+
+
+@pytest.fixture
+def service_request_payload() -> dict:
+    """Validan POST payload za ServiceRequestForm (Task 1.1) BEZ `photos`.
+
+    `photos` se dodaje per-test kao lista `SimpleUploadedFile`-ova
+    (`{**service_request_payload, "photos": [valid_image_jpeg, ...]}`). Pun dijakritik
+    u `name`/`brand_model`/`description` (project-context anti-šišana-latinica).
+    """
+    return {
+        "name": "Stojan Stojanović",
+        "phone": "+381641234567",
+        "email": "stojan@example.com",
+        "machine_type": "tractor",
+        "brand_model": "Agri Tracking TB804",
+        "description": "Curi ulje iz hidraulike.",
+    }
+
+
+@pytest.fixture
+def service_request_submit_url() -> str:
+    """Reverse `forms:service_request_submit` pod aktivnim `sr` (i18n_patterns prefiks /sr/)."""
+    activate("sr")
+    return reverse("forms:service_request_submit")
+
+
+@pytest.fixture
+def valid_image_jpeg() -> SimpleUploadedFile:
+    """Validna mala JPEG slika kroz Pillow (prolazi MIME-signature + Pillow verify)."""
+    return _pillow_upload("JPEG", "image/jpeg", "kvar.jpg")
+
+
+@pytest.fixture
+def valid_image_png() -> SimpleUploadedFile:
+    """Validna mala PNG slika kroz Pillow."""
+    return _pillow_upload("PNG", "image/png", "kvar.png")
+
+
+@pytest.fixture
+def valid_image_webp() -> SimpleUploadedFile:
+    """Validna mala WEBP slika — služi za „webp odbijen jer NIJE u allowed_mimes" assertion.
+
+    Slika je struktura-validna (Pillow je prihvata), ali `allowed_mimes` je pinovan na
+    `("image/jpeg","image/png")` u formi, pa MIME-signature provera odbija webp.
+    """
+    return _pillow_upload("WEBP", "image/webp", "kvar.webp")
+
+
+@pytest.fixture
+def oversized_image() -> SimpleUploadedFile:
+    """VALIDNA mala JPEG sa FORSIRANIM `.size` > 5 MB (Task 1.1 rationale).
+
+    Sirov 5 MB `BytesIO` nula NIJE validna slika → pao bi PRVO na MIME-signature /
+    Pillow `verify()` grani i raise-ovao POGREŠNU grešku (NE „5 MB" size poruku). Samo
+    validna mala slika sa naduvanim `.size` pouzdano okida size-limit granu u
+    `validate_image_mime` (koja proverava `upload.size` PRE čitanja sadržaja) i „5 MB" poruku.
+    """
+    upload = _pillow_upload("JPEG", "image/jpeg", "velika.jpg")
+    upload.size = 6 * 1024 * 1024  # > 5 MB limit — forsira size-limit granu
+    return upload
+
+
+@pytest.fixture
+def oversized_image_real() -> SimpleUploadedFile:
+    """VALIDNA JPEG čiji REALAN broj bajtova prelazi 5 MB (preživi test-client round-trip).
+
+    `oversized_image` forsira `.size` atribut, ali Django test client serijalizuje fajl kroz
+    `file.read()` (encode_file) — forsiran `.size` se NE prenosi preko HTTP granice, a server
+    rekonstruiše `UploadedFile` čiji `.size` = stvaran broj bajtova. Za ENDPOINT-nivo oversized
+    test (`htmx_post` round-trip) mora postojati fajl sa STVARNO > 5 MB sadržajem, inače mala
+    validna slika prođe size granu i Lead se kreira (test bi bio neostvariv).
+
+    Random-noise 2600×2600 JPEG (quality=100) ≈ 12 MB > 5 MB; 6.76M px < `Image.MAX_IMAGE_PIXELS`
+    (50M decompression-bomb guard u validate_image_mime) → prolazi MIME+Pillow, pada SAMO na size grani.
+    """
+    import os
+
+    from PIL import Image
+
+    dim = 2600
+    img = Image.frombytes("RGB", (dim, dim), os.urandom(dim * dim * 3))
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG", quality=100)
+    buffer.seek(0)
+    data = buffer.read()
+    assert len(data) > 5 * 1024 * 1024, (
+        f"oversized_image_real MORA biti > 5 MB realnih bajtova (round-trip safe), "
+        f"dobio {len(data) / 1024 / 1024:.2f} MB."
+    )
+    return SimpleUploadedFile("velika-realna.jpg", data, content_type="image/jpeg")
+
+
+@pytest.fixture
+def non_image_file() -> SimpleUploadedFile:
+    """Ne-slika fajl (PDF content-type + PDF signature) — MIME-signature mismatch.
+
+    `validate_image_mime` python-magic signature check detektuje application/pdf koji
+    NIJE u allowed_mimes → ValidationError (NE oslanja se na ekstenziju).
+    """
+    return SimpleUploadedFile(
+        "dokument.pdf",
+        b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<< >>\nendobj\n",
+        content_type="application/pdf",
+    )

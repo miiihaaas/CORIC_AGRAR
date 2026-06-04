@@ -15,6 +15,8 @@ Refs: 4-1-lead-model-smtp-setup.md AC4/AC8/AC9; 4-1-interface-contract.md § 4.
 from __future__ import annotations
 
 import logging
+import mimetypes
+import os
 import smtplib
 
 from anymail.exceptions import AnymailError
@@ -92,13 +94,24 @@ def send_lead_email(lead: Lead) -> bool:
     message.attach_alternative(html_body, "text/html")
 
     try:
+        # Story 4.4 (SM-D5) — attach servisne slike PRE send-a. Prazan queryset (kontakt/
+        # model-inquiry/service-bez-slika) → no-op (regression). Context manager je handle-safe.
+        # Čitanje fajla je UNUTAR try/except: file-read OSError (nedostaje fajl na disku /
+        # unmounted media volume / permission) → graceful return False (C1 NETAKNUT), NE 500.
+        for attachment in lead.attachments.all():
+            with attachment.file.open("rb") as f:
+                content = f.read()
+            name = os.path.basename(attachment.file.name)
+            mimetype = mimetypes.guess_type(name)[0] or "application/octet-stream"
+            message.attach(name, content, mimetype)
+
         message.send()
     except (AnymailError, smtplib.SMTPException, OSError):
-        # Uži boundary ka third-party (Resend) / SMTP transport-u (C1). Programski
-        # bug-ovi (TemplateDoesNotExist/TypeError/AttributeError) NAMERNO propagiraju.
+        # Uži boundary ka third-party (Resend) / SMTP transport-u + attachment file-read (C1).
+        # Programski bug-ovi (TemplateDoesNotExist/TypeError/AttributeError) NAMERNO propagiraju.
         logger.exception(
-            "send_lead_email: provider send pao za lead pk=%s (form_type=%r) — "
-            "lead OSTAJE sačuvan; GlitchTip-capturable.",
+            "send_lead_email: provider send ili attachment-read pao za lead pk=%s "
+            "(form_type=%r) — lead OSTAJE sačuvan; GlitchTip-capturable.",
             lead.pk,
             lead.form_type,
         )

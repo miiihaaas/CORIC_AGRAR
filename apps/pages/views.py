@@ -128,3 +128,17 @@ class ContactView(TemplateView):
 
     template_name = "pages/contact.html"
     http_method_names = ["get", "head", "options"]
+
+
+class ServiceView(TemplateView):
+    """„Servisna podrška" strana (Story 4.4, FR-22) — mirror `ContactView`.
+
+    GET-only READ-ONLY render strana koja mount-uje aktivnu servisnu formu kroz
+    container partial (forms app vlasnik je render-a + submit endpoint-a — SM-D12).
+    POST ide na ZASEBAN `forms:service_request_submit` endpoint, NE na ovaj page view.
+
+    GET-only DETERMINISTIČKI: `http_method_names` izostavlja `post` → HTTP 405 za POST.
+    """
+
+    template_name = "pages/service.html"
+    http_method_names = ["get", "head", "options"]

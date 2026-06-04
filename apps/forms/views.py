@@ -17,14 +17,15 @@ Refs: 4-2 AC2-AC7 + Task 6; 4-3 AC2-AC8 + Task 7; interface-contract § 2.
 
 from __future__ import annotations
 
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.translation import get_language
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 
-from apps.forms.forms import ContactForm, ModelInquiryForm
-from apps.forms.models import Lead
+from apps.forms.forms import ContactForm, ModelInquiryForm, ServiceRequestForm
+from apps.forms.models import Lead, LeadAttachment
 from apps.forms.notifications import send_lead_email
 from apps.products.models import Product
 
@@ -101,3 +102,39 @@ def model_inquiry_submit(request):
     )
     send_lead_email(lead)
     return render(request, "forms/partials/model_inquiry_success.html", {})
+
+
+@require_POST
+@ratelimit(key="ip", rate="5/m", block=False)
+def service_request_submit(request):
+    if getattr(request, "limited", False):
+        return HttpResponse(status=429)
+
+    form = ServiceRequestForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return render(
+            request, "forms/partials/_service_request_form_fields.html", {"form": form}
+        )
+
+    # Lead + attachment loop su ATOMIČNI: ako attachment create padne na fajlu N
+    # (storage OSError), Lead se rollback-uje → NEMA orphan lead-a sa parcijalnim
+    # prilozima. send_lead_email JE NAMERNO IZVAN atomic bloka (email failure NE SME
+    # da rollback-uje sačuvan lead — C1 ugovor / SM-D5).
+    with transaction.atomic():
+        lead = Lead.objects.create(
+            form_type=Lead.FormType.SERVICE_REQUEST,
+            name=form.cleaned_data["name"],
+            phone=form.cleaned_data["phone"],
+            email=form.cleaned_data["email"],
+            message=form.cleaned_data["description"],  # opis kvara → Lead.message (SM-D2)
+            locale=get_language(),
+            ip_address=request.META.get("REMOTE_ADDR"),
+            data={
+                "machine_type": form.cleaned_data["machine_type"],
+                "brand_model": form.cleaned_data["brand_model"],  # prazan → "" (ključ PRISUTAN)
+            },
+        )
+        for f in form.cleaned_data["photos"]:  # prazna lista ako bez slika
+            LeadAttachment.objects.create(lead=lead, file=f)
+    send_lead_email(lead)  # save-before-send; povratak se NE rollback-uje
+    return render(request, "forms/partials/service_request_success.html", {"lead": lead})

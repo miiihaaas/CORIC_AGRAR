@@ -98,8 +98,8 @@
             <li><a class="dropdown-item" href="{% url 'products:used_machinery_list' %}">{% translate "Polovna mehanizacija" %}</a></li>
           </ul>
         </li>
-        {# TODO(Epic 4 / 4-4): wire to servis ruta kad nastane #}
-        <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Servis" %}</a></li>
+        {# RESOLVED Story 4-4: servis ruta wired na pages:service. #}
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:service' %}">{% translate "Servis" %}</a></li>
         {# TODO(Epic 5 / 5-2): wire to blog index kad nastane #}
         <li class="nav-item"><a class="nav-link coric-nav__link" href="#">{% translate "Priče sa polja" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:about' %}">{% translate "O nama" %}</a></li>

@@ -269,6 +269,48 @@
   outline-offset: 2px;
 }
 
+/* === Servisna forma (Story 4.4) — REUSE coric-contact-form__* + foto upload === */
+.coric-service__intro {
+  max-width: 640px;
+  margin: 0 auto var(--spacing-scale-6);
+  text-align: center;
+  font-size: var(--typography-scale-body);
+  color: var(--color-neutral-gray-700);
+  line-height: var(--typography-line-height-relaxed);
+}
+
+#service-form-section {
+  scroll-margin-top: var(--spacing-scale-8);
+}
+
+/* File input — pun-širine, vidljiv (AC8 mobilna kamera/galerija). */
+.coric-service-form__file {
+  padding: var(--spacing-scale-2) var(--spacing-scale-3);
+  cursor: pointer;
+}
+
+.coric-service-form__file::file-selector-button {
+  margin-right: var(--spacing-scale-3);
+  padding: var(--spacing-scale-1) var(--spacing-scale-3);
+  border: 1px solid var(--color-neutral-gray-500);
+  border-radius: var(--rounded-sm);
+  background-color: var(--color-neutral-cream);
+  color: var(--color-brand-green-800);
+  font-weight: var(--typography-weight-bold);
+  cursor: pointer;
+}
+
+/* AC8 mobile: submit full-width (stack je već default 1-kolona forme). */
+#service-form-section .coric-contact-form__submit {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  #service-form-section .coric-contact-form__submit {
+    width: auto;
+  }
+}
+
 /* === Mapa (responsive aspect-ratio iframe) === */
 .coric-contact-map {
   margin-bottom: var(--spacing-scale-4);

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% translate "Servisna podrška — Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% translate "Servisna podrška Ćorić Agrar — prijavite kvar na mehanizaciji uz fotografiju. Naš servis vas zove nazad sa svim informacijama." %}{% endblock %}
+
+{% block content %}
+  <div class="coric-contact">
+    <header class="coric-contact__header">
+      <h1 class="coric-contact__title">{% translate "Servisna podrška" %}</h1>
+    </header>
+    <div class="coric-service__intro">
+      <p>
+        {% translate "Prijavite kvar na vašoj mehanizaciji. Priložite fotografiju sa telefona — naš servis tako ima sve informacije pre nego što vas pozove." %}
+      </p>
+      <p class="coric-model-inquiry__emergency">
+        {% translate "Za hitne kvarove pozovite:" %}
+        <a href="tel:+381641234567" class="coric-model-inquiry__emergency-link">+381 64 123 4567</a>
+      </p>
+    </div>
+    {% include "pages/partials/_service_form.html" %}
+  </div>
+{% endblock content %}
