@@ -1,0 +1,25 @@
+{% load i18n media_tags %}
+
+<a class="coric-blog-card"
+   href="{{ post.get_absolute_url }}"
+   aria-label="{% blocktranslate with title=post.title %}{{ title }} — pročitaj objavu{% endblocktranslate %}"
+   data-testid="blog-card-{{ post.slug }}">
+  <div class="coric-blog-card__image">
+    {% if post.main_image %}
+      {% responsive_picture post.main_image alt=post.title sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-blog-card__img" %}
+    {% endif %}
+  </div>
+  <div class="coric-blog-card__body">
+    {% if post.published_at %}
+      <p class="coric-blog-card__date">
+        <span class="visually-hidden">{% translate "Datum objave:" %}</span>
+        {{ post.published_at|date:"SHORT_DATE_FORMAT" }}
+      </p>
+    {% endif %}
+    <h3 class="coric-blog-card__title">{{ post.title }}</h3>
+    {% if post.perex %}
+      <p class="coric-blog-card__perex">{{ post.perex }}</p>
+    {% endif %}
+    <span class="coric-button coric-button--primary coric-blog-card__cta" aria-hidden="true">{% translate "SAZNAJ VIŠE" %}</span>
+  </div>
+</a>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n media_tags %}
+
+{% block title %}{% translate "Priče sa polja" %} | Ćorić Agrar{% endblock %}
+
+{% block meta_description %}{% blocktranslate %}Priče sa polja — saveti, iskustva i novosti iz poljoprivrede. Filtrirajte objave po kategoriji.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+  <section class="coric-blog-index" data-testid="blog-index-page" aria-labelledby="blog-index-title">
+    <header class="coric-blog-index__header">
+      <h1 id="blog-index-title" class="coric-blog-index__title">{% translate "Priče sa polja" %}</h1>
+      <p class="coric-blog-index__lead">{% translate "Saveti, iskustva i novosti sa naših njiva — izaberite temu koja vas zanima." %}</p>
+    </header>
+
+    <section id="blog-filters" aria-labelledby="blog-filters-title" class="coric-blog-filters">
+      {% include "blog/partials/_blog_filter.html" %}
+    </section>
+
+    <section id="blog-results-wrap" aria-labelledby="blog-results-title" class="coric-blog-results">
+      <h2 id="blog-results-title" class="visually-hidden">{% translate "Lista objava" %}</h2>
+      {% include "blog/partials/_post_results.html" %}
+    </section>
+  </section>
+{% endblock content %}

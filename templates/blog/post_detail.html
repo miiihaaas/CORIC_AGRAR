@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ post.title }} | Ćorić Agrar{% endblock %}
+
+{% block content %}
+  <article class="coric-blog-detail" data-testid="blog-detail-page" aria-labelledby="blog-detail-title">
+    <header class="coric-blog-detail__header">
+      <h1 id="blog-detail-title" class="coric-blog-detail__title">{{ post.title }}</h1>
+      {% if post.published_at %}
+        <p class="coric-blog-detail__date">
+          <span class="visually-hidden">{% translate "Datum objave:" %}</span>
+          {{ post.published_at|date:"SHORT_DATE_FORMAT" }}
+        </p>
+      {% endif %}
+    </header>
+
+    <div class="coric-blog-detail__body">
+      {# 5-3/8.7: ako body postane rich-HTML (WYSIWYG), zameni |linebreaks sanitizovanim renderom (bleach/nh3 + |safe) — |linebreaks ESCAPE-uje, pa bi double-escape-ovao HTML (prikazao bi sirove tagove). Plain-text body (5-1 SM-D10) je trenutno ispravan za 5-2. #}
+      {{ post.body|linebreaks }}
+    </div>
+  </article>
+{% endblock content %}

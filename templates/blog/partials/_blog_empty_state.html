@@ -1,0 +1,23 @@
+{% load i18n %}
+
+{% if active_filters.kategorija %}
+  <div class="coric-blog-empty" data-testid="blog-empty-filter">
+    <h3 class="coric-blog-empty__title">{% translate "Nema objava u ovoj kategoriji." %}</h3>
+    <p class="coric-blog-empty__lead">{% translate "Pokušajte sa drugom kategorijom ili pogledajte sve objave." %}</p>
+    <a href="{% url 'blog:index' %}"
+       class="coric-button coric-button--primary"
+       data-testid="blog-empty-show-all">
+      {% translate "prikaži sve" %}
+    </a>
+  </div>
+{% else %}
+  <div class="coric-blog-empty" data-testid="blog-empty-state">
+    <h3 class="coric-blog-empty__title">{% translate "Uskoro nove priče sa polja" %}</h3>
+    <p class="coric-blog-empty__lead">{% translate "Pripremamo nove tekstove sa naših njiva. Navratite uskoro." %}</p>
+    <a href="{% url 'pages:home' %}"
+       class="coric-button coric-button--primary"
+       data-testid="blog-empty-home">
+      {% translate "POVRATAK NA POČETNU" %}
+    </a>
+  </div>
+{% endif %}

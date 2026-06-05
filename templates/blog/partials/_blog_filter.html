@@ -1,0 +1,36 @@
+{% load i18n %}
+
+{% include "partials/section_eyebrow.html" with text=_("KATEGORIJE") tag="div" %}
+<h2 id="blog-filters-title" class="visually-hidden">{% translate "Filter objava po kategoriji" %}</h2>
+
+<form id="blog-filter-form"
+      method="get"
+      action="{% url 'blog:index' %}"
+      hx-get="{% url 'blog:index' %}"
+      hx-trigger="change delay:300ms"
+      hx-target="#blog-results"
+      hx-swap="innerHTML"
+      hx-push-url="true"
+      hx-indicator="#blog-filter-loading"
+      class="coric-blog-filters__form"
+      data-testid="blog-filter-form">
+
+  <div class="coric-blog-filters__group">
+    <label for="filter-kategorija" class="coric-blog-filters__label">{% translate "Kategorija" %}</label>
+    <select id="filter-kategorija"
+            name="kategorija"
+            class="coric-blog-filters__select form-select"
+            data-testid="filter-kategorija">
+      <option value="">{% translate "Sve kategorije" %}</option>
+      {% for category in categories_for_dropdown %}
+        <option value="{{ category.slug }}"{% if active_filters.kategorija == category.slug %} selected{% endif %}>{{ category.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div id="blog-filter-loading" class="coric-blog-filters__loading htmx-indicator" aria-hidden="true">
+    <div class="spinner-border spinner-border-sm" role="status">
+      <span class="visually-hidden">{% translate "Učitavanje rezultata…" %}</span>
+    </div>
+  </div>
+</form>

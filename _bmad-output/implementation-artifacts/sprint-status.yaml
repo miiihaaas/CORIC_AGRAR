@@ -106,7 +106,7 @@ dev elopment_status:
   # ============================================================
   epic-5: in-progress
   5-1-blogpost-category-tag-modeli-admin-stub: done
-  5-2-blog-index-strana-sa-paginacijom-filter: backlog
+  5-2-blog-index-strana-sa-paginacijom-filter: done
   5-3-blog-post-detail-strana: backlog
   5-4-footer-dynamic-najnovije-vesti-kolona: backlog
   epic-5-retrospective: optional

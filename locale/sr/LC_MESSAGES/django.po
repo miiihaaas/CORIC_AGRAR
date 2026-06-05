@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 10:43+0000\n"
+"POT-Creation-Date: 2026-06-04 13:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,78 +23,78 @@ msgstr ""
 msgid "Blog"
 msgstr "Blog"
 
-#: apps/blog/models.py:47 apps/blog/models.py:82 apps/brands/models.py:69
+#: apps/blog/models.py:48 apps/blog/models.py:83 apps/brands/models.py:69
 #: apps/brands/models.py:179 apps/brands/models.py:251
 #: apps/brands/models.py:333 apps/products/models.py:122
 #: apps/products/models.py:337
 msgid "Naziv"
 msgstr "Naziv"
 
-#: apps/blog/models.py:48 apps/brands/models.py:85 apps/brands/models.py:181
+#: apps/blog/models.py:49 apps/brands/models.py:85 apps/brands/models.py:181
 #: apps/brands/models.py:253 apps/brands/models.py:335
 #: apps/products/models.py:128 apps/products/models.py:352
 msgid "Opis"
 msgstr "Opis"
 
-#: apps/blog/models.py:52 apps/blog/models.py:140 apps/brands/models.py:271
-#: apps/brands/models.py:323
+#: apps/blog/models.py:53 apps/blog/models.py:150 apps/brands/models.py:271
+#: apps/brands/models.py:323 templates/blog/partials/_blog_filter.html:19
 #: templates/products/partials/_used_filter_form.html:19
 msgid "Kategorija"
 msgstr "Kategorija"
 
-#: apps/blog/models.py:53 apps/brands/models.py:272
+#: apps/blog/models.py:54 apps/brands/models.py:272
 msgid "Kategorije"
 msgstr "Kategorije"
 
-#: apps/blog/models.py:86
+#: apps/blog/models.py:87
 msgid "Tag"
 msgstr "Tag"
 
-#: apps/blog/models.py:87 apps/blog/models.py:146
+#: apps/blog/models.py:88 apps/blog/models.py:156
 msgid "Tagovi"
 msgstr "Tagovi"
 
-#: apps/blog/models.py:121 apps/products/models.py:96
+#: apps/blog/models.py:122 apps/products/models.py:96
 msgid "Nacrt"
 msgstr "Nacrt"
 
-#: apps/blog/models.py:122
+#: apps/blog/models.py:123
 msgid "Objavljeno"
 msgstr "Objavljeno"
 
-#: apps/blog/models.py:124
+#: apps/blog/models.py:125
 msgid "Naslov"
 msgstr "Naslov"
 
-#: apps/blog/models.py:125
+#: apps/blog/models.py:132
 msgid "Perex"
 msgstr "Perex"
 
-#: apps/blog/models.py:126
+#: apps/blog/models.py:135
 msgid "Telo"
 msgstr "Telo"
 
-#: apps/blog/models.py:128 apps/products/models.py:136
+#: apps/blog/models.py:138 apps/products/models.py:136
 msgid "Glavna slika"
 msgstr "Glavna slika"
 
-#: apps/blog/models.py:154
+#: apps/blog/models.py:164
 msgid "Autor"
 msgstr "Autor"
 
-#: apps/blog/models.py:157 apps/products/models.py:164
+#: apps/blog/models.py:171 apps/products/models.py:164
 msgid "Status"
 msgstr "Status"
 
-#: apps/blog/models.py:163
+#: apps/blog/models.py:176
 msgid "Datum objave"
 msgstr "Datum objave"
 
-#: apps/blog/models.py:170
+#: apps/blog/models.py:183
 msgid "Objava"
 msgstr "Objava"
 
-#: apps/blog/models.py:171 templates/search/partials/_search_dropdown.html:45
+#: apps/blog/models.py:184 templates/search/partials/_search_dropdown.html:45
 msgid "Objave"
 msgstr "Objave"
 
@@ -883,6 +883,131 @@ msgid ""
 msgstr ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 
+#: templates/blog/blog_index.html:4 templates/blog/blog_index.html:11
+#: templates/pages/partials/_home_price_sa_polja.html:7
+#: templates/partials/header.html:104
+msgid "Priče sa polja"
+msgstr "Priče sa polja"
+
+#: templates/blog/blog_index.html:6
+msgid ""
+"Priče sa polja — saveti, iskustva i novosti iz poljoprivrede. Filtrirajte "
+"objave po kategoriji."
+msgstr ""
+
+#: templates/blog/blog_index.html:12
+msgid ""
+"Saveti, iskustva i novosti sa naših njiva — izaberite temu koja vas zanima."
+msgstr ""
+
+#: templates/blog/blog_index.html:20
+msgid "Lista objava"
+msgstr ""
+
+#: templates/blog/partials/_blog_empty_state.html:5
+#, fuzzy
+#| msgid "Nema dostupnih modela u ovoj kategoriji."
+msgid "Nema objava u ovoj kategoriji."
+msgstr "Nema dostupnih modela u ovoj kategoriji."
+
+#: templates/blog/partials/_blog_empty_state.html:6
+msgid "Pokušajte sa drugom kategorijom ili pogledajte sve objave."
+msgstr ""
+
+#: templates/blog/partials/_blog_empty_state.html:10
+#, fuzzy
+#| msgid "Vidi sve"
+msgid "prikaži sve"
+msgstr "Vidi sve"
+
+#: templates/blog/partials/_blog_empty_state.html:15
+#, fuzzy
+#| msgid "Priče sa polja"
+msgid "Uskoro nove priče sa polja"
+msgstr "Priče sa polja"
+
+#: templates/blog/partials/_blog_empty_state.html:16
+msgid "Pripremamo nove tekstove sa naših njiva. Navratite uskoro."
+msgstr ""
+
+#: templates/blog/partials/_blog_empty_state.html:20
+msgid "POVRATAK NA POČETNU"
+msgstr ""
+
+#: templates/blog/partials/_blog_filter.html:3
+#, fuzzy
+#| msgid "POTKATEGORIJE"
+msgid "KATEGORIJE"
+msgstr "POTKATEGORIJE"
+
+#: templates/blog/partials/_blog_filter.html:4
+#, fuzzy
+#| msgid "Roditeljska potkategorija"
+msgid "Filter objava po kategoriji"
+msgstr "Roditeljska potkategorija"
+
+#: templates/blog/partials/_blog_filter.html:24
+#: templates/products/partials/_used_filter_form.html:24
+msgid "Sve kategorije"
+msgstr "Sve kategorije"
+
+#: templates/blog/partials/_blog_filter.html:33
+#: templates/products/partials/_filter_form.html:78
+#: templates/products/partials/_used_filter_form.html:117
+msgid "Učitavanje rezultata…"
+msgstr "Učitavanje rezultata…"
+
+#: templates/blog/partials/_post_card.html:5
+#, python-format
+msgid "%(title)s — pročitaj objavu"
+msgstr ""
+
+#: templates/blog/partials/_post_card.html:15
+#: templates/blog/post_detail.html:12
+#, fuzzy
+#| msgid "Datum objave"
+msgid "Datum objave:"
+msgstr "Datum objave"
+
+#: templates/blog/partials/_post_card.html:23
+msgid "SAZNAJ VIŠE"
+msgstr ""
+
+#: templates/blog/partials/_post_results.html:16
+#: templates/products/partials/_results_grid.html:37
+#: templates/products/partials/_used_results_grid.html:40
+msgid "Paginacija"
+msgstr "Paginacija"
+
+#: templates/blog/partials/_post_results.html:24
+#: templates/products/partials/_results_grid.html:45
+#: templates/products/partials/_used_results_grid.html:48
+msgid "Prethodna"
+msgstr "Prethodna"
+
+#: templates/blog/partials/_post_results.html:27
+#: templates/products/partials/_results_grid.html:48
+#: templates/products/partials/_used_results_grid.html:51
+#, python-format
+msgid "Strana %(current)s od %(total)s"
+msgstr "Strana %(current)s od %(total)s"
+
+#: templates/blog/partials/_post_results.html:36
+#: templates/products/partials/_results_grid.html:57
+#: templates/products/partials/_used_results_grid.html:60
+msgid "Sledeća"
+msgstr "Sledeća"
+
+#: templates/blog/partials/_post_results.html:46
+#, fuzzy, python-format
+#| msgid "Pronađen %(counter)s model."
+#| msgid_plural "Pronađeno %(counter)s modela."
+msgid "Pronađena %(counter)s objava."
+msgid_plural "Pronađeno %(counter)s objava."
+msgstr[0] "Pronađen %(counter)s model."
+msgstr[1] "Pronađena %(counter)s modela."
+msgstr[2] "Pronađeno %(counter)s modela."
+
 #: templates/brands/brand_coming_soon.html:4
 #: templates/brands/brand_detail.html:4
 #: templates/brands/hzm_radne_masine.html:4
@@ -1557,11 +1682,6 @@ msgstr "Pogledaj polovnu mehanizaciju"
 msgid "PRIČE SA POLJA"
 msgstr "PRIČE SA POLJA"
 
-#: templates/pages/partials/_home_price_sa_polja.html:7
-#: templates/partials/header.html:104
-msgid "Priče sa polja"
-msgstr "Priče sa polja"
-
 #: templates/pages/partials/_home_price_sa_polja.html:20
 #: templates/pages/partials/_home_price_sa_polja.html:25
 msgid "Demonstrativni sadržaj — placeholder dok blog nije objavljen"
@@ -1895,11 +2015,6 @@ msgstr "Cena maksimum (EUR)"
 msgid "EUR"
 msgstr "EUR"
 
-#: templates/products/partials/_filter_form.html:78
-#: templates/products/partials/_used_filter_form.html:117
-msgid "Učitavanje rezultata…"
-msgstr "Učitavanje rezultata…"
-
 #: templates/products/partials/_gallery_carousel.html:3
 msgid "Galerija slika"
 msgstr "Galerija slika"
@@ -1908,27 +2023,6 @@ msgstr "Galerija slika"
 #, python-format
 msgid "%(name)s — pregled modela"
 msgstr "%(name)s — pregled modela"
-
-#: templates/products/partials/_results_grid.html:37
-#: templates/products/partials/_used_results_grid.html:40
-msgid "Paginacija"
-msgstr "Paginacija"
-
-#: templates/products/partials/_results_grid.html:45
-#: templates/products/partials/_used_results_grid.html:48
-msgid "Prethodna"
-msgstr "Prethodna"
-
-#: templates/products/partials/_results_grid.html:48
-#: templates/products/partials/_used_results_grid.html:51
-#, python-format
-msgid "Strana %(current)s od %(total)s"
-msgstr "Strana %(current)s od %(total)s"
-
-#: templates/products/partials/_results_grid.html:57
-#: templates/products/partials/_used_results_grid.html:60
-msgid "Sledeća"
-msgstr "Sledeća"
 
 #: templates/products/partials/_results_grid.html:71
 #: templates/products/partials/_used_results_grid.html:70
@@ -1972,10 +2066,6 @@ msgstr "POGLEDAJ NOVE TRAKTORE"
 #: templates/products/partials/_used_filter_form.html:4
 msgid "Filteri pretrage polovne mehanizacije"
 msgstr "Filteri pretrage polovne mehanizacije"
-
-#: templates/products/partials/_used_filter_form.html:24
-msgid "Sve kategorije"
-msgstr "Sve kategorije"
 
 #: templates/products/partials/_used_filter_form.html:37
 msgid "Svi brendovi"

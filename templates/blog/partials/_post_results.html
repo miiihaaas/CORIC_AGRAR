@@ -1,0 +1,47 @@
+{% load i18n %}
+
+<div id="blog-results"
+     class="coric-blog-results__inner"
+     role="region"
+     aria-labelledby="blog-results-title"
+     data-testid="blog-results-grid">
+  {% if posts %}
+    <div class="coric-blog-results__grid">
+      {% for post in posts %}
+        {% include "blog/partials/_post_card.html" %}
+      {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+      <nav class="coric-blog-results__pagination" aria-label="{% translate 'Paginacija' %}">
+        {% if page_obj.has_previous %}
+          <a hx-get="{% querystring page=page_obj.previous_page_number %}"
+             hx-target="#blog-results"
+             hx-swap="innerHTML"
+             hx-push-url="true"
+             href="{% querystring page=page_obj.previous_page_number %}"
+             class="coric-button coric-button--secondary"
+             data-testid="pagination-prev">{% translate "Prethodna" %}</a>
+        {% endif %}
+        <span class="coric-blog-results__page-info">
+          {% blocktranslate with current=page_obj.number total=paginator.num_pages %}Strana {{ current }} od {{ total }}{% endblocktranslate %}
+        </span>
+        {% if page_obj.has_next %}
+          <a hx-get="{% querystring page=page_obj.next_page_number %}"
+             hx-target="#blog-results"
+             hx-swap="innerHTML"
+             hx-push-url="true"
+             href="{% querystring page=page_obj.next_page_number %}"
+             class="coric-button coric-button--secondary"
+             data-testid="pagination-next">{% translate "Sledeća" %}</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    {% include "blog/partials/_blog_empty_state.html" %}
+  {% endif %}
+</div>
+
+{% if request.htmx %}
+<div hx-swap-oob="innerHTML:#aria-live">{% blocktranslate count counter=count %}Pronađena {{ counter }} objava.{% plural %}Pronađeno {{ counter }} objava.{% endblocktranslate %}</div>
+{% endif %}
