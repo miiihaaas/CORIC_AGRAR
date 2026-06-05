@@ -722,22 +722,37 @@ def test_ac6_footer_renders_4_columns_with_3_section_eyebrows():
     )
 
 
-# AC-6: footer rendera Lorem Ipsum placeholder (3×) + TODO komentar za Story 5.4
-def test_ac6_footer_renders_lorem_ipsum_news_placeholder_with_todo():
-    """AC6: kolona 3 mora imati 3× Lorem Ipsum naslova + TODO komentar za Story 5.4 replacement."""
+# AC-6 (Story 5.4 REWRITE — SM-D7): kolona 3 „Najnovije vesti" je DINAMIČKA
+# (`{% for post in latest_blog_posts %}`), NE više Lorem Ipsum + TODO placeholder.
+# Story 5.4 OWNS ovaj test (mirror 5-2 lekcija: story koja zameni markup koji test
+# druge story asertuje OWNS taj test update). Intent (footer „Najnovije vesti"
+# kolona postoji + markirana) je OČUVAN — migriran sa Lorem-placeholdera na dinamiku.
+def test_ac6_footer_renders_dynamic_news_loop():
+    """AC6 (5-4): kolona 3 mora renderovati DINAMIČKI `{% for post in latest_blog_posts %}`
+    loop (NE više Lorem Ipsum placeholder + „Story 5.4" TODO komentar).
+
+    Source-level lock: footer.html SOURCE sadrži dinamički for-loop nad
+    `latest_blog_posts` context ključem, NE sadrži „Lorem ipsum", NE sadrži
+    „Story 5.4" TODO. (Pre 5-4 implementacije ovaj test je RED jer footer source
+    još ima 3 Lorem `<li>` + TODO — correct RED-until-GREEN.)
+    """
     src = _read_partial(PARTIAL_FOOTER)
-    # 3× Lorem ipsum u source-u (može biti `Lorem ipsum dolor sit amet`)
-    lorem_count = len(re.findall(r"Lorem ipsum", src, re.IGNORECASE))
-    assert lorem_count >= 3, (
-        f"footer.html ima {lorem_count} Lorem ipsum naslov(a), očekivano >= 3. "
-        f"AC6 — placeholder za Story 5.4 (dinamički BlogPost queryset)."
+    # Dinamički for-loop nad latest_blog_posts (kanonski context ključ — IMP-1:
+    # NIJEDNA varijabla `latest_posts` ne preživljava; mora biti `latest_blog_posts`).
+    assert re.search(r"\{%\s*for\s+post\s+in\s+latest_blog_posts\b", src), (
+        "footer.html NE sadrzi `{% for post in latest_blog_posts %}` loop. "
+        "AC6 (5-4) — kolona 3 'Najnovije vesti' mora biti dinamicka (context "
+        "processor `latest_blog_posts`), NE staticki Lorem placeholder."
     )
-    # TODO komentar za Story 5.4
-    assert re.search(r"TODO:?\s*Story\s*5\.4", src) or re.search(
-        r"Story\s*5\.4", src
-    ), (
-        "footer.html NE sadrži `TODO Story 5.4` komentar. "
-        "AC6 — placeholder mora biti markiran za buduće dinamičko zamenjivanje."
+    # Lorem Ipsum placeholder MORA biti uklonjen (5-4 dinamizuje)
+    assert not re.search(r"Lorem ipsum", src, re.IGNORECASE), (
+        "footer.html jos sadrzi 'Lorem ipsum' placeholder. "
+        "AC6 (5-4) — staticki Lorem mora biti zamenjen dinamickim loop-om."
+    )
+    # 'Story 5.4' TODO komentar MORA biti uklonjen (5-4 ga resava)
+    assert not re.search(r"Story\s*5\.4", src), (
+        "footer.html jos sadrzi 'Story 5.4' TODO komentar. "
+        "AC6 (5-4) — TODO je resen ovom story; ukloni ga (IMP-1)."
     )
 
 

@@ -79,6 +79,7 @@ TEMPLATES = [
                 "django.template.context_processors.i18n",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.blog.context_processors.latest_blog_posts",  # NOVO Story 5.4 — footer Najnovije vesti
             ],
         },
     },

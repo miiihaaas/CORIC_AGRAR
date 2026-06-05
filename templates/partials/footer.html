@@ -27,14 +27,15 @@
           </ul>
         </div>
 
-        {# Kolona 3 — Najnovije vesti (Lorem Ipsum placeholder). #}
+        {# Kolona 3 — Najnovije vesti (dinamičke — latest_blog_posts context processor). #}
         <div class="col-md-3 coric-footer__col">
           {% include "partials/section_eyebrow.html" with text="NAJNOVIJE VESTI" tag="h2" variant="on-dark" %}
-          {# TODO: Story 5.4 (Epic 5) zamenice ovo sa {% for post in latest_posts|slice:":3" %}...{% endfor %} #}
           <ul class="coric-footer__news">
-            <li><a href="#">{% translate "Lorem ipsum dolor sit amet (vest 1)" %}</a></li>
-            <li><a href="#">{% translate "Lorem ipsum dolor sit amet (vest 2)" %}</a></li>
-            <li><a href="#">{% translate "Lorem ipsum dolor sit amet (vest 3)" %}</a></li>
+            {% for post in latest_blog_posts %}
+            <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
+            {% empty %}
+            <li class="coric-footer__news-empty">{% translate "Uskoro nove priče sa polja" %}</li>
+            {% endfor %}
           </ul>
         </div>
 
