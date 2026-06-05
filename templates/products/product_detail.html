@@ -1,9 +1,11 @@
 {% extends "base.html" %}
-{% load i18n media_tags static %}
+{% load i18n media_tags seo_meta static %}
 
-{% block title %}{{ product.name }} | {{ product.brand.name }} | {% translate "Ćorić Agrar" %}{% endblock %}
+{% block title %}{% seo_title product %}{% endblock %}
 
-{% block meta_description %}{{ product.description|truncatewords:25 }}{% endblock %}
+{% block meta_description %}{% seo_meta_description product %}{% endblock %}
+
+{% block extra_head %}{% seo_head product %}{% endblock %}
 
 {% block content %}
   <article class="coric-product-detail" data-testid="product-detail-page">

@@ -105,7 +105,11 @@ def test_assert_num_queries_exactly_7(client, django_assert_num_queries):
     url = f"/sr/proizvod/{product.slug}/"
 
     # Story 3.4: 7 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
-    with django_assert_num_queries(8):
+    # Story 6.1 (TEST_MODIFICATION, +2 justified): {% seo_head/seo_title/seo_meta_description %}
+    # u product_detail.html dodaju 2 bounded upita po strani: (1) ContentType resolve
+    # (get_for_model — Django app-keš), (2) SeoMeta forward-lookup (per-request keširan
+    # kroz sva 3 tag-poziva; SiteSettings deli chrome keš → 0 dodatnih). Budžet 8 → 10.
+    with django_assert_num_queries(10):
         response = client.get(url, HTTP_HOST="localhost")
         assert response.status_code == 200
 

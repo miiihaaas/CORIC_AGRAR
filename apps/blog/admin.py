@@ -18,6 +18,7 @@ from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
 from apps.blog.models import Category, Post, Tag
+from apps.seo.admin import SeoMetaInline, SeoWarningAdminMixin
 
 
 @admin.register(Category)
@@ -35,7 +36,10 @@ class TagAdmin(TranslationAdmin):
 
 
 @admin.register(Post)
-class PostAdmin(TranslationAdmin):
+class PostAdmin(SeoWarningAdminMixin, TranslationAdmin):
+    # C-A: SeoWarningAdminMixin PRVI u MRO (njegov save_formset poziva super() →
+    # TranslationAdmin lanac). Inline + mixin su ČISTO ADITIVNI na postojeći stub.
+    inlines = [SeoMetaInline]
     list_display = ("title", "category", "status", "published_at", "author")
     list_filter = ("status", "category", "tags")
     search_fields = ("title_sr",)

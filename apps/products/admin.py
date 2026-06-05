@@ -4,6 +4,9 @@ Bare `admin.site.register()` (mirror 2.1 pattern — verifikovano u apps/brands/
 modeltranslation sr/hu/en tabovi se NE renderuju ovde — pun TranslationAdmin sa
 color picker, image preview, inlines, i tab UI je Story 8.6 (Product CRUD) scope.
 Vidi Gotcha PR-11 za detaljan trap explanation.
+
+Story 6.1 — Product konvertovan iz bare-register u ProductAdmin (SeoWarningAdminMixin
++ SeoMetaInline) za per-page SEO meta unos. Ostali Product* modeli ostaju bare register.
 """
 
 from django.contrib import admin
@@ -17,8 +20,14 @@ from apps.products.models import (
     ProductTestimonial,
     ProductVariant,
 )
+from apps.seo.admin import SeoMetaInline, SeoWarningAdminMixin
 
-admin.site.register(Product)
+
+@admin.register(Product)
+class ProductAdmin(SeoWarningAdminMixin, admin.ModelAdmin):
+    inlines = [SeoMetaInline]
+
+
 admin.site.register(ProductImage)
 admin.site.register(ProductVariant)
 admin.site.register(ProductSpecification)

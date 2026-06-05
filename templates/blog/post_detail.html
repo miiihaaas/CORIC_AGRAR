@@ -1,9 +1,11 @@
 {% extends "base.html" %}
-{% load i18n media_tags static %}
+{% load i18n media_tags seo_meta static %}
 
-{% block title %}{{ post.title }} | {% translate "Ćorić Agrar" %}{% endblock %}
+{% block title %}{% seo_title post %}{% endblock %}
 
-{% block meta_description %}{{ post.perex|default:post.title }}{% endblock %}
+{% block meta_description %}{% seo_meta_description post %}{% endblock %}
+
+{% block extra_head %}{% seo_head post %}{% endblock %}
 
 {% block content %}
   <article class="coric-blog-detail" data-testid="blog-detail-page" aria-labelledby="blog-detail-title">
