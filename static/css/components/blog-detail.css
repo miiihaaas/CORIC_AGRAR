@@ -1,0 +1,140 @@
+/* ============================================================================
+ * blog-detail.css — Blog Post Detail strana (Story 5.3)
+ *
+ * Layout: naslovna slika, header (h1 + meta), social-share (sticky-left desktop /
+ * below-title mobile — epics.md:890), telo prose, tagovi, „Slične objave" grid.
+ * Sve vrednosti kroz var(--token) iz tokens.css (NE magic px).
+ * ========================================================================= */
+
+.coric-blog-detail {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-container-gutter-desktop);
+}
+
+@media (max-width: 768px) {
+  .coric-blog-detail {
+    padding: 0 var(--spacing-container-gutter-mobile);
+  }
+}
+
+/* === Naslovna slika === */
+.coric-blog-detail__image {
+  margin: var(--spacing-section) 0 var(--spacing-scale-4);
+}
+
+.coric-blog-detail__img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+/* === Header + meta === */
+.coric-blog-detail__header {
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-blog-detail__title {
+  font-size: var(--typography-scale-h1);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-3);
+}
+
+.coric-blog-detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-scale-3);
+  color: var(--color-semantic-text-secondary);
+  font-size: var(--typography-scale-body);
+}
+
+.coric-blog-detail__category a {
+  color: var(--color-brand-green-800);
+}
+
+/* === Telo (prose) === */
+.coric-blog-detail__body {
+  max-width: 70ch;
+  margin: var(--spacing-scale-4) 0;
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-semantic-text-primary);
+}
+
+/* === Tagovi === */
+.coric-blog-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-scale-2);
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-scale-4) 0;
+}
+
+.coric-blog-tag {
+  display: inline-block;
+  padding: var(--spacing-scale-1) var(--spacing-scale-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-green-50);
+  color: var(--color-brand-green-800);
+  text-decoration: none;
+}
+
+/* === Social share === */
+.coric-blog-share {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-scale-2);
+  margin: var(--spacing-scale-4) 0;
+}
+
+.coric-blog-share__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-scale-2) var(--spacing-scale-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-brand-green-800);
+  background: var(--color-semantic-surface-base);
+  color: var(--color-brand-green-800);
+  text-decoration: none;
+  cursor: pointer;
+  font-size: var(--typography-scale-caption);
+}
+
+/* sticky-left na desktop, statički below-title na mobile (epics.md:890) */
+@media (min-width: 992px) {
+  .coric-blog-share {
+    position: sticky;
+    top: var(--spacing-scale-6);
+  }
+}
+
+/* === „Slične objave" grid (REUSE blog-listing grid pattern) === */
+.coric-blog-detail__similar {
+  margin: var(--spacing-section) 0;
+}
+
+.coric-blog-similar__title {
+  font-size: var(--typography-scale-h2);
+  color: var(--color-brand-green-800);
+  margin-bottom: var(--spacing-scale-4);
+}
+
+.coric-blog-similar__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-scale-4);
+}
+
+@media (min-width: 768px) {
+  .coric-blog-similar__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .coric-blog-similar__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

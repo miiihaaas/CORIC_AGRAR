@@ -1,23 +1,68 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n media_tags static %}
 
-{% block title %}{{ post.title }} | Ćorić Agrar{% endblock %}
+{% block title %}{{ post.title }} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{{ post.perex|default:post.title }}{% endblock %}
 
 {% block content %}
   <article class="coric-blog-detail" data-testid="blog-detail-page" aria-labelledby="blog-detail-title">
+    {% if post.main_image %}
+      <div class="coric-blog-detail__image">
+        {% responsive_picture post.main_image alt=post.title sizes="100vw" css_class="coric-blog-detail__img" %}
+      </div>
+    {% endif %}
+
     <header class="coric-blog-detail__header">
       <h1 id="blog-detail-title" class="coric-blog-detail__title">{{ post.title }}</h1>
-      {% if post.published_at %}
-        <p class="coric-blog-detail__date">
-          <span class="visually-hidden">{% translate "Datum objave:" %}</span>
-          {{ post.published_at|date:"SHORT_DATE_FORMAT" }}
-        </p>
-      {% endif %}
+      <p class="coric-blog-detail__meta">
+        {% if post.published_at %}
+          <span class="coric-blog-detail__date">
+            <span class="visually-hidden">{% translate "Datum objave:" %}</span>
+            {{ post.published_at|date:"SHORT_DATE_FORMAT" }}
+          </span>
+        {% endif %}
+        {% if post.author %}
+          <span class="coric-blog-detail__author">
+            {% translate "Autor" %}: {{ post.author.get_full_name|default:post.author.username }}
+          </span>
+        {% endif %}
+        {% if post.category %}
+          <span class="coric-blog-detail__category">
+            {% translate "Kategorija" %}:
+            <a href="{% url 'blog:category' slug=post.category.slug %}">{{ post.category.name }}</a>
+          </span>
+        {% endif %}
+      </p>
     </header>
 
+    {% include "blog/partials/_social_share.html" %}
+
     <div class="coric-blog-detail__body">
-      {# 5-3/8.7: ako body postane rich-HTML (WYSIWYG), zameni |linebreaks sanitizovanim renderom (bleach/nh3 + |safe) — |linebreaks ESCAPE-uje, pa bi double-escape-ovao HTML (prikazao bi sirove tagove). Plain-text body (5-1 SM-D10) je trenutno ispravan za 5-2. #}
+      {# 5-3/8.7: ako body postane rich-HTML (WYSIWYG), zameni |linebreaks sanitizovanim renderom (bleach/nh3 + |safe) — |linebreaks ESCAPE-uje, pa bi double-escape-ovao HTML (prikazao bi sirove tagove). Plain-text body (5-1 SM-D10) je trenutno ispravan; NIKAD raw |safe bez sanitizacije (stored-XSS — SM-D1/Gotcha BL3-1). #}
       {{ post.body|linebreaks }}
     </div>
+
+    {% with post_tags=post.tags.all %}
+      {% if post_tags %}
+        <ul class="coric-blog-detail__tags" aria-label="{% translate 'Tagovi' %}">
+          {% for tag in post_tags %}
+            <li class="coric-blog-detail__tag">
+              <a href="{% url 'blog:tag' slug=tag.slug %}" class="coric-blog-tag">{{ tag.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% if similar_posts %}
+      <section class="coric-blog-detail__similar" aria-labelledby="blog-similar-title">
+        {% include "blog/partials/_similar_posts.html" %}
+      </section>
+    {% endif %}
   </article>
 {% endblock content %}
+
+{% block scripts %}
+  <script src="{% static 'js/blog-share-copy.js' %}" defer></script>
+{% endblock scripts %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if archive_kind == "tag" %}{% blocktranslate with name=archive_object.name %}Objave sa tagom: {{ name }}{% endblocktranslate %}{% else %}{% blocktranslate with name=archive_object.name %}Objave u kategoriji: {{ name }}{% endblocktranslate %}{% endif %} | {% translate "Ćorić Agrar" %}{% endblock %}
+
+{% block meta_description %}{% if archive_kind == "tag" %}{% blocktranslate with name=archive_object.name %}Sve objave sa tagom {{ name }} — priče sa polja.{% endblocktranslate %}{% else %}{% blocktranslate with name=archive_object.name %}Sve objave u kategoriji {{ name }} — priče sa polja.{% endblocktranslate %}{% endif %}{% endblock %}
+
+{% block content %}
+  <section class="coric-blog-index" data-testid="blog-archive-page" aria-labelledby="blog-archive-title">
+    <header class="coric-blog-index__header">
+      <h1 id="blog-archive-title" class="coric-blog-index__title">
+        {% if archive_kind == "tag" %}
+          {% blocktranslate with name=archive_object.name %}Objave sa tagom: {{ name }}{% endblocktranslate %}
+        {% else %}
+          {% blocktranslate with name=archive_object.name %}Objave u kategoriji: {{ name }}{% endblocktranslate %}
+        {% endif %}
+      </h1>
+    </header>
+
+    <section id="blog-results-wrap" aria-labelledby="blog-results-title" class="coric-blog-results">
+      <h2 id="blog-results-title" class="visually-hidden">{% translate "Lista objava" %}</h2>
+      {% include "blog/partials/_post_results.html" %}
+    </section>
+  </section>
+{% endblock content %}

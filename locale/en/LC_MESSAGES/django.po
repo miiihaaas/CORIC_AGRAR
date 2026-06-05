@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 13:56+0000\n"
+"POT-Creation-Date: 2026-06-05 04:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,7 @@ msgstr ""
 
 #: apps/blog/models.py:53 apps/blog/models.py:150 apps/brands/models.py:271
 #: apps/brands/models.py:323 templates/blog/partials/_blog_filter.html:19
+#: templates/blog/post_detail.html:32
 #: templates/products/partials/_used_filter_form.html:19
 msgid "Kategorija"
 msgstr ""
@@ -50,6 +51,7 @@ msgid "Tag"
 msgstr ""
 
 #: apps/blog/models.py:88 apps/blog/models.py:156
+#: templates/blog/post_detail.html:47
 msgid "Tagovi"
 msgstr ""
 
@@ -79,7 +81,7 @@ msgstr ""
 msgid "Glavna slika"
 msgstr ""
 
-#: apps/blog/models.py:164
+#: apps/blog/models.py:164 templates/blog/post_detail.html:27
 msgid "Autor"
 msgstr ""
 
@@ -882,6 +884,31 @@ msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
 
+#: templates/blog/blog_archive.html:4 templates/blog/blog_archive.html:13
+#, python-format
+msgid "Objave sa tagom: %(name)s"
+msgstr ""
+
+#: templates/blog/blog_archive.html:4 templates/blog/blog_archive.html:15
+#, fuzzy, python-format
+#| msgid "Pogledaj kategoriju: %(category)s"
+msgid "Objave u kategoriji: %(name)s"
+msgstr "View category: %(category)s"
+
+#: templates/blog/blog_archive.html:6
+#, python-format
+msgid "Sve objave sa tagom %(name)s — priče sa polja."
+msgstr ""
+
+#: templates/blog/blog_archive.html:6
+#, python-format
+msgid "Sve objave u kategoriji %(name)s — priče sa polja."
+msgstr ""
+
+#: templates/blog/blog_archive.html:21 templates/blog/blog_index.html:20
+msgid "Lista objava"
+msgstr ""
+
 #: templates/blog/blog_index.html:4 templates/blog/blog_index.html:11
 #: templates/pages/partials/_home_price_sa_polja.html:7
 #: templates/partials/header.html:104
@@ -897,10 +924,6 @@ msgstr ""
 #: templates/blog/blog_index.html:12
 msgid ""
 "Saveti, iskustva i novosti sa naših njiva — izaberite temu koja vas zanima."
-msgstr ""
-
-#: templates/blog/blog_index.html:20
-msgid "Lista objava"
 msgstr ""
 
 #: templates/blog/partials/_blog_empty_state.html:5
@@ -962,7 +985,7 @@ msgid "%(title)s — pročitaj objavu"
 msgstr ""
 
 #: templates/blog/partials/_post_card.html:15
-#: templates/blog/post_detail.html:12
+#: templates/blog/post_detail.html:21
 msgid "Datum objave:"
 msgstr ""
 
@@ -1001,6 +1024,39 @@ msgid "Pronađena %(counter)s objava."
 msgid_plural "Pronađeno %(counter)s objava."
 msgstr[0] ""
 msgstr[1] ""
+
+#: templates/blog/partials/_similar_posts.html:3
+msgid "Slične objave"
+msgstr ""
+
+#: templates/blog/partials/_social_share.html:3
+msgid "Podeli objavu"
+msgstr ""
+
+#: templates/blog/partials/_social_share.html:8
+#: templates/blog/partials/_social_share.html:9
+msgid "Podeli na Facebook-u"
+msgstr ""
+
+#: templates/blog/partials/_social_share.html:16
+#: templates/blog/partials/_social_share.html:17
+msgid "Podeli na WhatsApp-u"
+msgstr ""
+
+#: templates/blog/partials/_social_share.html:22
+#: templates/blog/partials/_social_share.html:23
+msgid "Podeli na Viber-u"
+msgstr ""
+
+#: templates/blog/partials/_social_share.html:30
+msgid "Link kopiran"
+msgstr ""
+
+#: templates/blog/partials/_social_share.html:31
+#: templates/blog/partials/_social_share.html:32
+#: templates/blog/partials/_social_share.html:33
+msgid "Kopiraj link"
+msgstr ""
 
 #: templates/brands/brand_coming_soon.html:4
 #: templates/brands/brand_detail.html:4

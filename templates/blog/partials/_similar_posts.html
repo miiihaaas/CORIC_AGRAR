@@ -1,0 +1,8 @@
+{% load i18n %}
+{# „Slične objave" — Story 5.3 (mirror 2-7 _similar_products.html). Render samo {% if similar_posts %} iz parent-a. #}
+<h2 id="blog-similar-title" class="coric-blog-similar__title">{% translate "Slične objave" %}</h2>
+<div class="coric-blog-similar__grid" data-testid="blog-similar-grid">
+  {% for post in similar_posts %}
+    {% include "blog/partials/_post_card.html" %}
+  {% endfor %}
+</div>

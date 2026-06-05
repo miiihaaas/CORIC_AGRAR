@@ -1,0 +1,34 @@
+{% load i18n %}
+{# Social share — Story 5.3 (SM-D6/IMP-2/IMP-3). share_url = apsolutni post URL iz view-context-a. #}
+<div class="coric-blog-share" data-testid="blog-share" role="group" aria-label="{% translate 'Podeli objavu' %}">
+  <a class="coric-blog-share__btn coric-blog-share__btn--facebook"
+     href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlencode }}"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="{% translate 'Podeli na Facebook-u' %}"
+     title="{% translate 'Podeli na Facebook-u' %}"
+     data-testid="blog-share-facebook">Facebook</a>
+
+  <a class="coric-blog-share__btn coric-blog-share__btn--whatsapp"
+     href="https://wa.me/?text={{ share_url|urlencode }}"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="{% translate 'Podeli na WhatsApp-u' %}"
+     title="{% translate 'Podeli na WhatsApp-u' %}"
+     data-testid="blog-share-whatsapp">WhatsApp</a>
+
+  <a class="coric-blog-share__btn coric-blog-share__btn--viber"
+     href="viber://forward?text={{ share_url|urlencode }}"
+     aria-label="{% translate 'Podeli na Viber-u' %}"
+     title="{% translate 'Podeli na Viber-u' %}"
+     data-testid="blog-share-viber">Viber</a>
+
+  <button type="button"
+          class="coric-blog-share__btn coric-blog-share__btn--copy"
+          data-share-copy
+          data-copy-url="{{ share_url }}"
+          data-copied-label="{% translate 'Link kopiran' %}"
+          aria-label="{% translate 'Kopiraj link' %}"
+          title="{% translate 'Kopiraj link' %}"
+          data-testid="blog-share-copy">{% translate "Kopiraj link" %}</button>
+</div>

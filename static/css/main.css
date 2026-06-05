@@ -54,3 +54,6 @@
 
 /* Components CSS imports (Story 5.2) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/blog-listing.css');
+
+/* Components CSS imports (Story 5.3) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/blog-detail.css');
