@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: */admin/
+Disallow: */htmx/
+
+Sitemap: {{ sitemap_url }}

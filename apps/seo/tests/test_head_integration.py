@@ -22,13 +22,21 @@ import pytest
 
 pytestmark = pytest.mark.django_db
 
-# Mini harness koji mirror-uje SM-D2 detail-template recept (extends base.html).
+# Mini harness koji mirror-uje SM-D2/SM-D1 detail-template recept (extends base.html).
+# Story 6.3 (C1 — OWNED HARNESS UPDATE): seo_head SELI iz extra_head u social_meta
+# block (mirror SEO3-9 stvarne detail-template migracije). Posle 6.3 base.html
+# default-uje {% block social_meta %}{% seo_head %}{% endblock %} (site-level, obj=None)
+# koji TAKOĐE emituje canonical; ako harness ostane na extra_head → DVA seo_head poziva
+# → 2 canonical → test_canonical_present_once RED. Selidbom u social_meta override →
+# child zamenjuje base default → TAČNO 1 seo_head → 1 canonical (asercija == 1
+# NEPROMENJENA). title/desc-count testovi (seo_head ne emituje <title>/description)
+# OSTAJU GREEN nezavisno od block-imena.
 _HARNESS = (
     "{% extends 'base.html' %}\n"
     "{% load seo_meta %}\n"
     "{% block title %}{% seo_title obj %}{% endblock %}\n"
     "{% block meta_description %}{% seo_meta_description obj %}{% endblock %}\n"
-    "{% block extra_head %}{% seo_head obj %}{% endblock %}\n"
+    "{% block social_meta %}{% seo_head obj %}{% endblock %}\n"
 )
 
 

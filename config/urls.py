@@ -18,6 +18,7 @@ from django.urls import include, path
 from django.views.i18n import set_language
 
 from apps.seo.sitemaps import sitemaps as sitemaps_dict  # alias da ne shadow-uje `sitemap` view
+from apps.seo.views import robots_txt
 
 # URL-ovi BEZ lokal prefiksa
 urlpatterns = [
@@ -30,6 +31,10 @@ urlpatterns = [
         {"sitemaps": sitemaps_dict},
         name="django.contrib.sitemaps.views.sitemap",
     ),
+    # Story 6.3 — robots.txt VAN i18n_patterns (NO-PREFIX; bot ga traži na root-u
+    # → /robots.txt, NE /sr/robots.txt). Sitemap: linija referencira /sitemap.xml
+    # (SM-D4/SEO3-7).
+    path("robots.txt", robots_txt, name="robots_txt"),
 ]
 
 # URL-ovi SA lokal prefiksom (`/sr/...`, `/hu/...`, `/en/...`)

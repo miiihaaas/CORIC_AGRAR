@@ -3,12 +3,14 @@
 {% load static %}
 {% load django_bootstrap5 %}
 {% load htmx_aria %}
+{% load seo_meta %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="{% block meta_description %}{% endblock %}">
   <title>{% block title %}Ćorić Agrar{% endblock %}</title>
+  {% block social_meta %}{% seo_head %}{% endblock %}
   <link rel="stylesheet" href="{% static "css/tokens.css" %}">
   <link rel="stylesheet" href="{% static 'vendor/glightbox/glightbox.min.css' %}">
   {% bootstrap_css %}

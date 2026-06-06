@@ -121,17 +121,30 @@ def test_seo_head_emits_og_image_when_set(product, png_upload):
     assert 'property="og:image"' in out, (
         "{% seo_head %} MORA emitovati <meta property=\"og:image\"> kad og_image postoji (AC6)."
     )
-
-
-# AC6: bez og_image → NEMA og:image (regression-lock za test_blog_post_detail.py:435)
-def test_seo_head_no_og_image_when_unset(product):
-    out = _render("{% load seo_meta %}{% seo_head product %}", {"product": product})
-    assert 'property="og:image"' not in out, (
-        "Bez og_image → og:image se IZOSTAVLJA (C-E latent tripwire — AC6)."
+    # 6.3 (Task 8.3): object og_image se i dalje koristi kad postoji — NE og-default fallback
+    assert "hero" in out and "og-default" not in out, (
+        "Sa og_image → og:image MORA biti URL te slike (NE og-default fallback) — AC4."
     )
 
 
-# AC6/SM-D7: objekat bez get_absolute_url → canonical se IZOSTAVLJA (graceful skip, NE 500)
+# AC10 (Story 6.3 OWNED rewrite — SM-D3): bez og_image → og:image FALLBACK na og-default.
+# BEHAVIOR CHANGE — 6-1 je IZOSTAVLJAO og:image kad nema og_image; 6.3 čini og:image
+# UVEK prisutnim (object og_image ili static('img/og-default.jpg') fallback). 6.3 je
+# VLASNIK testa — flip-uje asercaciju (RED dok Dev ne učini og:image UVEK prisutnim).
+def test_seo_head_og_image_falls_back_to_default(product):
+    out = _render("{% load seo_meta %}{% seo_head product %}", {"product": product})
+    assert 'property="og:image"' in out, (
+        "Bez og_image → og:image je UVEK prisutan sa fallback-om (BEHAVIOR CHANGE — "
+        "AC4/AC10/SM-D3)."
+    )
+    assert "og-default" in out, (
+        "Bez og_image → og:image MORA sadržati 'og-default' (static fallback — "
+        "AC4/SM-D6)."
+    )
+
+
+# AC6/SM-D7 + C7: objekat bez get_absolute_url → canonical I og:url se IZOSTAVLJAJU
+# (C7 contract: oba zajedno ili nijedan — NE prazan og:url)
 def test_seo_head_skips_canonical_when_no_get_absolute_url():
     class _NoUrlObj:
         pk = 1
@@ -143,6 +156,10 @@ def test_seo_head_skips_canonical_when_no_get_absolute_url():
     out = _render("{% load seo_meta %}{% seo_head obj %}", {"obj": _NoUrlObj()})
     assert 'rel="canonical"' not in out, (
         "Objekat bez get_absolute_url → canonical IZOSTAVLJEN (graceful skip — SM-D7)."
+    )
+    # NM-1 (C7 lock): og:url MORA biti izostavljen ZAJEDNO sa canonical — nikad prazan og:url
+    assert 'property="og:url"' not in out, (
+        "og:url MORA biti izostavljen zajedno sa canonical (C7 — oba ili nista; NE prazan og:url)."
     )
 
 
@@ -236,15 +253,29 @@ def test_seo_tags_query_budget_one_seometa_lookup_per_object(product, post):
     # 3 taga (title + description + head) na ISTOM objektu → 1 SeoMeta SELECT
     # (ContentType app-cached; keš deli lookup kroz sva 3 taga; canonical
     # get_absolute_url NE query-ja).
+    #
+    # Story 6.3 (TEST_MODIFICATION — justified +1): seo_head sad emituje pun OG
+    # surface uključujući og:site_name/og:title=company_name → 1 dodatni
+    # SiteSettings SELECT (per-request keširan; deljen sa header/footer/title
+    # chrome na realnoj strani). Core invarijanta OSTAJE: SeoMeta lookup je
+    # deljen kroz sva 3 taga (NE 3× SeoMeta) — sad 1 SeoMeta + 1 SiteSettings = 2.
     three_tags = (
         "{% load seo_meta %}"
         "{% seo_title o %}{% seo_meta_description o %}{% seo_head o %}"
     )
     with CaptureQueriesContext(connection) as ctx:
         _render(three_tags, {"o": product})
-    assert len(ctx.captured_queries) == 1, (
+    seometa_queries = [
+        q for q in ctx.captured_queries if "seo_seometa" in q["sql"]
+    ]
+    assert len(seometa_queries) == 1, (
         "3 SEO taga na ISTOM objektu MORAJU izvršiti TAČNO 1 SeoMeta query "
-        f"(deljen per-request keš; NE 3) — dobio {len(ctx.captured_queries)}: "
+        f"(deljen per-request keš; NE 3) — dobio {len(seometa_queries)}: "
+        f"{[q['sql'][:60] for q in seometa_queries]}."
+    )
+    assert len(ctx.captured_queries) == 2, (
+        "3 SEO taga → 1 SeoMeta + 1 SiteSettings (og:site_name; 6.3) = 2 query "
+        f"(NE 3× SeoMeta N+1) — dobio {len(ctx.captured_queries)}: "
         f"{[q['sql'][:60] for q in ctx.captured_queries]}."
     )
 

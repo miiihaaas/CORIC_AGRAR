@@ -431,15 +431,23 @@ def test_meta_description_falls_back_to_title_when_perex_empty(client, make_post
     )
 
 
-# AC7: NEMA OG/twitter (Epic 6)
-def test_meta_no_open_graph_yet(client, make_post):
+# AC10 (Story 6.3 OWNED rewrite — SM-D3): OG sad GLOBALNO prisutan na detail head-u.
+# BEHAVIOR CHANGE — 6.3 čini og:title/og:image UVEK prisutnim (base.html social_meta
+# block + EXTEND-ovan seo_head). Stara asercija (`property="og:" not in html`) je
+# OBORENA; ova story je VLASNIK testa i flip-uje asercaciju (mirror Epic 5 test-ownership).
+def test_meta_has_open_graph(client, make_post):
     activate("sr")
-    post = _published(make_post, title="Bez OG priča", perex="Perex.")
+    post = _published(make_post, title="OG priča", perex="Perex.")
 
     response = _get_detail(client, post)
 
     assert response.status_code == 200
     html = response.content.decode("utf-8")
-    assert 'property="og:' not in html, (
-        "5-3 NEMA OG meta (Epic 6 — 6.1 SeoMeta; epics.md:893)."
+    assert 'property="og:title"' in html, (
+        "6.3 — post detail head MORA imati <meta property=\"og:title\"> "
+        "(GLOBALNI OG; AC2/AC10/SM-D3)."
+    )
+    assert 'property="og:image"' in html, (
+        "6.3 — og:image je UVEK prisutan (object og_image ili og-default fallback); "
+        "AC4/AC10/SM-D3."
     )
