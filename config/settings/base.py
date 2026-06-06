@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",  # NOVO Story 2.13 — SearchVectorField + GinIndex system checks (SM-D6)
+    "django.contrib.sitemaps",  # NOVO Story 6.2 — sitemap.xml framework (0-migration; NE django.contrib.sites — SM-D2)
     "django_htmx",  # NOVO Story 1.6 — request.htmx detection
     "django_bootstrap5",  # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
