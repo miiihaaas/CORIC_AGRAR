@@ -99,3 +99,34 @@ def test_slugify_ascii_handles_mixed():
     from apps.core.utils import slugify_ascii
 
     assert slugify_ascii("Đorđe Šarac") == "dorde-sarac"
+
+
+# =============================================================================
+# Story 6.6 AC4 (SM-D7, G1) — kanonski hreflang/slug primer
+#
+# VERIFIKACIONI test (NE novi kod, NE migracija, NE `safe_slugify` alias — G1:
+# stvarno ime je `slugify_ascii`). Dijakritici (Č/Š/Ž/Đ→c/s/z/d) + digrafovi
+# (Dž/Lj/Nj) su VEĆ pokriveni gore (test_slugify_ascii_handles_diakritici /
+# _handles_digraphs / _handles_mixed) → 6.6 NE duplira. Dodaje SAMO tačan AC4
+# string literal `'Ćorić Agrar' == 'coric-agrar'` koji do sada NIJE asertovan.
+# NAPOMENA: ovaj test prolazi ODMAH (slugify_ascii već radi od Story 2.1) — to je
+# by-design GREEN verifikacioni guard za AC4 (potvrđuje postojeće ponašanje).
+# =============================================================================
+
+
+def test_slugify_ascii_coric_agrar_example():
+    """AC4: kanonski primer iz Story 6.6 — `Ćorić Agrar` → `coric-agrar`.
+
+    Ć/ć→c, razmak→`-`, lowercase, allow_unicode=False (čist ASCII kebab-case).
+    Slug je DELJENI-ASCII kroz locale (jedan slug po objektu; locale = SAMO URL
+    prefiks /sr//hu//en/ — SluggedModel slug NIJE translatable; SM-D7).
+    """
+    from apps.core.utils import slugify_ascii
+
+    result = slugify_ascii("Ćorić Agrar")
+    assert result == "coric-agrar", (
+        f"AC4: slugify_ascii('Ćorić Agrar') MORA biti 'coric-agrar' "
+        f"(Ć→c, razmak→-, lowercase; SM-D7/G1); dobijeno: {result!r}."
+    )
+    # Slug NE SME sadržati Unicode dijakritike (project-context § Slugovi: ASCII u URL-u)
+    assert result.isascii(), f"Slug MORA biti čist ASCII (allow_unicode=False); {result!r}."

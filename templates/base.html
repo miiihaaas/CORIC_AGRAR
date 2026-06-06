@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-{% load i18n %}
-{% load static %}
-{% load django_bootstrap5 %}
-{% load htmx_aria %}
-{% load seo_meta %}
+{% load django_bootstrap5 hreflang htmx_aria i18n seo_meta static %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
@@ -11,6 +7,7 @@
   <meta name="description" content="{% block meta_description %}{% endblock %}">
   <title>{% block title %}Ćorić Agrar{% endblock %}</title>
   {% block social_meta %}{% seo_head %}{% endblock %}
+  {% block hreflang %}{% hreflang_links %}{% endblock %}
   <link rel="stylesheet" href="{% static "css/tokens.css" %}">
   <link rel="stylesheet" href="{% static 'vendor/glightbox/glightbox.min.css' %}">
   {% bootstrap_css %}
@@ -25,7 +22,7 @@
     {% block content %}
       <h1>Ćorić Agrar</h1>
       <p>{% translate "Dobrodošli." %}</p>
-    {% endblock %}
+    {% endblock content %}
   </main>
   {% include "partials/footer.html" %}
   {% aria_live %}
