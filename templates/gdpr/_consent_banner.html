@@ -1,0 +1,61 @@
+{% load i18n %}
+<div
+  class="coric-gdpr-banner"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="coric-gdpr-banner-title"
+  data-coric-gdpr-banner
+  tabindex="-1"
+>
+  <form
+    class="coric-gdpr-banner__form"
+    method="post"
+    action="{% url 'gdpr:set_consent' %}"
+  >
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+
+    <div class="coric-gdpr-banner__body">
+      <h2 id="coric-gdpr-banner-title" class="coric-gdpr-banner__title">
+        {% translate "Poštujemo vašu privatnost" %}
+      </h2>
+      <p class="coric-gdpr-banner__text">
+        {% translate "Koristimo kolačiće da bismo poboljšali vaše iskustvo na sajtu. Neophodni kolačići su uvek aktivni, a analitičke i marketinške možete da prihvatite ili odbijete." %}
+      </p>
+
+      <fieldset class="coric-gdpr-banner__categories">
+        <legend class="visually-hidden">{% translate "Kategorije kolačića" %}</legend>
+
+        <label class="coric-gdpr-banner__category">
+          <input type="checkbox" name="necessary" value="on" checked disabled>
+          <span class="coric-gdpr-banner__category-label">{% translate "Neophodni kolačići (uvek aktivni)" %}</span>
+        </label>
+
+        <label class="coric-gdpr-banner__category">
+          <input type="checkbox" name="analytical" value="on">
+          <span class="coric-gdpr-banner__category-label">{% translate "Analitički kolačići" %}</span>
+        </label>
+
+        <label class="coric-gdpr-banner__category">
+          <input type="checkbox" name="marketing" value="on">
+          <span class="coric-gdpr-banner__category-label">{% translate "Marketinški kolačići" %}</span>
+        </label>
+      </fieldset>
+    </div>
+
+    <div class="coric-gdpr-banner__actions">
+      <button type="submit" name="action" value="accept_all" class="coric-gdpr-banner__action coric-gdpr-banner__action--accept">
+        {% translate "Prihvati sve" %}
+      </button>
+      <button type="submit" name="action" value="reject_all" class="coric-gdpr-banner__action coric-gdpr-banner__action--reject">
+        {% translate "Odbij sve" %}
+      </button>
+      <button type="submit" name="action" value="save" class="coric-gdpr-banner__action coric-gdpr-banner__action--save">
+        {% translate "Sačuvaj izbor" %}
+      </button>
+      <a class="coric-gdpr-banner__more-info" href="{% url 'gdpr:cookie_policy' %}">
+        {% translate "Više informacija" %}
+      </a>
+    </div>
+  </form>
+</div>

@@ -23,11 +23,42 @@ Refs:
 from __future__ import annotations
 
 import pytest
+from django.core.cache import cache
+from django.test import Client
 
 # Public URL pod i18n_patterns (slug ASCII — Gotcha G-6).
 COOKIE_POLICY_PATH_SR = "/sr/politika-kolacica/"
 COOKIE_POLICY_PATH_HU = "/hu/politika-kolacica/"
 COOKIE_POLICY_PATH_EN = "/en/politika-kolacica/"
+
+# Story 7.2 — consent endpoint pod i18n_patterns (slug ASCII — Gotcha G-11/SM-D6).
+SET_CONSENT_PATH_SR = "/sr/htmx/gdpr/consent/"
+
+
+@pytest.fixture(autouse=True)
+def _pin_and_clear_ratelimit_cache():
+    """Story 7.2 — očisti django-ratelimit locmem brojač PRE/POSLE svakog gdpr testa.
+
+    `django_ratelimit` koristi `default` locmem cache koji je PROCES-deljen kroz
+    testove → brojač CURI između testova i pravi flakiness zavisnu od redosleda
+    (test_ratelimit_429_after_limit moze okinuti prerano ili drugi POST testovi
+    potrose budzet). cache.clear() pre/posle daje deterministicnu 10-ok/11-ti-429
+    granicu (CRITICAL-2 napomena u 7-2 Testing). Autouse → vazi za CELU gdpr suite.
+    """
+    cache.clear()
+    yield
+    cache.clear()
+
+
+@pytest.fixture
+def csrf_client():
+    """Story 7.2 — CSRF-enforcing klijent za `test_post_without_csrf_403` (CRITICAL-1).
+
+    pytest-django default `client` (i `Client()` bez argumenata) ISKLJUCUJE CSRF
+    enforcement → CSRF-negativni test bi bio LAZNO-zelen (prosao bi cak i da
+    `{% csrf_token %}` nedostaje). `enforce_csrf_checks=True` cini test smislenim.
+    """
+    return Client(enforce_csrf_checks=True)
 
 
 @pytest.fixture

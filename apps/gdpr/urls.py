@@ -6,10 +6,11 @@
 
 from django.urls import path
 
-from apps.gdpr.views import CookiePolicyView
+from apps.gdpr.views import CookiePolicyView, SetConsentView
 
 app_name = "gdpr"
 
 urlpatterns = [
     path("politika-kolacica/", CookiePolicyView.as_view(), name="cookie_policy"),
+    path("htmx/gdpr/consent/", SetConsentView.as_view(), name="set_consent"),
 ]

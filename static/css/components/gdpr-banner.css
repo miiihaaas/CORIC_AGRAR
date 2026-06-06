@@ -1,0 +1,128 @@
+/* ============================================================================
+ * gdpr-banner.css — Story 7.2 GDPR consent banner (AC8/AC10)
+ *
+ * .coric-gdpr-banner BEM; SAMO var(--...) tokeni (bez magic vrednosti);
+ * fixed-bottom NON-blokirajući (page scroll radi, NIJE full-screen overlay);
+ * prefers-reduced-motion; :focus-visible; kontrast 4.5:1.
+ *
+ * AC10/CRITICAL-3 equal-prominence: „Prihvati sve" i „Odbij sve" dele
+ * .coric-gdpr-banner__action (isti tier/veličina/težina); razlika SAMO boja.
+ * ========================================================================= */
+
+.coric-gdpr-banner {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 1010; /* iznad sadržaja, ispod sticky nav (1020) */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-scale-5);
+  padding: var(--spacing-scale-5) var(--spacing-scale-6);
+  background-color: var(--color-brand-green-900);
+  color: var(--color-semantic-text-on-dark);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--typography-family-primary);
+  font-size: var(--typography-scale-small);
+  line-height: var(--typography-line-height-base);
+  transform: translateY(0);
+  transition: transform 0.25s ease-out;
+}
+
+.coric-gdpr-banner__body {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.coric-gdpr-banner__title {
+  margin: 0 0 var(--spacing-scale-2);
+  font-size: var(--typography-scale-h4);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-gdpr-banner__text {
+  margin: 0 0 var(--spacing-scale-3);
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-gdpr-banner__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-scale-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.coric-gdpr-banner__category {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-scale-2);
+  cursor: pointer;
+}
+
+.coric-gdpr-banner__category input[disabled] {
+  cursor: not-allowed;
+}
+
+.coric-gdpr-banner__category-label {
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-gdpr-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-scale-3);
+}
+
+/* Equal-prominence base button class (AC10): isti tier za accept/reject/save. */
+.coric-gdpr-banner__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-scale-3) var(--spacing-scale-5);
+  border: 1px solid transparent;
+  border-radius: var(--rounded-pill);
+  font-family: var(--typography-family-primary);
+  font-size: var(--typography-scale-small);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  cursor: pointer;
+}
+
+/* Razlika SAMO u boji/akcentu — NE u veličini/težini (GDPR equal-prominence). */
+.coric-gdpr-banner__action--accept {
+  background-color: var(--color-accent-gold-500);
+  color: var(--color-semantic-text-primary);
+}
+
+.coric-gdpr-banner__action--reject {
+  background-color: var(--color-neutral-white);
+  color: var(--color-semantic-text-primary);
+}
+
+.coric-gdpr-banner__action--save {
+  background-color: transparent;
+  border-color: var(--color-neutral-white);
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-gdpr-banner__more-info {
+  color: var(--color-accent-lime-500);
+  text-decoration: underline;
+}
+
+.coric-gdpr-banner :focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-gdpr-banner {
+    transition: none;
+  }
+}

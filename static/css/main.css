@@ -60,3 +60,6 @@
 
 /* Components CSS imports (Story 6.5) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/i18n-fallback-marker.css');
+
+/* Components CSS imports (Story 7.2) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/gdpr-banner.css');

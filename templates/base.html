@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load django_bootstrap5 hreflang htmx_aria i18n seo_meta static %}
+{% load django_bootstrap5 gdpr_banner hreflang htmx_aria i18n seo_meta static %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
@@ -25,6 +25,7 @@
     {% endblock content %}
   </main>
   {% include "partials/footer.html" %}
+  {% gdpr_banner %}
   {% aria_live %}
   <noscript>
     <div class="alert alert-warning text-center mb-0" role="alert">
@@ -39,6 +40,7 @@
   <script src="{% static 'js/lightbox-init.js' %}" defer></script>
   <script src="{% static 'js/statistic-counter.js' %}" defer></script>
   <script src="{% static 'js/testimonials-slider.js' %}" defer></script>
+  <script src="{% static 'js/gdpr-banner.js' %}" defer></script>
   {# Per-page scripts POSLE site-wide — sync init safe za Bootstrap komponente #}
   {% block scripts %}{% endblock %}
 </body>

@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-06 09:01+0000\n"
+"POT-Creation-Date: 2026-06-06 17:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Objavljeno"
 msgstr "Posts"
 
-#: apps/blog/models.py:125
+#: apps/blog/models.py:125 apps/gdpr/models.py:34
 msgid "Naslov"
 msgstr ""
 
@@ -567,6 +567,32 @@ msgstr ""
 msgid "[Ćorić Agrar] Novi kontakt: %(name)s"
 msgstr ""
 
+#: apps/gdpr/apps.py:16
+msgid "GDPR i privatnost"
+msgstr ""
+
+#: apps/gdpr/models.py:39
+msgid "Sadržaj"
+msgstr ""
+
+#: apps/gdpr/models.py:43 templates/gdpr/cookie_policy.html:11
+msgid "Važi od"
+msgstr ""
+
+#: apps/gdpr/models.py:47
+msgid ""
+"Pravni datum stupanja na snagu. Ažurirajte ga kad menjate sadržaj politike — "
+"ne ažurira se automatski."
+msgstr ""
+
+#: apps/gdpr/models.py:53 apps/gdpr/models.py:54
+msgid "Politika kolačića"
+msgstr ""
+
+#: apps/gdpr/models.py:91
+msgid "CookiePolicy singleton ne sme da se briše."
+msgstr ""
+
 #: apps/media_pipeline/apps.py:21
 msgid "Media pipeline"
 msgstr ""
@@ -961,15 +987,15 @@ msgid ""
 "stara/“)."
 msgstr ""
 
-#: templates/base.html:21
+#: templates/base.html:18
 msgid "Preskoči na sadržaj"
 msgstr ""
 
-#: templates/base.html:27
+#: templates/base.html:24
 msgid "Dobrodošli."
 msgstr ""
 
-#: templates/base.html:34
+#: templates/base.html:32
 msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
@@ -1541,6 +1567,56 @@ msgstr "For urgent inquiries, call:"
 #| msgid "Upit za model je poslat."
 msgid "Servisni zahtev je poslat."
 msgstr "Model inquiry sent."
+
+#: templates/gdpr/_consent_banner.html:20
+msgid "Poštujemo vašu privatnost"
+msgstr "We respect your privacy"
+
+#: templates/gdpr/_consent_banner.html:23
+msgid ""
+"Koristimo kolačiće da bismo poboljšali vaše iskustvo na sajtu. Neophodni "
+"kolačići su uvek aktivni, a analitičke i marketinške možete da prihvatite "
+"ili odbijete."
+msgstr ""
+"We use cookies to improve your experience on the site. Necessary cookies "
+"are always active, and you can accept or reject analytical and marketing "
+"cookies."
+
+#: templates/gdpr/_consent_banner.html:27
+msgid "Kategorije kolačića"
+msgstr "Cookie categories"
+
+#: templates/gdpr/_consent_banner.html:31
+msgid "Neophodni kolačići (uvek aktivni)"
+msgstr "Necessary cookies (always active)"
+
+#: templates/gdpr/_consent_banner.html:36
+msgid "Analitički kolačići"
+msgstr "Analytical cookies"
+
+#: templates/gdpr/_consent_banner.html:41
+msgid "Marketinški kolačići"
+msgstr "Marketing cookies"
+
+#: templates/gdpr/_consent_banner.html:48
+msgid "Prihvati sve"
+msgstr "Accept all"
+
+#: templates/gdpr/_consent_banner.html:51
+msgid "Odbij sve"
+msgstr "Reject all"
+
+#: templates/gdpr/_consent_banner.html:54
+msgid "Sačuvaj izbor"
+msgstr "Save choice"
+
+#: templates/gdpr/_consent_banner.html:57
+msgid "Više informacija"
+msgstr "More information"
+
+#: templates/gdpr/cookie_policy.html:13
+msgid "Poslednja izmena"
+msgstr ""
 
 #: templates/pages/about.html:4
 msgid "O nama — Ćorić Agrar"

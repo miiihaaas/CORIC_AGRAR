@@ -75,6 +75,15 @@ def test_submit_not_disabled(client):
 # AC-8: user input/textarea polja VIŠE NEMAJU disabled
 def test_inputs_not_disabled(client):
     html = _contact_html(client)
+    # Scope na kontakt formu — site-wide GDPR baner (Story 7.2) sadrži legitiman
+    # `disabled` „Neophodan" checkbox koji bi inače procureo u whole-page scan.
+    form_m = re.search(
+        r'<form\b[^>]*data-testid=["\']contact-form["\'][^>]*>(.*?)</form>',
+        html,
+        re.IGNORECASE | re.DOTALL,
+    )
+    assert form_m, "Kontakt forma <form data-testid=\"contact-form\"> MORA postojati."
+    html = form_m.group(1)
     field_tags = re.findall(r"<(?:input|textarea)\b[^>]*>", html, re.IGNORECASE)
     user_fields = [
         t for t in field_tags

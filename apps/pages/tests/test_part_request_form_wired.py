@@ -99,6 +99,14 @@ def test_form_has_csrf_token(client):
 # AC-10: polja NISU disabled (aktivna forma, NE skelet)
 def test_form_fields_not_disabled(client):
     html = _page_html(client)
+    # Scope na rezervni-delovi formu (forma sa hx-post; NE header search/jezik
+    # forme) — site-wide GDPR baner (Story 7.2) sadrži legitiman `disabled`
+    # „Neophodan" checkbox koji bi procureo u whole-page scan.
+    form_m = re.search(
+        r"<form\b[^>]*hx-post=.*?</form>", html, re.IGNORECASE | re.DOTALL
+    )
+    assert form_m, "Rezervni-delovi forma <form hx-post=...> MORA postojati."
+    html = form_m.group(0)
     field_tags = re.findall(r"<(?:input|textarea|select|button)\b[^>]*>", html, re.IGNORECASE)
     user_fields = [
         t for t in field_tags
