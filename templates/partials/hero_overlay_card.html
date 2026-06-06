@@ -1,11 +1,12 @@
 {# Hero Overlay Card — green-800 kartica sa brand lockup + h1 + bullets + watermark. #}
+{% load i18n_fallback %}
 <div class="coric-hero-overlay-card">
   {% if brand_logo %}
     <div class="coric-hero-overlay-card__brand-lockup">
       <img src="{{ brand_logo }}" alt="{{ brand_logo_alt|default:'' }}">
     </div>
   {% endif %}
-  <h1 class="coric-hero-overlay-card__title">{{ title }}</h1>
+  <h1 class="coric-hero-overlay-card__title">{% if fallback_obj %}{% translated_field fallback_obj fallback_field %}{% else %}{{ title }}{% endif %}</h1>
   {% if bullets %}
     <ul class="coric-hero-overlay-card__bullets">
       {% for bullet in bullets|slice:":3" %}

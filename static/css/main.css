@@ -57,3 +57,6 @@
 
 /* Components CSS imports (Story 5.3) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/blog-detail.css');
+
+/* Components CSS imports (Story 6.5) — relative-with-dot syntax MANDATORY (IMP-7) */
+@import url('./components/i18n-fallback-marker.css');

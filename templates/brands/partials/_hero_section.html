@@ -3,17 +3,17 @@
   {% if brand.brand_color|lower == "#00a4e9" %}
     {% with variant="blue" %}
       {% if brand.logo %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant=variant bullets="" %}
+        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo=brand.logo.url brand_logo_alt=brand.name variant=variant bullets="" %}
       {% else %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant=variant bullets="" %}
+        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo="" brand_logo_alt=brand.name variant=variant bullets="" %}
       {% endif %}
     {% endwith %}
   {% else %}
     {% with variant="green" %}
       {% if brand.logo %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant=variant bullets="" %}
+        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo=brand.logo.url brand_logo_alt=brand.name variant=variant bullets="" %}
       {% else %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant=variant bullets="" %}
+        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo="" brand_logo_alt=brand.name variant=variant bullets="" %}
       {% endif %}
     {% endwith %}
   {% endif %}

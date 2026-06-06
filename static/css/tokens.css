@@ -177,4 +177,8 @@
   --spacing-card-min-width-sm: 220px;  /* variants */
   --spacing-card-min-width-md: 240px;  /* brochures or specs */
   --spacing-card-min-width-lg: 280px;  /* similar products */
+
+  /* === TOOLTIP — Sizing + stacking (Story 6-5 i18n fallback marker) === */
+  --tooltip-max-width: 240px;  /* ~40-char localized tooltip on one readable column */
+  --z-index-tooltip: 10;       /* above adjacent inline text, below sticky nav (1020) */
 }

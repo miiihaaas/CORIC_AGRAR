@@ -1,0 +1,67 @@
+/* i18n-fallback-marker.css — Story 6.5 (SEO & Discoverability).
+ * Diskretan ⓘ marker + CSS-only tooltip kad je translated polje fallback-ovano na
+ * sr za aktivnu locale. Tooltip je DETE `.coric-fallback-marker` → reveal je
+ * DESCENDANT selektor (NE adjacent sibling). SAMO var(--...) tokeni (izuzev
+ * a11y clip-pattern primitiva). WCAG 2.1 AA: kontrast ≥4.5:1, focus-visible,
+ * prefers-reduced-motion, 1.4.13 Content on Hover or Focus. */
+
+.coric-fallback-marker {
+  position: relative;
+  cursor: help;
+  color: var(--color-semantic-text-muted);
+  text-decoration: underline dotted;
+  /* Optical alignment: nudge the dotted underline off the text baseline so it
+   * reads as a hint affordance, not a strikethrough (em-relative → scales with font). */
+  text-underline-offset: 0.15em;
+}
+
+.coric-fallback-marker:focus-visible {
+  outline: 2px solid var(--color-semantic-focus-ring);
+  outline-offset: 2px;
+}
+
+.coric-fallback-marker__icon {
+  width: 1em;
+  height: 1em;
+  /* Optical alignment: drop the ⓘ glyph ~0.1em below baseline so it centers on
+   * the adjacent text x-height (em-relative → scales with font). */
+  vertical-align: -0.1em;
+  /* currentColor — nasleđuje marker boju */
+}
+
+/* DEFAULT = visually-hidden clip pattern (mirror Bootstrap `.visually-hidden`).
+ * NE display:none / visibility:hidden (uklanja iz a11y stabla → lomi
+ * aria-describedby); NE bare opacity:0 (AT-tree dvosmislenost). Tooltip OSTAJE u
+ * a11y stablu za aria-describedby asocijaciju. */
+.coric-fallback-marker__tooltip {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+  /* Vizuelni stil (primenjen tek na reveal, ali deklarisan ovde za stabilnost) */
+  background: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
+  padding: var(--spacing-scale-2) var(--spacing-scale-3);
+  border-radius: var(--rounded-sm);
+  box-shadow: var(--shadow-md);
+  font-size: var(--typography-scale-caption);
+}
+
+/* Reveal = DESCENDANT selektor (radi SAMO jer je tooltip dete markera; G4).
+ * Placement: ispod markera u praznom prostoru (WCAG 1.4.13 / G10 — NE preko
+ * susedne kritične UI). */
+.coric-fallback-marker:hover .coric-fallback-marker__tooltip,
+.coric-fallback-marker:focus .coric-fallback-marker__tooltip,
+.coric-fallback-marker:focus-within .coric-fallback-marker__tooltip {
+  width: auto;
+  height: auto;
+  clip-path: none;
+  overflow: visible;
+  white-space: normal;
+  max-width: var(--tooltip-max-width);
+  z-index: var(--z-index-tooltip);
+  top: calc(100% + var(--spacing-scale-1));
+  left: 0;
+}

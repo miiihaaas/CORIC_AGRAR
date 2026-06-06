@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n media_tags seo_meta static %}
+{% load i18n i18n_fallback media_tags seo_meta static %}
 
 {% block title %}{% seo_title post %}{% endblock %}
 
@@ -16,7 +16,7 @@
     {% endif %}
 
     <header class="coric-blog-detail__header">
-      <h1 id="blog-detail-title" class="coric-blog-detail__title">{{ post.title }}</h1>
+      <h1 id="blog-detail-title" class="coric-blog-detail__title">{% translated_field post 'title' %}</h1>
       <p class="coric-blog-detail__meta">
         {% if post.published_at %}
           <span class="coric-blog-detail__date">

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-05 04:30+0000\n"
+"POT-Creation-Date: 2026-06-06 09:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "Opis"
 
 #: apps/blog/models.py:53 apps/blog/models.py:150 apps/brands/models.py:271
 #: apps/brands/models.py:323 templates/blog/partials/_blog_filter.html:19
-#: templates/blog/post_detail.html:32
+#: templates/blog/post_detail.html:34
 #: templates/products/partials/_used_filter_form.html:19
 msgid "Kategorija"
 msgstr "Kategorija"
@@ -52,7 +52,7 @@ msgid "Tag"
 msgstr "Tag"
 
 #: apps/blog/models.py:88 apps/blog/models.py:156
-#: templates/blog/post_detail.html:47
+#: templates/blog/post_detail.html:50
 msgid "Tagovi"
 msgstr "Tagovi"
 
@@ -80,7 +80,7 @@ msgstr "Telo"
 msgid "Glavna slika"
 msgstr "Glavna slika"
 
-#: apps/blog/models.py:164 templates/blog/post_detail.html:27
+#: apps/blog/models.py:164 templates/blog/post_detail.html:29
 msgid "Autor"
 msgstr "Autor"
 
@@ -300,6 +300,10 @@ msgstr "HZM brand nije konfigurisan u sistemu."
 #: apps/brands/views.py:391
 msgid "Tulip brand nije konfigurisan u sistemu."
 msgstr "Tulip brand nije konfigurisan u sistemu."
+
+#: apps/core/templatetags/i18n_fallback.py:85
+msgid "Sadržaj na srpskom — još nije preveden"
+msgstr ""
 
 #: apps/forms/forms.py:27 apps/forms/forms.py:86 apps/forms/forms.py:186
 #: apps/forms/forms.py:385
@@ -871,15 +875,103 @@ msgstr "Cena: opadajuće"
 msgid "Godina: opadajuće"
 msgstr "Godina: opadajuće"
 
-#: templates/base.html:19
+#: apps/seo/admin.py:89
+#, python-format
+msgid "SEO meta naslov prelazi preporučenih %(n)d znakova."
+msgstr ""
+
+#: apps/seo/admin.py:95
+#, python-format
+msgid "SEO meta opis prelazi preporučenih %(n)d znakova."
+msgstr ""
+
+#: apps/seo/apps.py:20
+msgid "SEO"
+msgstr ""
+
+#: apps/seo/models.py:30
+msgid "Tip sadržaja"
+msgstr ""
+
+#: apps/seo/models.py:33
+msgid "ID objekta"
+msgstr ""
+
+#: apps/seo/models.py:38
+msgid "Meta naslov"
+msgstr ""
+
+#: apps/seo/models.py:40
+msgid "Meta opis"
+msgstr ""
+
+#: apps/seo/models.py:42
+#, fuzzy
+#| msgid "Glavna slika"
+msgid "OG slika"
+msgstr "Glavna slika"
+
+#: apps/seo/models.py:49
+msgid "Izostavi iz sitemap-a"
+msgstr ""
+
+#: apps/seo/models.py:53 apps/seo/models.py:54
+msgid "SEO meta"
+msgstr ""
+
+#: apps/seo/models.py:78
+msgid "Stari put"
+msgstr ""
+
+#: apps/seo/models.py:80
+msgid "Novi put"
+msgstr ""
+
+#: apps/seo/models.py:81
+msgid "Aktivno"
+msgstr ""
+
+#: apps/seo/models.py:84
+msgid "Preusmerenje"
+msgstr ""
+
+#: apps/seo/models.py:85
+msgid "Preusmerenja"
+msgstr ""
+
+#: apps/seo/models.py:104
+msgid ""
+"Novi put mora biti interni (site-internal path koji počinje sa „/“, bez "
+"domena ili šeme)."
+msgstr ""
+
+#: apps/seo/models.py:118
+msgid ""
+"Novi put mora počinjati sa „/“ (apsolutni site-interni path, npr. „/sr/"
+"nova/“ — bez vodećeg „/“ browser ga resolve-uje relativno na trenutni URL)."
+msgstr ""
+
+#: apps/seo/models.py:129
+msgid ""
+"Novi put ne sme biti identičan starom putu (preusmerenje bi pravilo "
+"beskonačnu petlju)."
+msgstr ""
+
+#: apps/seo/models.py:140
+msgid ""
+"Stari put mora počinjati sa „/“ (mora odgovarati request.path, npr. „/sr/"
+"stara/“)."
+msgstr ""
+
+#: templates/base.html:21
 msgid "Preskoči na sadržaj"
 msgstr "Preskoči na sadržaj"
 
-#: templates/base.html:25
+#: templates/base.html:27
 msgid "Dobrodošli."
 msgstr "Dobrodošli."
 
-#: templates/base.html:32
+#: templates/base.html:34
 msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
@@ -895,6 +987,13 @@ msgstr ""
 #| msgid "Pogledaj kategoriju: %(category)s"
 msgid "Objave u kategoriji: %(name)s"
 msgstr "Pogledaj kategoriju: %(category)s"
+
+#: templates/blog/blog_archive.html:4 templates/brands/brand_coming_soon.html:4
+#: templates/brands/hzm_radne_masine.html:4
+#: templates/brands/jeegee_prikljucna.html:4
+#: templates/brands/tulip_mix_prikolice.html:4
+msgid "Ćorić Agrar"
+msgstr "Ćorić Agrar"
 
 #: templates/blog/blog_archive.html:6
 #, python-format
@@ -944,6 +1043,7 @@ msgid "prikaži sve"
 msgstr "Vidi sve"
 
 #: templates/blog/partials/_blog_empty_state.html:15
+#: templates/partials/footer.html:37
 #, fuzzy
 #| msgid "Priče sa polja"
 msgid "Uskoro nove priče sa polja"
@@ -986,7 +1086,7 @@ msgid "%(title)s — pročitaj objavu"
 msgstr ""
 
 #: templates/blog/partials/_post_card.html:15
-#: templates/blog/post_detail.html:21
+#: templates/blog/post_detail.html:23
 #, fuzzy
 #| msgid "Datum objave"
 msgid "Datum objave:"
@@ -1068,15 +1168,6 @@ msgstr ""
 msgid "Kopiraj link"
 msgstr ""
 
-#: templates/brands/brand_coming_soon.html:4
-#: templates/brands/brand_detail.html:4
-#: templates/brands/hzm_radne_masine.html:4
-#: templates/brands/jeegee_prikljucna.html:4
-#: templates/brands/tulip_mix_prikolice.html:4
-#: templates/products/product_detail.html:4
-msgid "Ćorić Agrar"
-msgstr "Ćorić Agrar"
-
 #: templates/brands/brand_coming_soon.html:6
 #: templates/brands/brand_coming_soon.html:19
 #, python-format
@@ -1087,12 +1178,12 @@ msgstr "Brend %(brand)s će uskoro biti dostupan u našem katalogu."
 msgid "Nazad na Home"
 msgstr "Nazad na Home"
 
-#: templates/brands/brand_detail.html:10
+#: templates/brands/brand_detail.html:12
 #, python-format
 msgid "Hero sekcija — %(name)s"
 msgstr "Hero sekcija — %(name)s"
 
-#: templates/brands/brand_detail.html:27
+#: templates/brands/brand_detail.html:29
 msgid "Modeli brenda"
 msgstr "Modeli brenda"
 
@@ -1337,7 +1428,7 @@ msgstr "Greška pri slanju, proverite polja:"
 #: templates/forms/partials/_contact_form_fields.html:101
 #: templates/forms/partials/_model_inquiry_form_fields.html:122
 #: templates/forms/partials/_part_request_form_fields.html:210
-#: templates/products/product_detail.html:15
+#: templates/products/product_detail.html:17
 msgid "Pošalji upit"
 msgstr "Pošalji upit"
 
@@ -1896,19 +1987,7 @@ msgstr "Pocetna"
 msgid "Polovna mehanizacija"
 msgstr "Polovna mehanizacija"
 
-#: templates/partials/footer.html:35
-msgid "Lorem ipsum dolor sit amet (vest 1)"
-msgstr "Lorem ipsum dolor sit amet (vest 1)"
-
-#: templates/partials/footer.html:36
-msgid "Lorem ipsum dolor sit amet (vest 2)"
-msgstr "Lorem ipsum dolor sit amet (vest 2)"
-
-#: templates/partials/footer.html:37
-msgid "Lorem ipsum dolor sit amet (vest 3)"
-msgstr "Lorem ipsum dolor sit amet (vest 3)"
-
-#: templates/partials/footer.html:79
+#: templates/partials/footer.html:80
 msgid "Sva prava zadrzana."
 msgstr "Sva prava zadrzana."
 
@@ -2252,6 +2331,15 @@ msgstr "Popularni brendovi"
 #, python-format
 msgid "Rezultati pretrage za „%(query)s\""
 msgstr "Rezultati pretrage za „%(query)s\""
+
+#~ msgid "Lorem ipsum dolor sit amet (vest 1)"
+#~ msgstr "Lorem ipsum dolor sit amet (vest 1)"
+
+#~ msgid "Lorem ipsum dolor sit amet (vest 2)"
+#~ msgstr "Lorem ipsum dolor sit amet (vest 2)"
+
+#~ msgid "Lorem ipsum dolor sit amet (vest 3)"
+#~ msgstr "Lorem ipsum dolor sit amet (vest 3)"
 
 #~ msgid ""
 #~ "Forma će uskoro biti dostupna. Do tada nas kontaktirajte telefonom ili e-"
