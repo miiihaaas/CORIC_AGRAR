@@ -116,8 +116,12 @@ def test_hzm_query_budget_two_queries(client, django_assert_num_queries):
     get_context_data — Dev empirijski lock-uje TAČAN broj posle GREEN iter 1.
     """
     activate("sr")
-    # Story 3.4: 3 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
-    with django_assert_num_queries(4):
+    # Query budget: 6 = 3 view upita (Brand get_object + Category lookup + Subcategory
+    #   list) + SiteSettings chrome (3.4) + RedirectMiddleware seo_redirect lookup (6-4)
+    #   + footer latest_blog_posts blog_post LIMIT 3 (5-4). Sve tri chrome upite su
+    #   konstantne po request-u (indeksirane). HZM NE query-uje Product → real N+1 nije
+    #   moguć ovde, ali budget i dalje hvata neočekivane view-level upite.
+    with django_assert_num_queries(6):
         response = client.get(_HZM_URL)
         assert response.status_code == 200
 

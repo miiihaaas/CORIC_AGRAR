@@ -117,8 +117,11 @@ def test_assert_num_queries_initial_render_under_budget(client, django_assert_nu
     activate("sr")
     url = "/sr/mehanizacija/prikljucna/"
 
-    # Story 3.4: 2 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
-    with django_assert_num_queries(3):
+    # Query budget: 5 = 2 view upita (Brand get_object + Category whitelist)
+    #   + SiteSettings chrome (3.4) + RedirectMiddleware seo_redirect lookup (6-4)
+    #   + footer latest_blog_posts blog_post LIMIT 3 (5-4). Sve tri chrome upite su
+    #   konstantne po request-u (indeksirane). Real N+1 u view-u i dalje obara budget.
+    with django_assert_num_queries(5):
         response = client.get(url)
         assert response.status_code == 200
 

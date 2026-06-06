@@ -68,8 +68,12 @@ def test_tractor_list_query_budget(client, django_assert_num_queries):
     # Empirical reveal: 3 = Brand list + Paginator COUNT + Product page slice (sa
     # select_related brand/series/subcategory). Middleware sessions/auth NE generišu
     # SQL upite za anonimni GET (Django session middleware lazy-loads samo na write).
-    # Story 3.4: 3 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
-    with django_assert_num_queries(4):
+    # Query budget: 6 = 3 view upita (Brand list + Paginator COUNT + Product page slice)
+    #   + SiteSettings chrome (3.4) + RedirectMiddleware seo_redirect lookup (6-4)
+    #   + footer latest_blog_posts blog_post LIMIT 3 (5-4). Sve tri chrome upite su
+    #   konstantne po request-u (indeksirane, ne skaliraju sa brojem product-a). Real
+    #   N+1 u view-u (per-product SELECT) i dalje obara ovaj exact budget.
+    with django_assert_num_queries(6):
         response = client.get("/sr/traktori/", HTTP_HOST="localhost")
         assert response.status_code == 200
 

@@ -247,8 +247,12 @@ def test_spec_rows_uses_prefetched_specifications_no_extra_query(client):
 
     query_count = len(ctx)
     # Konstantan, mali broj — prefetch znači per-product specs NE generišu dodatne upite.
-    assert query_count <= 6, (
+    # Budget: ~4 view upita (Brand + Product + prefetch specs + testimonials) + 3 chrome
+    # upita konstantna po request-u: SiteSettings (3.4) + RedirectMiddleware seo_redirect
+    # lookup (6-4) + footer latest_blog_posts blog_post LIMIT 3 (5-4). Ceiling 8 (ostavlja
+    # 1 upit slack-a). Real N+1 (pobijen prefetch, per-product spec query) probija ceiling.
+    assert query_count <= 8, (
         f"Tulip view MORA imati mali konstantan query budget (Brand + Product + prefetch "
-        f"specs + testimonials ≈ 4-6 sa session/i18n overhead), dobio {query_count}. Ako "
+        f"specs + testimonials ≈ 4 + 3 chrome upita po request-u), dobio {query_count}. Ako "
         f"je veliki, prefetch je pobijen ili nedostaje."
     )

@@ -104,12 +104,24 @@ def test_assert_num_queries_exactly_7(client, django_assert_num_queries):
 
     url = f"/sr/proizvod/{product.slug}/"
 
-    # Story 3.4: 7 view upita + 1 SiteSettings chrome upit (header/footer site_setting, 1/request).
-    # Story 6.1 (TEST_MODIFICATION, +2 justified): {% seo_head/seo_title/seo_meta_description %}
-    # u product_detail.html dodaju 2 bounded upita po strani: (1) ContentType resolve
-    # (get_for_model — Django app-keš), (2) SeoMeta forward-lookup (per-request keširan
-    # kroz sva 3 tag-poziva; SiteSettings deli chrome keš → 0 dodatnih). Budžet 8 → 10.
-    with django_assert_num_queries(10):
+    # ContentType.get_for_model (SEO head 6.1) je process-level keširan (NE per-request),
+    # pa njegova prva-poziv cena curi između testova ovisno o redosledu izvršavanja.
+    # Warm-ujemo keš ovde da budget meri DETERMINISTIČKU per-request cenu (order-independent).
+    from django.contrib.contenttypes.models import ContentType
+
+    from apps.products.models import Product
+
+    ContentType.objects.get_for_model(Product)
+
+    # Query budget: 11 = 7 view upita (manual ProductSimilar path, gore nabrojano)
+    #   + SiteSettings chrome (3.4)
+    #   + SEO head SeoMeta forward-lookup (6.1; ContentType resolve je warm-ovan iznad)
+    #   + RedirectMiddleware seo_redirect lookup (6-4)
+    #   + footer latest_blog_posts blog_post LIMIT 3 (5-4).
+    # Test name `..._exactly_7` je istorijski (7 = SAMO view upiti za manual path); ostatak
+    # je site-wide chrome konstantan po request-u (indeksiran, ne skalira sa brojem
+    # prefetched relacija). Real N+1 u view-u i dalje obara ovaj exact budget.
+    with django_assert_num_queries(11):
         response = client.get(url, HTTP_HOST="localhost")
         assert response.status_code == 200
 

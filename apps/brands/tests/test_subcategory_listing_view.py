@@ -245,10 +245,12 @@ class TestSubcategoryListingViewQueryBudget:
             resp = client.get(_l1_url(cat.slug, l1.slug))
             assert resp.status_code == 200
         # EXACT lock (post-GREEN, SM-D12) — tightened from `<= 4`.
-        # Story 3.4: +1 za SiteSettings chrome upit (header/footer site_setting tag, 1/request).
-        assert len(ctx.captured_queries) == _AC10_INTERMEDIATE_LOCKED + 1, (
+        # +3 chrome upita konstantna po request-u: SiteSettings (3.4) +
+        # RedirectMiddleware seo_redirect lookup (6-4) + footer latest_blog_posts
+        # blog_post LIMIT 3 (5-4). Real N+1 na children listi i dalje obara exact lock.
+        assert len(ctx.captured_queries) == _AC10_INTERMEDIATE_LOCKED + 3, (
             f"intermediate render used {len(ctx.captured_queries)} queries "
-            f"(locked {_AC10_INTERMEDIATE_LOCKED} + 1 SiteSettings):\n"
+            f"(locked {_AC10_INTERMEDIATE_LOCKED} + 3 chrome: SiteSettings/seo_redirect/blog):\n"
             + "\n".join(q["sql"] for q in ctx.captured_queries)
         )
 
@@ -263,10 +265,12 @@ class TestSubcategoryListingViewQueryBudget:
             resp = client.get(_l1_url(cat.slug, l1.slug))
             assert resp.status_code == 200
         # EXACT lock (post-GREEN, SM-D12) — tightened from `<= 4`.
-        # Story 3.4: +1 za SiteSettings chrome upit (header/footer site_setting tag, 1/request).
-        assert len(ctx.captured_queries) == _AC10_LEAF_LOCKED + 1, (
+        # +3 chrome upita konstantna po request-u: SiteSettings (3.4) +
+        # RedirectMiddleware seo_redirect lookup (6-4) + footer latest_blog_posts
+        # blog_post LIMIT 3 (5-4). Real N+1 na product/brand gridu i dalje obara lock.
+        assert len(ctx.captured_queries) == _AC10_LEAF_LOCKED + 3, (
             f"leaf render used {len(ctx.captured_queries)} queries "
-            f"(locked {_AC10_LEAF_LOCKED} + 1 SiteSettings):\n"
+            f"(locked {_AC10_LEAF_LOCKED} + 3 chrome: SiteSettings/seo_redirect/blog):\n"
             + "\n".join(q["sql"] for q in ctx.captured_queries)
         )
 
