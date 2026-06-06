@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-{% load django_bootstrap5 gdpr_banner hreflang htmx_aria i18n seo_meta static %}
+{% load django_bootstrap5 gdpr_banner hreflang htmx_aria i18n seo_meta static tracking %}
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="{% block meta_description %}{% endblock %}">
   <title>{% block title %}Ćorić Agrar{% endblock %}</title>
+  {# Story 7.3 — consent-gated tracking VISOKO u <head> (GA4 standard: rano za page-view timing). Render "" bez consent+ID. #}
+  {% ga_pixel %}
+  {% fb_pixel %}
   {% block social_meta %}{% seo_head %}{% endblock %}
   {% block hreflang %}{% hreflang_links %}{% endblock %}
   <link rel="stylesheet" href="{% static "css/tokens.css" %}">

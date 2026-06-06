@@ -84,6 +84,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.blog.context_processors.latest_blog_posts",  # NOVO Story 5.4 — footer Najnovije vesti
+                "apps.gdpr.context_processors.consent_state",  # NOVO Story 7.3 — consent-gated tracking (POSLE blog-a, G-9)
             ],
         },
     },
@@ -119,6 +120,14 @@ EMAIL_TIMEOUT = 10
 
 # django-anymail (Resend) — RESEND_API_KEY iz env (prazan default u dev/test; SM-D2).
 ANYMAIL = {"RESEND_API_KEY": env("ANYMAIL_RESEND_API_KEY", default="")}
+
+# ── Tracking (Epic 7, Story 7.3) ─────────────────────────────────────────────
+# GA4 / Facebook Pixel ID-jevi — env-driven (per-environment infra config NE
+# editorial; SiteSettings nema ID polja). Prazan default → dev/test render NIŠTA
+# (no-tracker fail-safe; {% ga_pixel %}/{% fb_pixel %} no-ID grana). Staging/prod
+# set-uje realne ID-jeve kroz env (Hetzner secrets). Mirror ANYMAIL pattern.
+GA_MEASUREMENT_ID = env("GA_MEASUREMENT_ID", default="")
+FB_PIXEL_ID = env("FB_PIXEL_ID", default="")
 
 # Per-segment recipient-i (send_lead_email bira po lead.form_type — SM-D7).
 # Bezbedan prazan default za dev/test (prazan recipient → service tretira kao failed send, C1).
