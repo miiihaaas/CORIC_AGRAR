@@ -46,6 +46,7 @@ urlpatterns += i18n_patterns(
     path("", include("apps.pages.urls")),  # NOVO Story 3.1 — root `/` → HomeView (pages:home); zamenjuje core:home
     path("", include("apps.forms.urls")),  # NOVO Story 4.2 — htmx/forme/kontakt/ (kontakt forma submit)
     path("", include("apps.blog.urls")),  # NOVO Story 5.2 — /sr/blog/ + /sr/blog/<slug>/
+    path("", include("apps.gdpr.urls")),  # NOVO Story 7.1 — /sr/politika-kolacica/ (CookiePolicy javna strana, G-5)
     prefix_default_language=True,
 )
 

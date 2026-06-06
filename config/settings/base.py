@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "apps.forms",  # NOVO Story 4.1 — lead-gen forms app (samostalan top-level; POSLE domain app-ova, SM-D1)
     "apps.blog",  # NOVO Story 5.1 — Blog „Priče sa polja" content app (samostalan; POSLE modeltranslation + domain app-ova, SM-D1)
     "apps.seo",  # NOVO Story 6.1 — SEO & Discoverability (SeoMeta GFK; POSLE modeltranslation + domain app-ova + apps.blog jer generic inline žičan na njihove admin-e, SM-D9)
+    "apps.gdpr",  # NOVO Story 7.1 — GDPR & Privacy (CookiePolicy singleton; POSLE modeltranslation + domain app-ova; gdpr nema cross-app dep, SM-D1)
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ policy.title }}{% endblock %}
+
+{% block content %}
+  <article class="coric-cookie-policy" data-testid="cookie-policy-page" aria-labelledby="cookie-policy-title">
+    <h1 id="cookie-policy-title">{{ policy.title }}</h1>
+
+    {% if policy.effective_date %}
+      <p class="text-muted">{% translate "Važi od" %}: {{ policy.effective_date|date:"SHORT_DATE_FORMAT" }}</p>
+    {% endif %}
+    <p class="text-muted small">{% translate "Poslednja izmena" %}: {{ policy.updated_at|date:"SHORT_DATE_FORMAT" }}</p>
+
+    {# 7.1/8.7: body je plain-text TextField — render |linebreaks (autoescape). NIKAD raw |safe bez sanitizacije (stored-XSS — SM-D3/G-7). Rich-HTML body (WYSIWYG + bleach/nh3) = Epic 8.7. #}
+    <div class="coric-cookie-policy__body">{{ policy.body|linebreaks }}</div>
+  </article>
+{% endblock content %}
