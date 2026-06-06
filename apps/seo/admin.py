@@ -16,10 +16,10 @@ i NE importuje products/brands/blog admin-e ni njihove modele (GFK inline NE
 zahteva model import). Receiving admini importuju IZ apps.seo.admin (jednosmerno).
 """
 
-from django.contrib import messages
+from django.contrib import admin, messages
 from modeltranslation.admin import TranslationGenericStackedInline
 
-from apps.seo.models import SeoMeta
+from apps.seo.models import Redirect, SeoMeta
 
 _TITLE_MAX = 60
 _DESC_MAX = 160
@@ -66,6 +66,21 @@ class SeoWarningAdminMixin:
                         _warning_msg_desc(),
                         level=messages.WARNING,
                     )
+
+
+@admin.register(Redirect)
+class RedirectAdmin(admin.ModelAdmin):
+    """Story 6.4 — samostalan admin za 301 redirect pravila (AC3).
+
+    list_editable na is_active → toggle deaktivacije direktno iz liste; old_path
+    ostaje clickable link (changelist zahteva bar jedan link). Admin ModelForm
+    poziva full_clean() → clean() open-redirect guard se aktivira na add/edit.
+    """
+
+    list_display = ("old_path", "new_path", "is_active", "created_at")
+    list_filter = ("is_active",)
+    search_fields = ("old_path", "new_path")
+    list_editable = ("is_active",)
 
 
 def _warning_msg_title():

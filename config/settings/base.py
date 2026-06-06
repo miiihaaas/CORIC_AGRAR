@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # POSLE Security, PRE Session (Whitenoise docs)
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "apps.seo.middleware.RedirectMiddleware",  # NOVO Story 6.4 — PRE LocaleMiddleware (raw-path match SA locale prefiksom; SM-D1)
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
