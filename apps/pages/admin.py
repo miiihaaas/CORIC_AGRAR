@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from modeltranslation.admin import TranslationAdmin
 
-from apps.pages.models import SiteSettings
+from apps.pages.models import Page, SiteSettings
 
 
 @admin.register(SiteSettings)
@@ -38,3 +38,18 @@ class SiteSettingsAdmin(TranslationAdmin):
         return HttpResponseRedirect(
             reverse("admin:pages_sitesettings_change", args=[obj.pk])
         )
+
+
+@admin.register(Page)
+class PageAdmin(TranslationAdmin):
+    """Story 7.4 — generičke statičke strane (NIJE singleton — ima add/delete).
+
+    TranslationAdmin auto-grupiše title/body po jeziku (sr/hu/en tabovi).
+    `prepopulated_fields` radi na default-locale `title` polju (G-5 — provereno
+    radeća kombinacija sa TranslationAdmin, blog 5-1 BL-2). NE override-uj
+    has_add_permission/has_delete_permission (RAZLIKA od singleton admin-a).
+    """
+
+    list_display = ("title", "slug", "updated_at")
+    search_fields = ("title", "slug")
+    prepopulated_fields = {"slug": ("title",)}

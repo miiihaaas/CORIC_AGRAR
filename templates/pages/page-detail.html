@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+  <article class="coric-static-page" data-testid="static-page" aria-labelledby="page-title">
+    <h1 id="page-title">{{ page.title }}</h1>
+
+    <p class="text-muted small">{% translate "Poslednja izmena" %}: {{ page.updated_at|date:"SHORT_DATE_FORMAT" }}</p>
+
+    {# 7.4/8.7: body je plain-text TextField — render |linebreaks (autoescape). NIKAD raw |safe bez sanitizacije (stored-XSS — SM-D4/AC8). Rich-HTML body (WYSIWYG + bleach/nh3) = Epic 8.7. #}
+    <div class="coric-static-page__body">{{ page.body|linebreaks }}</div>
+  </article>
+{% endblock content %}

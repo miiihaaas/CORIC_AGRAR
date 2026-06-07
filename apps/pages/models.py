@@ -20,6 +20,7 @@ modeltranslation registracija (apps/pages/translation.py) čini `slogan`/`addres
 
 from django.core.exceptions import PermissionDenied
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import TimestampedModel
@@ -128,3 +129,40 @@ class SiteSettings(TimestampedModel):
         """Vrati jedinu instancu (lazy get_or_create pk=1)."""
         obj, _created = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class Page(TimestampedModel):
+    """Story 7.4 — generički model za statičke pravne/info strane.
+
+    NIJE singleton (RAZLIKA od SiteSettings/CookiePolicy) — više Page redova
+    (politika privatnosti sad; „O nama"/„Servis" CMS-ifikacija u Epic 8.8).
+    `slug` ASCII jezik-neutralan unique business key; `title`/`body` translatable
+    (`_sr/_hu/_en`). `body` je plain TextField — render `{{ page.body|linebreaks }}`
+    (autoescape XSS-safe; NIKAD `|safe`/`mark_safe`; rich-HTML + sanitizacija = 8.7).
+    """
+
+    slug = models.SlugField(
+        _("Slug"),
+        max_length=255,
+        unique=True,
+        db_index=True,
+    )
+    title = models.CharField(
+        _("Naslov"),
+        max_length=255,
+    )
+    body = models.TextField(
+        _("Sadržaj"),
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = _("Statička strana")
+        verbose_name_plural = _("Statičke strane")
+        ordering = ("title",)
+
+    def __str__(self):
+        return self.title or self.slug
+
+    def get_absolute_url(self):
+        return reverse("pages:page_detail", kwargs={"slug": self.slug})

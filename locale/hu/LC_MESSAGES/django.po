@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-06 17:44+0000\n"
+"POT-Creation-Date: 2026-06-07 07:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Objavljeno"
 msgstr "Bejegyzések"
 
-#: apps/blog/models.py:125 apps/gdpr/models.py:34
+#: apps/blog/models.py:125 apps/gdpr/models.py:34 apps/pages/models.py:151
 msgid "Naslov"
 msgstr ""
 
@@ -108,7 +108,7 @@ msgid "Brendovi"
 msgstr ""
 
 #: apps/brands/models.py:70 apps/brands/models.py:180 apps/brands/models.py:252
-#: apps/brands/models.py:334
+#: apps/brands/models.py:334 apps/pages/models.py:145
 msgid "Slug"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgstr ""
 msgid "Hero slika"
 msgstr ""
 
-#: apps/brands/models.py:86 apps/pages/models.py:37
+#: apps/brands/models.py:86 apps/pages/models.py:38
 msgid "Slogan"
 msgstr ""
 
@@ -286,7 +286,8 @@ msgstr "A kategória nem található."
 msgid "Potkategorija nije pronađena."
 msgstr "Az alkategória nem található."
 
-#: apps/brands/views.py:253 templates/partials/header.html:79
+#: apps/brands/views.py:253 templates/partials/footer.html:9
+#: templates/partials/header.html:79
 msgid "Početna"
 msgstr "Kezdőlap"
 
@@ -323,7 +324,7 @@ msgid "Unesite ime i prezime."
 msgstr "Adja meg a teljes nevét."
 
 #: apps/forms/forms.py:41 apps/forms/forms.py:100 apps/forms/forms.py:215
-#: apps/forms/forms.py:414 apps/pages/models.py:60
+#: apps/forms/forms.py:414 apps/pages/models.py:61
 #: templates/forms/partials/_contact_form_fields.html:56
 #: templates/forms/partials/_model_inquiry_form_fields.html:77
 #: templates/forms/partials/_part_request_form_fields.html:133
@@ -571,7 +572,7 @@ msgstr ""
 msgid "GDPR i privatnost"
 msgstr ""
 
-#: apps/gdpr/models.py:39
+#: apps/gdpr/models.py:39 apps/pages/models.py:155
 msgid "Sadržaj"
 msgstr ""
 
@@ -586,6 +587,7 @@ msgid ""
 msgstr ""
 
 #: apps/gdpr/models.py:53 apps/gdpr/models.py:54
+#: templates/partials/footer.html:82
 msgid "Politika kolačića"
 msgstr ""
 
@@ -638,65 +640,73 @@ msgstr ""
 msgid "Slika je oštećena ili nije validan format."
 msgstr ""
 
-#: apps/pages/models.py:32
+#: apps/pages/models.py:33
 msgid "Naziv firme"
 msgstr "Cégnév"
 
-#: apps/pages/models.py:42 templates/pages/partials/_contact_info.html:14
+#: apps/pages/models.py:43 templates/pages/partials/_contact_info.html:14
 msgid "Adresa"
 msgstr "Cím"
 
-#: apps/pages/models.py:47 templates/pages/partials/_contact_info.html:20
+#: apps/pages/models.py:48 templates/pages/partials/_contact_info.html:20
 #: templates/pages/partials/_contact_info.html:24
 #: templates/partials/header.html:23
 msgid "Telefon prodaje"
 msgstr "Értékesítési telefon"
 
-#: apps/pages/models.py:52 templates/pages/partials/_contact_info.html:29
+#: apps/pages/models.py:53 templates/pages/partials/_contact_info.html:29
 #: templates/pages/partials/_contact_info.html:33
 #: templates/partials/header.html:29
 msgid "Telefon servisa"
 msgstr "Szerviz telefon"
 
-#: apps/pages/models.py:56
+#: apps/pages/models.py:57
 msgid ""
 "PLACEHOLDER — privremena vrednost dok biznis ne unese realni broj servisa."
 msgstr ""
 
-#: apps/pages/models.py:64 templates/pages/partials/_contact_info.html:48
+#: apps/pages/models.py:65 templates/pages/partials/_contact_info.html:48
 msgid "Radno vreme"
 msgstr "Nyitvatartás"
 
-#: apps/pages/models.py:66
+#: apps/pages/models.py:67
 msgid "Jedan red po liniji (npr. „Ponedeljak–Petak: 08–16h“)."
 msgstr ""
 
-#: apps/pages/models.py:69
+#: apps/pages/models.py:70
 msgid "Facebook URL"
 msgstr "Facebook URL"
 
-#: apps/pages/models.py:72
+#: apps/pages/models.py:73
 msgid ""
 "PLACEHOLDER — prazno dok biznis ne unese realni Facebook URL; link se "
 "sakriva kad je prazno."
 msgstr ""
 
-#: apps/pages/models.py:77
+#: apps/pages/models.py:78
 msgid "Instagram URL"
 msgstr "Instagram URL"
 
-#: apps/pages/models.py:80
+#: apps/pages/models.py:81
 msgid ""
 "PLACEHOLDER — prazno dok biznis ne unese realni Instagram URL; link se "
 "sakriva kad je prazno."
 msgstr ""
 
-#: apps/pages/models.py:86 apps/pages/models.py:87
+#: apps/pages/models.py:87 apps/pages/models.py:88
 msgid "Podešavanja sajta"
 msgstr ""
 
-#: apps/pages/models.py:124
+#: apps/pages/models.py:125
 msgid "SiteSettings singleton ne sme da se briše."
+msgstr ""
+
+#: apps/pages/models.py:160
+msgid "Statička strana"
+msgstr ""
+
+#: apps/pages/models.py:161
+msgid "Statičke strane"
 msgstr ""
 
 #: apps/products/apps.py:14 apps/products/models.py:182
@@ -987,15 +997,15 @@ msgid ""
 "stara/“)."
 msgstr ""
 
-#: templates/base.html:18
+#: templates/base.html:21
 msgid "Preskoči na sadržaj"
 msgstr ""
 
-#: templates/base.html:24
+#: templates/base.html:27
 msgid "Dobrodošli."
 msgstr ""
 
-#: templates/base.html:32
+#: templates/base.html:35
 msgid ""
 "Za optimalno korišćenje stranice, omogućite JavaScript u svom browser-u."
 msgstr ""
@@ -1614,7 +1624,7 @@ msgstr "Választás mentése"
 msgid "Više informacija"
 msgstr "További információ"
 
-#: templates/gdpr/cookie_policy.html:13
+#: templates/gdpr/cookie_policy.html:13 templates/pages/page-detail.html:10
 msgid "Poslednja izmena"
 msgstr ""
 
@@ -2055,18 +2065,18 @@ msgstr ""
 msgid "Sledeći"
 msgstr ""
 
-#: templates/partials/footer.html:9
-msgid "Pocetna"
-msgstr ""
-
 #: templates/partials/footer.html:25 templates/partials/header.html:98
 #: templates/products/used_machinery_listing.html:4
 #: templates/products/used_machinery_listing.html:11
 msgid "Polovna mehanizacija"
 msgstr ""
 
-#: templates/partials/footer.html:80
-msgid "Sva prava zadrzana."
+#: templates/partials/footer.html:81
+msgid "Politika privatnosti"
+msgstr ""
+
+#: templates/partials/footer.html:85
+msgid "Sva prava zadržana."
 msgstr ""
 
 #: templates/partials/header.html:11

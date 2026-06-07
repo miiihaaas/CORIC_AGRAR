@@ -6,7 +6,7 @@
       <div class="row">
         {# Kolona 1 — Logo + slogan. BONUS-2: logo wrapped u {% url 'pages:home' %} (Story 3.1 migracija). #}
         <div class="col-md-3 coric-footer__col">
-          <a href="{% url 'pages:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Pocetna" %}">
+          <a href="{% url 'pages:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Početna" %}">
             <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}"
                  alt="Coric Agrar"
                  class="coric-footer__logo">
@@ -76,8 +76,13 @@
     <hr class="coric-footer__separator">
 
     <div class="coric-footer__bottom">
+      {# Story 7.4 — pravni red: privatnost (NOVA pages ruta) + kolačići (POSTOJEĆA gdpr ruta, NE duplira; G-11). #}
+      <ul class="coric-footer__legal text-center">
+        <li><a href="{% url 'pages:page_detail' slug='politika-privatnosti' %}">{% translate "Politika privatnosti" %}</a></li>
+        <li><a href="{% url 'gdpr:cookie_policy' %}">{% translate "Politika kolačića" %}</a></li>
+      </ul>
       <p class="coric-footer__copyright text-center">
-        &copy; 2026 Coric Agrar. {% translate "Sva prava zadrzana." %}
+        &copy; 2026 Coric Agrar. {% translate "Sva prava zadržana." %}
       </p>
     </div>
   </div>

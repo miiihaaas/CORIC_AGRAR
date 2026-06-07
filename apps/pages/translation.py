@@ -12,9 +12,16 @@ Mirror apps/brands/translation.py pattern. LANGUAGES iz config/settings/base.py
 
 from modeltranslation.translator import TranslationOptions, register
 
-from apps.pages.models import SiteSettings
+from apps.pages.models import Page, SiteSettings
 
 
 @register(SiteSettings)
 class SiteSettingsTranslationOptions(TranslationOptions):
     fields = ("slogan", "address", "working_hours")
+
+
+@register(Page)
+class PageTranslationOptions(TranslationOptions):
+    # Story 7.4 — title/body → title_sr/hu/en, body_sr/hu/en (kolone u 0003).
+    # slug/created_at/updated_at NISU translatable (jezik-neutralni).
+    fields = ("title", "body")

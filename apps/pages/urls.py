@@ -6,6 +6,7 @@ from apps.pages.views import (
     AboutView,
     ContactView,
     HomeView,
+    PageDetailView,
     PartRequestView,
     ServiceView,
 )
@@ -22,4 +23,8 @@ urlpatterns = [
         PartRequestView.as_view(),
         name="part_request",
     ),
+    # Story 7.4 — catch-all slug ruta MORA biti POSLEDNJA u pages.urls (G-3) da ne
+    # shadow-uje statičke rute iznad; pages include je TAKOĐE poslednji u
+    # config/urls.py i18n_patterns (CRITICAL-1) da ne shadow-uje blog/gdpr.
+    path("<slug:slug>/", PageDetailView.as_view(), name="page_detail"),
 ]

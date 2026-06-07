@@ -14,10 +14,16 @@ ne sme importovati domain apps — zato home živi ovde, NE u core.
 from __future__ import annotations
 
 from django.db.models import Prefetch
-from django.views.generic import TemplateView
+from django.http import Http404
+from django.views.generic import DetailView, TemplateView
 
 from apps.brands.models import Brand, Category
+from apps.pages.models import Page
 from apps.products.models import Product
+
+# G-1 collision guard — taj slug je vlasništvo gdpr:cookie_policy (7-1 SM-D9);
+# PageDetailView NE SME servirati Page red na tom slug-u (drugi izvor istine).
+_RESERVED_SLUG = "politika-kolacica"
 
 _HZM_CATEGORY_SLUG = "radne-masine"
 
@@ -156,3 +162,28 @@ class PartRequestView(TemplateView):
 
     template_name = "pages/part-request.html"
     http_method_names = ["get", "head", "options"]
+
+
+class PageDetailView(DetailView):
+    """Story 7.4 — javna slug-routed statička strana iz generičkog `Page` modela.
+
+    GET-only (http_method_names izostavlja post → POST/PUT/DELETE = 405; mirror
+    ContactView). G-1 collision guard: `slug=="politika-kolacica"` → Http404 jer
+    je taj dokument vlasništvo `gdpr:cookie_policy` (7-1 SM-D9) — čak i ako neko
+    ručno kreira `Page(slug="politika-kolacica")` red (boundary zaštita; <slug>
+    je javni URL segment koji korisnik kontroliše, NIJE defensive-over-internal).
+    """
+
+    model = Page
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    context_object_name = "page"
+    template_name = "pages/page-detail.html"
+    http_method_names = ["get", "head", "options"]
+
+    def get_object(self, queryset=None):
+        if self.kwargs.get(self.slug_url_kwarg) == _RESERVED_SLUG:
+            raise Http404(
+                "Politika kolačića je vlasništvo gdpr:cookie_policy (G-1)."
+            )
+        return super().get_object(queryset)

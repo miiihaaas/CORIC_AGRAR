@@ -43,10 +43,15 @@ urlpatterns += i18n_patterns(
     path("", include("apps.brands.urls")),
     path("", include("apps.products.urls")),
     path("", include("apps.search.urls")),  # NOVO Story 2.13 — pretraga/ + htmx/pretraga/ (SM-D2)
-    path("", include("apps.pages.urls")),  # NOVO Story 3.1 — root `/` → HomeView (pages:home); zamenjuje core:home
     path("", include("apps.forms.urls")),  # NOVO Story 4.2 — htmx/forme/kontakt/ (kontakt forma submit)
     path("", include("apps.blog.urls")),  # NOVO Story 5.2 — /sr/blog/ + /sr/blog/<slug>/
     path("", include("apps.gdpr.urls")),  # NOVO Story 7.1 — /sr/politika-kolacica/ (CookiePolicy javna strana, G-5)
+    # Story 7.4 CRITICAL-1 (SM-D11): pages include MORA biti POSLEDNJI — pages
+    # catch-all `<slug:slug>/` (1-segment) bi inače shadow-ovao /sr/blog/ (blog) i
+    # /sr/politika-kolacica/ (gdpr) PREKO include granica (resolver first-match-wins
+    # preko jedne sploštene liste). pages.urls poseduje root `""` → home; prazan path
+    # matchuje TAČNO prazan path, nijedan drugi include ne polaže pravo na goli "".
+    path("", include("apps.pages.urls")),  # NOVO Story 3.1 — root `/` → HomeView; POSLEDNJI (CRITICAL-1)
     prefix_default_language=True,
 )
 

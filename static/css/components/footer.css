@@ -89,6 +89,25 @@
   margin: var(--spacing-scale-5) 0;
 }
 
+/* Story 7.4 — legal link red (privatnost + kolačići). Reset bullets + inline horizontalni layout. */
+.coric-footer__legal {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: var(--spacing-scale-3);
+  justify-content: center;
+}
+
+.coric-footer__legal a {
+  color: var(--color-semantic-text-on-dark);
+  text-decoration: none;
+}
+
+.coric-footer__legal a:hover {
+  text-decoration: underline;
+}
+
 .coric-footer__copyright {
   font-size: var(--typography-scale-caption);
   margin: 0;
