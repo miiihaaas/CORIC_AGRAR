@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "apps.seo",  # NOVO Story 6.1 — SEO & Discoverability (SeoMeta GFK; POSLE modeltranslation + domain app-ova + apps.blog jer generic inline žičan na njihove admin-e, SM-D9)
     "apps.gdpr",  # NOVO Story 7.1 — GDPR & Privacy (CookiePolicy singleton; POSLE modeltranslation + domain app-ova; gdpr nema cross-app dep, SM-D1)
     "apps.accounts",  # NOVO Story 8.1 — admin auth hardening (AdminLoginForm wiring; POSLE domain app-ova, SM-D10)
+    "apps.admin_ext",  # NOVO Story 8.3 — admin dashboard override (POSLE accounts; mora POSLE django.contrib.admin, G-3)
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,55 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="module" id="coric-dashboard">
+    <h2>{% translate "Pregled stanja sajta" %}</h2>
+
+    {# ── Segmentovan lead count za tekući mesec (AC2/AC3/SM-D8) ── #}
+    <h3>{% translate "Lead-ovi ovog meseca" %}</h3>
+    <p>
+      <strong>{% translate "Ukupno" %}:</strong>
+      <span class="coric-dashboard__total">{{ lead_stats.total }}</span>
+    </p>
+    <ul class="coric-dashboard__lead-segments">
+      {% for segment in lead_segments %}
+        <li>{{ segment.label }}: <strong>{{ segment.count }}</strong></li>
+      {% endfor %}
+    </ul>
+
+    {# ── Objavljeni sadržaj (AC4) ── #}
+    <h3>{% translate "Objavljeni sadržaj" %}</h3>
+    <ul>
+      <li>{% translate "Objavljeni proizvodi" %}: <strong>{{ content_stats.published_products }}</strong></li>
+      <li>{% translate "Objavljene blog objave" %}: <strong>{{ content_stats.published_posts }}</strong></li>
+    </ul>
+
+    {# ── Posete (GA graceful fallback — AC5/SM-D6/OQ-1) ── #}
+    <h3>{% translate "Posete" %}</h3>
+    <p>
+      {% if ga_visits.last_7 is None and ga_visits.last_30 is None %}
+        {% translate "Posete: N/D — uskoro / Epic 9" %}
+      {% else %}
+        {% translate "Poslednjih 7 dana" %}: {{ ga_visits.last_7 }} ·
+        {% translate "Poslednjih 30 dana" %}: {{ ga_visits.last_30 }}
+      {% endif %}
+    </p>
+
+    {# ── Brze akcije (AC6/G-8) ── #}
+    <h3>{% translate "Brze akcije" %}</h3>
+    <ul class="coric-dashboard__quick-actions">
+      <li>
+        <a href="{% url 'admin:products_product_add' %}" class="addlink">
+          {% translate "Dodaj proizvod" %}
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'admin:blog_post_add' %}" class="addlink">
+          {% translate "Dodaj blog objavu" %}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  {{ block.super }}
+{% endblock content %}
