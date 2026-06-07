@@ -137,8 +137,10 @@ class Page(TimestampedModel):
     NIJE singleton (RAZLIKA od SiteSettings/CookiePolicy) — više Page redova
     (politika privatnosti sad; „O nama"/„Servis" CMS-ifikacija u Epic 8.8).
     `slug` ASCII jezik-neutralan unique business key; `title`/`body` translatable
-    (`_sr/_hu/_en`). `body` je plain TextField — render `{{ page.body|linebreaks }}`
-    (autoescape XSS-safe; NIKAD `|safe`/`mark_safe`; rich-HTML + sanitizacija = 8.7).
+    (`_sr/_hu/_en`). `body` je TextField sa rich-HTML — render
+    `{{ page.body|legal_html }}` (7.5: nh3 allowlist sanitizacija NA RENDER-u =
+    PRIMARNA XSS granica; mark_safe SAMO posle sanitizacije; NIKAD sirov
+    `|safe`/`mark_safe`). WYSIWYG editor = 8.7.
     """
 
     slug = models.SlugField(

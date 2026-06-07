@@ -68,6 +68,21 @@ def _Page():
     return Page
 
 
+def _privacy_body_fragment(html):
+    """Izvuci SAMO sanitizovan privacy body region (coric-static-page__body).
+
+    ⚠️ base.html chrome legitimno ima `<script src=...>` (htmx/bootstrap/gdpr-banner),
+    `<img>` (logo), `<div>` (layout) → `"<script" not in html` nad CELOM stranom je
+    UNSATISFIABLE (korektan GREEN render bi pao). XSS strip-asercije se scope-uju SAMO
+    na body region gde živi sanitizovan `page.body` (7.5).
+    """
+    marker = 'class="coric-static-page__body"'
+    start = html.find(marker)
+    assert start != -1, "Privacy body region MORA postojati u renderu (AC6)."
+    end = html.find("</article>", start)
+    return html[start : end if end != -1 else len(html)]
+
+
 def _make_page(slug=PRIVACY_SLUG, title="Politika privatnosti", body="Telo strane."):
     Page = _Page()
     # update_or_create (NE get_or_create): data-seed migracija (0004) AUTO-popunjava
@@ -376,7 +391,9 @@ def test_0003_createmodel_translated_columns():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# AC-7: GET /sr/politika-privatnosti/ → 200 + template + <h1> title + body |linebreaks
+# AC-7: GET /sr/politika-privatnosti/ → 200 + template + <h1> title + body |legal_html
+# (7.5 RECONCILE: render je |legal_html, NE više |linebreaks — komentar ažuriran; test i dalje
+#  PROLAZI jer asertuje SAMO prisustvo teksta, ne \n→<br> ponašanje.)
 def test_privacy_page_200_sr(client):
     _make_page(title="Politika privatnosti", body="Prvi red.\nDrugi red.")
     response = client.get(PRIVACY_PATH_SR, HTTP_HOST="localhost")
@@ -390,26 +407,52 @@ def test_privacy_page_200_sr(client):
     html = response.content.decode("utf-8")
     assert "Politika privatnosti" in html, "<h1> MORA sadržati page.title (AC7)."
     assert "Prvi red." in html and "Drugi red." in html, (
-        "Telo MORA renderovati page.body kroz |linebreaks (AC7)."
+        "Telo MORA renderovati page.body kroz |legal_html (7.5 RECONCILE; AC7)."
     )
 
 
-# AC-7/AC-8: body je STVARNO renderovan kroz |linebreaks (dvolinijski body → <br> ILI <p>
-# struktura), ne samo da je tekst prisutan. Django |linebreaks pretvara jednostruki \n u
-# <br> unutar <p>, a dvostruki \n\n u zasebne <p> paragrafe.
-def test_body_rendered_through_linebreaks(client):
-    _make_page(body="Prvi red.\nDrugi red.\n\nNovi paragraf.")
+# AC-6/G-3 RECONCILE (od _through_linebreaks): render je |legal_html (nh3), NE |linebreaks.
+# SEMANTIČKA promena (G-3): plain `\n` se VIŠE NE prelama u <br> (nh3 NE formatira plain
+# newline; sanitizuje POSTOJEĆI HTML). Pravni dokument koristi EKSPLICITNE <p>/<br>/<ul>.
+# Test verifikuje: (1) eksplicitan strukturisan HTML PROLAZI sanitizaciju; (2) XSS strip.
+def test_body_structured_html_rendered(client):
+    _make_page(
+        body="<p>Prvi paragraf.</p><p>Drugi paragraf.</p><ul><li>stavka</li></ul>"
+        "<script>alert(1)</script>"
+    )
     response = client.get(PRIVACY_PATH_SR, HTTP_HOST="localhost")
     assert response.status_code == 200
     html = response.content.decode("utf-8")
-    # Jednostruki \n unutar paragrafa → <br>
-    assert "Prvi red.<br>" in html or "Prvi red.<br />" in html, (
-        "|linebreaks MORA pretvoriti jednostruki \\n u <br> (AC7/AC8) — body NIJE "
-        f"renderovan kroz |linebreaks. HTML fragment: {html[html.find('Prvi red.'):html.find('Prvi red.') + 60]!r}"
+    body = _privacy_body_fragment(html)
+    # Eksplicitan HTML markup PROLAZI (NE escape-ovan)
+    assert "<p>Prvi paragraf.</p>" in body and "<p>Drugi paragraf.</p>" in body, (
+        "Eksplicitni <p> paragrafi MORAJU proći |legal_html sanitizaciju nepromenjeni "
+        "(7.5 RECONCILE; AC6)."
     )
-    # Dvostruki \n\n → zaseban <p> paragraf
-    assert "<p>Novi paragraf.</p>" in html, (
-        "|linebreaks MORA pretvoriti \\n\\n u zaseban <p> paragraf (AC7/AC8)."
+    assert "<ul>" in body and "<li>stavka</li>" in body, (
+        "Eksplicitna <ul>/<li> lista MORA proći sanitizaciju (AC6)."
+    )
+    # XSS strip (STRIP ≠ ESCAPE) — body-scope (chrome legitimno ima <script src=).
+    assert "<script" not in body and "&lt;script&gt;" not in html, (
+        "`<script>` MORA biti STRIP-ovan (NE escape) — nh3 sanitizacija (AC6/SM-D7)."
+    )
+
+
+# AC-6/G-3: plain `\n` se VIŠE NE prelama u <br> (dokumentovana semantička promena 7.5).
+def test_plain_newline_not_converted_to_br(client):
+    _make_page(body="Prvi red.\nDrugi red.")
+    response = client.get(PRIVACY_PATH_SR, HTTP_HOST="localhost")
+    assert response.status_code == 200
+    html = response.content.decode("utf-8")
+    body = _privacy_body_fragment(html)
+    # Tekst je prisutan...
+    assert "Prvi red." in body and "Drugi red." in body, (
+        "Plain tekst MORA proći |legal_html netaknut (AC6)."
+    )
+    # ...ali nh3 NE dodaje <br> na goli \n (G-3 — RAZLIKA od |linebreaks).
+    assert "Prvi red.<br>" not in body and "Prvi red.<br />" not in body, (
+        "G-3: |legal_html (nh3) NE prelama plain `\\n` u <br> — pravni dokument MORA "
+        "koristiti eksplicitne <p>/<br> (7.5 dokumentovana promena ponašanja; AC6)."
     )
 
 
@@ -667,42 +710,53 @@ def test_page_admin_not_singleton(superuser):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Template / XSS — body |linebreaks autoescape, NIKAD |safe
+# Template / XSS — body |legal_html (nh3 SANITIZE → mark_safe), NIKAD |safe na sirov body
+# 7.5 RECONCILE (SM-D7): render je |legal_html, NE |linebreaks. nh3 STRIPUJE <script>
+# (node uklonjen, NE escape-ovan) → asercija `&lt;script&gt;` PRISUTAN VIŠE NE VAŽI;
+# garancija je JAČA (`<script` ODSUTAN I `&lt;script&gt;` ODSUTAN).
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# AC-8: <script> u body → ESCAPE-ovan (`&lt;script&gt;`), NE sirov tag
-def test_script_in_body_escaped(client):
+# AC-6 RECONCILE (escape→strip): <script> u body → STRIP-ovan (NE escape), izvršiv tag ODSUTAN
+def test_script_in_body_stripped(client):
     _make_page(body="<script>alert(1)</script>")
     response = client.get(PRIVACY_PATH_SR, HTTP_HOST="localhost")
     assert response.status_code == 200
     html = response.content.decode("utf-8")
-    assert "&lt;script&gt;" in html, (
-        "body MORA biti auto-escape-ovan (`&lt;script&gt;`) — |linebreaks autoescape "
-        "(SM-D4/AC8). Odsustvo = potencijalni |safe (stored-XSS)."
+    body = _privacy_body_fragment(html)
+    assert "<script" not in body, (
+        "SIROV `<script` NE SME biti u body-u — nh3 STRIP-uje node (XSS lock; AC6/SM-D7)."
+    )
+    assert "&lt;script&gt;" not in html, (
+        "`<script>` NE sme biti ESCAPE-ovan u tekst — nh3 UKLANJA node (STRIP ≠ ESCAPE; "
+        "garancija JAČA od starog |linebreaks escape-a; AC6/SM-D7)."
     )
     assert "<script>alert" not in html, (
-        "SIROV `<script>alert` NE SME biti u response-u (stored-XSS) — body NIKAD |safe; "
-        "rich-text = Epic 8.7 (AC8/SM-D4)."
+        "Izvršiv `<script>alert` MORA ostati ODSUTAN (XSS garancija NE sme oslabiti; AC6)."
     )
 
 
-# AC-8: template NE koristi |safe / mark_safe na body (statički guard)
-def test_template_body_never_safe():
+# AC-6 RECONCILE: template KORISTI |legal_html, NE |linebreaks; NIKAD |safe/mark_safe na sirov body
+def test_template_body_uses_legal_html_not_safe():
     from pathlib import Path
 
     from django.conf import settings
 
     template_path = Path(settings.BASE_DIR) / "templates" / "pages" / "page-detail.html"
     assert template_path.exists(), (
-        f"templates/pages/page-detail.html MORA postojati ({template_path}; AC7). RED: NEMA template-a."
+        f"templates/pages/page-detail.html MORA postojati ({template_path}; AC4). RED: NEMA template-a."
     )
     text = template_path.read_text(encoding="utf-8")
-    assert "page.body|linebreaks" in text.replace(" ", "") or "page.body | linebreaks" in text, (
-        "Template MORA renderovati body kroz |linebreaks (AC7/AC8)."
+    compact = text.replace(" ", "")
+    assert "page.body|legal_html" in compact, (
+        "Template MORA renderovati body kroz |legal_html (sanitizovan rich-HTML; AC4/AC6/SM-D4)."
     )
-    assert "body|safe" not in text.replace(" ", "") and "mark_safe" not in text, (
-        "Template NE SME koristiti |safe / mark_safe na body (stored-XSS granica; AC8/SM-D4)."
+    assert "page.body|linebreaks" not in compact, (
+        "Template NE SME više koristiti |linebreaks (dev ne sme ostaviti OBA filtera; AC6)."
+    )
+    # mark_safe sad živi u apps/core/templatetags/legal_html.py filteru — NE u template-u.
+    assert "body|safe" not in compact and "mark_safe" not in text, (
+        "Template NE SME |safe / mark_safe na SIROV body (stored-XSS granica; AC6/G-6)."
     )
 
 

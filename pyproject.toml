@@ -14,6 +14,7 @@ dependencies = [
     "django-modeltranslation>=0.20.3",
     "django-ratelimit>=4.1.0",
     "django-template-partials>=25.3",
+    "nh3>=0.2.0,<1",
     "pdf2image>=1.17.0",
     "pillow>=10.0",
     "psycopg[binary]>=3.3.4",

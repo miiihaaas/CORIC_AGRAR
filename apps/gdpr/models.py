@@ -14,9 +14,10 @@ GRANICA (NIJE bug — mirror SiteSettings): instance `delete()` NE pokriva
 garancija počiva na save() pk=1 + instance delete() raise + admin guard (AC6).
 
 `title`/`body` su translatable (apps/gdpr/translation.py → `_sr/_hu/_en` kolone).
-`body` je plain TextField → render `{{ policy.body|linebreaks }}` (autoescape;
-NIKAD `|safe` — stored-XSS granica, SM-D3/G-7). `effective_date` je editable pravni
-„važi od" datum, SEMANTIČKI ODVOJEN od auto `updated_at` (SM-D4).
+`body` je TextField sa rich-HTML → render `{{ policy.body|legal_html }}` (7.5: nh3
+allowlist sanitizacija NA RENDER-u = PRIMARNA XSS granica; mark_safe SAMO posle
+sanitizacije; NIKAD sirov `|safe` — stored-XSS granica, SM-D3/G-6). `effective_date`
+je editable pravni „važi od" datum, SEMANTIČKI ODVOJEN od auto `updated_at` (SM-D4).
 """
 
 from django.core.exceptions import PermissionDenied

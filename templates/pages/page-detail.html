@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n legal_html %}
 
 {% block title %}{{ page.title }}{% endblock %}
 
@@ -9,7 +9,7 @@
 
     <p class="text-muted small">{% translate "Poslednja izmena" %}: {{ page.updated_at|date:"SHORT_DATE_FORMAT" }}</p>
 
-    {# 7.4/8.7: body je plain-text TextField — render |linebreaks (autoescape). NIKAD raw |safe bez sanitizacije (stored-XSS — SM-D4/AC8). Rich-HTML body (WYSIWYG + bleach/nh3) = Epic 8.7. #}
-    <div class="coric-static-page__body">{{ page.body|linebreaks }}</div>
+    {# 7.5: body je sanitizovan rich-HTML kroz nh3 allowlist — render |legal_html sanitizuje NA RENDER-u (PRIMARNA XSS granica; SafeString TEK posle sanitizacije, vidi apps/core/templatetags/legal_html.py — SM-D3/D4/G-6). Sanitizovan body NIJE sirov; NIKAD direktan render sirovog HTML-a (stored-XSS). BLAST-RADIUS: generički Page template → svaki Page koristi HTML markup; plain \n VIŠE NE → <br> (G-3). WYSIWYG = Epic 8.7. #}
+    <div class="coric-static-page__body">{{ page.body|legal_html }}</div>
   </article>
 {% endblock content %}
