@@ -13,7 +13,8 @@ Story 6.1 — SVA 4 modela (Brand/Series/Category/Subcategory) konvertovana iz
 bare-register u ModelAdmin (SeoWarningAdminMixin + SeoMetaInline) za per-page SEO
 meta unos.
 
-⚠️ CategoryAdmin / SubcategoryAdmin OSTAJU NETAKNUTI (8.5 scope — SM-D1).
+CategoryAdmin / SubcategoryAdmin su konvertovani u Story 8.5 (TranslationAdmin
+hierarchy CRUD — vidi blok ispod). BrandAdmin / SeriesAdmin OSTAJU netaknuti (8.4 scope).
 
 Reference patterns: apps/blog/admin.py (TranslationAdmin + search_fields=name_sr),
 apps/seo/admin.py (SeoMetaInline), project-context.md upload double-check anti-pattern.
@@ -215,15 +216,62 @@ class SeriesAdmin(SeoWarningAdminMixin, admin.ModelAdmin):
 
 
 # =============================================================================
-# Category / Subcategory — NETAKNUTI (8.5 scope — SM-D1)
+# CategoryAdmin (8.5 — AC1, AC4, AC5, AC7, AC8, AC9)
 # =============================================================================
 
 
 @admin.register(Category)
-class CategoryAdmin(SeoWarningAdminMixin, admin.ModelAdmin):
-    inlines = [SeoMetaInline]
+class CategoryAdmin(SeoWarningAdminMixin, TranslationAdmin):  # MRO: mixin PRVI (G-2)
+    inlines = [SeoMetaInline]  # 6.1 regression KEPT (G-8)
+    # view_on_site=False (G-3/AC9): Category.get_absolute_url reverse-uje
+    # brands:category_traktori / brands:category_mehanizacija — NEREGISTROVANE u
+    # apps/brands/urls.py → "View on site" affordance baca NoReverseMatch → 500.
+    view_on_site = False
+    # name PRVI = klikabilan change-link (G-9) → NIJE u list_editable (admin.E124/E125).
+    list_display = ("name", "is_for", "display_order", "slug")
+    list_editable = ("display_order",)
+    list_filter = ("is_for",)
+    # search_fields=name_sr (G-1): `name` je virtuelno modeltranslation polje →
+    # ("name",) baca FieldError na changelist search. Realna DB kolona.
+    search_fields = ("name_sr",)
+    prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ("created_at", "updated_at")
+    # fieldsets BASE imena — TranslationAdmin AUTO-ekspanduje per-locale (_sr/_hu/_en) (G-1).
+    fieldsets = (
+        (_("Osnovno"), {"fields": ("name", "slug", "is_for", "display_order", "icon")}),
+        (_("Sadržaj"), {"fields": ("description",)}),
+        (_("Meta"), {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
+    )
+
+
+# =============================================================================
+# SubcategoryAdmin (8.5 — AC1, AC2, AC3, AC4, AC6, AC7, AC8, AC9)
+# =============================================================================
 
 
 @admin.register(Subcategory)
-class SubcategoryAdmin(SeoWarningAdminMixin, admin.ModelAdmin):
-    inlines = [SeoMetaInline]
+class SubcategoryAdmin(SeoWarningAdminMixin, TranslationAdmin):  # MRO: mixin PRVI (G-2)
+    inlines = [SeoMetaInline]  # 6.1 regression KEPT (G-8)
+    # view_on_site=False (G-3/AC9): Subcategory.get_absolute_url reverse-uje
+    # brands:subcategory_listing_l{depth} — registrovan samo za jednu granu → NoReverseMatch.
+    view_on_site = False
+    list_display = ("name", "category", "parent", "display_order", "slug")
+    list_editable = ("display_order",)
+    list_filter = ("category",)
+    search_fields = ("name_sr",)  # REALNA kolona, NE virtuelni `name` (G-1)
+    prepopulated_fields = {"slug": ("name",)}
+    # N+1 guard (G-10): list_display ima dve FK kolone (category, parent) → bez ovoga
+    # svaki red izdaje extra query za __str__.
+    list_select_related = ("category", "parent")
+    readonly_fields = ("created_at", "updated_at")
+    # Hijerarhija (depth ≤ 3 + cycle) je DELEGIRANA na Subcategory.clean() (SM-D4/G-5/G-7):
+    # NEMA custom ModelForm; default ModelForm full_clean() propušta model ValidationError
+    # kao non-field (__all__) form grešku → graceful 200 re-render, NIKAD 500. Slug
+    # uniqueness je per-scope DB UniqueConstraint(category, parent, slug) — admin ne dodaje
+    # custom slug logiku (G-6). category/parent = default FK <select> widget.
+    fieldsets = (
+        (_("Hijerarhija"), {"fields": ("category", "parent")}),
+        (_("Osnovno"), {"fields": ("name", "slug", "display_order", "icon")}),
+        (_("Sadržaj"), {"fields": ("description",)}),
+        (_("Meta"), {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
+    )
