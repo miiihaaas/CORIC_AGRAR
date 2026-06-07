@@ -101,7 +101,7 @@ def test_admin_path_skipped():
     )
 
 
-# AC2/SM-D3 CRITICAL-2: forward-safe admin slug — /sr/admin-coric/ (Epic 8) TAKOĐE skip
+# AC2/SM-D3 CRITICAL-2: forward-safe admin slug — /sr/admin-coric/ (prefiksovan) TAKOĐE skip
 def test_future_admin_coric_path_skipped():
     from apps.seo.models import Redirect
     from django.test import Client
@@ -113,8 +113,67 @@ def test_future_admin_coric_path_skipped():
     response = Client().get("/sr/admin-coric/secret/")
     is_our_301 = response.status_code == 301 and response.get("Location") == "/sr/nova/"
     assert not is_our_301, (
-        "Forward-safe admin skip MORA pokriti i budući `admin-coric` slug (Epic 8) — "
-        "dokazuje da skip NIJE krhki '/admin/' substring (CRITICAL-2/SM-D3/SEO4-4)."
+        "Forward-safe admin skip MORA pokriti i `admin-coric` slug sa locale prefiksom — "
+        "dokazuje da skip NIJE krhki '/admin/' substring (CRITICAL-2/SM-D3/SEO4-4). "
+        "Opcioni prefiks (^(/[a-z]{2})?/admin(-coric)?/) ne lomi prefiksovane putanje (8.1 AC13)."
+    )
+
+
+# 8.1 AC13/CRITICAL-1/SM-D12: BARE /admin-coric/ (VAN i18n_patterns) → skip (opcioni prefiks)
+def test_bare_admin_coric_path_skipped():
+    """Posle SM-D1, admin je na BARE /admin-coric/ (bez locale prefiksa). `_ADMIN_RE`
+    sa opcionim prefiksom (^(/[a-z]{2})?/admin(-coric)?/) MORA skip-ovati i bare put."""
+    from apps.seo.models import Redirect
+    from django.test import Client
+
+    Redirect.objects.create(
+        old_path="/admin-coric/secret/", new_path="/sr/nova/", is_active=True
+    )
+
+    response = Client().get("/admin-coric/secret/")
+    is_our_301 = response.status_code == 301 and response.get("Location") == "/sr/nova/"
+    assert not is_our_301, (
+        "BARE /admin-coric/... (bez locale prefiksa, kako je posle SM-D1) MORA biti skip-ovan — "
+        "`_ADMIN_RE` MORA imati OPCIONI locale prefiks (^(/[a-z]{2})?/admin(-coric)?/; AC13/SM-D12). "
+        "Stari regex ^/[a-z]{2}/admin(-coric)?/ NE matchuje bare → RED."
+    )
+
+
+# 8.1 AC13/CRITICAL-1/SM-D12: open-redirect na auth entry sprečen — admin login NIJE oteto
+def test_admin_coric_login_not_hijacked_by_redirect_rule():
+    """Admin-autorisano Redirect pravilo old_path=/admin-coric/login/ NE SME 301-oteti
+    admin login (open-redirect na auth entry). Skip admin paths PRE lookup-a je dodatni sloj."""
+    from apps.seo.models import Redirect
+    from django.test import Client
+
+    Redirect.objects.create(
+        old_path="/admin-coric/login/", new_path="/sr/zlo/", is_active=True
+    )
+
+    response = Client().get("/admin-coric/login/")
+    is_our_301 = response.status_code == 301 and response.get("Location") == "/sr/zlo/"
+    assert not is_our_301, (
+        "Redirect pravilo na /admin-coric/login/ NE SME 301-oteti admin login — open-redirect "
+        "na auth entry sprečen (admin URL-ovi se NIKAD ne resolve-uju kroz Redirect tabelu; "
+        "AC13/SM-D12/G-13)."
+    )
+
+
+# 8.1 AC13/CRITICAL-1: bare /admin-coric/ → ZERO seo_redirect upita (skip PRE DB lookup)
+def test_bare_admin_coric_zero_redirect_queries():
+    from apps.seo.models import Redirect
+    from django.test import Client
+
+    Redirect.objects.create(
+        old_path="/admin-coric/secret/", new_path="/sr/x/", is_active=True
+    )
+
+    with CaptureQueriesContext(connection) as ctx:
+        Client().get("/admin-coric/secret/")
+    redirect_q = _redirect_queries(ctx)
+    assert len(redirect_q) == 0, (
+        "BARE /admin-coric/... NE SME praviti NIJEDAN seo_redirect upit (skip PRE lookup — "
+        f"AC13/SM-D12). Uhvaćeni Redirect upiti: {[q['sql'] for q in redirect_q]}"
     )
 
 

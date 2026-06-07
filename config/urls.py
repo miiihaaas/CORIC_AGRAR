@@ -35,11 +35,18 @@ urlpatterns = [
     # → /robots.txt, NE /sr/robots.txt). Sitemap: linija referencira /sitemap.xml
     # (SM-D4/SEO3-7).
     path("robots.txt", robots_txt, name="robots_txt"),
+    # Story 8.1 (SM-D1/G-3) — admin VAN i18n_patterns na bare `/admin-coric/`
+    # (security-through-obscurity; admin NE treba locale prefiks; arch:964
+    # „middleware ne procesira /admin-coric/"). Non-i18n urlpatterns se
+    # evaluiraju PRE i18n_patterns → `/admin-coric/` rezolvira bez locale
+    # prefiksa. `/admin/` i `/sr/admin/` → 404 (uklonjeno iz i18n_patterns).
+    path("admin-coric/", admin.site.urls),
 ]
 
 # URL-ovi SA lokal prefiksom (`/sr/...`, `/hu/...`, `/en/...`)
 urlpatterns += i18n_patterns(
-    path("admin/", admin.site.urls),
+    # Story 8.1 (SM-D1): admin PREMEŠTEN iz i18n_patterns na bare `/admin-coric/`
+    # (gore, non-i18n blok). `/admin/` i `/sr/admin/` sada → 404.
     path("", include("apps.brands.urls")),
     path("", include("apps.products.urls")),
     path("", include("apps.search.urls")),  # NOVO Story 2.13 — pretraga/ + htmx/pretraga/ (SM-D2)

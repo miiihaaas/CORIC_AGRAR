@@ -46,20 +46,28 @@ def test_robots_txt_has_user_agent_and_allow(client):
 
 
 def test_robots_txt_disallows_admin(client):
-    """AC1: telo sadrži Disallow direktivu koja pokriva admin (`*/admin/` ili po-locale)."""
+    """REKONCILIRAN 8.1 AC14/CRITICAL-2/SM-D14: robots.txt NE objavljuje admin slug.
+
+    Posle SM-D1 admin je premešten na obscure /admin-coric/. Opcija B (SM-D14):
+    UKLONI admin Disallow potpuno — robots.txt je JAVAN fajl pa staviti obscure slug
+    u njega poništava security-through-obscurity. robots NIJE access-control; admin
+    štite axes+auth+obscure slug. Telo NE SME pominjati `admin` ni `admin-coric`;
+    `*/htmx/` Disallow + `Sitemap:` OSTAJU.
+    """
     response = client.get("/robots.txt")
     assert response.status_code == 200
     body = response.content.decode("utf-8")
 
-    assert "Disallow:" in body, "robots.txt MORA imati bar jednu Disallow direktivu (AC1)."
-    # admin je POD i18n_patterns (/sr/admin/...) → `*/admin/` glob ILI eksplicitno po-locale
-    has_admin_disallow = ("*/admin/" in body) or (
-        "/sr/admin/" in body and "/hu/admin/" in body and "/en/admin/" in body
+    assert "Disallow:" in body, "robots.txt MORA i dalje imati bar jednu Disallow (htmx — AC1)."
+    assert "admin" not in body, (
+        "robots.txt NE SME pominjati `admin` (ni `*/admin/` ni `admin-coric`) — obscure slug "
+        "se NE objavljuje u javnom fajlu (AC14/SM-D14/G-14). UKLONI `Disallow: */admin/`."
     )
-    assert has_admin_disallow, (
-        "robots.txt MORA Disallow-ovati admin (`Disallow: */admin/` glob ILI "
-        "3 eksplicitne locale linije /sr/admin/ + /hu/admin/ + /en/admin/) — SEO3-12."
-    )
+    # htmx Disallow + Sitemap retained (regression-lock da uklanjanje admina ne briše ostalo)
+    assert ("*/htmx/" in body) or all(
+        p in body for p in ("/sr/htmx/", "/hu/htmx/", "/en/htmx/")
+    ), "robots.txt MORA zadržati `Disallow: */htmx/` posle uklanjanja admina (AC14)."
+    assert "Sitemap:" in body, "robots.txt MORA zadržati `Sitemap:` liniju posle uklanjanja admina (AC14)."
 
 
 def test_robots_txt_has_absolute_sitemap_line(client):

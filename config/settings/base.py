@@ -1,5 +1,6 @@
 """Common settings (base). Inherited by development.py, staging.py, production.py."""
 
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",  # NOVO Story 2.13 — SearchVectorField + GinIndex system checks (SM-D6)
     "django.contrib.sitemaps",  # NOVO Story 6.2 — sitemap.xml framework (0-migration; NE django.contrib.sites — SM-D2)
+    "axes",  # NOVO Story 8.1 — brute-force lockout (POSLE django.contrib.auth + contenttypes; G-16)
     "django_htmx",  # NOVO Story 1.6 — request.htmx detection
     "django_bootstrap5",  # NOVO Story 1.6 — {% bootstrap_css %} / {% bootstrap_javascript %} template tags
     "apps.core",
@@ -53,6 +55,7 @@ INSTALLED_APPS = [
     "apps.blog",  # NOVO Story 5.1 — Blog „Priče sa polja" content app (samostalan; POSLE modeltranslation + domain app-ova, SM-D1)
     "apps.seo",  # NOVO Story 6.1 — SEO & Discoverability (SeoMeta GFK; POSLE modeltranslation + domain app-ova + apps.blog jer generic inline žičan na njihove admin-e, SM-D9)
     "apps.gdpr",  # NOVO Story 7.1 — GDPR & Privacy (CookiePolicy singleton; POSLE modeltranslation + domain app-ova; gdpr nema cross-app dep, SM-D1)
+    "apps.accounts",  # NOVO Story 8.1 — admin auth hardening (AdminLoginForm wiring; POSLE domain app-ova, SM-D10)
 ]
 
 MIDDLEWARE = [
@@ -68,6 +71,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",  # NOVO Story 1.6 — postavlja request.htmx
     "apps.core.middleware.LocaleSwitcherMiddleware",
+    "axes.middleware.AxesMiddleware",  # NOVO Story 8.1 — MORA biti POSLEDNJI (posle AuthenticationMiddleware; G-2/SM-D17)
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -144,6 +148,25 @@ CACHES = {
 }
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
+# Story 8.1 (G-1): base.py ranije NIJE imao AUTHENTICATION_BACKENDS (Django default
+# = ModelBackend). django-axes ZAHTEVA eksplicitan backends sa AxesStandaloneBackend
+# PRVIM; ModelBackend MORA ostati (bez njega niko se ne loguje).
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",  # PRVI — v8 standalone (G-4)
+    "django.contrib.auth.backends.ModelBackend",  # OBAVEZAN
+]
+
+# ── django-axes (Story 8.1 — admin brute-force lockout) ──────────────────────
+# 5 kumulativnih neuspelih pokušaja (IP) → 1h lockout (SM-D16/SM-D19). Off-by-one:
+# axes zaključava NA limitu → 5. neuspeli pokušaj SAM triggeruje lockout (429).
+# Prod proxy-IP rezolucija (AXES_IPWARE_PROXY_COUNT) je DEFER na Epic 9 (SM-D18/OQ-5).
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = timedelta(hours=1)  # lockout DURATION (1h)
+AXES_RESET_ON_SUCCESS = True  # uspešan login resetuje brojač
+AXES_LOCKOUT_PARAMETERS = [["ip_address"]]  # v8 IP-based lockout (SM-D16)
+AXES_LOCKOUT_TEMPLATE = "accounts/lockout.html"  # STANDALONE strana (SM-D11)
+AXES_HTTP_RESPONSE_CODE = 429  # lockout status (AC4)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
@@ -152,6 +175,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+# ── Session (Story 8.1 — admin session timeout) ──────────────────────────────
+# 4h apsolutni session timeout (epics 8.1 / arch:178 / NFR-3). SESSION_COOKIE_HTTPONLY
+# ostaje Django default True; SESSION_EXPIRE_AT_BROWSER_CLOSE ostaje False (G-10/G-16).
+SESSION_COOKIE_AGE = 14400  # 4h = 14400s
 
 # ── i18n / l10n ──────────────────────────────────────────────────────────────
 # i18n configured for sr (Srpski, primary), hu (Magyar), en (English).

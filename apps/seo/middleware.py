@@ -18,9 +18,12 @@ from django.http import HttpResponsePermanentRedirect
 from apps.seo.models import Redirect
 
 _SKIP_PREFIXES = ("/static/", "/media/")
-# 2-slovni locale prefiks (i18n_patterns) + admin base (tekući `admin` ili
-# budući Epic 8 `admin-coric` slug) — forward-safe, NE krhki '/admin/' substring.
-_ADMIN_RE = re.compile(r"^/[a-z]{2}/admin(-coric)?/")
+# Locale prefiks OPCIONI (Story 8.1 / SM-D12 / CRITICAL-1) — admin je posle SM-D1
+# na BARE `/admin-coric/` (VAN i18n_patterns, bez locale prefiksa). Regex pokriva
+# i bare `/admin-coric/` i prefiksovani `/sr/admin/` (forward+backward safe) →
+# admin URL-ovi se NIKAD ne resolve-uju kroz Redirect tabelu (open-redirect na
+# auth entry sprečen; G-13). NE krhki '/admin/' substring.
+_ADMIN_RE = re.compile(r"^(/[a-z]{2})?/admin(-coric)?/")
 
 
 def _is_skipped(path):
