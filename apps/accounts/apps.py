@@ -23,3 +23,12 @@ class AccountsConfig(AppConfig):
         from apps.accounts.forms import AdminLoginForm
 
         admin.site.login_form = AdminLoginForm
+
+        # Story 8.2 / SM-D9: konektuj post_migrate RBAC sync handler.
+        # sender=self → handler se okida JEDNOM po migrate ciklusu (G-10),
+        # ne jednom po migriranom app-u. Import UNUTAR ready() — circular-safe.
+        from django.db.models.signals import post_migrate
+
+        from apps.accounts.permissions import sync_rbac_groups
+
+        post_migrate.connect(sync_rbac_groups, sender=self)
