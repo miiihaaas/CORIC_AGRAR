@@ -17,9 +17,10 @@ WHY allowlist (pravni dokument = tabela kolačića + naslovi + liste + linkovi):
   (strong/em/b/i) + link (a). `<h1>` IZOSTAVLJEN — rezervisan za stranicu
   (`<h1>{{ title }}</h1>` u template-u); body koristi h2-h4 (G-8).
   `<img>/<iframe>/<form>/<div>/<svg>/<object>` STRIP — XSS/embed/layout rizik.
-- atributi: `a → href/title/rel/target` (link sa tooltip-om/novim tab-om);
-  `rel` EKSPLICITNO dozvoljen radi konzistentnosti sa `link_rel` forsiranjem (G-7);
-  `th/td → colspan/rowspan` (tabela kolačića). `style/class/id` STRIP.
+- atributi: `a → href/title/target` (link sa tooltip-om/novim tab-om);
+  `rel` IZOSTAVLJEN iz allowlist-a — `link_rel="noopener noreferrer"` SAM forsira `rel`
+  (dodavanje `rel` u attr allowlist dok je `link_rel` set → nh3 `ValueError`; G-11 — vidi
+  inline komentar linije 57-64). `th/td → colspan/rowspan` (tabela kolačića). `style/class/id` STRIP.
 - url_schemes: `http/https/mailto` — `javascript:`/`data:` STRIP (XSS).
 - link_rel="noopener noreferrer": forsiran na svaki `<a>` → reverse-tabnabbing
   neutralizovan; `target="_blank"` postaje bezbedan (G-7/G-11).

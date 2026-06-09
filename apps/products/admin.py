@@ -23,7 +23,6 @@ from __future__ import annotations
 
 from django import forms
 from django.contrib import admin, messages
-from django.db import models
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import (
@@ -32,6 +31,10 @@ from modeltranslation.admin import (
     TranslationTabularInline,
 )
 
+from apps.core.admin_forms import (
+    relax_base_translation_fields,
+    relax_fields_with_model_default,
+)
 from apps.media_pipeline.pdf_utils import validate_pdf_mime
 from apps.media_pipeline.utils import validate_image_mime
 from apps.products.models import (
@@ -77,40 +80,9 @@ def _validate_pdf_field(value):
     )
 
 
-def _relax_base_translation_fields(form):
-    """Relaksira `required` na BAZNIM translatable poljima kad raw ModelForm vidi i `_sr`.
-
-    modeltranslation u adminu (formfield_for_dbfield) promoviše default-lang polje (`_sr`)
-    u required i skida required sa baznog polja. Taj swap se dešava kroz admin sloj, NE
-    kroz raw ModelForm — pa kad se ModelForm bind-uje DIREKTNO (testovi), bazno `name`
-    ostaje required i blokira validan `_sr`-only payload. Ovde repliciramo admin ponašanje:
-    bazno polje postaje opciono (vrednost se sinhronizuje iz `_sr` kroz modeltranslation
-    descriptor), `name_sr` ostaje BEZUSLOVNO obavezan (NE relaksiramo ga — AC9/M1).
-    """
-    for field in form._meta.model._meta.get_fields():
-        # Restrict to concrete model fields — get_fields() also yields reverse
-        # relations (ManyToOneRel etc.) whose `.name` == related_name; a reverse-rel
-        # name could otherwise accidentally match a form field and relax it. Concrete
-        # `models.Field` instances are the only ones with a translatable `_sr` twin.
-        if not isinstance(field, models.Field):
-            continue
-        name = field.name
-        sr_name = f"{name}_sr"
-        if name in form.fields and sr_name in form.fields:
-            form.fields[name].required = False
-
-
-def _relax_fields_with_model_default(form):
-    """Relaksira `required` na poljima koja imaju model-level default (npr. condition/status).
-
-    Django ModelForm drži takva polja required kad je `blank=False` na modelu, iako default
-    popunjava vrednost pri save-u. U adminu se renderuju sa initial-om (default izabran), pa
-    submit uvek nosi vrednost; u raw direct-bind testu izostaju → relaksacija je bezbedna jer
-    model default popunjava prazno polje.
-    """
-    for field in form._meta.model._meta.fields:
-        if field.has_default() and field.name in form.fields:
-            form.fields[field.name].required = False
+# NAPOMENA (SM-D6): `relax_base_translation_fields` / `relax_fields_with_model_default`
+# promovisani u `apps.core.admin_forms` (8.7) da se shim NE proliferira copy-paste (8.6
+# Architect forward-watch). `name_sr` OSTAJE bezuslovno required (AC9/M1).
 
 
 # =============================================================================
@@ -139,8 +111,8 @@ class ProductAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _relax_base_translation_fields(self)  # name_sr ostaje required; bazno name opciono
-        _relax_fields_with_model_default(self)  # condition/status imaju model default
+        relax_base_translation_fields(self)  # name_sr ostaje required; bazno name opciono
+        relax_fields_with_model_default(self)  # condition/status imaju model default
 
     def clean_main_image(self):
         f = self.cleaned_data.get("main_image")
@@ -162,8 +134,8 @@ class ProductImageInlineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _relax_base_translation_fields(self)
-        _relax_fields_with_model_default(self)
+        relax_base_translation_fields(self)
+        relax_fields_with_model_default(self)
 
     def clean_image(self):
         f = self.cleaned_data.get("image")
@@ -185,8 +157,8 @@ class ProductVariantInlineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _relax_base_translation_fields(self)  # name_sr required; bazno name opciono
-        _relax_fields_with_model_default(self)
+        relax_base_translation_fields(self)  # name_sr required; bazno name opciono
+        relax_fields_with_model_default(self)
 
     def clean_image(self):
         f = self.cleaned_data.get("image")
@@ -212,8 +184,8 @@ class ProductBrochureInlineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _relax_base_translation_fields(self)
-        _relax_fields_with_model_default(self)
+        relax_base_translation_fields(self)
+        relax_fields_with_model_default(self)
 
     def clean_pdf_file(self):
         f = self.cleaned_data.get("pdf_file")
@@ -242,8 +214,8 @@ class ProductTestimonialInlineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _relax_base_translation_fields(self)
-        _relax_fields_with_model_default(self)
+        relax_base_translation_fields(self)
+        relax_fields_with_model_default(self)
 
     def clean_photo(self):
         f = self.cleaned_data.get("photo")

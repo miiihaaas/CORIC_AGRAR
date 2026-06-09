@@ -34,3 +34,14 @@ def legal_html(value):
     NIKAD sirovu ulaznu vrednost (G-6).
     """
     return mark_safe(sanitize_legal_html(value))
+
+
+@register.filter(name="rich_html", is_safe=True)
+def rich_html(value):
+    """Story 8.7 — neutralni ALIAS za `legal_html` (OQ-2; semantika za blog body).
+
+    Deli IDENTIČAN `mark_safe(sanitize_legal_html(...))` backend — 0 renames, 0 breakage
+    za pravne strane (gdpr/pages koje koriste `legal_html`). Blog `post_detail.html`
+    koristi `{{ post.body|rich_html }}` (čitljivije od „legal" za blog kontekst).
+    """
+    return mark_safe(sanitize_legal_html(value))

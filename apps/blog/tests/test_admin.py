@@ -42,15 +42,17 @@ def test_blog_models_registered_in_admin():
         )
 
 
-# AC6 / IMP-1 / Gotcha BL-5: PostAdmin.view_on_site is False (sprečava NoReverseMatch 500)
+# 8.7 SM-D8: PostAdmin.view_on_site RE-ENABLED — 5-3 registrovao blog:detail (G-16 test-ownership)
 def test_post_admin_view_on_site_false():
     from apps.blog.models import Post
 
     model_admin = admin.site._registry[Post]
-    assert model_admin.view_on_site is False, (
-        "PostAdmin.view_on_site MORA biti False (IMP-1/BL-5) — Post ima get_absolute_url → "
-        "„View on site“ dugme bi pozvalo reverse('blog:detail') -> NoReverseMatch -> 500 "
-        "(blog URL-ovi NE postoje do 5.2/5.3). Re-enable u 8.7/5.3."
+    # 5-1 view_on_site=False (IMP-1/BL-5) je NAMERNO uklonjen u 8.7: blog:detail JE registrovan
+    # (5-3), Post.get_absolute_url radi za published (draft → 404 NE 500). „View on site" je
+    # korisna preview affordance za Marijanu (SM-D8/AC8).
+    assert model_admin.view_on_site is not False, (
+        "PostAdmin.view_on_site MORA biti RE-ENABLED (NIJE False) — 5-3 registrovao blog:detail "
+        "→ „View on site“ radi (SM-D8); 5-1 view_on_site=False se NAMERNO menja u 8.7."
     )
 
 

@@ -170,8 +170,12 @@ def test_detail_author_empty_name_falls_back_to_username(
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# AC1 (9.4): body sa <script> MORA biti ESCAPE-ovan (|linebreaks auto-escape; NE |safe)
+# AC1 (9.4 → 8.7 AC3): body sa <script> MORA biti STRIP-ovan (nh3 render-time sanitizacija)
 def test_detail_body_escapes_script_no_safe_filter(client, make_post):
+    # 8.7 AC3/SM-D9 supersede-uje 5-3 `|linebreaks` escape ugovor: body sada ide kroz
+    # `rich_html` (nh3) filter koji STRIPUJE node-ove van allowlist-a (NE escape-uje —
+    # G-4/SM-D7). `<script>` se uklanja iz rendera (NE `&lt;script&gt;`); sirov `<script>`
+    # NIKAD nije prisutan. (test-ownership na 8.7 — body markup je 8.7 deliverable.)
     activate("sr")
     post = _published(
         make_post,
@@ -183,13 +187,9 @@ def test_detail_body_escapes_script_no_safe_filter(client, make_post):
 
     assert response.status_code == 200
     html = response.content.decode("utf-8")
-    assert "&lt;script&gt;" in html, (
-        "body MORA biti auto-escape-ovan (`&lt;script&gt;`) — `|linebreaks` "
-        "auto-escape (SM-D1/Gotcha BL3-1). Odsustvo = potencijalni `|safe` (stored-XSS)."
-    )
     assert "<script>alert(1)</script>" not in html, (
         "SIROV `<script>` NE SME biti u response-u (stored-XSS). "
-        "body NIKAD `|safe` bez sanitizacije — rich-text=8.7."
+        "body kroz nh3 `rich_html` sanitizaciju — 8.7 AC3."
     )
 
 

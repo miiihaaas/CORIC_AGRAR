@@ -69,7 +69,7 @@ def test_seometa_inline_max_num_one():
     )
 
 
-# regression-lock: PostAdmin OSTAJE TranslationAdmin + view_on_site=False
+# regression-lock: PostAdmin OSTAJE TranslationAdmin; view_on_site RE-ENABLED u 8.7 (SM-D8)
 def test_postadmin_stays_translationadmin_and_view_on_site_false():
     from modeltranslation.admin import TranslationAdmin
 
@@ -79,8 +79,11 @@ def test_postadmin_stays_translationadmin_and_view_on_site_false():
     assert isinstance(model_admin, TranslationAdmin), (
         "PostAdmin MORA ostati TranslationAdmin (C-A — inline/mixin su aditivni)."
     )
-    assert model_admin.view_on_site is False, (
-        "PostAdmin.view_on_site MORA ostati False (C-A regression-lock — IMP-1/BL-5)."
+    # 8.7 SM-D8: view_on_site RE-ENABLED — 5-3 registrovao blog:detail (View on site radi).
+    # 5-1 view_on_site=False (IMP-1/BL-5) je NAMERNO uklonjen (test-ownership na 8.7 — G-16).
+    assert model_admin.view_on_site is not False, (
+        "PostAdmin.view_on_site MORA biti RE-ENABLED (NIJE False) — 5-3 registrovao blog:detail "
+        "(View on site radi; SM-D8/AC8); 5-1 view_on_site=False se NAMERNO menja u 8.7."
     )
 
 

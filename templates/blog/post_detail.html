@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n i18n_fallback media_tags seo_meta static %}
+{% load i18n i18n_fallback media_tags seo_meta static legal_html %}
 
 {% block title %}{% seo_title post %}{% endblock %}
 
@@ -41,8 +41,12 @@
     {% include "blog/partials/_social_share.html" %}
 
     <div class="coric-blog-detail__body">
-      {# 5-3/8.7: ako body postane rich-HTML (WYSIWYG), zameni |linebreaks sanitizovanim renderom (bleach/nh3 + |safe) — |linebreaks ESCAPE-uje, pa bi double-escape-ovao HTML (prikazao bi sirove tagove). Plain-text body (5-1 SM-D10) je trenutno ispravan; NIKAD raw |safe bez sanitizacije (stored-XSS — SM-D1/Gotcha BL3-1). #}
-      {{ post.body|linebreaks }}
+      {# 8.7 (AC3 STORED-XSS GRANICA): body je rich-HTML (WYSIWYG) renderovan kroz nh3 sanitizovan
+         rich_html filter (alias za 7-5 legal_html; deli isti sanitize_legal_html backend —
+         apps/core/sanitize.py allowlist). nh3 STRIPUJE node-ove van allowlist-a i forsira
+         noopener-noreferrer rel na linkove. NIKAD raw safe, NIKAD linebreaks (double-escape rich
+         HTML). Render-time je PRIMARNA XSS granica — NIKAD se ne veruje stored vrednosti (SM-D3/G-3). #}
+      {{ post.body|rich_html }}
     </div>
 
     {% with post_tags=post.tags.all %}
