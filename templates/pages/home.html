@@ -5,6 +5,9 @@
 
 {% block meta_description %}{% translate "Ćorić Agrar — poljoprivredna mehanizacija, traktori, priključna oprema, radne mašine i polovna mehanizacija." %}{% endblock %}
 
+{# Page-modifier: hero strana (svetao hero — vedro nebo) → proziran header preko heroja, TAMAN tekst + bela sticky traka na scroll. #}
+{% block html_attrs %} class="coric-page--hero coric-page--hero-light"{% endblock %}
+
 {% block content %}
   {% include "pages/partials/_home_hero.html" %}
   {% include "pages/partials/_home_about_intro.html" %}

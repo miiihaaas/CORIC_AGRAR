@@ -168,6 +168,10 @@
   --spacing-section: 80px;
   --spacing-section-mobile: 48px;
 
+  /* === SPACING — Header chrome (top-bar 40px + nav 80px; transparent header overlay offset) === */
+  --spacing-header-full: 120px;
+  --spacing-header-nav: 80px;
+
   /* === SPACING — Container (DESIGN.md spacing.container) === */
   --spacing-container-max-width: 1200px;
   --spacing-container-gutter-desktop: 24px;
@@ -181,4 +185,12 @@
   /* === TOOLTIP — Sizing + stacking (Story 6-5 i18n fallback marker) === */
   --tooltip-max-width: 240px;  /* ~40-char localized tooltip on one readable column */
   --z-index-tooltip: 10;       /* above adjacent inline text, below sticky nav (1020) */
+
+  /* === HERO — Tekst max-širine (redizajn: beli tekst levo preko slike) === */
+  --spacing-hero-title-max-width: 640px;  /* h1 slogan u dva reda */
+  --spacing-hero-lead-max-width: 480px;   /* lead paragraf čitljiva mera */
+
+  /* === NAV — Logo visine (redizajn: veći logo verno dizajnu) === */
+  --spacing-nav-logo-height: 76px;          /* pun (above-the-fold) */
+  --spacing-nav-logo-height-shrunk: 48px;   /* sticky shrunk traka */
 }

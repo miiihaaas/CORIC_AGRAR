@@ -71,6 +71,28 @@ def test_home_traktori_brands_are_traktori_only(client, home_url):
     )
 
 
+def test_home_traktori_brands_include_coming_soon_without_products(client, home_url):
+    """AC2 (fix 2026-06-11): coming-soon Traktori brend BEZ objavljenih proizvoda MORA
+    biti u traktori_brands (prikazan sa „Uskoro" pill) — Q(is_coming_soon=True) OR grana.
+
+    Bez OR grane coming-soon brend (po prirodi još bez proizvoda) ispada iz inner join-a
+    `products__is_published=True`. Mehanizacija blacklist (jeegee/hzm/tulip) i dalje važi.
+    """
+    from apps.brands.tests.factories import BrandFactory
+
+    activate("sr")
+    coming_soon = BrandFactory.create(name="Horizon Uskoro", is_coming_soon=True)
+
+    response = client.get(home_url)
+    assert response.status_code == 200
+
+    brand_ids = {b.pk for b in response.context["traktori_brands"]}
+    assert coming_soon.pk in brand_ids, (
+        "Coming-soon Traktori brend BEZ objavljenih proizvoda MORA biti u traktori_brands "
+        "(Q(is_coming_soon=True) OR grana). Bez nje ispada iz products__is_published join-a."
+    )
+
+
 def test_home_traktori_brand_representative_image_from_prefetch(client, home_url):
     """AC2/SM-D4: reprezentativna slika dolazi iz prefetch to_attr 'published_products'
     (NE per-brand .first() upit). Verifikuje da je to_attr lista popunjena objavljenim

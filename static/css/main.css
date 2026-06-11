@@ -63,3 +63,13 @@
 
 /* Components CSS imports (Story 7.2) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/gdpr-banner.css');
+
+/* ============================================================================
+ * Site-wide tipografija — Roboto (self-hosted) na celom dokumentu.
+ * Bootstrap postavlja svoj system-ui font stack; ovde ga preglašavamo Robotom
+ * (loaded POSLE Bootstrap-a) da telo, naslovi i nav koriste isti font kao u
+ * usvojenom dizajnu (#3). @import pravila MORAJU prethoditi ovom bloku.
+ * ========================================================================= */
+body {
+  font-family: var(--typography-family-primary);
+}

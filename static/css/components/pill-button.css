@@ -23,15 +23,28 @@
   outline-offset: 2px;
 }
 
+/* #2 FIX: primary CTA mečuje hero „Saznaj više" etalon (.coric-button--detaljnije):
+ * zeleni gradient pill + isti outline/hover. Jedna izmena → sve „Detaljnije /
+ * Opširnije / Saznaj više" CTA-ove po sajtu izgledaju kao hero CTA. */
 .coric-button--primary {
-  background-color: var(--color-brand-green-800);
+  background-image: linear-gradient(
+    to right,
+    var(--color-brand-green-400),
+    var(--color-brand-green-800)
+  );
   color: var(--color-semantic-text-on-dark);
   border: 2px solid transparent;
+  outline: 2px solid var(--color-brand-green-600);
+  outline-offset: 2px;
 }
 
 .coric-button--primary:hover {
-  background-color: var(--color-accent-lime-500);
-  color: var(--color-brand-green-900);
+  background-image: linear-gradient(
+    to right,
+    var(--color-brand-green-600),
+    var(--color-brand-green-900)
+  );
+  color: var(--color-semantic-text-on-dark);
 }
 
 .coric-button--secondary {
@@ -56,10 +69,51 @@
   color: var(--color-brand-green-900);
 }
 
+/* „Saznaj više / Detaljnije" — gradient zeleni pill + strelica (verno usvojenom dizajnu .btn-detaljnije). */
+.coric-button--detaljnije {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-scale-3);
+  background-image: linear-gradient(
+    to right,
+    var(--color-brand-green-400),
+    var(--color-brand-green-800)
+  );
+  color: var(--color-semantic-text-on-dark);
+  border: 2px solid transparent;
+  outline: 2px solid var(--color-brand-green-600);
+  outline-offset: 2px;
+}
+
+.coric-button--detaljnije:hover {
+  background-image: linear-gradient(
+    to right,
+    var(--color-brand-green-600),
+    var(--color-brand-green-900)
+  );
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-button__arrow {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.coric-button--detaljnije:hover .coric-button__arrow,
+.coric-button--detaljnije:focus-visible .coric-button__arrow {
+  transform: translateX(var(--spacing-scale-1));
+}
+
 /* CRITICAL-3: ko ship-uje motion ship-uje i guard. */
 @media (prefers-reduced-motion: reduce) {
-  .coric-button {
+  .coric-button,
+  .coric-button__arrow {
     transition: none;
+  }
+
+  .coric-button--detaljnije:hover .coric-button__arrow,
+  .coric-button--detaljnije:focus-visible .coric-button__arrow {
+    transform: none;
   }
 }
 

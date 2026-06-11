@@ -13,7 +13,7 @@ ne sme importovati domain apps — zato home živi ovde, NE u core.
 
 from __future__ import annotations
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.http import Http404
 from django.views.generic import DetailView, TemplateView
 
@@ -59,14 +59,19 @@ class HomeView(TemplateView):
         # (Jeegee/HZM/Tulip — `_MEHANIZACIJA_BRAND_SLUGS`). Eksplicitno isključenje je
         # neophodno jer seed 0004 kreira Tulip MIX prikolice kao condition=NEW
         # (default), pa goli condition=NEW filter ne razlučuje mehanizaciju od
-        # traktora. `is_coming_soon=True` brendovi SE UKLJUČUJU (prikazani sa „Uskoro"
-        # pill). Reprezentativna slika dolazi iz Prefetch(to_attr="published_products")
-        # (NE per-brand .first() u petlji → N+1). `.distinct()` jer products__... join
-        # može duplirati brendove.
+        # traktora. `is_coming_soon=True` brendovi SE UKLJUČUJU čak i BEZ objavljenih
+        # proizvoda (prikazani sa „Uskoro" pill) — Q(is_coming_soon=True) OR grana; bez
+        # nje coming-soon brend (koji po prirodi još nema proizvode) bi ispao iz inner
+        # join-a `products__is_published=True`. Reprezentativna slika dolazi iz
+        # Prefetch(to_attr="published_products") (NE per-brand .first() u petlji → N+1).
+        # `.distinct()` jer products__... join može duplirati brendove.
         context["traktori_brands"] = list(
             Brand.objects.filter(
-                products__condition=Product.ConditionChoice.NEW,
-                products__is_published=True,
+                Q(
+                    products__condition=Product.ConditionChoice.NEW,
+                    products__is_published=True,
+                )
+                | Q(is_coming_soon=True)
             )
             .exclude(slug__in=_MEHANIZACIJA_BRAND_SLUGS)
             .distinct()

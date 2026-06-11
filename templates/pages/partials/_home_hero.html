@@ -1,15 +1,24 @@
 {% load i18n static %}
-{# Home hero — full-width foto-pozadina + green-800 overlay card (slogan h1 + brand lockup + Repeating Element watermark). SM-D9: variant="green". SM-D10: slogan FIKSAN, foto-pozadina static asset. #}
+{# Home hero — full-bleed foto-pozadina + beli tekst direktno preko slike (h1 slogan + lead + „Saznaj više" CTA); BEZ overlay kartice/logoa. Komentar mora ostati single-line (Django ne podržava multi-line). #}
 <section class="coric-home-hero" aria-label="{% translate "Ćorić Agrar — uvodna sekcija" %}">
   {# Dekorativna foto-pozadina — eager (above-the-fold LCP). alt="" + aria-hidden (dekorativna). #}
-  {# OQ-1 PRODUCTION BLOCKER: realna hero fotografija pre produkcije; v1 placeholder. #}
-  <img src="{% static 'img/home/hero-traktor.jpg' %}"
+  <img src="{% static 'img/home/home-hero-1.jpg' %}"
        alt=""
        aria-hidden="true"
        loading="eager"
        class="coric-home-hero__bg">
   <div class="coric-home-hero__overlay">
-    {% static 'img/coric-agrar-logo-transp-light-200.png' as brand_logo_static %}
-    {% include "partials/hero_overlay_card.html" with title=_("Prijatelj koji razume zemlju!") brand_logo=brand_logo_static brand_logo_alt=_("Ćorić Agrar logo") variant="green" bullets="" %}
+    <h1 class="coric-home-hero__title">
+      {% blocktranslate %}Prijatelj koji <strong>razume zemlju!</strong>{% endblocktranslate %}
+    </h1>
+    <p class="coric-home-hero__lead">
+      {% translate "Poljoprivredna mehanizacija, traktori i priključna oprema — pouzdan partner za svako gazdinstvo." %}
+    </p>
+    <a href="{% url 'pages:about' %}" class="coric-button coric-button--detaljnije coric-home-hero__cta">
+      {% translate "Saznaj više" %}
+      <svg class="coric-button__arrow" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m9 6 6 6-6 6"/>
+      </svg>
+    </a>
   </div>
 </section>

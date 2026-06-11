@@ -91,7 +91,10 @@ TEST_BASE_TEMPLATE_PY = PROJECT_ROOT / "tests" / "test_base_template.py"
 # `@media (max-width: 767px)` literal breakpoint in 3 new CSS files. Without 767
 # in the whitelist, AC9 px-discipline test conflicts with the mobile-breakpoint
 # AC2/AC6 tests (TEST_MODIFICATION GREEN-phase fix).
-PX_WHITELIST = {1, 2, 44, 60, 80, 40, 56, 100, 120, 767}
+# 768 added 2026-06-11 (design alignment): header.css koristi `@media (min-width: 768px)`
+# za transparent-over-hero overlay (md breakpoint, isti kao home-page.css). 768 je
+# breakpoint companion uz 767, ista izuzeta kategorija (breakpoint, NE magic-dimenzija).
+PX_WHITELIST = {1, 2, 44, 60, 80, 40, 56, 100, 120, 767, 768}
 
 # unitless magic number whitelist (AC9 — CRITICAL-12 split)
 UNITLESS_WHITELIST = {1020}

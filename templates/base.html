@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load django_bootstrap5 gdpr_banner hreflang htmx_aria i18n seo_meta static tracking %}
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}"{% block html_attrs %}{% endblock %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

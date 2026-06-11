@@ -5,6 +5,9 @@
 
 {% block meta_description %}{% translate "Priča kompanije Ćorić Agrar — porodična firma posvećena poljoprivrednoj mehanizaciji. Upoznajte naš put, vrednosti i tim." %}{% endblock %}
 
+{# Page-modifier: hero strana (taman zeleni hero) → proziran header preko heroja, BELI tekst + svetli logo + bela sticky traka na scroll. #}
+{% block html_attrs %} class="coric-page--hero coric-page--hero-dark"{% endblock %}
+
 {% block content %}
   {% include "pages/partials/_about_hero.html" %}
   {% include "pages/partials/_about_story.html" %}

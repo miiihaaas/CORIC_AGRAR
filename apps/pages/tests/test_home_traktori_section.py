@@ -99,16 +99,16 @@ def test_traktori_brand_image_links_to_brand_detail(client):
 
 
 def test_traktori_cta_links_to_brand_detail(client):
-    """AC5: 'OPŠIRNIJE' CTA -> brands:detail (3. klikabilna zona)."""
+    """AC5 (label „Detaljnije" od 2026-06-11 design alignment): CTA -> brands:detail."""
     activate("sr")
     brand, _ = make_traktori_brand(name="CTA Brend")
     html = _home_html(client)
     detail_url = reverse("brands:detail", kwargs={"slug": brand.slug})
     assert _links_to(html, detail_url), (
-        f"'OPŠIRNIJE' CTA MORA linkovati na brands:detail ({detail_url})."
+        f"'Detaljnije' CTA MORA linkovati na brands:detail ({detail_url})."
     )
-    assert "OPŠIRNIJE" in html or "Opširnije" in html, (
-        "CTA tekst 'OPŠIRNIJE' MORA biti renderovan (pune dijakritike)."
+    assert "Detaljnije" in html, (
+        "CTA tekst 'Detaljnije' MORA biti renderovan (pune dijakritike)."
     )
 
 

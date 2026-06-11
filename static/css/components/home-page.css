@@ -24,13 +24,18 @@
 }
 
 /* === Hero === */
+/* Full-bleed hero koji počinje od vrha (y=0): CEO header (top-bar + nav) lebdi
+ * APSOLUTNO preko hero slike (overlay, definisano u header.css pod
+ * .coric-page--hero). Hero je prvi element u flow-u i prirodno počinje od y=0 —
+ * BEZ negativnog margina. Top padding spušta sadržaj kartice ispod headera. */
 .coric-home-hero {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  padding: var(--spacing-scale-8) var(--spacing-container-gutter-mobile);
+  justify-content: flex-start;
+  min-height: 70vh;
+  padding: var(--spacing-header-full) var(--spacing-container-gutter-mobile)
+    var(--spacing-section-mobile);
   overflow: hidden;
 }
 
@@ -41,8 +46,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* OQ-1 PRODUCTION BLOCKER: realna hero fotografija se dodaje pre produkcije;
-     green-800 je fallback dok se slika ne učita / ako nedostaje. */
+  /* green-800 je fallback dok se slika ne učita / ako nedostaje. */
   background-color: var(--color-brand-green-800);
 }
 
@@ -51,6 +55,36 @@
   z-index: 1;
   width: 100%;
   max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  text-align: left;
+}
+
+.coric-home-hero__title {
+  font-family: var(--typography-family-primary);
+  font-size: var(--typography-scale-h1);
+  font-weight: var(--typography-weight-bold);
+  line-height: var(--typography-line-height-tight);
+  color: var(--color-semantic-text-on-dark);
+  max-width: var(--spacing-hero-title-max-width);
+  margin: 0;
+  text-shadow: 0 2px 6px rgba(31, 63, 47, 0.55);
+}
+
+.coric-home-hero__title strong {
+  font-weight: var(--typography-weight-bold);
+}
+
+.coric-home-hero__lead {
+  font-size: var(--typography-scale-body);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-semantic-text-on-dark);
+  max-width: var(--spacing-hero-lead-max-width);
+  margin: var(--spacing-scale-5) 0;
+  text-shadow: 0 1px 3px rgba(31, 63, 47, 0.6);
+}
+
+.coric-home-hero__cta {
+  margin-top: var(--spacing-scale-3);
 }
 
 /* === Baneri (Priključna / Polovna) === */
@@ -96,24 +130,23 @@
   gap: var(--spacing-scale-6);
 }
 
+/* #3 FIX: čista kartica bez okvira (verno dizajnu index.html 100-118) —
+ * BEZ border / box-shadow / background panela / velikog padding-a / border-radius-a.
+ * Centriran sadržaj: slika + brend-logo + „Detaljnije". Suptilan lift na hover
+ * (transform) bez panel-chrome-a. */
 .coric-brand-card {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-scale-3);
-  padding: var(--spacing-scale-5);
-  background-color: var(--color-neutral-white);
-  border: 1px solid var(--color-neutral-gray-300);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-sm);
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  background-color: transparent;
+  transition: transform 200ms ease;
 }
 
 .coric-brand-card:hover,
 .coric-brand-card:focus-within {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
 }
 
 .coric-brand-card__logo-link,
@@ -203,6 +236,14 @@
   pointer-events: none;
 }
 
+/* === Responsive: mobile hero offset (header overlay je relative na mobilnom →
+ * hero ne ide pod njega; manji top padding dovoljan ispod nav visine) === */
+@media (max-width: 767px) {
+  .coric-home-hero {
+    padding-top: var(--spacing-header-nav);
+  }
+}
+
 /* === Responsive: desktop multi-col + veći hero === */
 @media (min-width: 768px) {
   .coric-home-section {
@@ -210,7 +251,7 @@
   }
 
   .coric-home-hero {
-    min-height: 80vh;
+    min-height: 100vh;
   }
 
   .coric-home-blog-preview__grid {

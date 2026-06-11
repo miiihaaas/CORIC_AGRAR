@@ -32,7 +32,7 @@ body {
 }
 
 .coric-nav--shrunk .coric-nav__logo-img {
-  max-height: 40px;
+  max-height: var(--spacing-nav-logo-height-shrunk);
 }
 
 /* CRITICAL-11 + CRITICAL-CASCADE-3:
@@ -51,7 +51,7 @@ body.coric-nav-shrunk .coric-nav {
 }
 
 body.coric-nav-shrunk .coric-nav__logo-img {
-  max-height: 40px;
+  max-height: var(--spacing-nav-logo-height-shrunk);
 }
 
 /* ============================================================================

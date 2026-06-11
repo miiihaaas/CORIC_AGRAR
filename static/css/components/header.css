@@ -12,8 +12,11 @@
  * Mobile height: auto override in sticky-nav.css (single-source per POLISH-2).
  * ========================================================================= */
 .coric-top-header {
-  background-color: var(--color-brand-green-900);
-  color: var(--color-semantic-text-on-dark);
+  /* Default = PROZIRAN top-bar (NE zelen) sa tamnim tekstom — vidljiv preko bele
+   * sadržajne zone na ne-hero stranama. Hero-dark strane vraćaju beli tekst preko
+   * svoje page-modifier klase. */
+  background-color: transparent;
+  color: var(--color-semantic-text-primary);
   padding: var(--spacing-scale-2) var(--spacing-container-gutter-desktop);
   font-size: var(--typography-scale-caption);
   height: 40px;
@@ -35,7 +38,7 @@
 
 .coric-top-header__phone,
 .coric-top-header__phone--service {
-  color: var(--color-semantic-text-on-dark);
+  color: inherit;
   text-decoration: none;
   min-height: 44px;
   display: inline-flex;
@@ -54,7 +57,7 @@
 }
 
 .coric-top-header__social-link {
-  color: var(--color-semantic-text-on-dark);
+  color: inherit;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +68,7 @@
 .coric-top-header__mobile-toggle {
   background: transparent;
   border: 0;
-  color: var(--color-semantic-text-on-dark);
+  color: inherit;
   min-width: 44px;
   min-height: 44px;
 }
@@ -78,31 +81,64 @@
   position: sticky;
   top: 0;
   z-index: 1020;
-  background-color: var(--color-brand-green-800);
-  color: var(--color-semantic-text-on-dark);
+  /* Default = PROZIRAN nav (NE zelen) sa tamnim tekstom — „oblačić" navbar
+   * (.coric-nav__list) lebdi nad prozirnom okolinom na SVIM stranama. Na vrhu
+   * ne-hero strana okolina je bela sadržajna zona → tamni tekst čitljiv. */
+  background-color: transparent;
+  color: var(--color-semantic-text-primary);
   height: 80px;
-  transition: height 200ms ease, box-shadow 200ms ease;
+  transition: height 200ms ease, box-shadow 200ms ease,
+    background-color 200ms ease, color 200ms ease;
+}
+
+/* Logo varijante: tamni default, svetli skriven (prikazan samo na hero-dark). */
+.coric-nav__logo-img--light {
+  display: none;
 }
 
 .coric-nav__logo-img {
-  max-height: 56px;
+  max-height: var(--spacing-nav-logo-height);
   transition: max-height 200ms ease;
 }
 
+/* Meni-lista = „prozirni oblak": translucentna bela pozadina + zaobljenje.
+ * BAZNI stil (svaka strana isti navbar; vidi #4). NE koristimo overflow:hidden
+ * (clipovao bi Mehanizacija dropdown + search panel) — umesto toga zaobljene
+ * uglove zelene search stavke postavljamo direktno na njoj. */
+.coric-nav__list {
+  /* Translucentna bela (20% alpha) — alpha-composite literal, isti obrazac kao
+   * --shadow-* / text-shadow rgba vrednosti; NE brand-color token (čuva AC4 21-color set). */
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: var(--rounded-md);
+}
+
 .coric-nav__link {
-  color: var(--color-semantic-text-on-dark);
+  color: inherit;
   text-transform: uppercase;
-  letter-spacing: var(--typography-tracking-wide);
-  font-weight: var(--typography-weight-bold);
+  letter-spacing: var(--typography-tracking-normal);
+  font-weight: var(--typography-weight-regular);
+  font-size: var(--typography-scale-small);
   min-height: 44px;
   display: inline-flex;
   align-items: center;
 }
 
+/* „Pregrade" — separator između nav linkova (border-right na svakom osim
+ * poslednje stavke). currentColor prati boju teksta u oba konteksta (taman preko
+ * neba na hero, beo preko zelene na ostalim stranama). BAZNI stil (#4). */
+.coric-nav__list .nav-item:not(:last-child) .coric-nav__link {
+  border-right: 1px solid currentColor;
+}
+
+/* Poslednja stavka u oblaku (search) ima zelenu pozadinu — verno dizajnu. BAZNI. */
+.coric-nav__search-item {
+  background-color: var(--color-brand-green-600);
+}
+
 .coric-nav__hamburger {
   background: transparent;
   border: 0;
-  color: var(--color-semantic-text-on-dark);
+  color: inherit;
   min-width: 44px;
   min-height: 44px;
 }
@@ -110,6 +146,7 @@
 .coric-nav__search-toggle {
   background: transparent;
   border: 0;
+  /* Search-stavka ima zelenu pozadinu (oblak), pa joj tekst/ikona ostaje beli. */
   color: var(--color-semantic-text-on-dark);
   min-width: 44px;
   min-height: 44px;
@@ -131,6 +168,138 @@
 .coric-nav__dropdown .dropdown-item:focus {
   background-color: var(--color-brand-green-600);
   color: var(--color-semantic-text-on-dark);
+}
+
+/* ============================================================================
+ * Hero overlay (page-modifier .coric-page--hero* na <html>).
+ *
+ * SVE strane (sa ili bez heroja) imaju PROZIRAN header + „oblačić" navbar (bazni
+ * stil gore) i generalizovanu belu sticky traku na scroll (dole, globalni
+ * .coric-nav-shrunk). Razlika je SAMO pozicioniranje + boja teksta:
+ *   - Bez page-modifier-a (ne-hero strane): header u NORMALNOM FLOW-u (sticky),
+ *     zauzima prostor → sadržaj ide ISPOD; taman tekst na beloj traci.
+ *   - .coric-page--hero: header LEBDI apsolutno preko full-bleed heroja od y=0.
+ *   - .coric-page--hero-light: svetao hero (npr. home nebo) → TAMAN tekst + svetli
+ *     scrim (čitljivost preko svetle slike).
+ *   - .coric-page--hero-dark: taman hero (npr. zeleni o-nama) → BELI tekst + tamni
+ *     scrim + svetla varijanta logoa.
+ * px: 1, 2 (text-shadow offset) su u AC9 whitelist-u.
+ * ========================================================================= */
+
+/* #1: CEO header (top-bar + nav) lebdi APSOLUTNO preko hero slike od y=0.
+ * Header je van flow-a → hero (prvi element) prirodno počinje od y=0, pa se hero
+ * vidi IZA i top-bara i navbara (oba transparentna). Desktop only — na mobilnom
+ * (md bail) header ostaje u normalnom flow-u (vidi mobilni blok dole). */
+@media (min-width: 768px) {
+  .coric-page--hero .coric-top-header,
+  .coric-page--hero .coric-nav {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 1020;
+  }
+
+  .coric-page--hero .coric-top-header {
+    top: 0;
+  }
+
+  /* Nav lebdi tačno ispod top-bara (top = top-bar visina 40px). */
+  .coric-page--hero .coric-nav {
+    top: 40px;
+  }
+
+  /* Scroll → bela sticky traka: nav prelazi u fixed na vrhu (top-bar nestaje,
+   * sticky-nav.css ga skuplja). position: fixed čuva sticky-on-scroll dok je
+   * header van normalnog sticky flow-a tokom overlay-a. */
+  .coric-page--hero .coric-nav-shrunk .coric-nav {
+    position: fixed;
+    top: 0;
+  }
+}
+
+/* Hero nav gubi senku dok lebdi (bela senka stiže u shrunk traci). */
+.coric-page--hero .coric-nav {
+  box-shadow: var(--shadow-none);
+}
+
+/* --- Hero-light: taman tekst + svetli scrim (čitljivost preko svetle slike) --- */
+.coric-page--hero-light .coric-top-header__address,
+.coric-page--hero-light .coric-top-header__phone,
+.coric-page--hero-light .coric-top-header__phone--service,
+.coric-page--hero-light .coric-top-header__social-link,
+.coric-page--hero-light .coric-top-header__mobile-toggle,
+.coric-page--hero-light .coric-nav__link,
+.coric-page--hero-light .coric-nav__hamburger,
+.coric-page--hero-light .coric-language-switcher__btn {
+  color: var(--color-semantic-text-primary);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+.coric-page--hero-light .coric-nav__link:hover {
+  color: var(--color-brand-green-900);
+}
+
+/* --- Hero-dark: beli tekst + tamni scrim + svetli logo (preko zelenog heroja) --- */
+.coric-page--hero-dark .coric-top-header,
+.coric-page--hero-dark .coric-nav {
+  color: var(--color-semantic-text-on-dark);
+}
+
+.coric-page--hero-dark .coric-top-header__address,
+.coric-page--hero-dark .coric-top-header__phone,
+.coric-page--hero-dark .coric-top-header__phone--service,
+.coric-page--hero-dark .coric-top-header__social-link,
+.coric-page--hero-dark .coric-top-header__mobile-toggle,
+.coric-page--hero-dark .coric-nav__link,
+.coric-page--hero-dark .coric-nav__hamburger,
+.coric-page--hero-dark .coric-language-switcher__btn {
+  color: var(--color-semantic-text-on-dark);
+  text-shadow: 0 1px 2px rgba(31, 63, 47, 0.6);
+}
+
+.coric-page--hero-dark .coric-nav__link:hover {
+  color: var(--color-accent-lime-500);
+}
+
+.coric-page--hero-dark .coric-nav__logo-img--dark {
+  display: none;
+}
+
+.coric-page--hero-dark .coric-nav__logo-img--light {
+  display: block;
+}
+
+/* ============================================================================
+ * Generalizovana bela sticky traka na scroll — SVE strane (A i B).
+ * body.coric-nav-shrunk (JS toggle) → bela pozadina + shadow, taman tekst, lime
+ * hover; top-bar nestaje (sticky-nav.css). Tako proziran header na vrhu prelazi
+ * u belu sticky traku iznad sadržaja koji klizi.
+ * ========================================================================= */
+.coric-nav-shrunk .coric-nav {
+  background-color: var(--color-neutral-white);
+  box-shadow: var(--shadow-nav-shrunk);
+}
+
+.coric-nav-shrunk .coric-top-header,
+.coric-nav-shrunk .coric-nav,
+.coric-nav-shrunk .coric-nav__link,
+.coric-nav-shrunk .coric-nav__hamburger,
+.coric-nav-shrunk .coric-language-switcher__btn {
+  color: var(--color-semantic-text-primary);
+  text-shadow: none;
+}
+
+/* Bela traka → uvek tamni logo (svetli sakriven, čak i ako je hero-dark gore). */
+.coric-nav-shrunk .coric-nav__logo-img--dark {
+  display: block;
+}
+
+.coric-nav-shrunk .coric-nav__logo-img--light {
+  display: none;
+}
+
+.coric-nav-shrunk .coric-nav__link:hover {
+  color: var(--color-accent-lime-500);
 }
 
 /* ============================================================================
@@ -216,7 +385,41 @@
   }
 
   .coric-nav__logo-img {
-    max-height: 40px;
+    max-height: var(--spacing-nav-logo-height-shrunk);
+  }
+
+  /* Na mobilnom header overlay (position: absolute) NE važi (gated na min-width
+   * 768px) — header ostaje u normalnom flow-u IZNAD heroja, nad belim telom.
+   * Zato hero-dark/light strane na mobilnom vraćaju TAMAN tekst bez scrim-a
+   * (čitljiv na beloj traci) i TAMAN logo — header nije proziran preko heroja. */
+  .coric-page--hero-light .coric-top-header__address,
+  .coric-page--hero-light .coric-top-header__phone,
+  .coric-page--hero-light .coric-top-header__phone--service,
+  .coric-page--hero-light .coric-top-header__social-link,
+  .coric-page--hero-light .coric-top-header__mobile-toggle,
+  .coric-page--hero-light .coric-nav__link,
+  .coric-page--hero-light .coric-nav__hamburger,
+  .coric-page--hero-light .coric-language-switcher__btn,
+  .coric-page--hero-dark .coric-top-header,
+  .coric-page--hero-dark .coric-nav,
+  .coric-page--hero-dark .coric-top-header__address,
+  .coric-page--hero-dark .coric-top-header__phone,
+  .coric-page--hero-dark .coric-top-header__phone--service,
+  .coric-page--hero-dark .coric-top-header__social-link,
+  .coric-page--hero-dark .coric-top-header__mobile-toggle,
+  .coric-page--hero-dark .coric-nav__link,
+  .coric-page--hero-dark .coric-nav__hamburger,
+  .coric-page--hero-dark .coric-language-switcher__btn {
+    color: var(--color-semantic-text-primary);
+    text-shadow: none;
+  }
+
+  .coric-page--hero-dark .coric-nav__logo-img--dark {
+    display: block;
+  }
+
+  .coric-page--hero-dark .coric-nav__logo-img--light {
+    display: none;
   }
 }
 
