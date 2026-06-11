@@ -1,3 +1,2 @@
-{# Pill Button — CTA dugme u 3 varijante (primary / secondary / cta-light).
-   as=link (default) renders <a>; as=button renders <button> sa type=button|submit|reset. #}
+{# Pill Button — CTA dugme u 3 varijante (primary / secondary / cta-light). as=link (default) renders <a>; as=button renders <button> sa type=button|submit|reset. #}
 {% if as == "button" %}<button type="{{ type|default:'button' }}" class="coric-button coric-button--{{ variant|default:'primary' }}{% if extra_classes %} {{ extra_classes }}{% endif %}"{% if aria_label %} aria-label="{{ aria_label }}"{% endif %}>{{ label }}</button>{% else %}<a class="coric-button coric-button--{{ variant|default:'primary' }}{% if extra_classes %} {{ extra_classes }}{% endif %}" href="{{ href|default:'#' }}"{% if aria_label %} aria-label="{{ aria_label }}"{% endif %}>{{ label }}</a>{% endif %}
