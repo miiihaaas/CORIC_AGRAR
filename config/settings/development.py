@@ -1,6 +1,9 @@
 """Development settings — used locally via `manage.py runserver` and `just dev`."""
 
+import copy
+
 from .base import *  # noqa: F401, F403
+from .base import LOGGING  # eksplicitno za LOGGING loosen (izbegava F405 star-import warning)
 
 # Dev convenience override (overrides base default of False)
 DEBUG = True
@@ -32,3 +35,11 @@ STORAGES = {
 # da i pytest Client GET-ovi rade bez prethodnog collectstatic-a.
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = True
+
+# ── Logging — per-env loosen (Story 9.6) ─────────────────────────────────────
+# Dev verbose vs prod tiši (AC5). deepcopy da NE mutiramo deljenu base referencu (G-7).
+# Numerički niži nivoi od prod-a: apps DEBUG(10) < INFO(20), django INFO(20) < WARNING(30).
+# console ostaje stdout; propagate ostaje True (G-12); root/console level ≤ INFO (G-13).
+LOGGING = copy.deepcopy(LOGGING)
+LOGGING["loggers"]["apps"]["level"] = "DEBUG"  # verbose dev app log
+LOGGING["loggers"]["django"]["level"] = "INFO"  # niži (verbose-niji) od prod WARNING

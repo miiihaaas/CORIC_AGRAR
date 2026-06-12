@@ -1,0 +1,31 @@
+# CORIC_AGRAR — Backup cron (Story 9.5, AC5/SM-D6).
+#
+# Instalacija (na Hetzner box-u, kao deploy user):
+#   crontab ops/backup/crontab
+# ILI kopiraj u system cron.d (apsolutne putanje su obavezne tamo):
+#   sudo cp ops/backup/crontab /etc/cron.d/coric-backup
+#
+# Cron radi na HOSTU (NE compose sidecar — SM-D6), poziva skripte koje
+# `docker compose exec`-uju u postgres servis i pokrecu prolazni restic/restic
+# kontejner. Cron CWD NIJE repo root → APSOLUTNE putanje su OBAVEZNE (G-7).
+# Prilagodi `/srv/coric_agrar` stvarnoj putanji repo checkout-a na boxu (DEPLOY_APP_DIR).
+#
+# TZ=UTC je OBAVEZAN (G-8/MEDIUM-9): box-TZ moze biti lokalni → bez ovoga bi
+# `0 3 * * *` bio lokalnih 3 ujutru, ne 03:00 UTC kako epics/project-context traze.
+TZ=UTC
+
+# ── Daily DB backup u 03:00 UTC (AC5/SM-D6) ──────────────────────────────────
+0 3 * * * deploy /srv/coric_agrar/ops/backup/pg_backup.sh >> /var/log/coric-backup.log 2>&1
+
+# ── Weekly media snapshot, nedeljom u 04:00 UTC (AC3/AC5/SM-D3) ───────────────
+0 4 * * 0 deploy /srv/coric_agrar/ops/backup/media_backup.sh >> /var/log/coric-backup.log 2>&1
+
+# ── (MEDIUM-6) Periodican restic check integritet repo-a — komentovan ────────
+# Detektuje korupciju repo-a PRE nego sto zatreba restore (bit-rot/parcijalan upload).
+# Weekly subset-read; aktiviraj kad su Storage Box creds postavljeni (OQ-1).
+# 0 5 * * 1 deploy docker run --rm -e RESTIC_REPOSITORY -e RESTIC_PASSWORD_FILE "${RESTIC_IMAGE}" check --read-data-subset=10% >> /var/log/coric-backup.log 2>&1
+
+# ── (MEDIUM-8) MESECNI restore-test reminder scaffold — komentovan ───────────
+# Schedule postoji u kodu; ljudski owner ostaje deferred (OQ-3). 1. u mesecu 06:00 UTC.
+# Pokreni restore-test po ops/backup/RESTORE.md (restore.sh <snap> u TEST DB + verify).
+# 0 6 1 * * deploy /srv/coric_agrar/ops/backup/restore.sh <snapshotID>  # vidi RESTORE.md

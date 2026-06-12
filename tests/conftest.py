@@ -17,3 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # Dodaj root u sys.path ako nije već (idempotent)
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+# NAPOMENA: `docker` marker (Story 9.1 INFRA-VERIFY container smoke) registrovan je
+# deklarativno u pyproject.toml [tool.pytest.ini_options].markers (jedan izvor istine).
+# Ne dupliramo registraciju ovde (Architect review 9.1 — REFACTOR).

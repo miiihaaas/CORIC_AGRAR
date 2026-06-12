@@ -191,18 +191,23 @@ def test_ac1_gitattributes_exists_with_narrow_scope():
 def test_ac1_compose_django_directory_files_listed():
     """AC1: `compose/django/` MORA sadržati Dockerfile + entrypoint.sh.
 
-    Negative scope: NE sme da postoji `start.sh` (gunicorn launcher) — to je
-    Story 9.1 prod.
+    RECONCILED (Epic 9, Story 9.1): Story 1.3 je imala negativni scope guard
+    "start.sh NE sme postojati" (gunicorn launcher je bio out-of-scope). Story 9.1
+    (commit 41ac258) je INTENCIONALNO uvela `compose/django/start.sh` (prod
+    wait-for-db + gunicorn, BEZ migrate) za prod-parity stack. start.sh je sad
+    OČEKIVAN artifact — negativna asercija je obrnuta u pozitivnu (prod start
+    skripta MORA postojati).
     """
     assert DOCKERFILE.exists(), f"compose/django/Dockerfile ne postoji na {DOCKERFILE}."
     assert ENTRYPOINT_SH.exists(), (
         f"compose/django/entrypoint.sh ne postoji na {ENTRYPOINT_SH}."
     )
-    # Negative: start.sh je out-of-scope za Story 1.3 (Story 9.1 ga uvodi)
+    # Story 9.1: start.sh (prod gunicorn launcher) je sad INTENDED artifact.
     start_sh = COMPOSE_DJANGO_DIR / "start.sh"
-    assert not start_sh.exists(), (
-        "compose/django/start.sh postoji — to je Story 9.1 prod-only artifact. "
-        "Story 1.3 koristi runserver kroz CMD u Dockerfile-u, ne start.sh."
+    assert start_sh.exists(), (
+        "compose/django/start.sh ne postoji — Story 9.1 ga uvodi kao prod "
+        "ENTRYPOINT (wait-for-db + gunicorn, BEZ migrate). production.yml builduje "
+        "Dockerfile `prod` target koji koristi /start.sh."
     )
 
 
@@ -266,25 +271,40 @@ def test_ac2_dockerfile_uses_uv_sync_frozen():
         "Story Gotcha #7: bez ovog flag-a uv pokušava da instalira coric-agrar "
         "kao paket — failuje jer nemamo [build-system]."
     )
-    # Story 2.3 Decision MP-D6: local dev Dockerfile uključuje dev deps (pytest, ruff,
-    # djade) da `just test` (Docker-backed) ima pytest dostupan u kontejneru.
-    # Production override compose-a treba ponovo dodati --no-dev kad se uvede.
-    # (Prethodna asercija `--no-dev` superseded — vidi Story 2.3 Decision MP-D6.)
+    # Story 2.3 Decision MP-D6: local dev `builder` stage uključuje dev deps (pytest, ruff,
+    # djade) da `just test` (Docker-backed) ima pytest dostupan u kontejneru — dev `builder`
+    # stage NE SME imati --no-dev.
     #
-    # FIX-9 (Dev A + Dev B + Architect): pozitivna asercija da NEMA `--no-dev` u local
-    # Dockerfile-ovim INSTRUKCIJAMA (RUN/CMD/ENTRYPOINT). Komentari (`# ... --no-dev ...`)
-    # su OK i očekivani — dokumentuju future production override (Epic 9 Story 9.x).
-    # Regression guard: ako neko vrati --no-dev u RUN uv sync, pytest neće biti dostupan
-    # za `just test` (Docker-backed).
-    non_comment_lines = [
-        ln for ln in content.splitlines() if not ln.lstrip().startswith("#")
-    ]
-    non_comment_blob = "\n".join(non_comment_lines)
-    assert "--no-dev" not in non_comment_blob, (
-        "compose/django/Dockerfile sadrži `--no-dev` u izvršnoj instrukciji (van komentara) — "
-        "local dev image zahteva pytest/ruff/djade za `just test` (Docker-backed). "
-        "Production deploy (Epic 9 Story 9.x) treba da koristi separate compose override "
-        "koji re-aplikuje --no-dev. Vidi Story 2.3 Decision MP-D6."
+    # RECONCILED (Epic 9, Story 9.1): Story 9.1 (commit 41ac258) je dodala ZASEBAN
+    # `prod-builder` stage sa `uv sync --frozen --no-install-project --no-dev` (G-4:
+    # prod venv bez dev grupe, manji image; dev `builder` NETAKNUT). `--no-dev` je sad
+    # LEGITIMAN u prod-builder izvršnoj instrukciji. FIX-9 regression guard se RE-SCOPE-uje:
+    # asertuje da DEV `builder` stage (onaj koji runtime COPY-uje za `just test`) NEMA
+    # --no-dev, dok prod-builder SME (i MORA — to je njegova svrha).
+    #
+    # Parse stage-by-stage: skupljamo non-comment RUN linije po `FROM ... AS <stage>` bloku.
+    dev_builder_run_lines: list[str] = []
+    current_stage: str | None = None
+    for raw in content.splitlines():
+        line = raw.strip()
+        if line.startswith("#"):
+            continue
+        from_match = re.match(
+            r"^\s*FROM\s+\S+\s+AS\s+(\S+)", raw, re.IGNORECASE
+        )
+        if from_match:
+            current_stage = from_match.group(1).lower()
+            continue
+        # Dev `builder` stage je onaj koji runtime stage COPY-uje (`COPY --from=builder`).
+        # prod-builder/prod su odvojeni — njihov --no-dev je INTENDED (Story 9.1 G-4).
+        if current_stage == "builder":
+            dev_builder_run_lines.append(raw)
+    dev_builder_blob = "\n".join(dev_builder_run_lines)
+    assert "--no-dev" not in dev_builder_blob, (
+        "compose/django/Dockerfile DEV `builder` stage sadrži `--no-dev` u izvršnoj "
+        "instrukciji — dev image zahteva pytest/ruff/djade za `just test` (Docker-backed). "
+        "`--no-dev` pripada ZASEBNOM `prod-builder` stage-u (Story 9.1 G-4), NE dev builder-u. "
+        "Vidi Story 2.3 Decision MP-D6 + Story 9.1 prod-parity split."
     )
 
 

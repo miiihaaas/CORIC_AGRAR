@@ -1,0 +1,211 @@
+# CORIC_AGRAR — Docker Compose za PRODUCTION (lokalno-dižljiv prod-parity stack).
+# Pokreni:  just prod-up    (ili: docker compose -f compose/production.yml up -d)
+# Validate: just prod-config
+# Stop:     just prod-down
+#
+# Razlike od compose/local.yml:
+#   - Gunicorn (NE runserver), Nginx reverse proxy (jedini izložen ulaz: 80/443)
+#   - django: GHCR image je SOT (ghcr.io/...:tag, M2 — box `pull`-uje CI-build; build:
+#     blok je lokalni fallback); postgres: upstream image (NEMA source bind-mount);
+#     nginx: config/cert/ACME bind-mount-ovi (conf reload bez rebuild-a + host-pisan
+#     cert/webroot) — Story 9.2 SM-D4/D9. NEMA django/postgres host port
+#   - DJANGO_SETTINGS_MODULE=config.settings.production
+#   - DB credentials kroz env interpolaciju (${...}) — NIKAD inline `coric:coric` (G-5)
+#   - prod `--no-dev` build target (manji image, bez pytest/ruff/playwright)
+
+name: coric_agrar_production
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      # G-5: credentials kroz env interpolaciju (Hetzner secrets / shell env / .env),
+      # NIKAD hardkodovan password kao u local.yml. Default-i pomažu lokalni smoke.
+      POSTGRES_DB: ${POSTGRES_DB:-coric_agrar}
+      POSTGRES_USER: ${POSTGRES_USER:-coric}
+      # Prazan default → prod MORA set-ovati kroz Hetzner secrets/shell env; smoke ga daje.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # BEZ host port expose — interni Docker DNS (postgres:5432) je dovoljan.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-coric} -d ${POSTGRES_DB:-coric_agrar}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  django:
+    build:
+      context: ..
+      dockerfile: compose/django/Dockerfile
+      target: prod
+    # M2: GHCR-pathed image sa deterministickim tag-om da `docker compose pull` na boxu
+    # povuce CI-zgradjen image (ci.yml push-uje ghcr.io/<repo>:latest + :ci-<sha>).
+    # build: blok ostaje kao FALLBACK za lokalni `docker compose build` (prod-smoke gradi
+    # i tag-uje lokalno; up koristi lokalni build, samo `pull` ide na GHCR).
+    # GHCR_IMAGE/IMAGE_TAG su env-parametrizovani (.env.example placeholderi); default je
+    # lowercase repo (Miiihaaas/CORIC_AGRAR -> miiihaaas/coric_agrar) + :latest.
+    image: ghcr.io/${GHCR_IMAGE:-miiihaaas/coric_agrar}:${IMAGE_TAG:-latest}
+    env_file:
+      - ../.env
+    environment:
+      # AC6: eksplicitno prod settings (NE manage.py development default).
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      # Core Django env — interpolacija iz shell/process env-a (smoke) ILI .env fallback.
+      # `environment:` ima prednost nad `env_file:` → smoke override (npr. ALLOWED_HOSTS,
+      # SSL_REDIRECT) prolazi u kontejner. Default-i ka .env vrednostima/prod-safe.
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-False}
+      # G-11/SM-D7: default True (prod hardening); lokalni HTTP smoke postavlja False
+      # (inače 301 loop). MORA proći iz process env-a u kontejner.
+      DJANGO_SECURE_SSL_REDIRECT: ${DJANGO_SECURE_SSL_REDIRECT:-True}
+      # G-9: bez ovoga 403 na cross-origin POST. Smoke: http://localhost.
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-}
+      # DB konekcija: DATABASE_URL kroz env interpolaciju (postgres host = Docker DNS).
+      # Prazan default → prod/smoke MORA dati pun URL (sa secret password-om); G-5.
+      DATABASE_URL: ${DATABASE_URL:-}
+      # POSTGRES_* informational za start.sh wait-for-db (pg_isready).
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-coric}
+      # Gunicorn tuning (env-override; default 5 = 2*CPU+1 za 2vCPU).
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-5}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
+    # G-10/SM-D2: EKSPLICITAN entrypoint override (zameni Dockerfile ENTRYPOINT da
+    # entrypoint.sh-migrate NE radi; `command:`-only ne bi promenio ENTRYPOINT).
+    entrypoint: ["/start.sh"]
+    volumes:
+      # collectstatic (deploy-step 9.2) piše u staticfiles; media za upload-e (read-write).
+      - staticfiles:/app/staticfiles
+      - media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # BEZ host port expose — Nginx je jedini izložen ulaz (interno :8000).
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: compose/nginx/Dockerfile
+    image: coric_agrar_nginx_production
+    ports:
+      # Jedini izložen ulaz. 443 za prod TLS (Story 9.2 certbot popunjava cert).
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Static/media read-only (:ro) — Nginx samo čita, django piše.
+      - staticfiles:/app/staticfiles:ro
+      - media:/app/media:ro
+      # Story 9.2 (SM-D9/AC14 + M1 swappable): bind-mount SWAP fajl `.active-default.conf`
+      # (NE direktno nginx.conf) → deploy `git pull` + reload aplicira 443 izmenu BEZ image
+      # rebuild-a (override-uje baked COPY iz Dockerfile-a). M1: nginx-init.sh popunjava
+      # .active-default.conf bootstrap conf-om PRE certbot-a, punim nginx.conf-om POSLE
+      # (first-deploy chicken-and-egg swap STVARNO menja sta nginx servira). deploy.sh
+      # (steady-state) kopira nginx.conf -> .active-default.conf pre svakog nginx re-create-a.
+      # .active-default.conf je generisan/runtime fajl (.gitignore) — NE komituje se.
+      - ./nginx/.active-default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Story 9.2 (SM-D4/AC13): Let's Encrypt cert read-only (ssl_certificate resolve).
+      # Certbot trci na HOST-u i pise ovde; nginx samo cita.
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Story 9.2 (SM-D4/AC13): ACME webroot read-only (challenge fajlovi vidljivi nginx-u).
+      # KONKRETAN path /var/www/certbot — identican certbot -w i nginx ACME root.
+      - /var/www/certbot:/var/www/certbot:ro
+    depends_on:
+      - django
+    restart: unless-stopped
+
+  # ── Epic 9.3: GlitchTip self-host (web+worker+postgres+redis) ───────────────
+  # GlitchTip 6 je Django+Celery app — zahteva SVA 4 servisa (SM-D2/G-1):
+  # web (UI/ingest) + worker (celery cleanup/retention) + SOPSTVENI postgres + SOPSTVENI
+  # redis (NE deli app DB/redis — separate-DB mandat). Image PIN-ovan na konkretan
+  # GlitchTip 6 tag (SM-D11; NE :latest — nedeterministicki). Svi secret-i kroz ${...}
+  # env interpolaciju (G-5); GlitchTip SECRET_KEY je DISTINKTAN od Django (G-6).
+  glitchtip:
+    image: glitchtip/glitchtip:v6.0
+    environment:
+      # G-6: DISTINKTAN GlitchTip SECRET_KEY (NIKAD Django DJANGO_SECRET_KEY).
+      # G-5: ${...} interpolacija (token_urlsafe(50) — bez `$` koji Compose interpolira).
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY:-}
+      DATABASE_URL: ${GLITCHTIP_DATABASE_URL:-}
+      REDIS_URL: ${GLITCHTIP_REDIS_URL:-}
+      GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN:-}
+      # AC7/G-11: retention 30d (disk guard na ~512MB box-u). Event-i > 30d se brisu.
+      GLITCHTIP_MAX_EVENT_LIFE_DAYS: ${GLITCHTIP_MAX_EVENT_LIFE_DAYS:-30}
+      # SM-D6/G-16: GlitchTip interni EMAIL_URL mapiran iz DISTINKTNOG GLITCHTIP_EMAIL_URL
+      # kljuca (izbegava duplikat sa Django EMAIL_URL=consolemail://). Pokazuje na Resend
+      # (Epic 4 creds). Konkretno alert pravilo (koji error → kome) = GlitchTip UI POSLE
+      # deploy-a (OQ-3).
+      EMAIL_URL: ${GLITCHTIP_EMAIL_URL:-}
+    # G-15/SM-D2: depends_on ISKLJUCIVO sopstveni servisi — NIKAD app `postgres`.
+    depends_on:
+      glitchtip-postgres:
+        condition: service_healthy
+      glitchtip-redis:
+        condition: service_started
+    # G-14: NIKAD `env_file: ../.env` (procureli bi Django secret-i u GlitchTip kontejner).
+    # SAMO inline `environment:` blok iznad.
+    # AC7/AC9(f)/AR-19: MASINSKI-VERIFIKABILAN ~512MB memory limit (epics.md:162 +
+    # architecture.md:221 budzet). Compose v2 honor-uje deploy.resources.limits.memory za
+    # `docker compose up`. Slobodan komentar SAM NE prolazi AC9(f) test.
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    restart: unless-stopped
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip:v6.0
+    # Celery worker+beat: event ingest processing + retention cleanup (brise > 30d event-e).
+    command: ["./bin/run-celery-with-beat.sh"]
+    environment:
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY:-}
+      DATABASE_URL: ${GLITCHTIP_DATABASE_URL:-}
+      REDIS_URL: ${GLITCHTIP_REDIS_URL:-}
+      GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN:-}
+      GLITCHTIP_MAX_EVENT_LIFE_DAYS: ${GLITCHTIP_MAX_EVENT_LIFE_DAYS:-30}
+      EMAIL_URL: ${GLITCHTIP_EMAIL_URL:-}
+    depends_on:
+      glitchtip-postgres:
+        condition: service_healthy
+      glitchtip-redis:
+        condition: service_started
+    # G-14: NIKAD env_file. Worker je best-effort na memoriju (web je kapiran za AC7).
+    restart: unless-stopped
+
+  glitchtip-postgres:
+    image: postgres:16-alpine
+    environment:
+      # G-5: credentials kroz env interpolaciju. SOPSTVENI GlitchTip DB (G-7) — NE deli
+      # app postgres creds/sema.
+      POSTGRES_DB: ${GLITCHTIP_POSTGRES_DB:-glitchtip}
+      POSTGRES_USER: ${GLITCHTIP_POSTGRES_USER:-glitchtip}
+      POSTGRES_PASSWORD: ${GLITCHTIP_POSTGRES_PASSWORD:-}
+    volumes:
+      # G-7: ZASEBAN named volume — NE deli coric_agrar_production_postgres_data.
+      - glitchtip_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${GLITCHTIP_POSTGRES_USER:-glitchtip} -d ${GLITCHTIP_POSTGRES_DB:-glitchtip}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  glitchtip-redis:
+    image: redis:7-alpine
+    # GlitchTip-ov SOPSTVENI broker/cache (app nema redis u v1 — project-context.md:84).
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: coric_agrar_production_postgres_data
+  staticfiles:
+    name: coric_agrar_production_staticfiles
+  media:
+    name: coric_agrar_production_media
+  glitchtip_postgres_data:
+    name: coric_agrar_production_glitchtip_postgres_data

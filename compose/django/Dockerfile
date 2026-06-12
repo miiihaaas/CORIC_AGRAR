@@ -23,7 +23,27 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-install-project
 
 # ============================================================
-# Stage 2 — runtime: slim image sa system deps + .venv iz builder-a
+# Stage 1b — prod-builder: install SAMO runtime deps (--no-dev) za prod image
+# ============================================================
+# Story 9.1 (G-4): ZASEBAN prod build put. NE dira dev `builder` stage (linija iznad)
+# koji zadržava pytest/ruff/playwright za `just test`. Prod venv je manji (bez dev grupe).
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS prod-builder
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/app/.venv \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY pyproject.toml uv.lock ./
+# --no-dev: izostavlja [dependency-groups].dev (pytest/ruff/playwright/djade).
+# gunicorn je u [project].dependencies (runtime) → ulazi u prod venv.
+RUN uv sync --frozen --no-install-project --no-dev
+
+# ============================================================
+# Stage 2 — runtime: slim image sa system deps + .venv iz builder-a (DEV default)
 # ============================================================
 FROM python:3.13-slim AS runtime
 
@@ -58,6 +78,11 @@ COPY --from=builder /usr/local/bin/uv /usr/local/bin/uv
 COPY compose/django/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Prod start skripta (Story 9.1 — wait-for-db + gunicorn, BEZ migrate; LF G-1).
+# Kopira se i u dev runtime (bezopasno — koristi se tek u prod kroz entrypoint override).
+COPY compose/django/start.sh /start.sh
+RUN chmod +x /start.sh
+
 # Application source — u dev-u ce biti override-ovan kroz bind mount,
 # ali u standalone image-u (CI, staging, prod) ovaj COPY je SOT.
 COPY . /app
@@ -66,3 +91,42 @@ EXPOSE 8000
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# ============================================================
+# Stage 3 — prod: runtime image sa --no-dev venv (Story 9.1)
+# ============================================================
+# production.yml builduje sa `target: prod`. Identičan runtime-u ALI .venv dolazi
+# iz prod-builder stage-a (bez dev grupe). Dev `runtime` target NETAKNUT (G-4).
+FROM python:3.13-slim AS prod
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:$PATH"
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+        libmagic1 \
+        poppler-utils \
+        postgresql-client \
+        gettext \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Prod venv (--no-dev) iz prod-builder stage-a.
+COPY --from=prod-builder /app/.venv /app/.venv
+
+# Entrypoint + prod start skripta (LF — G-1).
+COPY compose/django/entrypoint.sh /entrypoint.sh
+COPY compose/django/start.sh /start.sh
+RUN chmod +x /entrypoint.sh /start.sh
+
+COPY . /app
+
+EXPOSE 8000
+
+# Prod ENTRYPOINT je `/start.sh` (wait-for-db + gunicorn, BEZ migrate — G-6/G-10).
+# production.yml ponavlja `entrypoint: ["/start.sh"]` eksplicitno (defense-in-depth /
+# čitljivost) — to NIJE override drugačijeg default-a; ova vrednost se već poklapa.
+ENTRYPOINT ["/start.sh"]

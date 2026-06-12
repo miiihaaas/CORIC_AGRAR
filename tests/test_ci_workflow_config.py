@@ -503,7 +503,14 @@ def test_ci_build_job_has_docker_build_step(ci_workflow):
 
 
 def test_ci_build_job_does_not_push_image(ci_workflow):
-    """AC4 — `docker/build-push-action` step `with.push: false` (Story 1.9 NE push-uje)."""
+    """AC4 + Story 9.2 (AC9/SM-D7) — `docker/build-push-action` step `with.push: true`.
+
+    RECONCILED (Epic 9, Story 9.2): Story 1.9 je imala `push: false` (smoke-only
+    build). Story 9.2 je AKTIVIRALA deferred GHCR push (commit e6a566d) — `push: true`
+    je sad INTENDED reality (GHCR je kanonska lokacija za push, NE deploy.yml).
+    Test sad enforce-uje da push MORA biti aktivan (regression guard: ako neko
+    vrati push: false, deploy.sh `docker compose pull` na boxu nema sta da povuce).
+    """
     build = ci_workflow.get("jobs", {}).get("build", {})
     steps = build.get("steps", []) or []
     push_step = None
@@ -518,22 +525,36 @@ def test_ci_build_job_does_not_push_image(ci_workflow):
     )
     with_block = push_step.get("with", {})
     push_value = with_block.get("push")
-    assert push_value is False, (
-        f"`docker/build-push-action` `with.push` = {push_value!r}, mora biti False. "
-        f"AC4: Story 1.9 NE push-uje image (smoke test); Story 9.2 dodaje push."
+    assert push_value is True, (
+        f"`docker/build-push-action` `with.push` = {push_value!r}, mora biti True. "
+        f"Story 9.2 (AC9): GHCR push aktiviran iz 1.9 deferred placeholder-a. "
+        f"build job MORA push-ovati image na ghcr.io da deploy.sh ima sta da pull-uje."
     )
 
 
 def test_ci_build_job_no_ghcr_login_in_v1(ci_workflow):
-    """AC4 + IMP-6 — NEMA `docker/login-action@*` step u Story 1.9 build job-u."""
+    """AC4 + Story 9.2 (AC9/SM-D7) — `docker/login-action@vN` (N >= 3) PRISUTAN u build job-u.
+
+    RECONCILED (Epic 9, Story 9.2): IMP-6 je u Story 1.9 DEFER-ovao GHCR login
+    (login + push idu zajedno). Story 9.2 (commit e6a566d) je aktivirala oba —
+    GHCR login na ghcr.io je sad INTENDED reality (preduslov za `push: true`).
+    Test sad enforce-uje da login MORA postojati i biti pinned (regression guard:
+    bez login-a docker/build-push-action `push: true` failuje na 401 unauthorized).
+    """
     build = ci_workflow.get("jobs", {}).get("build", {})
     uses_list = _job_step_uses(build)
     login_refs = [u for u in uses_list if u.startswith("docker/login-action@")]
-    assert not login_refs, (
-        f"`build` job sadrzi `docker/login-action` step-ove: {login_refs}. "
-        f"IMP-6: GHCR login je DEFERRED do Story 9.2 (login + push idu zajedno). "
-        f"Story 1.9 build job samo verifikuje Dockerfile buildable."
+    assert login_refs, (
+        f"`build` job NEMA `docker/login-action@vN` step. "
+        f"Story 9.2 (AC9): GHCR login je preduslov za `push: true`. "
+        f"Pronadjeno uses-ova: {uses_list}"
     )
+    for ref in login_refs:
+        major = _action_major_version(ref)
+        assert major is not None and major >= 3, (
+            f"`docker/login-action` referenca = {ref!r}, mora biti @vN (N >= 3). "
+            f"AC9 + CRIT-4: pinned major version, nikad @latest ili @main."
+        )
 
 
 # =============================================================================

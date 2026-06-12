@@ -121,6 +121,8 @@ dmypy.json
 # Compose override is for personal local tweaks
 docker-compose.override.yml
 compose/*.override.yml
+# Story 9.2 (M1): runtime swap nginx conf (bootstrap<->full) — generisan, NE komituj
+compose/nginx/.active-default.conf
 # Container runtime data (postgres data volume mounted to host in dev)
 .docker-data/
 postgres-data/
@@ -235,3 +237,6 @@ docs/Dizajn/
 *.tar.gz
 .tmp/
 tmp/
+
+# Epic Orchestrator crash-recovery scratch markers
+.epic-*.marker

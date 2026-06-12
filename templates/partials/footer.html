@@ -7,8 +7,9 @@
         {# Kolona 1 — Logo + slogan. BONUS-2: logo wrapped u {% url 'pages:home' %} (Story 3.1 migracija). #}
         <div class="col-md-3 coric-footer__col">
           <a href="{% url 'pages:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Početna" %}">
+            {# 9.9 a11y: alt sa punim dijakritikama (brend ime) — additivna izmena, markup netaknut. #}
             <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}"
-                 alt="Coric Agrar"
+                 alt="Ćorić Agrar"
                  class="coric-footer__logo">
           </a>
           <p class="coric-footer__slogan">
@@ -82,7 +83,7 @@
         <li><a href="{% url 'gdpr:cookie_policy' %}">{% translate "Politika kolačića" %}</a></li>
       </ul>
       <p class="coric-footer__copyright text-center">
-        &copy; 2026 Coric Agrar. {% translate "Sva prava zadržana." %}
+        &copy; 2026 Ćorić Agrar. {% translate "Sva prava zadržana." %}
       </p>
     </div>
   </div>

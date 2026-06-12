@@ -60,17 +60,19 @@
     {# CRITICAL-9: URL namespace 'pages:home' (Story 3.1 migracija). CRITICAL-8: logo asset u static/img/. #}
     <a class="navbar-brand coric-nav__logo" href="{% url 'pages:home' %}">
       {# Tamni logo = default (čitljiv na beloj/svetloj traci + svetlom heroju). Svetli logo se prikazuje samo na hero-dark stranama (zeleni hero) preko CSS-a. #}
+      {# 9.9 a11y: alt sa punim dijakritikama (brend ime) — additivna izmena, markup netaknut. #}
       <img src="{% static 'img/coric-agrar-logo-transp-200.png' %}"
-           alt="Coric Agrar"
+           alt="Ćorić Agrar"
            class="coric-nav__logo-img coric-nav__logo-img--dark">
       <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}"
-           alt="Coric Agrar"
+           alt="Ćorić Agrar"
            class="coric-nav__logo-img coric-nav__logo-img--light"
            aria-hidden="true">
     </a>
 
     <button class="navbar-toggler coric-nav__hamburger"
             type="button"
+            data-testid="mobile-nav-toggle"
             data-bs-toggle="collapse"
             data-bs-target="#coricMainNav"
             aria-controls="coricMainNav"

@@ -1,6 +1,9 @@
 """Staging settings — production-like, deployed to staging.coricagrar.example (Hetzner CX22)."""
 
 from .base import *  # noqa: F401, F403
+from .base import (
+    env,
+)  # eksplicitno za GlitchTip init blok niže (izbegava F405 star-import warning)
 
 DEBUG = False
 
@@ -28,3 +31,18 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
     },
 }
+
+# ── Error tracking — GlitchTip / Sentry SDK (Story 9.3) ──────────────────────
+# Identičan guarded init kao production.py (SM-D5), RAZLIKA samo environment="staging"
+# (G-4 — razdvaja staging event-e od prod-a u GlitchTip UI). Empty-DSN → no-op.
+import sentry_sdk  # noqa: E402
+
+GLITCHTIP_DSN = env("GLITCHTIP_DSN", default="")
+if GLITCHTIP_DSN:
+    sentry_sdk.init(
+        dsn=GLITCHTIP_DSN,
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
+        send_default_pii=False,  # GDPR (Epic 7) — NIKAD PII
+        environment="staging",
+        release=env("IMAGE_TAG", default="") or None,
+    )

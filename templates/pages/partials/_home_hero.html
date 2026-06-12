@@ -1,12 +1,18 @@
 {% load i18n static %}
 {# Home hero — full-bleed foto-pozadina + beli tekst direktno preko slike (h1 slogan + lead + „Saznaj više" CTA); BEZ overlay kartice/logoa. Komentar mora ostati single-line (Django ne podržava multi-line). #}
 <section class="coric-home-hero" aria-label="{% translate "Ćorić Agrar — uvodna sekcija" %}">
-  {# Dekorativna foto-pozadina — eager (above-the-fold LCP). alt="" + aria-hidden (dekorativna). #}
-  <img src="{% static 'img/home/home-hero-1.jpg' %}"
-       alt=""
-       aria-hidden="true"
-       loading="eager"
-       class="coric-home-hero__bg">
+  {# Dekorativna foto-pozadina — eager (above-the-fold LCP). AVIF→WebP→JPG picture (9.10): browser bira prvi podržan format, JPG fallback za legacy. alt="" + aria-hidden (dekorativna). Klasa ostaje na img (CSS cilja .coric-home-hero__bg na img, ne na picture wrapper). #}
+  <picture>
+    <source type="image/avif" srcset="{% static 'img/home/home-hero-1.avif' %}" sizes="100vw">
+    <source type="image/webp" srcset="{% static 'img/home/home-hero-1.webp' %}" sizes="100vw">
+    <img src="{% static 'img/home/home-hero-1.jpg' %}"
+         alt=""
+         aria-hidden="true"
+         loading="eager"
+         fetchpriority="high"
+         sizes="100vw"
+         class="coric-home-hero__bg">
+  </picture>
   <div class="coric-home-hero__overlay">
     <h1 class="coric-home-hero__title">
       {% blocktranslate %}Prijatelj koji <strong>razume zemlju!</strong>{% endblocktranslate %}

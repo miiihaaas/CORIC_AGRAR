@@ -14,11 +14,13 @@ dependencies = [
     "django-modeltranslation>=0.20.3",
     "django-ratelimit>=4.1.0",
     "django-template-partials>=25.3",
+    "gunicorn>=23.0",
     "nh3>=0.2.0,<1",
     "pdf2image>=1.17.0",
     "pillow>=10.0",
     "psycopg[binary]>=3.3.4",
     "python-magic>=0.4.27",
+    "sentry-sdk[django]>=2.0",
     "sorl-thumbnail>=13.0.0",
     "whitenoise>=6.8.0",
 ]
@@ -33,6 +35,8 @@ dev = [
     "pytest-cov>=7.1.0",
     "pytest-django>=4.12.0",
     "pytest-mock>=3.14.0",
+    "pytest-playwright>=0.7.0",
+    "axe-playwright-python>=0.1.7",
     "ruff>=0.15.14",
 ]
 
@@ -41,4 +45,9 @@ DJANGO_SETTINGS_MODULE = "config.settings.development"
 python_files = ["test_*.py", "*_test.py", "tests.py"]
 testpaths = ["tests", "apps"]
 pythonpath = ["."]
-addopts = "--import-mode=importlib"
+addopts = "--import-mode=importlib -m 'not e2e and not a11y'"
+markers = [
+    "docker: runnable container smoke (Story 9.1 prod stack); deselect sa `-m 'not docker'`",
+    "e2e: Playwright end-to-end suite (Story 9.8); trazi pokrenutu seed-ovanu app + browser; deselect sa -m 'not e2e'",
+    "a11y: axe-core WCAG 2.1 AA audit suite (Story 9.9); audit-gate NE user-journey; trazi pokrenutu seed-ovanu app + browser + axe; deselect sa -m 'not a11y'",
+]

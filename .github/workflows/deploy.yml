@@ -1,0 +1,67 @@
+name: Deploy
+
+# Story 9.2 — SSH deploy workflow na Hetzner VPS.
+# Trigger na deploy branch-eve (SM-D1/OQ-1): staging -> staging box, main -> production.
+# NE gradi/push-uje image (GHCR push je KANONSKI u ci.yml build job-u — SM-D7);
+# ovaj workflow SAMO SSH-uje na box i pokrece ops/deploy/deploy.sh <env>.
+
+on:
+  push:
+    branches: [staging, main]
+  workflow_dispatch:  # Manual run iz Actions UI (pre-merge dry-run / hotfix redeploy).
+
+# Least-privilege (AC8/Task 6.1): contents:read za checkout je dovoljno; deploy.yml
+# NE dira GHCR/packages (build+push su u ci.yml).
+permissions:
+  contents: read
+
+# Serijalizuj deploy-eve po ref-u (CI-side guard; on-box flock je dodatni sloj u deploy.sh).
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # NAPOMENA: NEMA `actions/checkout` — sav stvaran rad se desava preko SSH na
+      # Hetzner boxu (deploy.sh radi sopstveni `git pull`). Runner-side checkout bi
+      # bio mrtav teret (~30s + supply-chain povrsina) jer se repo na runner-u nikad
+      # ne koristi; ovaj job samo SSH-uje (appleboy/ssh-action) i pokrece deploy.sh.
+
+      # Izvedi environment iz branch-a: main -> production, staging -> staging.
+      - name: Resolve environment
+        id: resolve
+        run: |
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            echo "env=production" >> "$GITHUB_OUTPUT"
+          else
+            echo "env=staging" >> "$GITHUB_OUTPUT"
+          fi
+
+      # SSH na Hetzner box kroz GH secrets (NIKAD hardkodovan kljuc/host/user — AC8).
+      # Remote komanda pokrece deploy orkestraciju za izvedeni environment.
+      # M8 (SECURITY): host-key pinning (fingerprint) sprecava MITM; akcija je SHA-pinovana
+      # (v1.2.2 commit) jer rukuje SSH privatnim kljucem — mutable major tag = supply-chain rizik.
+      - name: Deploy via SSH
+        # appleboy/ssh-action@v1.2.2 (SHA-pin: SECURITY-sensitive akcija rukuje DEPLOY_SSH_KEY).
+        uses: appleboy/ssh-action@2ead5e36573f08b82fbfce1504f1a4b05a647c6f  # v1.2.2
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          # M8: host-key pinning — bez ovoga ssh-action prihvata BILO KOJI host key
+          # (MITM rizik). DEPLOY_HOST_FINGERPRINT je dokumentovan u ops/secrets/README.md.
+          fingerprint: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
+          script: |
+            set -euo pipefail
+            # M5: DEPLOY_APP_DIR je OBAVEZAN — prazan `cd ""` je no-op u nekim shell-ovima
+            # i ostavlja CWD na home dir-u (pogresan deploy). Fail-loud ako nije postavljen.
+            APP_DIR="${{ secrets.DEPLOY_APP_DIR }}"
+            if [ -z "${APP_DIR}" ]; then
+              echo "[DEPLOY ERROR] DEPLOY_APP_DIR secret nije postavljen (apsolutna putanja do repo checkout-a)." >&2
+              exit 1
+            fi
+            cd "${APP_DIR}"
+            ./ops/deploy/deploy.sh ${{ steps.resolve.outputs.env }}

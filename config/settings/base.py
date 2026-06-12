@@ -281,5 +281,68 @@ BOOTSTRAP5 = {
     "include_jquery": False,
 }
 
+# ── Logging (Story 9.6) ──────────────────────────────────────────────────────
+# LEAN, zero-dep Django-native LOGGING dict (SOT u base.py — per-env moduli SAMO
+# tighten/loosen nivoe; SM-D6). Console handler → stdout (12-factor; Docker/journald
+# capture-uje, SM-D1). NEMA in-container file handler-a, NEMA python-json-logger (SM-D2).
+#
+# Sentry/GlitchTip koegzistencija (9-3): NIJEDAN sentry handler u LOGGING — sentry-sdk
+# LoggingIntegration jaše sama na ROOT loggeru i hvata record-e kad PROPAGIRAJU naviše
+# (SM-D3). KANONSKI OBRAZAC: console handler SAMO na `root`, žičani loggeri propagate=True
+# bez sopstvenog handler-a → istovremeno gasi dupli red (G-6) I čuva Sentry propagaciju
+# (G-12). root/console level ≤ INFO da INFO+→breadcrumb radi (G-13).
+#
+# Log retencija/rotacija = HOST-level (journald `SystemMaxUse`/Docker `--log-opt
+# max-size/max-file`), NE Django (SM-D7; mirror 9-5 host-cron). NE pišemo logrotate config.
+#
+# `disable_existing_loggers: False` je OBAVEZAN (G-1) — dictConfig default je True što
+# bi UGASILO Django interne + sentry-sdk loggere.
+#
+# PII UPOZORENJE (dev-guidance): sam TEKST log poruke stiže u GlitchTip kao breadcrumb/event
+# preko sentry-sdk LoggingIntegration BEZ OBZIRA na send_default_pii=False (taj flag skida samo
+# SDK-auto PII: IP/user/cookie/header) — NIKAD ne logujte secret/PII u string poruke.
+
+# Env-gated nivo (SM-D9) — operativna fleksibilnost bez redeploy-a. Production-safe
+# default (INFO, NE DEBUG — DEBUG bi log-ovao osetljive detalje + noise; G-8/G-13).
+DJANGO_LOG_LEVEL = env("DJANGO_LOG_LEVEL", default="INFO")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,  # OBAVEZNO False (G-1/AC4)
+    "formatters": {
+        "verbose": {
+            # Zero-dep Django-native (SM-D2). SAMO logging metapodaci — NEMA PII/secret
+            # token-a (AC6): level/timestamp/logger/module/process/thread/message.
+            "format": (
+                "{levelname} {asctime} {name} {module} "
+                "{process:d} {thread:d} {message}"
+            ),
+            "style": "{",  # {} placeholderi → style "{" (G-10)
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",  # STDOUT, NE stderr default (G-2/AC2)
+            "formatter": "verbose",
+            "level": "DEBUG",  # handler propušta sve; loggeri/root filtriraju nivoom
+        },
+    },
+    "root": {
+        "handlers": ["console"],  # console SAMO na root (kanonski obrazac SM-D8)
+        "level": DJANGO_LOG_LEVEL,  # ≤ INFO (G-13 — Sentry breadcrumb-ovi)
+    },
+    "loggers": {
+        # Žičani loggeri NEMAJU sopstveni handler; propagate=True → record stiže do root
+        # console handler-a I do sentry-sdk root-attached capture handler-a. Per-logger
+        # tiše = preko `level`, NIKAD propagate=False + sopstveni handler (G-12).
+        "django": {"level": "INFO", "propagate": True},
+        "django.request": {"level": "ERROR", "propagate": True},
+        "django.security": {"level": "ERROR", "propagate": True},
+        "apps": {"level": "INFO", "propagate": True},  # project logger — hvata sve apps.*
+        # NE žičamo: django.db.backends (SQL noise/PII — G-8), django.server (request-line leak).
+    },
+}
+
 # ── Default ─────────────────────────────────────────────────────────────────
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

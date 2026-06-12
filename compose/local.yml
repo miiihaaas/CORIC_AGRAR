@@ -9,6 +9,10 @@ services:
     build:
       context: ..
       dockerfile: compose/django/Dockerfile
+      # G-4: eksplicitno dev `runtime` stage. Story 9.1 dodala `prod` kao POSLEDNJI
+      # stage u Dockerfile-u → bez `target:` compose default-uje na poslednji (prod,
+      # --no-dev venv bez pytest/ruff) i razbija `just test`/`just dev`. Pin na runtime.
+      target: runtime
     image: coric_agrar_django_local
     env_file:
       - ../.env

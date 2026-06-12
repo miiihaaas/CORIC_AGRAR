@@ -1,0 +1,28 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 3,
+      "url": [
+        "http://localhost:8000/sr/",
+        "http://localhost:8000/sr/traktori/",
+        "http://localhost:8000/sr/proizvod/agri-tracking-tb804/",
+        "http://localhost:8000/sr/kontakt/",
+        "http://localhost:8000/sr/blog/pet-saveta-za-prolecnu-setvu/"
+      ]
+    },
+    "assert": {
+      "assertions": {
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "server-response-time": ["error", { "maxNumericValue": 600 }],
+        "total-byte-weight": ["error", { "maxNumericValue": 1572864 }],
+        "categories:best-practices": ["error", { "minScore": 0.90 }],
+        "categories:seo": ["error", { "minScore": 0.95 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "./lighthouse-report"
+    }
+  }
+}

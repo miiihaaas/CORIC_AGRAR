@@ -17,6 +17,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.i18n import set_language
 
+from apps.core.views import healthz  # Story 9.4 — /healthz/ liveness probe (UptimeRobot)
 from apps.seo.sitemaps import sitemaps as sitemaps_dict  # alias da ne shadow-uje `sitemap` view
 from apps.seo.views import robots_txt
 
@@ -41,6 +42,12 @@ urlpatterns = [
     # evaluiraju PRE i18n_patterns → `/admin-coric/` rezolvira bez locale
     # prefiksa. `/admin/` i `/sr/admin/` → 404 (uklonjeno iz i18n_patterns).
     path("admin-coric/", admin.site.urls),
+    # Story 9.4 (SM-D2/G-1) — /healthz/ VAN i18n_patterns (NO-PREFIX). UptimeRobot
+    # pinga GOLU putanju `/healthz/` (NE `/sr/healthz/`); monitor ne zna za locale
+    # prefikse. Non-i18n blok se evaluira PRE i18n_patterns → `/healthz/` rezolvira
+    # bez prefiksa (reverse("healthz") == "/healthz/"). Da je u i18n_patterns dao bi
+    # `/sr/healthz/` i ostavio `/healthz/` na 404 → monitor bi odmah pao.
+    path("healthz/", healthz, name="healthz"),
 ]
 
 # URL-ovi SA lokal prefiksom (`/sr/...`, `/hu/...`, `/en/...`)

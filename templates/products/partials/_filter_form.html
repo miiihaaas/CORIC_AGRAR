@@ -29,8 +29,8 @@
          data-aria-label-min="{% translate 'Snaga minimum (konjske snage)' %}"
          data-aria-label-max="{% translate 'Snaga maksimum (konjske snage)' %}">
       <div class="coric-range-slider__track" aria-hidden="true"></div>
-      <input type="hidden" name="snaga_min" value="{{ active_filters.snaga_min }}" data-range-min-input>
-      <input type="hidden" name="snaga_max" value="{{ active_filters.snaga_max }}" data-range-max-input>
+      <input type="hidden" name="snaga_min" value="{{ active_filters.snaga_min }}" data-range-min-input data-testid="filter-snaga-min">
+      <input type="hidden" name="snaga_max" value="{{ active_filters.snaga_max }}" data-range-max-input data-testid="filter-snaga-max">
       <div class="coric-range-slider__values">
         <span class="coric-range-slider__value-min" data-range-value-min>{{ active_filters.snaga_min|default:'0' }}</span>
         <span class="coric-range-slider__separator"> — </span>

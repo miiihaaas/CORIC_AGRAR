@@ -1,0 +1,131 @@
+name: E2E
+
+# Story 9.8 — Playwright E2E (3 UJ-a) na STAGING push.
+# AC7: E2E je suvise spor za svaki commit, pa se vozi SAMO na `staging` push (NE master/PR).
+# Default branch je `master`; `deploy.yml` lista je [staging, main]. Ovaj workflow je
+# `staging`-only → master push ga NE pokrece (fast dev loop bez E2E — zeljeno).
+#
+# SELF-CONTAINED (primarno, default): job sam dize ephemeral Postgres service + Django
+# (runserver u pozadini) + seed_e2e_data + playwright chromium, i cilja
+# E2E_BASE_URL=http://localhost:8000 — NEZAVISNO od deploy.yml (koji takodje triggeruje
+# na staging) → NEMA race sa deploy-om, OQ-3-staging-URL-nezavisno.
+#
+# ALTERNATIVA (env-driven, NE default): vozenje protiv deploy-ovanog staging URL-a zahteva
+# `workflow_run`-zavisnost od deploy.yml (types:[completed] + guard conclusion=='success')
+# + E2E_BASE_URL iz staging URL secret-a + E2E_SKIP_DATA_SETUP=1 (data-setup zaseban step
+# na boxu). Vidi story Dev Note "CI sequencing".
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:  # Manual run iz Actions UI (debug / pre-merge dry-run).
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: coric_agrar
+          POSTGRES_USER: coric
+          POSTGRES_PASSWORD: coric
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U coric -d coric_agrar"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+    env:
+      # settings.development (DEBUG=True) — E2E vozi dev stack lokalno u job-u.
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DJANGO_SECRET_KEY: ci-e2e-secret-key-not-for-prod-50chars-padding-xx
+      # Self-contained DB: Postgres service je na localhost:5432 (NE Docker `db` hostname).
+      DATABASE_URL: postgres://coric:coric@localhost:5432/coric_agrar
+      E2E_BASE_URL: http://localhost:8000
+      # Env-driven dev superuser (AC11 — password iz CI secret-a, NIKAD hardkodovan).
+      DJANGO_SUPERUSER_USERNAME: e2e_admin
+      DJANGO_SUPERUSER_EMAIL: e2e_admin@example.com
+      DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v8
+        with:
+          python-version: '3.13'
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      # libmagic1 (python-magic) + poppler-utils (pdf2image) — system deps (mirror ci.yml test job).
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmagic1 poppler-utils
+
+      - name: Install dev deps
+        run: uv sync --frozen --group dev
+
+      - name: Install Playwright browsers
+        run: uv run playwright install --with-deps chromium
+
+      - name: Migrate database
+        run: uv run python manage.py migrate --noinput
+
+      - name: Seed E2E data (9-7 seed + AC12 listing-visibility + galerija + UJ-3 cleanup)
+        run: uv run python manage.py seed_e2e_data --force --reset-axes
+
+      - name: Provision dev superuser (env-driven; idempotentno)
+        # createsuperuser --noinput cita DJANGO_SUPERUSER_* iz env-a. Vec-postojeci user
+        # vraca non-zero → tolerisi (idempotentno; conftest dev_superuser fixture takodje guard-uje).
+        # NE maskiramo non-zero tiho (`|| true`) — logujemo ga za dijagnostiku (vec-postoji vs
+        # stvarni fail kao missing env); downstream dev_superuser fixture potvrdjuje login.
+        run: |
+          uv run python manage.py createsuperuser --noinput \
+            || echo "createsuperuser non-zero (already exists or missing env) -- downstream fixture verifies"
+
+      - name: Collectstatic
+        run: uv run python manage.py collectstatic --noinput
+
+      - name: Start Django (background)
+        # Self-contained server na 0.0.0.0:8000; --insecure servira static u DEBUG-mimic runu.
+        run: |
+          uv run python manage.py runserver 0.0.0.0:8000 --noreload --insecure &
+          echo "DJANGO_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for app to be ready
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sSf http://localhost:8000/sr/ >/dev/null 2>&1; then
+              echo "App je gore (pokusaj $i)."
+              exit 0
+            fi
+            echo "Cekam app... ($i/30)"
+            sleep 2
+          done
+          echo "App nije postao dostupan u roku — fail." >&2
+          exit 1
+
+      - name: Run Playwright E2E suite (headless)
+        # E2E_SKIP_DATA_SETUP=1 — data-setup je VEC odradjen kao zaseban CI step iznad
+        # (seed_e2e_data + createsuperuser), pa conftest subprocess fixtures preskacu re-run.
+        env:
+          E2E_SKIP_DATA_SETUP: "1"
+        run: uv run pytest -m e2e tests/e2e/ -v
+
+      - name: Stop Django
+        if: always()
+        run: |
+          if [ -n "${DJANGO_PID:-}" ]; then
+            kill "${DJANGO_PID}" || true
+          fi

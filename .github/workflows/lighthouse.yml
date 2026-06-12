@@ -1,0 +1,202 @@
+name: Lighthouse + A11y Audit
+
+# Story 9.9 — Lighthouse CI budget + axe a11y harness na STAGING push.
+# Mirror 9.8 e2e.yml self-contained pattern: job sam dize ephemeral Postgres + Django
+# (runserver --insecure u pozadini) + seed_e2e_data, pa cilja localhost:8000.
+#
+# ───────────────────────────────────────────────────────────────────────────
+# DVA MODA (EKSPLICITNO razdvojena — AC4 / OQ-4):
+#
+#   v1 DEFAULT = self-contained CI runserver (OVAJ workflow).
+#     Postgres service + `runserver --insecure` + seed → E2E_BASE_URL=localhost:8000.
+#     RADI DANAS, bez ikakvih secret-a/live boxa. ALI: `runserver --insecure` static
+#     NIJE prod nginx/Whitenoise/Gunicorn → TTFB / total-byte-weight / LCP su
+#     INDIKATIVNI, NE prod-reprezentativni. Ovo isporucuje 9.9 i moze end-to-end u CI.
+#
+#   staging-targeted MOD = OQ-4 go-live follow-up (NIJE deo v1).
+#     Lighthouse/k6 protiv DEPLOY-ovanog staging-a (9-2) za REALNE prod brojeve;
+#     trazi STAGING_BASE_URL + DJANGO_SUPERUSER_PASSWORD (+ eventualni LHCI token)
+#     GH secrets + live box. AUTORITATIVNI go-live brojevi dolaze IZ OVOG moda,
+#     NE iz v1 self-contained. Konfigurise se kad su secrets/staging spremni.
+# ───────────────────────────────────────────────────────────────────────────
+#
+# SM-D7: `lhci assert` (budget gate) je `continue-on-error: true` u v1 (baseline-collect) —
+# prvi pass na realnom content-u verovatno NECE pogoditi sve budgete (npr. total-byte-weight
+# pre 9.10 WebP/AVIF). Hard-fail-na-budget je go-live odluka (Mihas, OQ-1) kad je 9.10 gotov.
+# Iskrenost iznad zelene: NE maskiramo realan miss.
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:  # Manual run iz Actions UI (debug / pre-merge dry-run).
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse-a11y:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: coric_agrar
+          POSTGRES_USER: coric
+          POSTGRES_PASSWORD: coric
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U coric -d coric_agrar"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DJANGO_SECRET_KEY: ci-lh-secret-key-not-for-prod-50chars-padding-xxx
+      DATABASE_URL: postgres://coric:coric@localhost:5432/coric_agrar
+      E2E_BASE_URL: http://localhost:8000
+      # Env-driven dev superuser (AC11 axe admin sken — password iz CI secret-a, NIKAD hardkodovan).
+      DJANGO_SUPERUSER_USERNAME: e2e_admin
+      DJANGO_SUPERUSER_EMAIL: e2e_admin@example.com
+      DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v8
+        with:
+          python-version: '3.13'
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      # libmagic1 (python-magic) + poppler-utils (pdf2image) — system deps (mirror e2e.yml).
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmagic1 poppler-utils
+
+      - name: Install dev deps
+        run: uv sync --frozen --group dev
+
+      - name: Install Playwright browsers
+        run: uv run playwright install --with-deps chromium
+
+      - name: Migrate database
+        run: uv run python manage.py migrate --noinput
+
+      - name: Seed audit data (9-7 seed + AC12 listing-visibility + galerija; --reset-axes)
+        run: uv run python manage.py seed_e2e_data --force --reset-axes
+
+      - name: Provision dev superuser (env-driven; idempotentno)
+        run: |
+          uv run python manage.py createsuperuser --noinput \
+            || echo "createsuperuser non-zero (already exists or missing env) -- downstream fixture verifies"
+
+      - name: Collectstatic
+        run: uv run python manage.py collectstatic --noinput
+
+      - name: Start Django (background)
+        # CAVEAT: runserver --insecure static NIJE prod nginx/Whitenoise → brojevi INDIKATIVNI;
+        # autoritativni brojevi su staging-targeted mod (OQ-1/OQ-4), NE ovaj v1 self-contained.
+        env:
+          # AC2b a11y case (HTMX swap) submit-uje kontakt formu koja ima ratelimit 5/min/IP.
+          # CI re-run u istom minutu → 429 → success-swap se NE pojavi → flaky test.
+          # RATELIMIT_ENABLE=false je django-ratelimit-ov STANDARDNI global kill-switch
+          # (čita ga `settings.RATELIMIT_ENABLE`; isti flag forms testovi koriste). Postavlja
+          # se na runserver procesu (taj proces enforce-uje limit) za deterministični audit.
+          # NB: per-run runserver podiže SVEŽ LocMemCache (brojač i ovako reset svaki job) —
+          # ovo je belt-and-suspenders + forward-compat ako se RATELIMIT_ENABLE env-bridge doda.
+          RATELIMIT_ENABLE: "false"
+        run: |
+          uv run python manage.py runserver 0.0.0.0:8000 --noreload --insecure &
+          echo "DJANGO_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for app to be ready
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sSf http://localhost:8000/sr/ >/dev/null 2>&1; then
+              echo "App je gore (pokusaj $i)."
+              exit 0
+            fi
+            echo "Cekam app... ($i/30)"
+            sleep 2
+          done
+          echo "App nije postao dostupan u roku — fail." >&2
+          exit 1
+
+      # AC11 — "harness proven running": axe spec collect-able + izvrsen BAR JEDNOM protiv
+      # self-contained runserver-a tako da axe.run() vrati realan result objekat (NE fabrikovano).
+      # continue-on-error: nalaz (critical/serious violation) NE crveni job u v1 (baseline);
+      # gate-pooostravanje = OQ-1/OQ-5 (GitHub Issue remediation). Caveat: CI-job zahtev,
+      # NE Win host (Win=libmagic+browser baseline ne pokrece, by-design).
+      - name: A11y axe spec — collect-only sanity (AC11a)
+        env:
+          E2E_SKIP_DATA_SETUP: "1"
+        run: uv run pytest -m a11y tests/e2e/ --collect-only -q
+
+      - name: A11y axe spec — run-at-least-once (AC11b; axe.run vraca realan result)
+        continue-on-error: true
+        env:
+          E2E_SKIP_DATA_SETUP: "1"
+          # AC2b HTMX-swap case ide kroz kontakt-form ratelimit (5/min/IP) — isključi
+          # za deterministični audit run (vidi runserver step komentar). django-ratelimit
+          # standardni global kill-switch.
+          RATELIMIT_ENABLE: "false"
+        run: uv run pytest -m a11y tests/e2e/ -v --junitxml=axe-report.xml
+
+      - name: Setup Node (za @lhci/cli)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # PERF: keširaj npm/npx download keš (~/.npm) da `npx @lhci/cli` NE re-instalira
+      # LHCI svaki run (~30-60s CI ušteda). actions/cache (NE setup-node cache:'npm') jer
+      # repo NEMA package-lock.json → setup-node cache bi pukao ("lock file not found").
+      # Key je vezan za pin-ovanu LHCI verziju (0.14.x) — bump verzije = nov keš.
+      - name: Cache npm (npx LHCI)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-lhci-0.14.x
+          restore-keys: |
+            ${{ runner.os }}-npm-lhci-
+
+      # EXPLICIT Chrome: LHCI `autorun` traži Chrome binar. ubuntu-latest GA runneri
+      # JESU sa pre-instaliranim Chrome-om, ali ga ožičavamo eksplicitno (determinizam,
+      # NE oslanjamo se na runner image drift). continue-on-error niže → čak i da Chrome
+      # fali, lhci korak NE crveni job u v1 (baseline). setup-chrome je low-risk additive.
+      - name: Setup Chrome (za LHCI; eksplicitno, NE runner-implicitno)
+        uses: browser-actions/setup-chrome@v1
+
+      # Lighthouse CI: collect (numberOfRuns:3 median) + assert (budgeti iz lighthouserc.json).
+      # 9.10: gate je sada ENFORCED — `continue-on-error` UKLONJEN → budget miss (a11y/LCP/TTFB/
+      # total-byte/best-practices/seo) OBARA job. CAVEAT: v1 brojevi su INDIKATIVNI
+      # (`runserver --insecure` static NIJE prod nginx/Whitenoise) — TTFB/LCP autoritativni SAMO
+      # na staging-targeted modu (OQ-1). Workflow se okida ISKLJUČIVO na push:[staging] +
+      # workflow_dispatch (ne na PR-ovima/master push-u), pa enforcing NE može da obori master merge PR.
+      - name: Lighthouse CI autorun (collect + assert budgeti)
+        run: npx @lhci/cli@0.14.x autorun
+
+      - name: Upload Lighthouse + axe reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-a11y-reports
+          path: |
+            ./lighthouse-report/
+            ./.lighthouseci/
+            axe-report.xml
+          if-no-files-found: warn
+
+      - name: Stop Django
+        if: always()
+        run: |
+          if [ -n "${DJANGO_PID:-}" ]; then
+            kill "${DJANGO_PID}" || true
+          fi

@@ -1,0 +1,112 @@
+epic_number: 9
+epic_title: "Go-Live Readiness (Production + Quality)"
+status: done
+completed: 2026-06-12
+merged_to_main: true
+started: 2026-06-12
+branch: epic-9
+tests_passed: "epic-level Docker integration: 2914 passed; 0 epic-9 regressions (Dev triage 29ccc5d fixed 4 epic-9-induced stale CI/docker tests, confirmed 17 pre-existing foundational baseline out-of-scope, 7 e2e errors CI-deferred browser-launch)"
+retrospective: "retrospective-epic-9.md (generated 2026-06-12)"
+merge_note: "MERGE TO MASTER DEFERRED to explicit EM step per Mihas git-strategy choice (epic grana + EM merge) + 9 outstanding go-live gates (see retro). Local squash-merge does not deploy (deploy is push-triggered)."
+stories:
+  - id: "9-1-production-docker-compose-nginx-config"
+    title: "Production Docker Compose + Nginx Config"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-1-production-docker-compose-nginx-config"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-2-hetzner-deployment-script-ssl"
+    title: "Hetzner Deployment Script + SSL"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-2-hetzner-deployment-script-ssl"
+    go_live_gate: "OQ-1 master->main/staging branch naming (deploy.yml triggers main/staging; repo default master) — Mihas decision before prod deploy"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-3-glitchtip-6-self-host-setup"
+    title: "GlitchTip 6 Self-host Setup"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-3-glitchtip-6-self-host-setup"
+    note: "OQ-2 total RAM footprint on shared box (~512MB GlitchTip) = #1 ops risk per Architect; deferred to ops sizing"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-4-uptimerobot-konfiguracija"
+    title: "UptimeRobot Konfiguracija"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-4-uptimerobot-konfiguracija"
+    note: "/healthz/ liveness endpoint live; UptimeRobot account/monitor creation = external manual go-live step (runbook ops/monitoring/uptimerobot.md)"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-5-pg-dump-restic-hetzner-storage-box-backup"
+    title: "pg_dump + restic + Hetzner Storage Box Backup"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-5-pg-dump-restic-hetzner-storage-box-backup"
+    note: "retention 7/4/3 (epics SOT). 3 pre-existing cross-story fails in test_production_stack.py (9-1 Docker/baseline) flagged NON-regression; re-check at step-02-complete epic verify"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-6-django-logging-konfiguracija"
+    title: "Django Logging Konfiguracija"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-6-django-logging-konfiguracija"
+    note: "OQ-1 host journald/Docker log rotation (max-size/max-file = 14d retention equiv) = go-live gate"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-7-sample-seed-data-fixtures"
+    title: "Sample Seed Data Fixtures"
+    status: done
+    merged: true
+    tests_passed: true
+    branch: "story-9-7-sample-seed-data-fixtures"
+    seed_run: "python manage.py seed_sample_data (DEBUG=True dev) | --force on staging"
+    seed_identifiers_for_9_8:
+      category: "traktori"
+      brands: ["wuzheng", "agri-tracking", "saillong"]
+      new_tractors: ["agri-tracking-tb804 (80KS/2024/EUR28500 — UJ-1 headline + UJ-2 inquiry)", "wuzheng-wz504 (50KS/2023/EUR19900)", "saillong-sl904 (90KS/2025/EUR32400)"]
+      uj1_filter_determinism: "year>=2024 -> {agri-tracking-tb804, saillong-sl904}; condition=new & hp<60 -> wuzheng-wz504; NOTE filters must be condition- or slug-scoped (migration tulip-mix products are new+published <EUR20k)"
+      blog: "category=ratarstvo, tag=zetva, post=pet-saveta-za-prolecnu-setvu"
+      urls: "product /sr/proizvod/<slug>/ ; brand /sr/traktori/<brand-slug>/ ; forms /sr/htmx/forme/{kontakt,upit-za-model,servis,rezervni-delovi}/"
+      admin_uj3: "/admin-coric/ ; 9-8 must provision dev-only superuser via createsuperuser --noinput (env) — seed creates NO credentials"
+    architecture_advisory: "core->domain seed-command precedent: note in project-context.md anti-pattern section (deferred, epic-9 retro candidate)"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-8-playwright-e2e-testovi-za-3-uj-a"
+    title: "Playwright E2E Testovi za 3 UJ-a"
+    status: done
+    merged: true
+    tests_passed: "structural (Docker DB-probe + collection + RED-confirm); real Playwright browser-green CI-DEFERRED (Windows host cannot launch browsers — authoritative runner = GitHub Actions e2e.yml on staging push)"
+    e2e_tests_count: 3
+    e2e_tests_generated: "within-dana-step-03 (story IS the E2E suite; separate step-01a pre-gen skipped to avoid double-TEA)"
+    branch: "story-9-8-playwright-e2e-testovi-za-3-uj-a"
+    note: "Dana found+closed a real 9-7 seed gap (published-but-unlisted tractors) via E2E-owned seed_e2e_data. go-live: staging E2E_BASE_URL + DJANGO_SUPERUSER_PASSWORD CI secret needed to run e2e.yml"
+    retry_count: 0
+  - id: "9-9-a11y-audit-performance-load-test"
+    title: "A11y Audit + Performance Load Test"
+    status: done
+    merged: true
+    tests_passed: "structural (axe/Lighthouse/k6 harness collects + valid); real axe-green/Lighthouse numbers/k6 load CI-DEFERRED (staging go-live gate — Windows host cannot run browsers)"
+    branch: "story-9-9-a11y-audit-performance-load-test"
+    findings_for_9_10: "hero static/img/home/home-hero-1.jpg (LCP/eager) JPG -> WebP/AVIF + <picture>; total-byte-weight>1.5MB likely from rasters; final Lighthouse hard-gate (report-only->enforce) = 9.10"
+    e2e_tests_count: 0
+    retry_count: 0
+  - id: "9-10-webp-avif-final-lighthouse-pass"
+    title: "WebP/AVIF + Final Lighthouse Pass"
+    status: done
+    merged: true
+    tests_passed: "41/41 host import-light; final Lighthouse numbers CI/staging-authoritative"
+    branch: "story-9-10-webp-avif-final-lighthouse-pass"
+    note: "hero AVIF 167KB(-59%)/WebP 244KB(-41%) <picture>; Lighthouse gate ENFORCED. go-live: OQ-1 staging Lighthouse run (a11y>=0.95/LCP<2.5s/TTFB<600/byte<1.5MB); OQ-4 Whitenoise .avif MIME staging-verify; uploaded-media WebP deferred"
+    e2e_tests_count: 0
+    retry_count: 0
+total_stories: 10
+completed_stories: 10
