@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v6  # Verified 2026-05-29 latest stable major.
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v8  # Verified 2026-05-29 latest stable major.
+        uses: astral-sh/setup-uv@v8.2.0  # Pin: akcija NEMA pomicni `v8` major alias (samo v8.x.y); v8.2.0 latest 8-line.
         with:
           python-version: '3.13'  # IMP-9: matches pyproject.toml requires-python.
           enable-cache: true
@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v8
+        uses: astral-sh/setup-uv@v8.2.0
         with:
           python-version: '3.13'
           enable-cache: true
