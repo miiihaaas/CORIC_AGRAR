@@ -18,9 +18,15 @@ DEBUG = False
 # čuva prod hardening; lokalni HTTP/80 smoke override-uje na False (inače 301 loop,
 # G-11). NE slabi prod — samo omogućava realan 200 round-trip bez cert-a.
 SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-LANGUAGE_COOKIE_SECURE = True  # defense-in-depth (Story 1.4 / Dev-B SEC review)
+# Env-parametrizovani (default True = prod hardening) radi PRELAZNE HTTP/IP faze pre
+# domena+SSL-a: Let's Encrypt ne izdaje cert za golu IP, pa se sajt privremeno servira
+# preko HTTP-a. Secure-cookie zastavica nad HTTP-om znaci da browser NE salje cookie →
+# admin login + CSRF forme padaju. Override na False SAMO na boxu (.env) za HTTP fazu;
+# vrati na True (ukloni override) cim domen+SSL profunkcionišu. Default True → CI/test/prod
+# ostaju zakljucani na secure (test_settings_split test_ac3_production_* i dalje prolazi).
+SESSION_COOKIE_SECURE = env.bool("DJANGO_SESSION_COOKIE_SECURE", default=True)
+CSRF_COOKIE_SECURE = env.bool("DJANGO_CSRF_COOKIE_SECURE", default=True)
+LANGUAGE_COOKIE_SECURE = env.bool("DJANGO_LANGUAGE_COOKIE_SECURE", default=True)  # defense-in-depth (Story 1.4 / Dev-B SEC review)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Story 9.1 (G-9/SM-D7): bez ovoga, sa CSRF_COOKIE_SECURE=True + HTTPS reverse-proxy,
