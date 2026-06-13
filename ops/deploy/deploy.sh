@@ -37,6 +37,20 @@ cd "${REPO_ROOT}"
 
 COMPOSE_FILE="compose/production.yml"
 
+# ── .env za Compose interpolaciju (KRITICNO — G-5 fix) ─────────────────────────
+# `docker compose --env-file "${ENV_FILE}" -f compose/production.yml` (sa -f) ne ucitava repo-root `.env` za
+# `${...}` interpolaciju automatski (Compose interpolation .env se trazi u project dir =
+# compose/, NE repo root). Bez `--env-file`, IMAGE_TAG/POSTGRES_PASSWORD/DJANGO_SECRET_KEY
+# bi resolve-ovali na PRAZNE default-e (postgres bez password-a, django prazan secret, image
+# :latest umesto :production) -> slomljen deploy. Eksplicitan --env-file resava interpolaciju.
+# (env_file: ../.env u servisu puni samo django KONTEJNER; `environment:` blok ga override-uje
+# interpolacijom — zato interpolacija MORA da nadje .env.)
+ENV_FILE="${REPO_ROOT}/.env"
+if [[ ! -f "${ENV_FILE}" ]]; then
+    echo "[DEPLOY ERROR] ${ENV_FILE} ne postoji. Compose interpolacija (image tag, DB password, secret) bi bila prazna -> slomljen deploy. Kreiraj .env na boxu pre deploy-a (vidi ops/secrets/README.md)." >&2
+    exit 1
+fi
+
 # Argument $1 = environment (staging|production). Fail-loud usage ako nedostaje.
 ENVIRONMENT="${1:-}"
 if [[ -z "${ENVIRONMENT}" ]]; then
@@ -80,7 +94,7 @@ git pull
 # Povuci NOVI GHCR image PRE migrate/collectstatic (koji teku KROZ taj image) i PRE
 # re-create-a. Goli restart bi zadrzao stari image i deploy ne bi povukao novi kod.
 echo "[DEPLOY] docker compose pull (novi GHCR image)"
-docker compose -f compose/production.yml pull
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml pull
 
 # ── 3. Frozen deps su BAKED u GHCR image (M3 — NE `uv sync --frozen` na host-u) ─
 # Stack je Docker-image-SOT: prod image (compose/django/Dockerfile prod-builder stage)
@@ -94,25 +108,25 @@ docker compose -f compose/production.yml pull
 
 # ── 4. collectstatic --noinput (PRE re-create-a; neinteraktivno = idempotentno) ─
 echo "[DEPLOY] collectstatic --noinput"
-docker compose -f compose/production.yml run --rm django python manage.py collectstatic --noinput
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml run --rm django python manage.py collectstatic --noinput
 
 # ── 5. migrate --plan (assertion/pre-check PRE apply-a) ─────────────────────────
 echo "[DEPLOY] migrate --plan (pre-check)"
-docker compose -f compose/production.yml run --rm django python manage.py migrate --plan
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml run --rm django python manage.py migrate --plan
 
 # ── 6. migrate (apply) — STRIKTNO PRE up -d django re-create-a (AC2) ────────────
 # Sema baze mora biti migrirana PRE nego novi Gunicorn worker-i pocnu da sluze
 # (inace novi kod udara u staru semu). INHERENTNI deploy ugovor (forward-dep iz 9.1).
 echo "[DEPLOY] migrate (apply)"
-docker compose -f compose/production.yml run --rm django python manage.py migrate
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml run --rm django python manage.py migrate
 
 # ── 7. compilemessages (sr/hu/en .mo build; overwrite = idempotentno) ──────────
 echo "[DEPLOY] compilemessages"
-docker compose -f compose/production.yml run --rm django python manage.py compilemessages
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml run --rm django python manage.py compilemessages
 
 # ── 8. up -d django (re-create sa novim image-om; NE goli restart — SM-D5) ──────
 echo "[DEPLOY] up -d django (re-create)"
-docker compose -f compose/production.yml up -d django
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml up -d django
 
 # ── 9. up -d nginx (re-create da pokupi bind-mount-ovan nginx.conf — AC14/SM-D9) ─
 # Goli restart django NE dostize nginx.conf izmenu (conf je bind-mount, SM-D9).
@@ -124,7 +138,7 @@ docker compose -f compose/production.yml up -d django
 echo "[DEPLOY] aktiviram pun nginx.conf (.active-default.conf) pre nginx re-create-a"
 cp compose/nginx/nginx.conf compose/nginx/.active-default.conf
 echo "[DEPLOY] up -d nginx (reload bind-mount conf)"
-docker compose -f compose/production.yml up -d nginx
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml up -d nginx
 
 # ── 10. Healthcheck (AC10) — POSLE re-create-a (verifikuje NOVE kontejnere) ──────
 # Retry-loop UNUTAR django kontejnera (M4): production.yml NE izlaze :8000 na host (nginx
@@ -142,7 +156,7 @@ HEALTH_URL="${HEALTHCHECK_URL:-http://127.0.0.1:8000/sr/}"
 HEALTHCHECK_RETRIES="${HEALTHCHECK_RETRIES:-24}"
 HEALTH_OK=0
 for attempt in $(seq 1 "${HEALTHCHECK_RETRIES}"); do
-    if docker compose -f compose/production.yml exec -T django \
+    if docker compose --env-file "${ENV_FILE}" -f compose/production.yml exec -T django \
         python -c "import urllib.request; urllib.request.urlopen('${HEALTH_URL}', timeout=5)"; then
         HEALTH_OK=1
         echo "[DEPLOY] healthcheck OK (pokusaj ${attempt})"

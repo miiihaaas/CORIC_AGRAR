@@ -27,7 +27,10 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "${REPO_ROOT}"
 
 COMPOSE_FILE="compose/production.yml"
-DC="docker compose -f ${COMPOSE_FILE}"
+# --env-file: Compose ne ucitava repo-root .env za ${...} interpolaciju uz `-f` (trazi u
+# project dir = compose/). Bez ovoga `${DC} up -d nginx` re-create resolve-uje prazne
+# IMAGE_TAG/secret-e/DB-password (slomljen stack). Isti fix kao deploy.sh (G-5).
+DC="docker compose --env-file ${REPO_ROOT}/.env -f ${COMPOSE_FILE}"
 
 # Swappable conf koji production.yml nginx servis bind-mount-uje na default.conf (M1).
 # nginx-init.sh popunjava ovaj fajl: bootstrap conf PRE certbot-a, pun nginx.conf POSLE.
