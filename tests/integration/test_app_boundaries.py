@@ -30,9 +30,18 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
-def _assert_no_import(scan_dir: Path, forbidden_prefix: str) -> None:
+def _assert_no_import(
+    scan_dir: Path,
+    forbidden_prefix: str,
+    allowed_files: tuple[str, ...] = (),
+) -> None:
     """Walk sve `.py` fajlove pod scan_dir (excl. tests/) i asertuj da nijedan
     `import X` ili `from X import ...` ne počinje sa `forbidden_prefix`.
+
+    Args:
+        allowed_files: imena fajlova (basename) koja su FORMALNO odobreni izuzeci od
+            boundary pravila (npr. view-layer kompozicija). Skeniraju se kao i ostali
+            ali se njihove violacije ne računaju.
 
     Raises:
         AssertionError: ako bilo koji fajl import-uje modul koji počinje sa
@@ -46,6 +55,10 @@ def _assert_no_import(scan_dir: Path, forbidden_prefix: str) -> None:
         # cross-app modele (npr. apps.products.tests koristi apps.brands.models
         # za FK chain setup), ali to nije production-code boundary violation.
         if "tests" in py_file.parts:
+            continue
+
+        # Formalno odobreni izuzeci (Decision SM-D16) — preskoči iz boundary skena.
+        if py_file.name in allowed_files:
             continue
 
         try:
@@ -88,12 +101,19 @@ def test_brands_does_not_import_products():
     Regression guard: future Stories (2.6 Brand listing, 8.4 Brand admin) mogu
     biti iskušanje da `from apps.products.models import Product` u apps/brands.
     Ovaj test odmah uhvati takvu liniju.
+
+    IZUZETAK (Decision SM-D16, _bmad-output/project-context.md § Architectural
+    Boundaries): apps/brands/views.py je FORMALNO odobren view-layer izuzetak —
+    brand detail/listing kompozicija legitimno renderuje Product/ProductSpecification/
+    ProductTestimonial podatke unutar brand konteksta. Boundary pravilo i dalje važi
+    za model/signal/service slojeve brands app-a; samo view-sloj kompozicija je
+    dozvoljena. Production import OSTAJE u views.py.
     """
     brands_dir = REPO_ROOT / "apps" / "brands"
     assert brands_dir.exists(), (
         f"Story 2.1 prerequisite missing — apps/brands dir not found at {brands_dir}"
     )
-    _assert_no_import(brands_dir, "apps.products")
+    _assert_no_import(brands_dir, "apps.products", allowed_files=("views.py",))
 
 
 # =============================================================================

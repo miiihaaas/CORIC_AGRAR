@@ -195,10 +195,9 @@ def test_migration_0003_reverse_callable_removes_seed():
         )
 
     # Kreiraj non-seeded brand + category koji NE SME biti obrisan reverse-om
-    other_brand = Brand.objects.create(
-        name="Other Brand", slug="other-brand", brand_color=""
-    )
-    other_category = Category.objects.create(
+    # (DB side-effect je sustina testa; binding se ne koristi — kasnije se proverava slug filterom)
+    Brand.objects.create(name="Other Brand", slug="other-brand", brand_color="")
+    Category.objects.create(
         name="Other Category",
         slug="other-category",
         is_for=Category.CategoryScope.TRAKTORI,

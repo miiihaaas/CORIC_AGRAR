@@ -474,11 +474,13 @@ def test_ac3_header_logo_uses_core_home_url_namespace():
 
 
 # AC-3 + IMP-3: search button NEMA aria-expanded atribut
-def test_ac3_search_toggle_has_no_aria_expanded():
-    """AC3 + IMP-3: search button NE SME imati `aria-expanded` atribut.
+def test_ac3_search_toggle_has_aria_expanded():
+    """AC3 + IMP-3: search button MORA imati `aria-expanded` (i `aria-controls`).
 
-    Button trenutno NE controlsuje expanded state; Bootstrap toggle wiring stiže
-    u Story 2.13. aria-expanded bez funkcionalnog toggle = a11y misinformation.
+    Story 2.13 je NAMERNO wired-ovao search toggle (data-search-toggle + expand panel),
+    pa button sada legitimno controls-uje expanded state — `aria-expanded`/`aria-controls`
+    su tačni a11y signali. Stari assert (NE SME imati aria-expanded, dok wiring ne stigne)
+    je realizovan/prevaziđen Story 2.13 wiring-om; prepravljeno da zaključa NOVO ponašanje.
     """
     src = _read_partial(PARTIAL_HEADER)
     # Pronađi search-toggle button blok
@@ -487,13 +489,12 @@ def test_ac3_search_toggle_has_no_aria_expanded():
     assert matches, (
         'header.html NE sadrži `<button class="...coric-nav__search-toggle...">`. AC3.'
     )
-    # Ni jedan match ne sme imati aria-expanded
-    for m in matches:
-        assert "aria-expanded" not in m, (
-            f"Search-toggle button sadrži `aria-expanded` atribut. "
-            f"AC3 + IMP-3 — button trenutno ne controls expanded state (Story 2.13 wiring). "
-            f"Pronađen blok: {m!r}"
-        )
+    # Bar jedan match MORA imati aria-expanded (wired toggle, Story 2.13)
+    assert any("aria-expanded" in m for m in matches), (
+        f"Search-toggle button NEMA `aria-expanded` atribut. "
+        f"Story 2.13 — button je wired (controls expanded state), pa aria-expanded "
+        f"je obavezan a11y signal. Pronađeni blokovi: {matches!r}"
+    )
 
 
 # AC-3: header.html NEMA <header class="coric-site-header"> wrapper (CRITICAL-7 flatten)
@@ -937,24 +938,33 @@ def test_ac9_no_inline_style_attribute_in_3_new_partials():
 
 # AC-9: nijedan inline event handler ili <script> u 3 nova partial-a
 def test_ac9_no_inline_scripts_or_handlers_in_3_new_partials():
-    """AC9: grep negative za inline `onclick=`, `onchange=`, `onsubmit=`, `<script` u 3 nova partial-a."""
+    """AC9: grep negative za INLINE event handler-e i INLINE `<script>` u 3 nova partial-a.
+
+    CSP-friendly mandate zabranjuje INLINE skripte i inline event handler-e. Legitiman
+    EKSTERNI `<script src="..." defer>` (Story 2.13 search-expand.js — CSP-safe, eksterni
+    fajl) NIJE inline i NE sme da obara test. Zato `<script` substring proveru sužavamo
+    na inline scripts: `<script>` ili `<script ...>` BEZ `src=` atributa.
+    """
     bad_handlers = [
         "onclick=",
         "onchange=",
         "onsubmit=",
         "onload=",
         "onmouseover=",
-        "<script",
     ]
+    # Inline script = <script ...> tag bez src= atributa (eksterni src je CSP-safe i dozvoljen).
+    inline_script_pattern = re.compile(r"<script(?![^>]*\bsrc\s*=)[^>]*>", re.IGNORECASE)
     offending = []
     for partial_path in ALL_NEW_PARTIALS:
         src = _read_partial(partial_path)
         for handler in bad_handlers:
             if handler in src:
                 offending.append((partial_path.name, handler))
+        if inline_script_pattern.search(src):
+            offending.append((partial_path.name, "inline <script>"))
     assert not offending, (
         f"Inline scripts ili handlers u 3 nova partial-a: {offending}. "
-        f"AC9 — CSP-friendly mandate."
+        f"AC9 — CSP-friendly mandate (eksterni `<script src=... defer>` je dozvoljen)."
     )
 
 

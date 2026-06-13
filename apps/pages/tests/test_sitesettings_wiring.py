@@ -119,7 +119,8 @@ def test_working_hours_rendered_as_ul_from_splitlines(client):
 
 def test_imp_sitesettings_marker_resolved(client):
     """AC8: IMP-SiteSettings(Story 3-4) marker je UKLONJEN ili promenjen u RESOLVED."""
-    html = _get(client, "/sr/kontakt/")
+    # Smoke: stranica se renderuje bez greske (binding se ne koristi — proverava se izvor template-a)
+    _get(client, "/sr/kontakt/")
     # Render NE bi smeo nositi otvoren (nerešen) IMP-SiteSettings marker. Template komentari
     # se NE renderuju, pa proveravamo izvor template-a direktno.
     import pathlib

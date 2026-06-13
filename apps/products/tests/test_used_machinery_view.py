@@ -403,7 +403,8 @@ def test_ac2_get_queryset_applies_sort_cena_asc(client):
     brand = BrandFactory.create()
     cheap = UsedProductFactory.create(brand=brand, name="A Cheap", price_eur=Decimal("1000.00"))
     expensive = UsedProductFactory.create(brand=brand, name="B Expensive", price_eur=Decimal("9999.00"))
-    mid = UsedProductFactory.create(brand=brand, name="C Mid", price_eur=Decimal("5000.00"))
+    # Srednji element (DB side-effect za ordering); binding se ne koristi — asertuje se prvi/poslednji
+    UsedProductFactory.create(brand=brand, name="C Mid", price_eur=Decimal("5000.00"))
 
     response = client.get("/sr/mehanizacija/polovna/?sort=cena_asc", HTTP_HOST="localhost")
 

@@ -144,7 +144,8 @@ def test_grid_product_card_markup_structure(client):
     activate("sr")
     brand = BrandFactory.create(name="Agri Tracking")
     series = SeriesFactory.create_grid(brand=brand, name="Grid Serija")
-    product = ProductFactory.create(brand=brand, series=series, name="Model A", horse_power=120)
+    # DB side-effect (kartica mora postojati da bi se renderovala); binding se ne koristi
+    ProductFactory.create(brand=brand, series=series, name="Model A", horse_power=120)
 
     url = f"/sr/traktori/{brand.slug}/"
     response = client.get(url)
@@ -187,7 +188,8 @@ def test_grid_product_card_has_aria_label_on_link(client):
     activate("sr")
     brand = BrandFactory.create(name="Agri Tracking")
     series = SeriesFactory.create_grid(brand=brand, name="Grid Serija")
-    product = ProductFactory.create(brand=brand, series=series, name="John Deere 8R")
+    # DB side-effect; ime se asertuje literalno u aria_pattern, binding se ne koristi
+    ProductFactory.create(brand=brand, series=series, name="John Deere 8R")
 
     url = f"/sr/traktori/{brand.slug}/"
     response = client.get(url)

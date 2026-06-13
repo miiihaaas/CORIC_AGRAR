@@ -21,7 +21,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
 
 # Repo root = manage.py parent (compose runs from /code which is repo root)
 _REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -135,10 +134,10 @@ def test_repeating_element_jeegee_variant_css_selector_exists():
     css_content = _REPEATING_ELEMENT_CSS.read_text(encoding="utf-8")
 
     assert ".coric-repeating-element--jeegee" in css_content, (
-        f"repeating-element.css MORA imati `.coric-repeating-element--jeegee` "
-        f"selektor (SM-D9 lock — Story 2-10 hero koristi variant='jeegee' koji "
-        f"rezolvuje na ovu klasu). Live verifikovano `static/css/components/"
-        f"repeating-element.css:14`."
+        "repeating-element.css MORA imati `.coric-repeating-element--jeegee` "
+        "selektor (SM-D9 lock — Story 2-10 hero koristi variant='jeegee' koji "
+        "rezolvuje na ovu klasu). Live verifikovano `static/css/components/"
+        "repeating-element.css:14`."
     )
     # Mora referencirati --color-jeegee-blue token
     assert "var(--color-jeegee-blue)" in css_content, (

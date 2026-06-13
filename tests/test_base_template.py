@@ -96,6 +96,20 @@ def _read_base_html() -> str:
     return BASE_HTML.read_text(encoding="utf-8")
 
 
+def _load_tag_present(src: str, tag: str) -> bool:
+    """True ako je `tag` učitan u BILO KOM `{% load ... %}` bloku u src-u.
+
+    Format-tolerantno: base.html je konsolidovao više `{% load X %}` linija u jedan
+    `{% load a b c ... %}` blok. Stari literal-substring asserti (`{% load i18n %}`)
+    su prevaziđeni tom konsolidacijom; intent (tag je učitan) ostaje očuvan.
+    """
+    for m in re.finditer(r"\{%\s*load\s+([^%]+?)\s*%\}", src):
+        loaded = m.group(1).split()
+        if tag in loaded:
+            return True
+    return False
+
+
 def _read_base_html_lines() -> list[str]:
     return _read_base_html().splitlines()
 
@@ -305,8 +319,8 @@ def test_ac1_base_html_main_css_link_after_bootstrap():
 def test_ac1_base_html_load_django_bootstrap5_tag():
     """AC1: NOVO `{% load django_bootstrap5 %}` direktiva mora biti prisutna."""
     src = _read_base_html()
-    assert "{% load django_bootstrap5 %}" in src, (
-        "base.html ne sadrži `{% load django_bootstrap5 %}`. "
+    assert _load_tag_present(src, "django_bootstrap5"), (
+        "base.html ne učitava `django_bootstrap5` ni u jednom `{% load ... %}` bloku. "
         "Story 1.6 AC1 — registruje `{% bootstrap_css %}` / `{% bootstrap_javascript %}` template tag-ove."
     )
 
@@ -314,8 +328,8 @@ def test_ac1_base_html_load_django_bootstrap5_tag():
 def test_ac1_base_html_load_htmx_aria_tag():
     """AC1: NOVO `{% load htmx_aria %}` direktiva mora biti prisutna."""
     src = _read_base_html()
-    assert "{% load htmx_aria %}" in src, (
-        "base.html ne sadrži `{% load htmx_aria %}`. "
+    assert _load_tag_present(src, "htmx_aria"), (
+        "base.html ne učitava `htmx_aria` ni u jednom `{% load ... %}` bloku. "
         "Story 1.6 AC1 — registruje custom `{% aria_live %}` tag iz apps/core/templatetags/."
     )
 
@@ -853,22 +867,23 @@ def test_ac7_htmx_min_js_present():
 
 
 def test_ac7_htmx_min_js_version_1_9_x():
-    """AC7 + Gotcha #9: prvih 1-3 linija htmx.min.js sadrže version comment `HTMX v1.9.x`.
+    """AC7 + Gotcha #9: vendovan htmx.min.js MORA biti pinned 1.9.x (NE 2.x).
 
     KRITIČNO: HTMX 2.x ima breaking changes (data-hx-* prefix), pa pinned 1.9.12 je obavezan.
+
+    Vendovan build je MINIFIED (jedna linija, bez comment banner-a) i nosi verziju kao
+    inline literal `version:"1.9.12"`. Stari assert (comment banner `HTMX v1.9.x` u prvih
+    5 linija) je prevaziđen minified formatom; proveravamo inline version literal umesto
+    banner-a — intent (1.9.x pinned) ostaje očuvan.
     """
     if not HTMX_MIN_JS.exists():
         pytest.skip(HTMX_VENDOR_MISSING_MSG)
-    head_lines = HTMX_MIN_JS.read_text(encoding="utf-8", errors="replace").splitlines()[
-        :5
-    ]
-    head_text = "\n".join(head_lines)
-    pattern = r"HTMX\s+v1\.9\."
-    assert re.search(pattern, head_text, re.IGNORECASE), (
-        f"htmx.min.js prvih 5 linija NE sadrže `HTMX v1.9.x` version marker. "
-        f"Dobijeno: {head_text!r}. "
-        f"AC7 + Gotcha #9: Mora biti pinned 1.9.x (NE 2.x); re-download sa "
-        f"https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js."
+    content = HTMX_MIN_JS.read_text(encoding="utf-8", errors="replace")
+    pattern = r'version\s*:\s*["\']1\.9\.\d+["\']'
+    assert re.search(pattern, content), (
+        'htmx.min.js NE sadrži inline `version:"1.9.x"` literal. '
+        "AC7 + Gotcha #9: Mora biti pinned 1.9.x (NE 2.x); re-download sa "
+        "https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js."
     )
 
 
@@ -877,19 +892,16 @@ def test_ac7_htmx_min_js_version_1_9_x():
 # =============================================================================
 
 
-def test_ac8_main_css_exists_placeholder():
-    """AC8: static/css/main.css MORA postojati (placeholder, max 500 bytes).
+def test_ac8_main_css_exists():
+    """AC8: static/css/main.css MORA postojati (link target u base.html).
 
-    Story 1.7+ popunjava ovaj fajl; Story 1.6 samo kreira placeholder.
+    Story 1.6 je kreirao placeholder; Story 1.7+ ga je NAMERNO popunio realnim
+    komponentama. Stari `< 500 bytes` placeholder cap je prevaziđen tim popunjavanjem;
+    zadržavamo SAMO proveru da fajl postoji (link target nije mrtav).
     """
     assert MAIN_CSS.exists(), (
         f"static/css/main.css ne postoji na {MAIN_CSS}. "
-        f"AC8 — Dev mora kreirati placeholder fajl (link target u base.html)."
-    )
-    size = MAIN_CSS.stat().st_size
-    assert size < 500, (
-        f"static/css/main.css veličina = {size} bytes, očekivano < 500 bytes (placeholder). "
-        f"AC8 — Story 1.7+ popunjava komponente; sada samo placeholder komentar."
+        f"AC8 — fajl mora postojati (link target u base.html)."
     )
 
 

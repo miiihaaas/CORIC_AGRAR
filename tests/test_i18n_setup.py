@@ -270,16 +270,19 @@ def test_ac2_locale_switcher_middleware_registered():
     base = _load_base_settings()
     mw = list(getattr(base, "MIDDLEWARE", []))
     target = "apps.core.middleware.LocaleSwitcherMiddleware"
+    axes_mw = "axes.middleware.AxesMiddleware"
     assert target in mw, (
         f"MIDDLEWARE ne sadrzi `{target}`. Story 1.4 AC2 zahteva registraciju "
         f"custom middleware-a. Trenutni MIDDLEWARE: {mw}."
     )
-    # Po konvenciji posljednji
-    assert mw[-1] == target, (
-        f"LocaleSwitcherMiddleware NIJE poslednji u MIDDLEWARE-u "
-        f"(pozicija: {mw.index(target)}, ukupno: {len(mw)}). "
-        f"Gotcha #1: custom middleware ide POSLEDNJI da bi Django built-in "
-        f"(URL routing + session) zavrsili pre custom logike."
+    # Story 8.1 (G-2/SM-D17) NAMERNO dodaje AxesMiddleware POSLE LocaleSwitcherMiddleware —
+    # AxesMiddleware MORA biti poslednji (posle AuthenticationMiddleware). LocaleSwitcher
+    # je i dalje "poslednji custom-domain middleware"; sme ga slediti samo AxesMiddleware.
+    # Invariant iz Story 1.4 (LocaleSwitcher striktno poslednji) je superseded.
+    after_locale = mw[mw.index(target) + 1 :]
+    assert all(m == axes_mw for m in after_locale), (
+        f"Posle LocaleSwitcherMiddleware sme stajati SAMO `{axes_mw}` (Story 8.1). "
+        f"Pronađeno posle LocaleSwitcher-a: {after_locale}. Ukupan MIDDLEWARE: {mw}."
     )
 
 
@@ -425,6 +428,7 @@ def test_ac5_set_language_route_registered():
     )
 
 
+@pytest.mark.django_db  # Story 6.4: RedirectMiddleware radi Redirect.objects.filter() na svaki request
 def test_ac5_root_redirects_to_default_lang():
     """AC5 / AC9.7: GET / mora 302 redirektovati na /sr/.
 
@@ -455,14 +459,25 @@ def test_ac5_sr_hu_en_routes_200():
         )
 
 
-def test_ac5_de_route_404():
-    """AC5 / AC9.11: GET /de/ mora vratiti 404 (de NIJE u LANGUAGES)."""
+@pytest.mark.django_db  # RedirectMiddleware (Story 6.4) radi Redirect.objects.filter() na svaki request
+def test_ac5_de_route_302_to_default_lang():
+    """AC5 / AC9.11: GET /de/ — `de` NIJE u LANGUAGES.
+
+    Story 6.x je NAMERNO postavio `prefix_default_language=True`. Posledica: Django
+    LocaleMiddleware tretira `/de/` kao path BEZ jezičkog prefiksa (jer `de` nije
+    poznat prefix) i 302-redirektuje na default jezik → `/sr/de/`. Stari assert
+    (404) je prevaziđen tom namernom promenom; ponašanje je sada redirect-to-default.
+    """
     client = _get_test_client()
     response = client.get("/de/")
-    assert response.status_code == 404, (
-        f"GET /de/ status {response.status_code}, ocekivano 404. "
-        f"AC5 / AC9.11: /de/ nije language prefix (de nije u LANGUAGES) "
-        f"i nema plain URL pattern koji ga matchuje."
+    assert response.status_code == 302, (
+        f"GET /de/ status {response.status_code}, ocekivano 302. "
+        f"prefix_default_language=True → /de/ se tretira kao path bez prefiksa i "
+        f"redirektuje na default jezik."
+    )
+    assert response["Location"] == "/sr/de/", (
+        f"GET /de/ redirect target {response['Location']!r}, ocekivano '/sr/de/' "
+        f"(default jezik sr + originalni path segment 'de')."
     )
 
 
@@ -531,6 +546,7 @@ def test_ac5_apps_pages_urls_included():
     )
 
 
+@pytest.mark.django_db  # Story 6.4: RedirectMiddleware radi Redirect.objects.filter() na svaki request
 def test_ac5_set_language_post_redirects():
     """AC5 / Story Testing § AC7 behavior: POST /i18n/setlang/ sa language=hu&next=/sr/
     MORA 302 redirektovati na /hu/ + setovati cookie `django_language=hu`.
@@ -596,12 +612,22 @@ def test_ac6_base_html_uses_language_code():
 
 
 def test_ac6_base_html_loads_i18n():
-    """AC6 / Gotcha #10: {% load i18n %} mora biti prisutan."""
+    """AC6 / Gotcha #10: `i18n` tag-lib mora biti učitan u nekom `{% load ... %}` bloku.
+
+    Format-tolerantno: base.html je konsolidovao više `{% load X %}` linija u jedan
+    `{% load django_bootstrap5 ... i18n ... %}` blok. Stari literal-substring assert
+    (`{% load i18n %}`) je prevaziđen tom konsolidacijom; intent (i18n je učitan,
+    `{% translate %}`/`{% blocktranslate %}` rade) ostaje očuvan.
+    """
     if not BASE_HTML.exists():
         pytest.fail("templates/base.html ne postoji.")
     src = BASE_HTML.read_text(encoding="utf-8")
-    assert "{% load i18n %}" in src, (
-        "templates/base.html ne sadrzi `{% load i18n %}`. "
+    i18n_loaded = any(
+        "i18n" in m.group(1).split()
+        for m in re.finditer(r"\{%\s*load\s+([^%]+?)\s*%\}", src)
+    )
+    assert i18n_loaded, (
+        "templates/base.html ne učitava `i18n` ni u jednom `{% load ... %}` bloku. "
         "Bez njega `{% translate %}` / `{% blocktranslate %}` baca TemplateSyntaxError."
     )
 
@@ -908,22 +934,24 @@ def test_no_cirillic_anywhere_in_new_files():
     )
 
 
-def test_admin_url_still_admin_not_admin_coric():
-    """Gotcha #25: admin URL ostaje `admin/` u Story 1.4 — promena na `admin-coric/`
-    je deferred ka Story 8.1 (Custom admin login + rate limiting).
+def test_admin_url_moved_to_admin_coric():
+    """Story 8.1 (SM-D1/G-3): admin URL je NAMERNO premešten sa `admin/` na
+    `admin-coric/` (security-through-obscurity + custom admin login + rate limiting).
 
-    Sprecava da Dev preempt-uje Story 8.1 i razbije test churn.
+    Stari invariant (Gotcha #25: admin ostaje `admin/` do Story 8.1) je sada
+    realizovan — Story 8.1 je izvršio migraciju. `/admin/` i `/sr/admin/` više ne
+    postoje. Ovaj test je prepravljen da zaključa NOVO ponašanje.
     """
     src = _read_urls_source()
-    # Admin path mora biti tacno 'admin/'
-    assert re.search(r"['\"]admin/['\"]", src), (
-        "config/urls.py ne registruje 'admin/' path. "
-        "Gotcha #25: Story 1.4 zadrzava 'admin/' — promena na 'admin-coric/' je u Story 8.1."
+    # Admin path mora biti 'admin-coric/'
+    assert re.search(r"['\"]admin-coric/['\"]", src), (
+        "config/urls.py ne registruje 'admin-coric/' path. "
+        "Story 8.1: admin je premešten na 'admin-coric/' (obfuskacija + custom login)."
     )
-    # Admin path NE SME biti `admin-coric/`
-    assert not re.search(r"['\"]admin-coric/['\"]", src), (
-        "config/urls.py JE prelaze na 'admin-coric/' u Story 1.4. "
-        "Gotcha #25: ta migracija je rezervisana za Story 8.1 (Custom admin login)."
+    # Admin path NE SME više biti bare `admin/`
+    assert not re.search(r"['\"]admin/['\"]", src), (
+        "config/urls.py i dalje registruje bare 'admin/' path. "
+        "Story 8.1 zahteva da admin bude SAMO na 'admin-coric/' (bare 'admin/' → 404)."
     )
 
 

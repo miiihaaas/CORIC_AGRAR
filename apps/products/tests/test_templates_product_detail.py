@@ -636,13 +636,9 @@ def test_brochure_download_anchor_target_blank_rel_noopener_download(client):
     assert response.status_code == 200
     html = response.content.decode("utf-8")
 
-    # Anchor mora imati target='_blank' + rel='noopener noreferrer' + download
-    anchor_pattern = re.compile(
-        r'<a[^>]*target="_blank"[^>]*rel="noopener noreferrer"[^>]*download',
-        re.IGNORECASE,
-    )
-    # Atributi mogu biti u bilo kom redosledu — pattern alternativna provera kroz sve permutacije bi
-    # bila preglomazna; koristimo individual checks
+    # Anchor mora imati target='_blank' + rel='noopener noreferrer' + download.
+    # Atributi mogu biti u bilo kom redosledu — permutacije kroz jedan regex bi bile
+    # preglomazne; koristimo individual checks ispod.
     has_target_blank = re.search(
         r'<a[^>]*\bclass="[^"]*coric-button[^"]*"[^>]*target="_blank"', html
     ) or re.search(r'<a[^>]*target="_blank"[^>]*\bclass="[^"]*coric-button', html)

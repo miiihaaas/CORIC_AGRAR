@@ -27,13 +27,12 @@ Refs:
 
 from __future__ import annotations
 
-from decimal import Decimal
 
 import pytest
 from django.utils.translation import activate
 
 from apps.brands.tests.factories import BrandFactory
-from apps.products.tests.factories import ProductFactory, UsedProductFactory
+from apps.products.tests.factories import UsedProductFactory
 
 pytestmark = pytest.mark.django_db
 

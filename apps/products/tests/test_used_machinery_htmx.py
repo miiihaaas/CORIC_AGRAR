@@ -320,6 +320,6 @@ def test_ac5_initial_full_page_render_applies_filter_params(client):
         f"(testid='used-card-{expensive.slug}'). Server-side filter applied."
     )
     assert f'data-testid="used-card-{cheap.slug}"' not in html, (
-        f"Cheap product (price=3000) NE SME biti u listing-u sa ?cena_min=10000. "
-        f"Filter MORA biti applied PRE render-a."
+        "Cheap product (price=3000) NE SME biti u listing-u sa ?cena_min=10000. "
+        "Filter MORA biti applied PRE render-a."
     )
