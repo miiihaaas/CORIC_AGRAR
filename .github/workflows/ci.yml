@@ -63,39 +63,68 @@ jobs:
     timeout-minutes: 10  # IMP-4
     env:
       # CRIT-1 + Gotcha CI-1: bez DJANGO_SECRET_KEY env, pytest-django ucitava settings
-      # → ImproperlyConfigured exception pre nego pytest collect-uje testove.
+      # → ImproperlyConfigured exception pre nego pytest collect-uje testove. Ovaj env
+      # se prosledjuje u django kontejner kroz `docker compose run -e` (vidi Pytest step).
       DJANGO_SECRET_KEY: ci-test-secret-key-not-for-prod-50chars-padding
-      # CRIT-IT2-1 + Gotcha CI-7: NAMERNO bez DATABASE_URL — config/settings/base.py:78
-      # default-uje DATABASES na sqlite:///db.sqlite3. Postavljanje override-a bi maskiralo
-      # pravo ponasanje (DB na non-default putanji).
+      # CRIT-IT2-1 + Gotcha CI-7: NAMERNO bez DATABASE_URL — DATABASES dolazi iz compose
+      # `db` (PostgreSQL) servisa kroz settings.development; postavljanje override-a ovde
+      # bi maskiralo pravo ponasanje. PostgreSQL connection se ne konfigurise env-om na
+      # job nivou — `db` servis (compose/local.yml) je autoritativan izvor.
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
 
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v8.2.0
+      # ── STRATEGIJA A (Epic 9 go-live): suite se vozi KROZ Docker, identicno `just test`
+      # (`docker compose -f compose/local.yml run --rm django uv run pytest`). Razlog:
+      # autoritativno test okruzenje je PostgreSQL + libmagic + poppler baked u runtime
+      # image — goli `uv run pytest` na ubuntu/SQLite HARD-FAIL-uje FTS search testove
+      # (apps/search traze PostgreSQL po dizajnu) i ops/Docker testove. CI sada matchuje
+      # `just test` 1:1 (Docker + Postgres) → FTS + ops + foundational suite je zeleno.
+      # compose/local.yml `django` servis ima `env_file: ../.env`; Compose ERROR-uje ako
+      # fajl ne postoji. `.env` je gitignore-ovan (samo `.env.example` je tracked), pa ga
+      # u CI seedujemo iz template-a. DJANGO_SECRET_KEY u `.env.example` je prazan — ali
+      # ga compose run prosledjuje eksplicitno kroz `-e DJANGO_SECRET_KEY` (job env override).
+      - name: Seed .env iz .env.example (CI nema gitignore-ovan .env)
+        run: cp .env.example .env
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4  # Verified 2026-05-29 latest stable major.
+
+      # Build dev `runtime` target (pytest/ruff/libmagic/poppler u image-u) + GHA layer
+      # cache. Tag MORA biti `coric_agrar_django_local` jer compose/local.yml `django`
+      # servis ima `image: coric_agrar_django_local` — kad image postoji lokalno,
+      # `docker compose run` ga REUSE-uje (ne rebuild-uje) → brzo na warm cache.
+      # `load: true` ubacuje image u lokalni docker daemon (buildx default je registry).
+      - name: Build local test image (runtime target)
+        uses: docker/build-push-action@v7  # Verified 2026-05-29 latest stable major.
         with:
-          python-version: '3.13'
-          enable-cache: true
-          cache-dependency-glob: "uv.lock"
-
-      # Story 2.3 FIX-1: libmagic1 je system dep za python-magic (validate_image_mime).
-      # Bez nje, magic.from_buffer() raise-uje pri prvoj invocaciji u CI test runu.
-      # poppler-utils future-proofs Story 2.4 PDF cover generator (pdf2image dep).
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libmagic1 poppler-utils
-
-      - name: Install dev deps
-        run: uv sync --frozen --group dev
+          context: .
+          file: ./compose/django/Dockerfile
+          target: runtime  # G-4: dev stage sa pytest/ruff (NE prod --no-dev venv).
+          load: true
+          tags: coric_agrar_django_local
+          cache-from: type=gha,scope=test-image  # odvojen scope od build job-a (prod image).
+          cache-to: type=gha,mode=max,scope=test-image
 
       # IMP-IT2-1 + Decision D13: "Django deploy checks" step UKLONJEN — settings.development
       # namerno ima DEBUG=True; continue-on-error: true bi ucinio step placebo. Story 9.6
       # dodaje check --deploy nakon prelaska na settings.production sa strict mode.
 
-      - name: Pytest
-        run: uv run pytest
+      # `docker compose run --rm django uv run pytest` — identicno justfile:41-42.
+      # `-e DJANGO_SECRET_KEY` prosledjuje job-level env u kontejner (compose env_file je
+      # `../.env` koji u CI ne postoji, pa secret mora eksplicitno). `db` servis se dize
+      # automatski preko `depends_on: condition: service_healthy` (pg_isready healthcheck).
+      - name: Pytest (kroz Docker — Strategija A)
+        run: >
+          docker compose -f compose/local.yml run --rm
+          -e DJANGO_SECRET_KEY
+          django uv run pytest
+
+      # Uredno gasenje: zaustavi `db` (+ ostale) i obrisi volume-e da CI runner ostane
+      # cist. `if: always()` — teardown i kad pytest padne (ne ostavlja orphan kontejnere).
+      - name: Teardown compose stack
+        if: always()
+        run: docker compose -f compose/local.yml down -v
 
   build:
     runs-on: ubuntu-latest

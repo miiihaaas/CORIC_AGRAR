@@ -201,22 +201,31 @@ def test_ci_workflow_name_is_ci(ci_workflow):
 
 
 def test_ci_triggers_on_push_master(ci_workflow):
-    """AC1 — `on.push.branches` MORA sadržati 'master'."""
+    """AC1 — `on.push.branches` MORA sadržati deploy grane 'main' i 'staging'.
+
+    Epic 9 (Story 9.2 go-live): master preimenovan u main + dodata staging grana.
+    Build+push GHCR image MORA da se okine na oba deploy branch-a (main->production,
+    staging->staging) jer deploy.yml radi `docker compose pull` tog image-a.
+    """
     on_block = _get_on_block(ci_workflow)
     push_branches = on_block.get("push", {}).get("branches", [])
-    assert "master" in push_branches, (
-        f"ci.yml `on.push.branches` = {push_branches!r}, mora sadrzati 'master'. "
-        f"AC1 + Decision D12 — `master` je current default branch."
+    assert "main" in push_branches and "staging" in push_branches, (
+        f"ci.yml `on.push.branches` = {push_branches!r}, mora sadrzati 'main' i 'staging'. "
+        f"AC1 + Epic 9 (Story 9.2) — master->main rename + staging deploy grana."
     )
 
 
 def test_ci_triggers_on_pull_request_master(ci_workflow):
-    """AC1 — `on.pull_request.branches` MORA sadržati 'master' (PR gate)."""
+    """AC1 — `on.pull_request.branches` MORA sadržati 'main' (PR gate).
+
+    Epic 9 (Story 9.2): default grana je 'main' (master preimenovan). PR gate
+    cilja 'main' (staging prima samo push iz feature/integ grana, ne PR target).
+    """
     on_block = _get_on_block(ci_workflow)
     pr_branches = on_block.get("pull_request", {}).get("branches", [])
-    assert "master" in pr_branches, (
-        f"ci.yml `on.pull_request.branches` = {pr_branches!r}, mora sadrzati 'master'. "
-        f"AC1 — PR ka master triggeruje CI gate (pocevsi od Story 2.1)."
+    assert "main" in pr_branches, (
+        f"ci.yml `on.pull_request.branches` = {pr_branches!r}, mora sadrzati 'main'. "
+        f"AC1 + Epic 9 (Story 9.2) — PR ka main triggeruje CI gate."
     )
 
 
