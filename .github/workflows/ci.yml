@@ -114,11 +114,16 @@ jobs:
       # `-e DJANGO_SECRET_KEY` prosledjuje job-level env u kontejner (compose env_file je
       # `../.env` koji u CI ne postoji, pa secret mora eksplicitno). `db` servis se dize
       # automatski preko `depends_on: condition: service_healthy` (pg_isready healthcheck).
+      # compilemessages PRE pytest-a: `.mo` su gitignore-ovani (build artefakt), runtime image
+      # ih NE kompajlira, a bind-mount `../:/app` donosi CI checkout BEZ `.mo`. Lokalni `just test`
+      # prolazi jer dev ima `.mo` na disku. Bez ovog koraka prevod-zavisni testovi (_en/_few/tooltip
+      # per-locale) padaju na msgid. `.po` (sr/hu/en) su tracked → compilemessages ih prevodi u `.mo`
+      # unutar bind-mount-a. Isto što deploy.sh radi na boxu (compilemessages je deploy korak).
       - name: Pytest (kroz Docker — Strategija A)
         run: >
           docker compose -f compose/local.yml run --rm
           -e DJANGO_SECRET_KEY
-          django uv run pytest
+          django sh -c "uv run python manage.py compilemessages && uv run pytest"
 
       # Uredno gasenje: zaustavi `db` (+ ostale) i obrisi volume-e da CI runner ostane
       # cist. `if: always()` — teardown i kad pytest padne (ne ostavlja orphan kontejnere).

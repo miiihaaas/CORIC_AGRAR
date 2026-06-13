@@ -44,6 +44,12 @@ ENV/
 *.pem
 *.key
 secrets/
+# Re-include ops/secrets/README.md runbook (dokumentuje GDE tajne zive — NE sadrzi tajne).
+# Story 9.2 test_deployment_ssl/test_backup_restic zahtevaju da je commit-ovan; blanket
+# `secrets/` ga je gutao. Prave tajne (.env/*.key/*.pem + buduci fajlovi u ops/secrets/) ostaju ignored.
+!ops/secrets/
+ops/secrets/*
+!ops/secrets/README.md
 
 # -----------------------------------------------------------------------------
 # Django
