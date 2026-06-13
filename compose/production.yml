@@ -62,6 +62,13 @@ services:
       # G-11/SM-D7: default True (prod hardening); lokalni HTTP smoke postavlja False
       # (inače 301 loop). MORA proći iz process env-a u kontejner.
       DJANGO_SECURE_SSL_REDIRECT: ${DJANGO_SECURE_SSL_REDIRECT:-True}
+      # Secure-cookie hardening (env-driven u production.py, default True = prod). HTTP/IP
+      # prelazna faza (pre domena+SSL-a) override-uje na False — secure cookie nad HTTP-om se
+      # NE šalje pa admin login/CSRF forme padaju. MORA kroz environment: blok jer env_file ne
+      # isporučuje ove var-ove pouzdano u kontejner (kao SSL_REDIRECT/CSRF_TRUSTED iznad).
+      DJANGO_SESSION_COOKIE_SECURE: ${DJANGO_SESSION_COOKIE_SECURE:-True}
+      DJANGO_CSRF_COOKIE_SECURE: ${DJANGO_CSRF_COOKIE_SECURE:-True}
+      DJANGO_LANGUAGE_COOKIE_SECURE: ${DJANGO_LANGUAGE_COOKIE_SECURE:-True}
       # G-9: bez ovoga 403 na cross-origin POST. Smoke: http://localhost.
       DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-}
       # DB konekcija: DATABASE_URL kroz env interpolaciju (postgres host = Docker DNS).
