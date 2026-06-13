@@ -179,7 +179,7 @@ jobs:
       # total-byte/best-practices/seo) OBARA job. CAVEAT: v1 brojevi su INDIKATIVNI
       # (`runserver --insecure` static NIJE prod nginx/Whitenoise) — TTFB/LCP autoritativni SAMO
       # na staging-targeted modu (OQ-1). Workflow se okida ISKLJUČIVO na push:[staging] +
-      # workflow_dispatch (ne na PR-ovima/master push-u), pa enforcing NE može da obori master merge PR.
+      # workflow_dispatch (ne na PR-ovima/main push-u), pa enforcing NE može da obori main merge PR.
       - name: Lighthouse CI autorun (collect + assert budgeti)
         run: npx @lhci/cli@0.14.x autorun
 

@@ -1,9 +1,9 @@
 name: E2E
 
 # Story 9.8 — Playwright E2E (3 UJ-a) na STAGING push.
-# AC7: E2E je suvise spor za svaki commit, pa se vozi SAMO na `staging` push (NE master/PR).
-# Default branch je `master`; `deploy.yml` lista je [staging, main]. Ovaj workflow je
-# `staging`-only → master push ga NE pokrece (fast dev loop bez E2E — zeljeno).
+# AC7: E2E je suvise spor za svaki commit, pa se vozi SAMO na `staging` push (NE main/PR).
+# Default branch je `main` (Epic 9 rename); `deploy.yml` lista je [staging, main]. Ovaj workflow
+# je `staging`-only → main push ga NE pokrece (fast dev loop bez E2E — zeljeno).
 #
 # SELF-CONTAINED (primarno, default): job sam dize ephemeral Postgres service + Django
 # (runserver u pozadini) + seed_e2e_data + playwright chromium, i cilja

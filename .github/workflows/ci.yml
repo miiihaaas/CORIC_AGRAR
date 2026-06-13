@@ -1,14 +1,16 @@
 name: CI
 
 # Story 1.9 — GitHub Actions CI Pipeline
-# Triggers: push to master, pull_request to master, manual workflow_dispatch (IMP-IT2-4).
-# Future: staging/main branches dodaju se u Epic 9 (Story 9.2).
+# Triggers: push to main/staging, pull_request to main, manual workflow_dispatch (IMP-IT2-4).
+# Epic 9 go-live (Story 9.2): master preimenovan u main + dodat staging; build+push GHCR
+# image MORA da se okine na ista oba deploy branch-a (main->production, staging) jer
+# deploy.yml radi `docker compose pull` tog image-a — bez build-a na staging deploy povlaci stari image.
 
 on:
   push:
-    branches: [master]
+    branches: [main, staging]
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:  # IMP-IT2-4: Manual run iz Actions UI - pre-merge dry-run i debugging.
 
 # Workflow-level least-privilege (IMP-1): contents:read za checkout je dovoljno za sve job-ove.
@@ -120,15 +122,15 @@ jobs:
       - name: Set stable per-branch image tag
         # M2: deploy.sh `docker compose pull` na boxu povlaci STABILAN per-branch tag
         # (ne :ci-<sha>, koji se menja svaki push). production.yml django image default-uje
-        # na :latest; deploy override-uje IMAGE_TAG po env-u (staging/production). Mapiranje:
-        #   master -> latest, staging -> staging, main -> production; fallback -> latest.
+        # na :latest; box `.env` MORA postaviti IMAGE_TAG po env-u (production prod box,
+        # staging staging box) da povuce ovaj tag. Mapiranje (Epic 9 master->main rename):
+        #   main -> production, staging -> staging; fallback -> latest.
         env:
           REF_NAME: ${{ github.ref_name }}
         run: |
           case "${REF_NAME}" in
-            master) STABLE_TAG=latest ;;
-            staging) STABLE_TAG=staging ;;
             main) STABLE_TAG=production ;;
+            staging) STABLE_TAG=staging ;;
             *) STABLE_TAG=latest ;;
           esac
           echo "STABLE_TAG=${STABLE_TAG}" >> $GITHUB_ENV
@@ -151,8 +153,8 @@ jobs:
           push: true  # Story 9.2 (AC9): GHCR push aktiviran (bilo false u 1.9 smoke).
           # M2: deterministicki :ci-<sha> (immutable audit) + stabilan per-branch tag koji
           # deploy.sh `docker compose pull` na boxu resolve-uje. production.yml django image
-          # default-uje na :latest (IMAGE_TAG override per deploy). master -> :latest,
-          # staging -> :staging, main -> :production (po ref-name-u, fallback :latest).
+          # default-uje na :latest (box .env override-uje IMAGE_TAG per deploy). main -> :production,
+          # staging -> :staging (po ref-name-u, fallback :latest).
           tags: |
             ghcr.io/${{ env.IMAGE_NAME }}:ci-${{ github.sha }}
             ghcr.io/${{ env.IMAGE_NAME }}:${{ env.STABLE_TAG }}
