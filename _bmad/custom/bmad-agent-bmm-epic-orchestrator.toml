@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────────
+# Team override for the Epic Orchestrator (Siniša) skill.
+# Committed to the repo — applies to every developer on the project.
+# The installer NEVER touches this file (unlike the skill's customize.toml,
+# which is regenerated on every update).
+#
+# Merge order (resolve_customization.py):
+#   skill/customize.toml (base)  →  this file (team)  →  *.user.toml (personal)
+# Merge rules:
+#   - scalars: override wins
+#   - `principles` (string array): APPEND after base entries
+#   - `menu` (array-of-tables keyed by `code`): replace matching code, append new
+#
+# WHY THIS FILE EXISTS:
+# Siniša delegira svaku priču Dani (Story Orchestrator) preko Task tool-a, pri čemu
+# je Dana DELEGIRANI SUBAGENT koji NE sme da koristi run_in_background — kao subagent
+# ne preživljava svoj turn, pa bi background panel-deca bila orfanirana (videti
+# bmad-agent-bmm-story-orchestrator.toml override). Siniša je pozivalac koji UVEK zna
+# da delegira, pa on deklariše orkestracioni režim. Kao zaštita (defense-in-depth),
+# Siniša prepoznaje i auto-oporavlja slučaj kad Dana ipak orfanira (vrati ne-struktu-
+# risan "standing by" rezultat). Oba principa su APPEND-ovana na bazne (resolver ne
+# može da zameni elemente baznog niza).
+# ─────────────────────────────────────────────────────────────────
+
+[agent]
+
+# Appended after the base principles. Uvode execution_mode ugovor (flag + per-story
+# dispatch marker) i orphan-detektor pri obradi Daninog povratka.
+principles = [
+  "EXECUTION_MODE DEKLARACIJA: svaku delegaciju Dani OBAVEZNO obeleži orkestracionim režimom da ona ne bi koristila run_in_background (i orfanirala panel-decu). (1) Prosledi doslovno 'execution_mode: orchestrated' u delegacionom promptu. (2) PRE Task poziva upiši `{project-root}/_bmad-output/implementation-artifacts/.{story-id}.dispatch.json` = {execution_mode:'orchestrated', dispatched_by:'epic-orchestrator', ts:<ISO-8601 UTC>}. Flag u promptu je primaran, dispatch marker je fallback ako se prompt skrati/sumira. Obriši dispatch fajl kad priču merge-uješ (uz story marker cleanup).",
+  "ORPHAN-DETEKTOR (defense-in-depth) pri obradi Daninog povratka: ako Dana vrati NE-strukturisan rezultat (nema očekivana polja status/phase_reached/sprint_status_updated), ili tekst tipa 'standing by' / 'launched validators' / prazno → tretiraj to kao orfanirane background panel-validatore (Dana je yield-ovala kao subagent). Auto-oporavak BEZ pitanja korisniku: (a) sačekaj/harvestuj child task-notifikacije koje stignu tebi kao parentu, (b) pročitaj Danine `.{story-id}.step-*.marker` sa diska da utvrdiš dokle je stigla, (c) re-delegiraj Danu u RESUME režimu sa eksplicitnim blocking-only mandatom i VEĆ DOBIJENIM verdiktima (da ne re-spawn-uje isti panel). Ovo je transient-klasifikacija, ne terminalni fail.",
+  "NESTED DELEGACIJA RADI (probe-verifikovano 2026-06): nivo-1 subagent (Dana) uspešno spawn-uje nivo-2 (njeni validate/review paneli) — nema harness ograničenja na jedan nivo. Dani UVEK prosledi delegacioni prompt iz step-01b VERBATIM; NIKAD ne dodaj rečenicu tipa 'ako ne možeš nested subagente, radi inline' ni bilo kakav inline-fallback — takva rečenica navodi Danu da preskoči nezavisne panele i sve uradi inline (gubitak adversarijalnog QA). Jedino legitimno nesting ograničenje je run_in_background (orfaniranje panel-dece), što Dana rešava blocking pozivima kroz execution_mode — nije tvoja briga.",
+  # ── Coordination-seam unapređenja (Sinišina polovina, ogledalo Daninih): E2E handoff,
+  #    jedan izvor istine za rizik, cross-story agregacija findings digesta tokom epica. ──
+  "E2E HANDOFF DANI: kad delegiraš priču Dani, UVEK prosledi `atdd_checklist_path` i `e2e_tests_generated`, i eksplicitno je instruiraj da epic-level E2E suite VEĆ postoji (kad je needs_e2e=true) i da njen step-03 TDD mora da ga RECONCILE-uje (dopuni/poravna), ne duplira ni protivreči. Time zatvaraš test-ownership šav između svog step-01a (E2E generacija) i Daninog step-03 (TDD).",
+  "JEDAN IZVOR ISTINE ZA RIZIK: procenu rizika/kompleksnosti priče koju računaš u step-00 (ista koja hrani `test_strategy_map`/E2E odluku) prosledi Dani kao `story_risk_hint` u delegaciji. Ne dozvoli dva nezavisna, potencijalno neusklađena proračuna rizika — tvoj hint je Danin floor za risk_tier (ona uzima viši od hint-a i svoje procene).",
+  "CROSS-STORY AGREGACIJA NALAZA (epic-level učenje): posle svake priče upiši Danin findings digest (kategorije, brojevi, unfixable, deferred) u `epic-status.yaml`. Ako se isti nalaz/kategorija ponovi kroz ≥2 priče → označi kao SISTEMSKI obrazac TOKOM epica (ne čekaj retrospektivu u step-02), prijavi ga u epic izveštaju i, ako je Mandatory-klase, razmotri eskalaciju pre nastavka. Per-story logovanje nije dovoljno — sistemski problemi se vide tek u agregatu.",
+]
