@@ -1,32 +1,59 @@
 {% load i18n %}
-{# „Priče sa polja" preview — wave divider gore + foto-pozadina + blog kartice. #}
+
 <section class="coric-home-section coric-home-blog-preview" aria-labelledby="home-price-title">
-  {% include "partials/wave_divider.html" with position="top" %}
-  {% include "partials/section_eyebrow.html" with text=_("PRIČE SA POLJA") tag="div" %}
+{%comment %}{% include "partials/wave_divider.html" with position="top" %}{% endcomment %}
+  {% include "partials/section_eyebrow.html" with text=_("PRIČE SA POLJA") tag="div" variant="on-light" %}
   <h2 id="home-price-title" class="coric-home-section__title">
     {% translate "Priče sa polja" %}
   </h2>
 
-  <div class="coric-home-blog-preview__grid">
-    {% if latest_posts %}
-      {% for post in latest_posts %}
-        <article class="coric-home-blog-card">
-          <h3 class="coric-home-blog-heading">{{ post.title }}</h3>
-          <p class="coric-home-blog-text">{{ post.excerpt }}</p>
+  <div class="coric-home-blog-preview__photo">
+    <svg class="coric-home-blog-preview__wave desk-only" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M -10 191 C 270 25 462 16 720 80 C 997 144 1218 175 1443 1 L 1443 0 L -10 0 Z" fill="#ffffff" />
+    </svg>
+    <svg class="coric-home-blog-preview__wave mob-only" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,80 C240,40 480,40 720,80 960,120 1200,120 1440,80 L1440,0 L0,0 Z" fill="#ffffff"/>
+    </svg>
+
+    <div class="coric-home-blog-preview__grid">
+      {% if latest_posts %}
+        {% for post in latest_posts %}
+          <article class="coric-home-blog-card">
+            <h3 class="coric-home-blog-heading">{{ post.title }}</h3>
+            <p class="coric-home-blog-text">{{ post.excerpt }}</p>
+            <a href="{{ post.get_absolute_url }}" class="coric-button coric-button--detaljnije coric-home-blog-card__cta">
+              {% translate "Pročitaj više" %}
+              <svg class="coric-button__arrow" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m9 6 6 6-6 6"/>
+              </svg>
+            </a>
+          </article>
+        {% endfor %}
+      {% else %}
+        {# EPIC-5-PLACEHOLDER: zameniti realnim Post karticama kad Story 5-4 doda Post model + footer dynamic vesti. Forward-compat: latest_posts queryset će automatski preći na {% if %} granu. #}
+        <article class="coric-home-blog-card" aria-label="{% translate "Demonstrativni sadržaj — placeholder dok blog nije objavljen" %}">
+          <p class="coric-home-blog-meta">{% translate "Lorem ipsum datum" %}</p>
+          <h3 class="coric-home-blog-heading">{% translate "Lorem ipsum dolor sit amet" %}</h3>
+          <p class="coric-home-blog-text">{% translate "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena." %}</p>
+          <a href="#" class="coric-button coric-button--detaljnije coric-home-blog-card__cta" aria-disabled="true" tabindex="-1" role="button">
+            {% translate "Saznaj više" %}
+            <svg class="coric-button__arrow" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m9 6 6 6-6 6"/>
+            </svg>
+          </a>
         </article>
-      {% endfor %}
-    {% else %}
-      {# EPIC-5-PLACEHOLDER: zameniti realnim Post karticama kad Story 5-4 doda Post model + footer dynamic vesti. Forward-compat: latest_posts queryset će automatski preći na {% if %} granu. #}
-      <article class="coric-home-blog-card" aria-label="{% translate "Demonstrativni sadržaj — placeholder dok blog nije objavljen" %}">
-        <p class="coric-home-blog-meta">{% translate "Lorem ipsum datum" %}</p>
-        <h3 class="coric-home-blog-heading">{% translate "Lorem ipsum dolor sit amet" %}</h3>
-        <p class="coric-home-blog-text">{% translate "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena." %}</p>
-      </article>
-      <article class="coric-home-blog-card" aria-label="{% translate "Demonstrativni sadržaj — placeholder dok blog nije objavljen" %}">
-        <p class="coric-home-blog-meta">{% translate "Lorem ipsum datum" %}</p>
-        <h3 class="coric-home-blog-heading">{% translate "Lorem ipsum dolor sit amet" %}</h3>
-        <p class="coric-home-blog-text">{% translate "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena." %}</p>
-      </article>
-    {% endif %}
+        <article class="coric-home-blog-card" aria-label="{% translate "Demonstrativni sadržaj — placeholder dok blog nije objavljen" %}">
+          <p class="coric-home-blog-meta">{% translate "Lorem ipsum datum" %}</p>
+          <h3 class="coric-home-blog-heading">{% translate "Lorem ipsum dolor sit amet" %}</h3>
+          <p class="coric-home-blog-text">{% translate "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Demonstrativni tekst dok rubrika Priče sa polja ne bude objavljena." %}</p>
+          <a href="#" class="coric-button coric-button--detaljnije coric-home-blog-card__cta" aria-disabled="true" tabindex="-1" role="button">
+            {% translate "Saznaj više" %}
+            <svg class="coric-button__arrow" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m9 6 6 6-6 6"/>
+            </svg>
+          </a>
+        </article>
+      {% endif %}
+    </div>
   </div>
 </section>

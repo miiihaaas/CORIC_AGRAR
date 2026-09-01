@@ -9,6 +9,8 @@
 /* === Search item wrapper (anchor za apsolutno pozicioniran panel) === */
 .coric-nav__search-item {
   position: relative;
+  margin-left: -1px;
+  padding: 10px;
 }
 
 /* === Expand panel (slide-in s desna 200ms) === */

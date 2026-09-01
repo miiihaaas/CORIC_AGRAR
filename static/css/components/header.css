@@ -130,6 +130,8 @@
  * neba na hero, beo preko zelene na ostalim stranama). BAZNI stil (#4). */
 .coric-nav__list .nav-item:not(:last-child) .coric-nav__link {
   border-right: 1px solid currentColor;
+  padding: 0 20px !important;
+  min-height: fit-content;
 }
 
 /* Poslednja stavka u oblaku (search) ima zelenu pozadinu — verno dizajnu. BAZNI. */
@@ -209,6 +211,10 @@
   .coric-page--hero .coric-nav {
     top: 40px;
   }
+  .navbar-expand-md .navbar-nav {
+      padding: 0px;
+      align-items: center;
+  }
 
   /* Scroll → bela sticky traka: nav prelazi u fixed na vrhu (top-bar nestaje,
    * sticky-nav.css ga skuplja). position: fixed čuva sticky-on-scroll dok je
@@ -216,6 +222,9 @@
   .coric-page--hero .coric-nav-shrunk .coric-nav {
     position: fixed;
     top: 0;
+  }
+  nav:not(.coric-nav--shrunk) .coric-nav__search-item {
+    padding: 20px !important;
   }
 }
 

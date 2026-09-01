@@ -7,7 +7,7 @@
   </h2>
 
   {% url 'brands:hzm_radne_masine' as hzm_url %}
-  <div class="coric-category-showcase" data-testid="home-radne-masine-grid">
+  <div class="coric-category-showcase narrow-one" data-testid="home-radne-masine-grid">
     {% for sub in hzm_subcategories %}
       <article class="coric-category-card" aria-labelledby="home-hzm-{{ sub.slug }}-title">
         {# Repeating Element po kategoriji — SM-D9 variant="green" (dekorativan, aria-hidden u partial-u). #}
@@ -20,7 +20,7 @@
         <a href="{{ hzm_url }}"
            class="coric-button coric-button--primary coric-category-card__cta"
            aria-label="{% blocktranslate with cat=sub.name %}Radne mašine — {{ cat }}{% endblocktranslate %}">
-          {% translate "Pogledaj radne mašine" %}
+          {% translate "Detaljnije" %}
         </a>
       </article>
     {% empty %}

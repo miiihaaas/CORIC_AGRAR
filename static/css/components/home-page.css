@@ -6,16 +6,18 @@
  * brand-listing.css (coric-pill-badge). Sve vrednosti kroz var(--token).
  * coric- BEM prefiks na svim klasama.
  * ========================================================================= */
-
+.narrow-one { max-width: 1200px; margin: 0 auto; } 
 /* === Sekcijski wrapper === */
 .coric-home-section {
-  max-width: var(--spacing-container-max-width);
+  /*max-width: var(--spacing-container-max-width);*/
+  max-width: 100%;
   margin: 0 auto;
-  padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);
+  /*padding: var(--spacing-section-mobile) var(--spacing-container-gutter-mobile);*/
+  padding: 50px 0;
 }
 
 .coric-home-section__title {
-  font-size: var(--typography-scale-h2);
+  /*font-size: var(--typography-scale-h2);*/
   font-weight: var(--typography-weight-bold);
   line-height: var(--typography-line-height-tight);
   color: var(--color-brand-green-800);
@@ -153,15 +155,18 @@
 .coric-brand-card__image-link {
   display: block;
   width: 100%;
+  text-align: center;
 }
 
 .coric-brand-card__logo {
   max-width: 200px;
   margin: 0 auto;
+  height: auto;
 }
 
 .coric-brand-card__image {
   width: 100%;
+  height: auto;
   border-radius: var(--rounded-md);
 }
 
@@ -184,29 +189,61 @@
   margin-top: auto;
 }
 
-/* === Priče sa polja preview === */
+/* === Priče sa polja preview ===
+ * Verno usklađeno sa coric-html/index.html #blog-sekcija (klijentov referentni
+ * dizajn): foto-pozadina + beli SVG talas preko njenog vrha + providno-staklene
+ * (glass) kartice sa centriranim belim tekstom, pomerene ispod talasa. */
 .coric-home-blog-preview {
   position: relative;
-  background-color: var(--color-brand-green-800);
+  padding-bottom: 0 !important;
+  /*background-color: var(--color-brand-green-800);*/
 }
 
 .coric-home-blog-preview .coric-home-section__title {
-  color: var(--color-neutral-white);
+  /*color: var(--color-neutral-white);*/
+}
+
+.coric-home-blog-preview__photo {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  /*max-width: var(--spacing-container-max-width);*/
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-scale-6) var(--spacing-scale-3) var(--spacing-scale-3);
+  border-radius: var(--rounded-lg);
+  background-image: url("../../img/blog-sekcija-bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Talas preseca vrh foto-pozadine (beli fill „nastavlja" belinu naslova iznad
+ * u zaobljenoj krivoj) — position:absolute preko .desk-only/.mob-only para,
+ * isti obrazac kao referentni .blog-wrapper svg. */
+.coric-home-blog-preview__wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  display: block;
 }
 
 .coric-home-blog-preview__grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-scale-6);
-  max-width: var(--spacing-container-max-width);
-  margin: 0 auto;
+  margin-top: var(--spacing-scale-8);
 }
 
 .coric-home-blog-card {
-  padding: var(--spacing-scale-5);
-  background-color: var(--color-neutral-white);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-md);
+  padding: var(--spacing-scale-6);
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: var(--rounded-sm);
+  text-align: center;
 }
 
 .coric-home-blog-meta {
@@ -220,20 +257,21 @@
 .coric-home-blog-heading {
   font-size: var(--typography-scale-h4);
   font-weight: var(--typography-weight-bold);
-  color: var(--color-brand-green-800);
+  color: var(--color-neutral-white);
   margin-bottom: var(--spacing-scale-3);
 }
 
 .coric-home-blog-text {
   font-size: var(--typography-scale-small);
   line-height: var(--typography-line-height-base);
-  color: var(--color-neutral-gray-700);
-  margin: 0;
+  color: var(--color-neutral-white);
+  margin: 0 0 var(--spacing-scale-5);
 }
 
 /* === Disabled placeholder CTA (SM-D14) === */
-.coric-home-about__cta[aria-disabled="true"] {
-  pointer-events: none;
+.coric-home-about__cta[aria-disabled="true"],
+.coric-home-blog-card__cta[aria-disabled="true"] {
+  /*pointer-events: none;*/
 }
 
 /* === Responsive: mobile hero offset (header overlay je relative na mobilnom →
@@ -242,20 +280,37 @@
   .coric-home-hero {
     padding-top: var(--spacing-header-nav);
   }
+
+  .coric-home-blog-preview .desk-only {
+    display: none !important;
+  }
+
+  .coric-home-blog-preview__wave {
+    height: 48px;
+  }
 }
 
 /* === Responsive: desktop multi-col + veći hero === */
 @media (min-width: 768px) {
   .coric-home-section {
-    padding: var(--spacing-section) var(--spacing-container-gutter-desktop);
+    /*padding: var(--spacing-section) var(--spacing-container-gutter-desktop);*/
+    padding: 50px 0;
   }
 
   .coric-home-hero {
     min-height: 100vh;
   }
 
+  .coric-home-blog-preview .mob-only {
+    display: none !important;
+  }
+
   .coric-home-blog-preview__grid {
     grid-template-columns: repeat(2, 1fr);
+    /*margin-top: calc(var(--spacing-scale-12) * 2);*/
+    margin-top: 300px;
+    margin-bottom: 40px;
+    max-width: 1200px;
   }
 }
 
@@ -270,3 +325,126 @@
     transform: none;
   }
 }
+/* ============================================================================
+ * Miki's CSS */
+
+.bg-dark { background-color: #25402f !important; }
+.ml-50 { margin-left: 50px !important; }
+
+/* Header */
+.site-header { position: absolute; top: 0; width: 100%; z-index: 100; transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; }
+.site-header.hero { background: transparent; }
+
+/* Sticky header */
+.site-header.sticky { position: fixed; top: 0; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transform: translateY(0); }
+.site-header.sticky .top-bar { display: none; }
+.site-header.sticky img.header-logo{ max-width: 40%; }
+
+.site-header.hero .nav-link,
+.site-header.hero .navbar-brand { color: #000; }
+.site-header.sticky .nav-link,
+.site-header.sticky .navbar-brand { color: #212529; }
+.site-header.sticky .navbar .nav-link:hover { color: #c8d32c; }
+
+/* Top bar */
+.top-bar { color: #000; padding-top: 20px; }
+.top-bar a { color: #000; text-decoration: none; }
+
+/* Navbar */
+img.header-logo { max-width: 80%; }
+.navbar { background: transparent;}
+.navbar .nav-link,
+.navbar-brand { color: #000; }
+.menulink-border { border-right: 1px solid #000; }
+.navbar .nav-link:hover { color: #fff; }
+header:not(.sticky) .nav-link.active { color: #fff !important; }
+ul.navbar-nav { background: rgba(255, 255, 255, 0.2); border-radius: 8px; /*overflow: hidden;*/ }
+ul.navbar-nav li.nav-item .nav-link { text-transform: uppercase; padding: 10px 20px; font-size: 1rem; }
+ul.navbar-nav li.nav-item .search-toggle { padding: 10px 30px; }
+
+/* Hero */
+.hero-section { height: 100vh; background-size: cover; background-position: center; position: relative; }
+.home-hero-bg { background-image: url("../../img/home-hero-1.jpg"); }
+.single-hero-bg { background-image: url("../../img/single-hero-1.jpg"); }
+.hero-overlay { /*background: rgba(0, 0, 0, 0.45);*/ height: 100%; }
+.hero-section .container { height: 100%; }
+
+.hero-card { background: url(../../img/green-box-bg.png) #1f3f2f right bottom no-repeat; color: #ffffff; padding: 30px; border-radius: 10px; }
+.hero-card img { width: inherit; }
+.hero-yellow-title { color: #e7af12; text-transform: uppercase; margin: 30px 0; }
+
+/* Search */
+.search-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
+.search-overlay.active { opacity: 1; visibility: visible; }
+.search-box { position: relative; width: 90%; max-width: 600px; }
+.search-box input { padding-right: 3rem; }
+.search-close { position: absolute; top: -50px; right: 0; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; }
+.search-toggle i { font-size: 1.1rem; }
+
+/* Naslovna stranica */
+section.artikli .artikal-img { max-width: 100%; }
+section.artikli p.artikal-logo { margin: 0 0 50px; }
+
+.mehanizacija { background: url('../../img/jeegee-banner-bg.jpg') center center no-repeat; overflow: hidden; }
+.mehanizacija .off-circle { aspect-ratio: 1 / 1; border-radius: 50%; background: rgba(0, 164, 233, 0.5); }
+.mehanizacija .banner-content { padding: 4rem; color: white; }
+.mehanizacija .banner-content img { max-width: 100%; height: auto; }
+.pol-meh-bg { background-image: url(../../img/polovna-mehanizacija.jpg); }
+
+.halfbanner-bg { background-position: center center; background-repeat: no-repeat; background-size: cover; border-radius: 10px; }
+.halfbanner-card { background: url('../../img/green-box-bg.png') #1f3f2f right bottom no-repeat; color: #ffffff; padding: 50px; border-radius: 10px; position: relative; display: flex; flex-direction: column; justify-content: center; }
+.halfbanner-card p { margin: 60px 0; }
+.halfbanner-card .btn-detaljnije { width: fit-content; }
+
+.blog-wrapper { position: relative; width: 100%; }
+.hero-image { width: 100%; height: 100%; background-image: url("../../img/blog-sekcija-bg.jpg"); background-size: cover; background-position: center; padding: 50px; }
+.blog-wrapper svg { position: absolute; top: 0; left: 0; width: 100%; height: 120px; display: block; padding: 0; }
+.blog-box { background-color: rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 50px; text-align: center; }
+.blog-box .blog-title { font-size: 28px; color: #fff; margin-bottom: 50px; }
+.blog-box p { color: #fff; margin-bottom: 50px; }
+
+/* Osnovni elementi */
+.btn-detaljnije, .btn-detaljnije-light { display: inline-flex; align-items: center; gap: 12px; padding: 10px 30px; color: #ffffff; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 999px; outline-offset: 3px; }
+.btn-detaljnije { background-image: linear-gradient(to right, #4d7e60, #25402f); color: #ffffff;  outline: 3px solid #395f48; }
+.btn-detaljnije:hover { background-image: linear-gradient(to right, #25402f, #25402f); } 
+.btn-detaljnije-light { background-image: linear-gradient(to right, #b3b3b1, #568db4); color: #ffffff;  outline: 3px solid #fff; }
+.btn-detaljnije .buttonarrow, .btn-detaljnije-light .buttonarrow { font-size: 24px; transition: all ease 0.2s; }
+.btn-detaljnije:hover .buttonarrow, .btn-detaljnije-light:hover .buttonarrow { transform: translateX(5px);}
+
+.section-title { font-weight: 700; }
+
+/* Footer */
+.footer-bg { background-image: linear-gradient(#25402f, #4d7e60); }
+ul.footer-menu-list { list-style: none; padding: 0; }
+.footer-menu-list li a { color: #fff; text-decoration: none; padding: 10px 0; line-height: 32px; }
+.footer-menu-list li a:hover { color: #c8d32c; }
+.footer-menus h5  { margin-bottom: 20px; }
+.footer-menus i.fa-solid { border: 1px solid #fff; padding: 5px; border-radius: 5px; margin-right: 10px; }
+
+/*Responsive */
+@media (max-width: 767px) {
+    .desk-only { display: none !important; }
+    .mb-10 { margin-bottom: 5rem !important; }
+    .mehanizacija .off-circle { width: 150vw; margin: -35vh 0 15vh -43vw; padding: 30vh 0 0 28vw; }
+    .row { margin-left: 0; margin-right: 0; }
+    .halfbanner-bg { min-height: 60vh; border-radius: 0;}
+    .halfbanner-card { margin: -10vh auto 0; width: 85%; }
+    .hlfb-left .halfbanner-card { order: 2; }
+}
+@media (min-width: 768px) {
+    .mob-only { display: none !important; }
+    .mb-10 { margin-bottom: 10rem !important; }
+    .row { margin-left: 0; margin-right: 0; }
+    .mehanizacija .off-circle { width: 40vw;  margin: -30vh 0 15vh -10vw; padding: 30vh 0 0 10vw; }
+    .halfbanner-bg { width: 75%; min-height: 70vh; }
+    .hlfb-right .halfbanner-card { flex: 0.9; margin: 30px 30px 30px -20vw; }
+    .hlfb-left { overflow: hidden; }
+    .hlfb-left .halfbanner-card { flex: 0.9; margin: 30px -20vw 30px 30px; }
+    .hlfb-left .halfbanner-bg { margin-right: -90px !important; }
+    .blog-container { margin-top: 300px; }
+}
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl { max-width: revert-rule; }
+}
+
+ /* ========================================================================= */
