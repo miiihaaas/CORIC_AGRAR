@@ -19,21 +19,33 @@
       </section>
     {% endif %}
 
-    {% if testimonials %}
-      <section id="brand-testimonials" aria-labelledby="brand-testimonials-title" class="coric-testimonials">
-        {% include "partials/_testimonials_slider.html" with testimonials=testimonials slider_id="brand-testimonials-title" %}
-      </section>
-    {% endif %}
+    <section id="brand-intro" aria-label="{% blocktranslate with name=brand.name %}Predstavljanje brenda — {{ name }}{% endblocktranslate %}" class="coric-brand-intro">
+      {% include "brands/partials/_intro_banner.html" %}
+    </section>
 
     <section id="brand-series" aria-labelledby="brand-series-title" class="coric-brand-series">
       <h2 id="brand-series-title" class="visually-hidden">{% translate "Modeli brenda" %}</h2>
       {% include "brands/partials/_series_section.html" %}
     </section>
 
+    {% if testimonials %}
+      <section id="brand-testimonials" aria-labelledby="brand-testimonials-title" class="coric-testimonials">
+        <h2 class="coric-series-section__heading">
+          {% translate "Zadovoljni" %}<br>
+          <strong>{% translate "kupci" %}</strong>
+        </h2>
+        {% include "partials/_testimonials_slider.html" with testimonials=testimonials slider_id="brand-testimonials-title" %}
+      </section>
+    {% endif %}
+
     {% if brand.catalog_pdf %}
       <section id="brand-catalog-cta" aria-labelledby="brand-catalog-cta-title" class="coric-catalog-cta-banner">
         {% include "brands/partials/_catalog_cta.html" %}
       </section>
     {% endif %}
+
+    <section id="brand-bottom-photo" aria-hidden="true" class="coric-home-section coric-home-blog-preview coric-brand-bottom-photo-section">
+      {% include "brands/partials/_bottom_cta_photo.html" %}
+    </section>
   </div>
 {% endblock content %}

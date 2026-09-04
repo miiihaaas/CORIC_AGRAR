@@ -29,23 +29,31 @@
   justify-content: center;
   padding: var(--spacing-scale-5);
   text-align: center;
-  background: var(--color-neutral-cream);
+  background: var(--color-brand-green-800);
   border-radius: var(--rounded-full);
   aspect-ratio: 1;
   max-width: 240px;
   margin: 0 auto;
 }
 
+.coric-statistic-medallion__icon {
+  font-size: var(--typography-scale-h3);
+  color: var(--color-accent-gold-500);
+  margin-bottom: var(--spacing-scale-2);
+  line-height: 1;
+}
+
 .coric-statistic-medallion__value {
   font-size: var(--typography-scale-h1);
   font-weight: var(--typography-weight-bold);
-  color: var(--color-brand-green-800);
+  color: var(--color-semantic-text-on-dark);
   line-height: var(--typography-line-height-tight);
 }
 
 .coric-statistic-medallion__label {
-  font-size: var(--typography-scale-small);
-  color: var(--color-neutral-gray-700);
+  font-size: var(--typography-scale-caption);
+  color: var(--color-semantic-text-on-dark);
+  opacity: 0.85;
   margin-top: var(--spacing-scale-2);
   text-transform: uppercase;
   letter-spacing: var(--typography-tracking-wide);

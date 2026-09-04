@@ -1,0 +1,15 @@
+{% load static %}
+{# Zatvarajuća foto-sekcija pred footer — identična .coric-home-blog-preview__photo #}
+{# sa naslovne strane (isti wave + rounded photo box), samo BEZ __grid blog kartica. #}
+{# Klase su namerno deljene sa _home_price_sa_polja.html (isti vizuelni blok). #}
+<div class="coric-home-blog-preview__photo">
+  <svg class="coric-home-blog-preview__wave desk-only" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M -10 191 C 270 25 462 16 720 80 C 997 144 1218 175 1443 1 L 1443 0 L -10 0 Z" fill="#ffffff" />
+  </svg>
+  <svg class="coric-home-blog-preview__wave mob-only" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,80 C240,40 480,40 720,80 960,120 1200,120 1440,80 L1440,0 L0,0 Z" fill="#ffffff"/>
+  </svg>
+  <span class="coric-brand-bottom-photo__badge" aria-hidden="true">
+    <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}" alt="">
+  </span>
+</div>

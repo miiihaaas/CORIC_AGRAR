@@ -16,6 +16,7 @@
 
 /* Components CSS imports (Story 2.6) — relative-with-dot syntax MANDATORY (IMP-7) */
 @import url('./components/brand-listing.css');
+@import url('./components/brand-image-banners.css');
 @import url('./components/statistic-medallion.css');
 @import url('./components/testimonials-slider.css');
 
@@ -72,4 +73,9 @@
  * ========================================================================= */
 body {
   font-family: var(--typography-family-primary);
+  /* Full-bleed sekcije (npr. .coric-brand-hero--photo) koriste width:100vw
+   * breakout iz centriranog kontejnera — 100vw ume da bude par piksela šire
+   * od stvarnog viewport-a (računa scrollbar širinu), pa je overflow-x guard
+   * ovde defanzivan protiv horizontalnog scroll-a na celoj strani. */
+  overflow-x: hidden;
 }

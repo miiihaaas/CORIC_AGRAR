@@ -13,9 +13,15 @@
         {% endif %}
       </div>
       <div class="coric-product-card__body">
+        {% if sim.brand.logo %}
+          <img src="{{ sim.brand.logo.url }}" alt="{{ sim.brand.name }}" class="coric-product-card__brand-logo">
+        {% endif %}
         <h3 class="coric-product-card__title">{{ sim.name }}</h3>
         {% if sim.horse_power %}
           <p class="coric-product-card__spec">{{ sim.horse_power }} {% translate "KS" %}</p>
+        {% endif %}
+        {% if sim.description %}
+          <p class="coric-product-card__excerpt">{{ sim.description|truncatewords:20 }}</p>
         {% endif %}
         <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "OPŠIRNIJE" %}</span>
       </div>

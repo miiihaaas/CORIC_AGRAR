@@ -29,6 +29,16 @@
   margin: 0 0 var(--spacing-scale-5) 0;
 }
 
+.coric-hero-overlay-card__description {
+  font-family: var(--typography-family-primary);
+  font-weight: var(--typography-weight-regular);
+  font-size: var(--typography-scale-small);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-semantic-text-on-dark);
+  opacity: 0.9;
+  margin: 0 0 var(--spacing-scale-5) 0;
+}
+
 .coric-hero-overlay-card__bullets {
   list-style: none;
   padding: 0;

@@ -103,6 +103,17 @@ class BrandDetailView(DetailView):
             .select_related("product")
             .order_by("order", "-created_at")[:10]
         )
+        # Hero redesign (redizajn brend strane): predračunato ovde umesto u
+        # template-u da _hero_section.html ostane jedan include (bez 4-8
+        # kombinatornih grana za variant × logo × slogan/name). FieldFile.url
+        # na praznom ImageField-u baca ValueError (nije silent_variable_failure)
+        # — MORA se guard-ovati pre template rendera, ne unutar template izraza.
+        ctx["hero_variant"] = (
+            "blue" if (self.object.brand_color or "").lower() == "#00a4e9" else "green"
+        )
+        ctx["hero_logo_url"] = self.object.logo.url if self.object.logo else ""
+        ctx["hero_title"] = self.object.slogan or self.object.name
+        ctx["hero_fallback_field"] = "slogan" if self.object.slogan else "name"
         return ctx
 
 

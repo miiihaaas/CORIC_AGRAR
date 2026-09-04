@@ -1,7 +1,13 @@
 {% load i18n %}
+{% if brand.series.all %}
+  <h2 class="coric-series-section__heading">
+    {% translate "Modeli" %}<br>
+    <strong>{% translate "proizvođača" %}</strong>
+  </h2>
+{% endif %}
 {% for series in brand.series.all %}
   <article class="coric-series-block" aria-labelledby="series-{{ series.slug }}-title" data-testid="series-section-{{ series.slug }}">
-    <h3 id="series-{{ series.slug }}-title" class="coric-series-block__title">{{ series.name }}</h3>
+    {% include "partials/section_eyebrow.html" with text=series.name|upper tag="h3" id="series-"|add:series.slug|add:"-title" %}
     {% if series.description %}<p class="coric-series-block__description">{{ series.description }}</p>{% endif %}
     {% if series.layout_mode == "grid" %}
       {% include "brands/partials/_series_grid.html" %}

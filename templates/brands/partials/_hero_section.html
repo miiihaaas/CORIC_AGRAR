@@ -1,20 +1,17 @@
 {% load i18n %}
-<div class="coric-brand-hero" data-testid="brand-hero">
-  {% if brand.brand_color|lower == "#00a4e9" %}
-    {% with variant="blue" %}
-      {% if brand.logo %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo=brand.logo.url brand_logo_alt=brand.name variant=variant bullets="" %}
-      {% else %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo="" brand_logo_alt=brand.name variant=variant bullets="" %}
-      {% endif %}
-    {% endwith %}
-  {% else %}
-    {% with variant="green" %}
-      {% if brand.logo %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo=brand.logo.url brand_logo_alt=brand.name variant=variant bullets="" %}
-      {% else %}
-        {% include "partials/hero_overlay_card.html" with title=brand.name fallback_obj=brand fallback_field='name' brand_logo="" brand_logo_alt=brand.name variant=variant bullets="" %}
-      {% endif %}
-    {% endwith %}
+{# Foto-hero (redizajn): full-bleed brand.hero_image + overlay kartica dole-levo. #}
+{# Bez hero_image (brendovi koji je još nemaju) — degradira na staro ponašanje: #}
+{# kartica na green-800 pozadini, bez fotografije (SM: BEZ regresije za ostale brendove). #}
+<div class="coric-brand-hero{% if brand.hero_image %} coric-brand-hero--photo{% endif %}" data-testid="brand-hero">
+  {% if brand.hero_image %}
+    <img src="{{ brand.hero_image.url }}"
+         alt=""
+         aria-hidden="true"
+         loading="eager"
+         fetchpriority="high"
+         class="coric-brand-hero__bg">
   {% endif %}
+  <div class="coric-brand-hero__overlay">
+    {% include "partials/hero_overlay_card.html" with title=hero_title fallback_obj=brand fallback_field=hero_fallback_field description=brand.description brand_logo=hero_logo_url brand_logo_alt=brand.name variant=hero_variant bullets="" %}
+  </div>
 </div>

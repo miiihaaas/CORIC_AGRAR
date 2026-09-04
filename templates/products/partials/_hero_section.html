@@ -1,4 +1,18 @@
 {% load i18n %}
-<div class="coric-product-hero" data-testid="product-hero">
-  {% include "partials/hero_overlay_card.html" with title=product.name fallback_obj=product fallback_field='name' bullets=product.key_features brand_logo=hero_brand_logo_url brand_logo_alt=product.brand.name variant=hero_variant %}
+{# Foto-hero (redesign, isti obrazac kao brands/partials/_hero_section.html) — #}
+{# full-bleed pozadina (prva galerijska slika, fallback main_image) + overlay #}
+{# kartica dole-levo. Bez slike degradira na staro ponasanje (kartica na #}
+{# green-800 pozadini). #}
+<div class="coric-product-hero{% if hero_bg_image %} coric-product-hero--photo{% endif %}" data-testid="product-hero">
+  {% if hero_bg_image %}
+    <img src="{{ hero_bg_image.url }}"
+         alt=""
+         aria-hidden="true"
+         loading="eager"
+         fetchpriority="high"
+         class="coric-product-hero__bg">
+  {% endif %}
+  <div class="coric-product-hero__overlay">
+    {% include "partials/hero_overlay_card.html" with title=product.name fallback_obj=product fallback_field='name' bullets=product.key_features brand_logo=hero_brand_logo_url brand_logo_alt=product.brand.name variant=hero_variant %}
+  </div>
 </div>

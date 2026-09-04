@@ -89,8 +89,12 @@ def _full_product_fixture(slug_suffix=""):
 
 
 def test_sections_render_in_correct_order(client):
-    """AC3: hero → opis → galerija → specs → brošura → slični → testimonijali → variants
-    TAČNIM redosledom (verifikuje monotono rastuće position indices u HTML render-u).
+    """AC3 (redizajn — vidi coric-agrar-stranica-proizvoda.jpg mokap): hero → opis →
+    specs → galerija → brošura → testimonijali → slični → variants TAČNIM redosledom
+    (verifikuje monotono rastuće position indices u HTML render-u).
+
+    SM: redosled promenjen (specs PRE galerije; testimonijali PRE sličnih modela) da
+    prati usvojeni product-page dizajn — namerna izmena, NE regresija.
     """
     activate("sr")
     product = _full_product_fixture("AC3-order")
@@ -119,13 +123,13 @@ def test_sections_render_in_correct_order(client):
     assert variants_idx >= 0, "Variants sekcija (#product-variants) MORA postojati."
 
     assert (
-        hero_idx < desc_idx < gallery_idx < specs_idx < brochure_idx
-        < similar_idx < testimonials_idx < variants_idx
+        hero_idx < desc_idx < specs_idx < gallery_idx < brochure_idx
+        < testimonials_idx < similar_idx < variants_idx
     ), (
         f"Section order BROKEN. Pozicije: hero={hero_idx} desc={desc_idx} gallery={gallery_idx} "
         f"specs={specs_idx} brochure={brochure_idx} similar={similar_idx} test={testimonials_idx} "
         f"variants={variants_idx}. "
-        "Očekivan: hero < opis < galerija < specs < brošura < slični < testimonijali < variants."
+        "Očekivan (redizajn): hero < opis < specs < galerija < brošura < testimonijali < slični < variants."
     )
 
 

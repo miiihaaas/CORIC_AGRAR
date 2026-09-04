@@ -1,0 +1,16 @@
+{% load i18n static %}
+{# Intro banner (redizajn) — full-bleed dekorativna fotografija + zatamnjen tekst preko slike. #}
+{# Generička static slika (isto pravilo kao about_hero.html) — NIJE per-brand polje; #}
+{# brand.name ulazi kroz blocktranslate, pa banner ostaje ispravan za svaki brend. #}
+<div class="coric-brand-intro-banner" data-testid="brand-intro-banner">
+  <img src="{% static 'img/home-hero-1.jpg' %}"
+       alt=""
+       aria-hidden="true"
+       loading="lazy"
+       class="coric-brand-intro-banner__bg">
+  <div class="coric-brand-intro-banner__overlay">
+    <p class="coric-brand-intro-banner__text">
+      {% blocktranslate with brand=brand.name %}{{ brand }} traktori pružaju <strong>snagu, pouzdanost i udobnost</strong>, koju poljoprivrednik oseti već pri prvom ulasku u njivu.{% endblocktranslate %}
+    </p>
+  </div>
+</div>

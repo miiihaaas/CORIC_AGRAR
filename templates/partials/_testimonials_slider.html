@@ -11,21 +11,23 @@
      data-testid="testimonials-slider">
   <div class="coric-testimonials-slider__viewport">
     {% for t in testimonials %}
-      <article class="coric-testimonials-slider__slide{% if forloop.first %} is-active{% endif %}"
+      <article class="coric-testimonials-slider__slide{% if forloop.first %} is-active{% endif %}{% if t.photo %} coric-testimonials-slider__slide--with-photo{% endif %}"
                role="group"
                aria-roledescription="{% translate 'slajd' %}"
                aria-label="{% blocktranslate with counter=forloop.counter total=testimonials|length %}{{ counter }} od {{ total }}{% endblocktranslate %}"
                aria-hidden="{% if not forloop.first %}true{% else %}false{% endif %}"
                data-testid="testimonial-{{ forloop.counter }}">
-        <blockquote class="coric-testimonials-slider__quote">{{ t.quote }}</blockquote>
-        <p class="coric-testimonials-slider__attribution">
-          {% if t.photo %}
-            <span class="coric-testimonials-slider__photo">
-              {% responsive_picture t.photo alt=t.author_name sizes="80px" loading="lazy" %}
-            </span>
-          {% endif %}
-          — {{ t.author_name }}{% if t.location %}, {{ t.location }}{% endif %}
-        </p>
+        {% if t.photo %}
+          <span class="coric-testimonials-slider__photo">
+            {% responsive_picture t.photo alt=t.author_name sizes="(max-width: 767px) 120px, 240px" loading="lazy" %}
+          </span>
+        {% endif %}
+        <div class="coric-testimonials-slider__content">
+          <blockquote class="coric-testimonials-slider__quote">{{ t.quote }}</blockquote>
+          <p class="coric-testimonials-slider__attribution">
+            — {{ t.author_name }}{% if t.location %}, {{ t.location }}{% endif %}
+          </p>
+        </div>
       </article>
     {% endfor %}
   </div>

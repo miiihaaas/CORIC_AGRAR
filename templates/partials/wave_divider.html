@@ -10,8 +10,9 @@
   class="coric-wave-divider{% if position == 'bottom' %} coric-wave-divider--bottom{% endif %}"
 >
   {# IMP-17: explicit token-based fill sprečava FOUC (crni flash dok CSS ne učita). #}
+  {# `fill` param (opciono) — default ostaje green-800; npr. fill="var(--color-neutral-white)" za talas preko fotografije. #}
   <path
     d="M0,40 C150,80 300,0 450,40 C600,80 750,0 900,40 C1050,80 1200,0 1200,40 L1200,80 L0,80 Z"
-    fill="var(--color-brand-green-800)"
+    fill="{{ fill|default:'var(--color-brand-green-800)' }}"
   />
 </svg>

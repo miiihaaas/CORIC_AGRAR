@@ -5,14 +5,12 @@
 
 .coric-testimonials-slider {
   position: relative;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: var(--spacing-scale-6) var(--spacing-scale-4);
+  padding: var(--spacing-scale-6) 0;
 }
 
 .coric-testimonials-slider__viewport {
   position: relative;
-  min-height: 200px;
+  min-height: 280px;
   overflow: hidden;
 }
 
@@ -23,13 +21,19 @@
   transition: opacity 0.4s ease;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: var(--spacing-scale-5);
   text-align: center;
 }
 
 .coric-testimonials-slider__slide.is-active {
   opacity: 1;
   z-index: 1;
+}
+
+.coric-testimonials-slider__content {
+  max-width: 640px;
 }
 
 .coric-testimonials-slider__quote {
@@ -46,14 +50,54 @@
   margin: 0;
 }
 
+.coric-testimonials-slider__attribution strong {
+  color: var(--color-brand-green-800);
+}
+
 .coric-testimonials-slider__photo {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
+  display: block;
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
   border-radius: var(--rounded-full);
   overflow: hidden;
-  margin-right: var(--spacing-scale-3);
-  vertical-align: middle;
+}
+
+.coric-testimonials-slider__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Sa fotografijom: veća landscape fotografija levo + tekst desno (desktop) --- */
+@media (min-width: 768px) {
+  .coric-testimonials-slider__slide--with-photo {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 0;
+  }
+
+  .coric-testimonials-slider__slide--with-photo .coric-testimonials-slider__photo {
+    width: 320px;
+    height: 320px;
+    border-radius: var(--rounded-lg) 0 0 var(--rounded-lg);
+  }
+
+  .coric-testimonials-slider__slide--with-photo .coric-testimonials-slider__content {
+    flex: 1;
+    max-width: none;
+    height: 320px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--spacing-scale-6);
+    border-radius: 0 var(--rounded-lg) var(--rounded-lg) 0;
+    background-image: url("../../img/testimonial-bg.jpg");
+    background-size: cover;
+    background-position: center;
+  }
 }
 
 .coric-testimonials-slider__controls {
