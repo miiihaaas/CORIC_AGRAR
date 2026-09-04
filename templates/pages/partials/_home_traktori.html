@@ -6,7 +6,7 @@
     {% translate "Naši brendovi" %}
   </h2>
 
-  <div class="coric-brand-grid narrow-one" data-testid="home-brand-grid">
+  <div class="coric-brand-grid narrow-one1" data-testid="home-brand-grid">
     {% for brand in traktori_brands %}
       {% url 'brands:detail' slug=brand.slug as brand_url %}
       <article class="coric-brand-card" aria-labelledby="home-brand-{{ brand.slug }}-title">
