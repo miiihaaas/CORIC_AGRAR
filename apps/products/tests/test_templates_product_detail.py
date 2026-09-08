@@ -554,8 +554,8 @@ def test_max_4_similar_products(client):
     )
 
 
-def test_wave_divider_rendered_above_similar_section(client):
-    """AC6: Wave Divider partial je render-ovan iznad slični-modeli sekcije."""
+def test_wave_divider_not_rendered_above_similar_section(client):
+    """Wave Divider partial je uklonjen sa stranice pojedinačnog proizvoda (traktora)."""
     activate("sr")
     brand = BrandFactory.create(name="Wave Brand")
     product = ProductFactory.create(brand=brand, name="Source", is_published=True)
@@ -567,19 +567,10 @@ def test_wave_divider_rendered_above_similar_section(client):
     assert response.status_code == 200
     html = response.content.decode("utf-8")
 
-    # Wave divider markup mora biti pre product-similar sekcije
-    # (assume wave_divider.html partial renderuje element sa "wave-divider" ili "coric-wave-divider"
-    # u class name-u; verify by string presence + position)
     wave_pattern = re.compile(r"wave[-_]divider", re.IGNORECASE)
-    wave_match = wave_pattern.search(html)
-    similar_idx = html.find('id="product-similar"')
-    assert wave_match is not None, (
-        "Wave Divider partial MORA biti render-ovan na strani (uključuje keyword "
-        "'wave-divider' u markup-u). Story 1.7 partial."
-    )
-    assert wave_match.start() < similar_idx, (
-        f"Wave Divider ({wave_match.start()}) MORA biti PRE slični-modeli sekcije "
-        f"(id='product-similar', pozicija {similar_idx}) — included sa position='top'."
+    assert wave_pattern.search(html) is None, (
+        "Wave Divider partial NE SME biti render-ovan na strani pojedinačnog proizvoda "
+        "(uklonjen na zahtev korisnika)."
     )
 
 

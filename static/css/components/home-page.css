@@ -25,6 +25,30 @@
   margin-bottom: var(--spacing-scale-6);
 }
 
+/* === Radne mašine kartice — reprezentativna fotografija (REUSE .coric-category-card
+ * iz category-showcase.css; ovo je jedini novi element). Isti 3:2 otisak/border-radius
+ * kao .coric-repeating-element fallback, tako da zamena slika ↔ dekorativni blok ne
+ * pomera layout. picture tag iz {% responsive_picture %} je nestilizovan wrapper —
+ * klasa ide na unutrašnji <img>. */
+.coric-category-card__photo {
+  display: block;
+  width: 100%;
+  /* height:auto MORA biti eksplicitan — <img height="…"> HTML atribut (iz
+   * responsive_picture fallback thumb-a) inače "pobedi" i aspect-ratio se
+   * ignoriše (oba width/height postaju definite vrednosti). */
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--rounded-md);
+}
+
+/* Naslov kartice — smanjen samo u ovoj sekciji (scoped override; baza
+ * .coric-category-card__title u category-showcase.css ostaje netaknuta jer
+ * je deljena sa HZM/Jeegee landing i subcategory-listing stranama). */
+.coric-home-radne-masine .coric-category-card__title {
+  font-size: 1.5rem;
+}
+
 /* === Hero === */
 /* Full-bleed hero koji počinje od vrha (y=0): CEO header (top-bar + nav) lebdi
  * APSOLUTNO preko hero slike (overlay, definisano u header.css pod
@@ -331,36 +355,15 @@
 .bg-dark { background-color: #25402f !important; }
 .ml-50 { margin-left: 50px !important; }
 
-/* Header */
-.site-header { position: absolute; top: 0; width: 100%; z-index: 100; transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; }
-.site-header.hero { background: transparent; }
-
-/* Sticky header */
-.site-header.sticky { position: fixed; top: 0; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transform: translateY(0); }
-.site-header.sticky .top-bar { display: none; }
-.site-header.sticky img.header-logo{ max-width: 40%; }
-
-.site-header.hero .nav-link,
-.site-header.hero .navbar-brand { color: #000; }
-.site-header.sticky .nav-link,
-.site-header.sticky .navbar-brand { color: #212529; }
-.site-header.sticky .navbar .nav-link:hover { color: #c8d32c; }
-
-/* Top bar */
-.top-bar { color: #000; padding-top: 20px; }
-.top-bar a { color: #000; text-decoration: none; }
-
-/* Navbar */
-img.header-logo { max-width: 80%; }
-.navbar { background: transparent;}
-.navbar .nav-link,
-.navbar-brand { color: #000; }
-.menulink-border { border-right: 1px solid #000; }
-.navbar .nav-link:hover { color: #fff; }
-header:not(.sticky) .nav-link.active { color: #fff !important; }
-ul.navbar-nav { background: rgba(255, 255, 255, 0.2); border-radius: 8px; /*overflow: hidden;*/ }
-ul.navbar-nav li.nav-item .nav-link { text-transform: uppercase; padding: 10px 20px; font-size: 1rem; }
-ul.navbar-nav li.nav-item .search-toggle { padding: 10px 30px; }
+/* REMOVED (bio je bug-uzrok): legacy .site-header/.top-bar/.navbar/.nav-link
+ * pravila iz starog template scaffold-a (nikad korišćena ni u jednom template-u
+ * — grep za site-header/top-bar/header-logo/menulink-border je prazan). Preko
+ * generičkih Bootstrap klasa (.navbar/.nav-link/.navbar-brand koje STVARNI
+ * coric-nav markup deli sa Bootstrap-om) su ova pravila cure-la u pravi meni:
+ * `.navbar .nav-link:hover { color: #fff; }` je bio razlog "belog na belom"
+ * hover-a u glavnom meniju (jednaka specifičnost kao header.css pravila, ali
+ * ovaj @import dolazi POSLE header.css @import-a u main.css → pobeđuje u
+ * cascade-u). Stvarni meni stil živi isključivo u header.css (.coric-nav__link). */
 
 /* Hero */
 .hero-section { height: 100vh; background-size: cover; background-position: center; position: relative; }

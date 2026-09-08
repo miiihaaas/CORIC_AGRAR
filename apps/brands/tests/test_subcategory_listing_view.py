@@ -32,13 +32,17 @@ from apps.products.tests.factories import ProductFactory
 # AC10 exact query locks (BUG-2, SM-D12). Measured empirically after GREEN
 # iteration 1 (Review-Fix iter 1); ceilings tightened from loose `<= 4` to exact.
 # Intermediate render = 3 (Category lookup + L1 chain segment + children list).
-# Leaf render = 4 (Category + L1 chain segment + products-with-select_related(brand)
-# + session/i18n overhead). These are ORM query counts; sorl-thumbnail KVStore
-# lookups in {% responsive_picture %} are library-level cache calls, NOT ORM joins
-# on the Product queryset — same as Story 2-8/2-9 which also measure ORM budgets
-# with imageless products. See test_leaf_with_images_query_budget.
+# Leaf render = 6 (Category + L1 chain segment + children-check + brands-for-filter
+# distinct + Paginator COUNT + products-with-select_related(brand) page slice) —
+# raised from 4 → 6 when HTMX snaga/cena/brend filters + pagination were added
+# (mirror Story 2.8 TractorListView structure): the brend dropdown options query
+# (+1) and Paginator's separate COUNT query (+1) are the 2 new ORM hits. These are
+# ORM query counts; sorl-thumbnail KVStore lookups in {% responsive_picture %} are
+# library-level cache calls, NOT ORM joins on the Product queryset — same as Story
+# 2-8/2-9 which also measure ORM budgets with imageless products. See
+# test_leaf_with_images_query_budget.
 _AC10_INTERMEDIATE_LOCKED = 3
-_AC10_LEAF_LOCKED = 4
+_AC10_LEAF_LOCKED = 6
 
 
 def _real_png_stub(name: str = "stub.png") -> SimpleUploadedFile:

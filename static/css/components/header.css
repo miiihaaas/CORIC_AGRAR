@@ -309,8 +309,11 @@
   display: none;
 }
 
+/* FIX: lime-500 je preslabog kontrasta na beloj sticky traci (deluje kao
+ * "nevidljivo bela" na beloj pozadini) — brand green (isti nijansa kao
+ * coric-breadcrumb__link/coric-nav__search-item) je čitljiv i konzistentan. */
 .coric-nav-shrunk .coric-nav__link:hover {
-  color: var(--color-accent-lime-500);
+  color: var(--color-brand-green-600);
 }
 
 /* ============================================================================

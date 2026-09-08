@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n media_tags %}
 {# Radne mašine (HZM) sekcija — HZM potkategorije sa Repeating Element po kartici. JEDAN zajednički CTA → brands:hzm_radne_masine (ITEM-3 LOCK: NE per-subcategory deep-link). #}
 <section class="coric-home-section coric-home-radne-masine" aria-labelledby="home-radne-masine-title">
   {% include "partials/section_eyebrow.html" with text=_("RADNE MAŠINE") tag="div" %}
@@ -10,8 +10,14 @@
   <div class="coric-category-showcase narrow-one" data-testid="home-radne-masine-grid">
     {% for sub in hzm_subcategories %}
       <article class="coric-category-card" aria-labelledby="home-hzm-{{ sub.slug }}-title">
-        {# Repeating Element po kategoriji — SM-D9 variant="green" (dekorativan, aria-hidden u partial-u). #}
-        {% include "partials/repeating_element.html" with variant="green" %}
+        {# Reprezentativna fotografija (prvi objavljen proizvod sa main_image — vidi HomeView Prefetch); fallback na Repeating Element ako potkategorija nema sliku. #}
+        {% with rep=sub.published_products_with_image.0 %}
+          {% if rep %}
+            {% responsive_picture rep.main_image alt=sub.name sizes="(max-width: 768px) 100vw, 25vw" loading="lazy" css_class="coric-category-card__photo" %}
+          {% else %}
+            {% include "partials/repeating_element.html" with variant="green" %}
+          {% endif %}
+        {% endwith %}
         <h3 id="home-hzm-{{ sub.slug }}-title" class="coric-category-card__title">{{ sub.name }}</h3>
         {% if sub.description %}
           <p class="coric-category-card__description">{{ sub.description|truncatewords:20 }}</p>
