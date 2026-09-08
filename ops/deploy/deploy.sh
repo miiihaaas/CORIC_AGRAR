@@ -93,8 +93,16 @@ git pull
 # ── 2. docker compose pull (OBAVEZNO PRE migrate/collectstatic — SM-D5/AC9) ─────
 # Povuci NOVI GHCR image PRE migrate/collectstatic (koji teku KROZ taj image) i PRE
 # re-create-a. Goli restart bi zadrzao stari image i deploy ne bi povukao novi kod.
-echo "[DEPLOY] docker compose pull (novi GHCR image)"
-docker compose --env-file "${ENV_FILE}" -f compose/production.yml pull
+# EKSPLICITAN `django` servis — NE goli `pull` (koji cilja SVE servise). production.yml
+# ima `nginx` sa `build:` blokom i LOKALNIM imenom (coric_agrar_nginx_production) koje ne
+# postoji ni u jednom registry-ju -> goli `pull` puca sa "pull access denied ... repository
+# does not exist" i `set -euo pipefail` obara ceo deploy PRE migrate/collectstatic-a.
+# `--ignore-buildable` NIJE resenje: django TAKODJE ima `build:` blok (lokalni fallback),
+# pa bi taj flag preskocio bas servis zbog kog pull i postoji.
+# django je jedini servis koji nosi novi kod; postgres/glitchtip su pinovani upstream
+# image-i koji se ne menjaju po deploy-u.
+echo "[DEPLOY] docker compose pull django (novi GHCR image)"
+docker compose --env-file "${ENV_FILE}" -f compose/production.yml pull django
 
 # ── 3. Frozen deps su BAKED u GHCR image (M3 — NE `uv sync --frozen` na host-u) ─
 # Stack je Docker-image-SOT: prod image (compose/django/Dockerfile prod-builder stage)
