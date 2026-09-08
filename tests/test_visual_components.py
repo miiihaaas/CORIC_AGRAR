@@ -751,7 +751,11 @@ def test_wave_divider_path_uses_token_fill():
     pre nego što CSS učita rezolvovao u default browser color (crno).
     """
     source = _read_partial(PARTIAL_WAVE_DIVIDER)
-    assert 'fill="var(--color-brand-green-800)"' in source, (
+    # `fill` je parametrizovan (`{{ fill|default:'var(--color-brand-green-800)' }}`)
+    # da talas moze biti beo preko fotografije. FOUC ugovor DRZI: kad se param ne
+    # prosledi, default je i dalje token — zato prihvatamo obe forme.
+    parametrized = "fill=\"{{ fill|default:'var(--color-brand-green-800)' }}\"" in source
+    assert parametrized or 'fill="var(--color-brand-green-800)"' in source, (
         'wave_divider.html SOURCE NE sadrži `fill="var(--color-brand-green-800)"` '
         "na SVG path-u. AC4 + IMP-17 FOUC fallback."
     )

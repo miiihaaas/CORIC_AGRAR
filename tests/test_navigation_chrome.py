@@ -94,7 +94,9 @@ TEST_BASE_TEMPLATE_PY = PROJECT_ROOT / "tests" / "test_base_template.py"
 # 768 added 2026-06-11 (design alignment): header.css koristi `@media (min-width: 768px)`
 # za transparent-over-hero overlay (md breakpoint, isti kao home-page.css). 768 je
 # breakpoint companion uz 767, ista izuzeta kategorija (breakpoint, NE magic-dimenzija).
-PX_WHITELIST = {1, 2, 44, 60, 80, 40, 56, 100, 120, 767, 768}
+# 20: nav link/search-item horizontalni padding (dizajn runda 2026-09-08) — nema ga
+# u --spacing-scale-* (4/8/12/16/24...), a zamena na 24px bi pomerila nav layout.
+PX_WHITELIST = {1, 2, 20, 44, 60, 80, 40, 56, 100, 120, 767, 768}
 
 # unitless magic number whitelist (AC9 — CRITICAL-12 split)
 UNITLESS_WHITELIST = {1020}

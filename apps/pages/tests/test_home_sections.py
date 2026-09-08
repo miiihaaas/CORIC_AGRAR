@@ -9,7 +9,7 @@ AC6+AC7+AC8 — 7 testova:
 - test_radne_masine_renders_category_card_per_subcategory         (AC7)
 - test_radne_masine_card_includes_repeating_element_green         (AC7/SM-D9)
 - test_radne_masine_all_cards_use_single_shared_hzm_cta           (AC7/ITEM-3 LOCK)
-- test_price_sa_polja_renders_2_lorem_ipsum_placeholder_cards     (AC8/SM-D7)
+- test_price_sa_polja_renders_4_lorem_ipsum_placeholder_cards     (AC8)
 - test_price_sa_polja_placeholder_has_no_dead_404_links           (AC8/SM-D14)
 
 Pokrenuti:
@@ -158,13 +158,17 @@ def test_radne_masine_empty_state_when_no_subcategories(client):
 # ---------------------------------------------------------------------------
 
 
-def test_price_sa_polja_renders_2_lorem_ipsum_placeholder_cards(client):
-    """AC8/SM-D7: latest_posts=[] -> TAČNO 2 statičke Lorem Ipsum placeholder kartice."""
+def test_price_sa_polja_renders_4_lorem_ipsum_placeholder_cards(client):
+    """AC8: latest_posts=[] -> TAČNO 4 statičke Lorem Ipsum placeholder kartice.
+
+    Dizajn runda 2026-09-08 podigla broj placeholder kartica sa 2 (SM-D7) na 4.
+    """
     html = _home_html(client)
     cards = re.findall(r'class="[^"]*coric-home-blog-card', html)
-    assert len(cards) == 2, (
-        f"Priče sa polja MORA renderovati TAČNO 2 placeholder kartice (coric-home-blog-card) "
-        f"kad je latest_posts prazan (SM-D7), pronađeno {len(cards)}."
+    assert len(cards) == 4, (
+        f"Priče sa polja MORA renderovati TAČNO 4 placeholder kartice (coric-home-blog-card) "
+        f"kad je latest_posts prazan (dizajn runda 2026-09-08 podigla sa 2 na 4; "
+        f"prethodni SM-D7 ugovor je bio 2), pronađeno {len(cards)}."
     )
     assert re.search(r"[Ll]orem [Ii]psum", html), (
         "Placeholder kartice MORAJU imati očigledan Lorem Ipsum sadržaj (SM-D7)."
