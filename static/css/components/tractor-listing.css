@@ -102,14 +102,14 @@
 
 .coric-tractor-filters__form {
   display: grid;
-  gap: var(--spacing-scale-4);
+  gap: 25px;
   position: relative;
 }
 
 @media (min-width: 768px) {
   .coric-tractor-filters__form {
     grid-template-columns: 1fr 1fr auto;
-    align-items: end;
+    /*align-items: end;*/
   }
 }
 

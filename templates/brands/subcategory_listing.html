@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load i18n %}
+{% load i18n static %}
 
 {% block content %}
   <section class="coric-subcategory-listing"
@@ -10,9 +10,28 @@
     <h1 id="subcategory-listing-title"
         class="coric-subcategory-listing__title">{{ current_title }}</h1>
     {% if is_leaf %}
-      {% include "brands/partials/_model_grid.html" %}
+      <p class="coric-subcategory-listing__lead">
+        {% translate "Pronađite model koji odgovara vašim potrebama." %}
+      </p>
+
+      <section id="subcat-filters" aria-labelledby="subcat-filters-title" class="coric-tractor-filters">
+        {% include "brands/partials/_model_filters.html" %}
+      </section>
+
+      <section id="subcat-results-wrap" aria-labelledby="subcat-results-title" class="coric-tractor-results">
+        <h2 id="subcat-results-title" class="visually-hidden">{% translate "Rezultati pretrage" %}</h2>
+        {% include "brands/partials/_model_grid.html" %}
+      </section>
     {% else %}
       {% include "brands/partials/_subcategory_showcase.html" %}
     {% endif %}
   </section>
 {% endblock content %}
+
+{% block scripts %}
+  {% if is_leaf %}
+    <link rel="stylesheet" href="{% static 'vendor/nouislider/nouislider.min.css' %}">
+    <script src="{% static 'vendor/nouislider/nouislider.min.js' %}" defer></script>
+    <script src="{% static 'js/tractor-filters.js' %}" defer></script>
+  {% endif %}
+{% endblock %}

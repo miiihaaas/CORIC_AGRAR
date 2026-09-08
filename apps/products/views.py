@@ -131,15 +131,36 @@ class ProductDetailView(DetailView):
         ctx = super().get_context_data(**kwargs)
         product = self.object
 
+        # SM: JEDAN query za ceo ProductSimilar override (bez SQL LIMIT-a ovde) —
+        # Python-side split na traktore vs priključnu mehanizaciju (redizajn:
+        # "Slični modeli" vs "Odgovarajuće priključne mašine" sekcije) NE sme
+        # dodati drugi upit (query budget SM-D21/D28 — vidi test_assert_num_queries_exactly_7).
         manual_qs = (
             ProductSimilar.objects.filter(
                 product=product,
                 related_product__is_published=True,
             )
-            .select_related("related_product__brand")
-            .order_by("order", "id")[:_SIMILAR_PRODUCTS_LIMIT]
+            .select_related(
+                "related_product__brand",
+                "related_product__subcategory__category",
+            )
+            .order_by("order", "id")
         )
-        manual_list = [entry.related_product for entry in manual_qs]
+        manual_entries = [entry.related_product for entry in manual_qs]
+
+        def _is_attachment(related: Product) -> bool:
+            return bool(
+                related.subcategory_id
+                and related.subcategory.category.is_for
+                == Category.CategoryScope.MEHANIZACIJA
+            )
+
+        manual_list = [p for p in manual_entries if not _is_attachment(p)][
+            :_SIMILAR_PRODUCTS_LIMIT
+        ]
+        ctx["matching_attachments"] = [p for p in manual_entries if _is_attachment(p)][
+            :_SIMILAR_PRODUCTS_LIMIT
+        ]
 
         if manual_list:
             ctx["similar_products"] = manual_list
@@ -175,6 +196,13 @@ class ProductDetailView(DetailView):
         ctx["hero_brand_logo_url"] = (
             product.brand.logo.url if product.brand.logo else ""
         )
+        # Redizajn — full-bleed hero foto-pozadina: prva galerijska fotografija
+        # (kontekstualniji "u polju" kadar) uz fallback na main_image. `list(...)`
+        # na već prefetched `images` relaciji NE dodaje upit (isti obrazac kao
+        # brochures_list iznad — SM-D21/D28 query budget).
+        gallery_images = list(product.images.all())
+        first_gallery_image = gallery_images[0].image if gallery_images else None
+        ctx["hero_bg_image"] = first_gallery_image or product.main_image or None
 
         return ctx
 

@@ -1,0 +1,31 @@
+{% load i18n media_tags %}
+{# Odgovarajuće priključne mašine (redizajn) — cross-category preporuke (npr. #}
+{# Jeegee priključna mehanizacija za traktor). Isključivo manual ProductSimilar #}
+{# override (view: matching_attachments) — NEMA auto-fallback (nema smislenog #}
+{# automatskog pravila za cross-category preporuke). #}
+{% include "partials/section_eyebrow.html" with text=_("PRIKLJUČNA MEHANIZACIJA") tag="div" %}
+<h2 id="product-attachments-title" class="coric-product-attachments__title">{% translate "Odgovarajuće priključne mašine" %}</h2>
+<div class="coric-product-attachments__grid" data-testid="product-attachments-grid">
+  {% for attachment in matching_attachments %}
+    <a class="coric-product-card"
+       href="{{ attachment.get_absolute_url }}"
+       aria-label="{{ attachment.name }}"
+       data-testid="matching-attachment-card-{{ attachment.slug }}">
+      <div class="coric-product-card__image">
+        {% if attachment.main_image %}
+          {% responsive_picture attachment.main_image alt=attachment.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-product-card__img" %}
+        {% endif %}
+      </div>
+      <div class="coric-product-card__body">
+        {% if attachment.brand.logo %}
+          <img src="{{ attachment.brand.logo.url }}" alt="{{ attachment.brand.name }}" class="coric-product-card__brand-logo">
+        {% endif %}
+        <h3 class="coric-product-card__title">{{ attachment.name }}</h3>
+        {% if attachment.description %}
+          <p class="coric-product-card__excerpt">{{ attachment.description|truncatewords:20 }}</p>
+        {% endif %}
+        <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "DETALJNIJE" %}</span>
+      </div>
+    </a>
+  {% endfor %}
+</div>

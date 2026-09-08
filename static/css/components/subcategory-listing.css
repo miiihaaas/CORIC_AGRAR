@@ -1,0 +1,38 @@
+/* ============================================================================
+ * subcategory-listing.css — Subcategory Listing strana (Story 2.11)
+ *
+ * Root wrapper (coric-subcategory-listing) je nedostajao — strana se renderovala
+ * full-bleed (bez ograničenja širine), za razliku od ostalih stranica koje sve
+ * koriste --spacing-container-max-width (vidi brand-listing.css / tractor-listing.css
+ * kao referentni pattern). Sve vrednosti kroz var(--token) iz tokens.css.
+ * ========================================================================= */
+
+/* === Root wrapper === */
+.coric-subcategory-listing {
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-container-gutter-desktop);
+}
+
+@media (max-width: 768px) {
+  .coric-subcategory-listing {
+    padding: 0 var(--spacing-container-gutter-mobile);
+  }
+}
+
+.coric-subcategory-listing__title {
+  font-size: var(--typography-scale-h1);
+  color: var(--color-brand-green-800);
+  text-align: center;
+  margin: var(--spacing-scale-6) 0 var(--spacing-scale-3);
+}
+
+/* Leaf model-grid lead paragraf (mirror .coric-tractor-listing__lead) — samo
+ * kada je is_leaf=True (subcategory_listing.html renderuje ga uslovno). */
+.coric-subcategory-listing__lead {
+  font-size: var(--typography-scale-body);
+  color: var(--color-semantic-text-primary);
+  max-width: 60ch;
+  margin: 0 auto var(--spacing-scale-5);
+  text-align: center;
+}

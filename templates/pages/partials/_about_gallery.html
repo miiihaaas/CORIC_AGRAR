@@ -2,7 +2,7 @@
 {# Masonry galerija — Section Eyebrow + h2 + CSS column-count masonry sa 6 GLightbox linkova. #}
 {# REUSE Story 2-5: lightbox-init.js (site-wide u base.html) inicijalizuje `.glightbox` na DOMContentLoaded — NULA novog JS. #}
 {# data-gallery="o-nama-galerija" grupiše slike za prev/next navigaciju. Opisni alt (informativna galerija). #}
-{# OQ-2 PRODUCTION BLOCKER: realne fotografije pre produkcije; v1 placeholder slike. #}
+{# OQ-2 PRODUCTION BLOCKER: realne fotografije pre produkcije; v1 REUSE-uje postojeće site-wide asset-e umesto jednobojnih placeholdera — i dalje generičke stock slike, NE prave fotografije dvorišta/tima. #}
 <section class="coric-about-gallery" aria-labelledby="about-galerija-title">
   <div class="coric-about-gallery__inner">
     {% include "partials/section_eyebrow.html" with text=_("GALERIJA") tag="div" %}
@@ -11,50 +11,50 @@
     </h2>
     <div class="coric-about-gallery__grid">
       <a class="glightbox coric-about-gallery__item"
-         href="{% static 'img/about/gallery/foto-1.jpg' %}"
+         href="{% static 'img/blog-sekcija-bg.jpg' %}"
          data-gallery="o-nama-galerija">
-        <img src="{% static 'img/about/gallery/foto-1.jpg' %}"
+        <img src="{% static 'img/blog-sekcija-bg.jpg' %}"
              alt="{% translate "Traktor na radu u polju tokom setve" %}"
              loading="lazy"
              class="coric-about-gallery__img">
       </a>
       <a class="glightbox coric-about-gallery__item"
-         href="{% static 'img/about/gallery/foto-2.jpg' %}"
+         href="{% static 'img/jeegee-banner-bg.jpg' %}"
          data-gallery="o-nama-galerija">
-        <img src="{% static 'img/about/gallery/foto-2.jpg' %}"
-             alt="{% translate "Priključna oprema spremna za isporuku" %}"
+        <img src="{% static 'img/jeegee-banner-bg.jpg' %}"
+             alt="{% translate "Priključna oprema u radu na njivi" %}"
              loading="lazy"
              class="coric-about-gallery__img">
       </a>
       <a class="glightbox coric-about-gallery__item"
-         href="{% static 'img/about/gallery/foto-3.jpg' %}"
+         href="{% static 'img/polovna-mehanizacija.jpg' %}"
          data-gallery="o-nama-galerija">
-        <img src="{% static 'img/about/gallery/foto-3.jpg' %}"
-             alt="{% translate "Servisni tim Ćorić Agrar u radionici" %}"
+        <img src="{% static 'img/polovna-mehanizacija.jpg' %}"
+             alt="{% translate "Mehanizacija pripremljena za prodaju u našem dvorištu" %}"
              loading="lazy"
              class="coric-about-gallery__img">
       </a>
       <a class="glightbox coric-about-gallery__item"
-         href="{% static 'img/about/gallery/foto-4.jpg' %}"
+         href="{% static 'img/utovarivaci-telehendleri.jpg' %}"
          data-gallery="o-nama-galerija">
-        <img src="{% static 'img/about/gallery/foto-4.jpg' %}"
+        <img src="{% static 'img/utovarivaci-telehendleri.jpg' %}"
              alt="{% translate "Radna mašina na prodajnom prostoru" %}"
              loading="lazy"
              class="coric-about-gallery__img">
       </a>
       <a class="glightbox coric-about-gallery__item"
-         href="{% static 'img/about/gallery/foto-5.jpg' %}"
+         href="{% static 'img/single-hero-1.jpg' %}"
          data-gallery="o-nama-galerija">
-        <img src="{% static 'img/about/gallery/foto-5.jpg' %}"
+        <img src="{% static 'img/single-hero-1.jpg' %}"
              alt="{% translate "Detalj traktorske kabine i upravljača" %}"
              loading="lazy"
              class="coric-about-gallery__img">
       </a>
       <a class="glightbox coric-about-gallery__item"
-         href="{% static 'img/about/gallery/foto-6.jpg' %}"
+         href="{% static 'img/home/home-hero-1.jpg' %}"
          data-gallery="o-nama-galerija">
-        <img src="{% static 'img/about/gallery/foto-6.jpg' %}"
-             alt="{% translate "Polovna mehanizacija pripremljena za prodaju" %}"
+        <img src="{% static 'img/home/home-hero-1.jpg' %}"
+             alt="{% translate "Traktor sa priključnom mašinom na radu u polju" %}"
              loading="lazy"
              class="coric-about-gallery__img">
       </a>

@@ -7,6 +7,9 @@
     </div>
   {% endif %}
   <h1 class="coric-hero-overlay-card__title">{% if fallback_obj %}{% translated_field fallback_obj fallback_field %}{% else %}{{ title }}{% endif %}</h1>
+  {% if description %}
+    <p class="coric-hero-overlay-card__description">{{ description }}</p>
+  {% endif %}
   {% if bullets %}
     <ul class="coric-hero-overlay-card__bullets">
       {% for bullet in bullets|slice:":3" %}

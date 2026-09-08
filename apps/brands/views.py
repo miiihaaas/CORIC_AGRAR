@@ -11,14 +11,48 @@ grupisane po brendu. View-layer-only coupling, no model dependency.
 
 from __future__ import annotations
 
+from decimal import Decimal, InvalidOperation
+
+from django.core.paginator import Paginator
 from django.db.models import Case, CharField, IntegerField, Prefetch, Value, When
 from django.http import Http404
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.vary import vary_on_headers
 from django.views.generic import DetailView, TemplateView
 
 from apps.brands.models import Brand, Category, Series, Subcategory
 from apps.products.models import Product, ProductSpecification, ProductTestimonial
+
+# Leaf model-grid filteri (mirror apps.products.views TractorListView SM-D11
+# defensive parsing) — duplicirano lokalno umesto cross-app view import-a, per
+# project convention (svaka story-scoped view komponenta drži sopstvene helper-e).
+_MODELS_PER_PAGE = 12
+
+
+def _parse_int(raw, *, min_value=0, max_value=10_000):
+    if raw is None:
+        return None
+    try:
+        value = int(raw)
+    except (ValueError, TypeError):
+        return None
+    if value < min_value or value > max_value:
+        return None
+    return value
+
+
+def _parse_decimal(raw, *, min_value=Decimal("0"), max_value=Decimal("10000000")):
+    if raw is None:
+        return None
+    try:
+        value = Decimal(raw)
+    except (InvalidOperation, ValueError, TypeError):
+        return None
+    if value < min_value or value > max_value:
+        return None
+    return value
 
 # Story 2.10 — Jeegee priključna mehanizacija landing strana
 _JEEGEE_BRAND_SLUG = "jeegee"
@@ -103,6 +137,17 @@ class BrandDetailView(DetailView):
             .select_related("product")
             .order_by("order", "-created_at")[:10]
         )
+        # Hero redesign (redizajn brend strane): predračunato ovde umesto u
+        # template-u da _hero_section.html ostane jedan include (bez 4-8
+        # kombinatornih grana za variant × logo × slogan/name). FieldFile.url
+        # na praznom ImageField-u baca ValueError (nije silent_variable_failure)
+        # — MORA se guard-ovati pre template rendera, ne unutar template izraza.
+        ctx["hero_variant"] = (
+            "blue" if (self.object.brand_color or "").lower() == "#00a4e9" else "green"
+        )
+        ctx["hero_logo_url"] = self.object.logo.url if self.object.logo else ""
+        ctx["hero_title"] = self.object.slogan or self.object.name
+        ctx["hero_fallback_field"] = "slogan" if self.object.slogan else "name"
         return ctx
 
 
@@ -147,15 +192,28 @@ class JeegeePrikljucnaView(DetailView):
         return ctx
 
 
+@method_decorator(vary_on_headers("HX-Request"), name="dispatch")
 class SubcategoryListView(TemplateView):
     """Subcategory drill-down listing — Story 2.11.
 
     Varijabilan-depth path (L1/L2/L3) → Category root + Subcategory chain.
     Intermediate vs leaf je data-driven (children win, SM-D3/AC14). Cross-boundary
     Product read za leaf model grid (SM-D13, read-only).
+
+    Leaf grana dobija HTMX filtere (snaga/cena/brend) + paginaciju — struktura
+    mirror-uje Story 2.8 TractorListView (isti hx-target/hx-swap/hx-push-url
+    idiom + noUiSlider range slideri, REUSE-uju se coric-tractor-filters/
+    coric-tractor-results CSS blokovi iz tractor-listing.css, NE ponovo
+    definisani ovde). @vary_on_headers("HX-Request") sprečava CDN/browser
+    cache poisoning između full-page i partial (fragment) response-a.
     """
 
     template_name = "brands/subcategory_listing.html"
+
+    def get_template_names(self):
+        if getattr(self.request, "htmx", False) and getattr(self, "_is_leaf", False):
+            return ["brands/partials/_model_grid.html"]
+        return [self.template_name]
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -205,12 +263,58 @@ class SubcategoryListView(TemplateView):
             ctx["children"] = children
         else:
             ctx["is_leaf"] = True
-            ctx["products"] = list(
-                Product.objects.filter(
-                    subcategory=current,
-                    is_published=True,
-                ).select_related("brand")
+            self._is_leaf = True
+
+            brands_for_filter = list(
+                Brand.objects.filter(
+                    products__subcategory=current,
+                    is_coming_soon=False,
+                )
+                .distinct()
+                .order_by("name")
             )
+            ctx["brands_for_filter"] = brands_for_filter
+            valid_brand_slugs = {b.slug for b in brands_for_filter}
+
+            snaga_min = _parse_int(self.request.GET.get("snaga_min"))
+            snaga_max = _parse_int(self.request.GET.get("snaga_max"))
+            cena_min = _parse_decimal(self.request.GET.get("cena_min"))
+            cena_max = _parse_decimal(self.request.GET.get("cena_max"))
+            brend_slug = self.request.GET.get("brend", "").strip()
+            if brend_slug not in valid_brand_slugs:
+                brend_slug = ""
+
+            qs = Product.objects.filter(
+                subcategory=current,
+                is_published=True,
+            ).select_related("brand")
+            if snaga_min is not None:
+                qs = qs.filter(horse_power__gte=snaga_min)
+            if snaga_max is not None:
+                qs = qs.filter(horse_power__lte=snaga_max)
+            if cena_min is not None:
+                qs = qs.filter(price_eur__gte=cena_min)
+            if cena_max is not None:
+                qs = qs.filter(price_eur__lte=cena_max)
+            if brend_slug:
+                qs = qs.filter(brand__slug=brend_slug)
+            qs = qs.order_by("-created_at")
+
+            paginator = Paginator(qs, _MODELS_PER_PAGE)
+            page_obj = paginator.get_page(self.request.GET.get("page") or 1)
+
+            ctx["products"] = page_obj.object_list
+            ctx["page_obj"] = page_obj
+            ctx["paginator"] = paginator
+            ctx["is_paginated"] = page_obj.has_other_pages()
+            ctx["count"] = paginator.count
+            ctx["active_filters"] = {
+                "snaga_min": self.request.GET.get("snaga_min", ""),
+                "snaga_max": self.request.GET.get("snaga_max", ""),
+                "cena_min": self.request.GET.get("cena_min", ""),
+                "cena_max": self.request.GET.get("cena_max", ""),
+                "brend": brend_slug,
+            }
         return ctx
 
     def _resolve_chain(self, category, subcat_slugs):

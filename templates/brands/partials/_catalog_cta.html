@@ -1,13 +1,20 @@
 {% load i18n %}
-{% include "partials/wave_divider.html" with position="top" %}
 <div class="coric-catalog-cta">
-  {% include "partials/section_eyebrow.html" with text=_("KATALOG") tag="div" %}
-  <h2 id="brand-catalog-cta-title" class="coric-catalog-cta__heading">{% translate "Preuzmi katalog" %}</h2>
-  <p class="coric-catalog-cta__description">{% blocktranslate with brand=brand.name %}Kompletan PDF katalog modela brenda {{ brand }}.{% endblocktranslate %}</p>
+  <div class="coric-catalog-cta__brochure" aria-hidden="true">
+    <span class="coric-catalog-cta__brochure-card coric-catalog-cta__brochure-card--back"></span>
+    <span class="coric-catalog-cta__brochure-card coric-catalog-cta__brochure-card--front">
+      {% if brand.logo %}<img src="{{ brand.logo.url }}" alt="">{% endif %}
+    </span>
+  </div>
+  <div class="coric-catalog-cta__body">
+    {% include "partials/section_eyebrow.html" with text=_("KATALOG") tag="div" variant="on-dark" %}
+    <h2 id="brand-catalog-cta-title" class="coric-catalog-cta__heading">{% translate "Preuzmite svoj katalog i budite u toku" %}</h2>
+    <p class="coric-catalog-cta__description">{% blocktranslate with brand=brand.name %}Kompletan PDF katalog modela brenda {{ brand }}.{% endblocktranslate %}</p>
+  </div>
   <a href="{{ brand.catalog_pdf.url }}"
      target="_blank"
      rel="noopener noreferrer"
      download
-     class="coric-button coric-button--primary"
+     class="coric-button coric-button--cta-light coric-catalog-cta__cta"
      data-testid="brand-catalog-download">{% translate "Preuzmi katalog" %}</a>
 </div>

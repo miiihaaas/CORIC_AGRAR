@@ -1,0 +1,4 @@
+Font Awesome Free 6.7.2
+Source: https://fontawesome.com/ (use.fontawesome.com release zip)
+License: https://fontawesome.com/license/free (icons CC BY 4.0, fonts SIL OFL 1.1, code MIT)
+Included: css/all.min.css (solid+regular+brands) + webfonts/*.woff2 only (ttf omitted, not used)

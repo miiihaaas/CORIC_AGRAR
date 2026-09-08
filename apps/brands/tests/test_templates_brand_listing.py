@@ -66,7 +66,13 @@ def _full_brand_fixture():
 
 
 def test_sections_render_in_correct_order(client):
-    """AC3: hero → statistike → testimonijali → serije → catalog_cta (TAČAN redosled)."""
+    """AC3 (redizajn — vidi coric-agrar-stranica-brenda.jpg mokap): hero → statistike →
+    serije → testimonijali → catalog_cta (TAČAN redosled).
+
+    SM: redosled promenjen (serije PRE testimonijala; dodat intro banner između
+    statistika i serija — vidi #brand-intro, van ove asercije) da prati usvojeni
+    brand-page dizajn — namerna izmena, NE regresija.
+    """
     activate("sr")
     brand = _full_brand_fixture()
     # Dodaj catalog_pdf za pun render
@@ -94,11 +100,11 @@ def test_sections_render_in_correct_order(client):
     assert series_idx >= 0, "id='brand-series' MORA postojati (uvek render)."
     assert cta_idx >= 0, "id='brand-catalog-cta' MORA postojati (brand ima catalog_pdf)."
 
-    # Redosled: hero < stats < test < series < cta (po AC3 spec)
-    assert hero_idx < stats_idx < test_idx < series_idx < cta_idx, (
+    # Redosled (redizajn): hero < stats < series < test < cta
+    assert hero_idx < stats_idx < series_idx < test_idx < cta_idx, (
         f"Section order BROKEN. Pozicije: hero={hero_idx} stats={stats_idx} "
         f"test={test_idx} series={series_idx} cta={cta_idx}. "
-        "Očekivan redosled: hero < statistike < testimonijali < serije < catalog_cta."
+        "Očekivan redosled (redizajn): hero < statistike < serije < testimonijali < catalog_cta."
     )
 
 

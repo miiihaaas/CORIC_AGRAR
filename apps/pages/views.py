@@ -93,6 +93,11 @@ class HomeView(TemplateView):
 
         # Radne mašine: HZM radne-masine Category + njene top-level Subcategory dece.
         # Defensive guard (mirror Story 2-12): ako Category ne postoji → [] (NE crash).
+        # Reprezentativna fotografija po kartici — REUSE isti Prefetch(to_attr=...)
+        # obrazac kao traktori_brands iznad (N+1 guard: JEDAN dodatan upit ukupno,
+        # NE per-subcategory .first() u template-u/petlji). Fallback na
+        # repeating_element.html dekorativni blok ostaje u template-u ako
+        # potkategorija (još) nema objavljen proizvod sa main_image.
         hzm_subcategories = []
         try:
             hzm_category = Category.objects.get(
@@ -100,8 +105,17 @@ class HomeView(TemplateView):
                 is_for=Category.CategoryScope.MEHANIZACIJA,
             )
             hzm_subcategories = list(
-                hzm_category.subcategories.filter(parent=None).order_by(
-                    "display_order", "name"
+                hzm_category.subcategories.filter(parent=None)
+                .order_by("display_order", "name")
+                .prefetch_related(
+                    Prefetch(
+                        "products",
+                        queryset=Product.objects.filter(is_published=True)
+                        .exclude(main_image="")
+                        .exclude(main_image__isnull=True)
+                        .order_by("-created_at"),
+                        to_attr="published_products_with_image",
+                    )
                 )
             )
         except Category.DoesNotExist:

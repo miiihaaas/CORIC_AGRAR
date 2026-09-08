@@ -1,13 +1,28 @@
-/* product-gallery.css — Story 2.7 SM-D6 pure CSS scroll-snap (mobile) + grid (desktop). */
+/* product-gallery.css — Story 2.7 SM-D6 pure CSS masonry (column-count) na desktop/tablet,
+   scroll-snap red na mobilnom. Slike zadržavaju prirodni aspect ratio (masonry efekat kao
+   na referentnom dizajnu) — bez JS masonry biblioteke. */
 
 .coric-product-gallery__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-scale-4);
+  column-count: 2;
+  column-gap: var(--spacing-scale-4);
+}
+
+@media (min-width: 768px) {
+  .coric-product-gallery__grid {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .coric-product-gallery__grid {
+    column-count: 5;
+  }
 }
 
 .coric-product-gallery__item {
   display: block;
+  break-inside: avoid;
+  margin-bottom: var(--spacing-scale-4);
   border-radius: var(--rounded-md);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -29,12 +44,12 @@
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover;
 }
 
 @media (max-width: 767px) {
   .coric-product-gallery__grid {
-    grid-template-columns: none;
+    column-count: unset;
+    display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 80%;
     overflow-x: auto;
@@ -44,6 +59,7 @@
   }
 
   .coric-product-gallery__item {
+    margin-bottom: 0;
     scroll-snap-align: start;
   }
 }

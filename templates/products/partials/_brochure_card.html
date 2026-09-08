@@ -1,6 +1,5 @@
 {% load i18n media_tags %}
-{% include "partials/section_eyebrow.html" with text=_("BROŠURE") tag="div" %}
-<h2 id="product-brochure-title" class="coric-product-brochure__title">
+<h2 id="product-brochure-title" class="visually-hidden">
   {% blocktranslate count counter=brochures_list|length %}Preuzmite brošuru{% plural %}Preuzmite brošure{% endblocktranslate %}
 </h2>
 <div class="coric-product-brochure__list">
@@ -9,18 +8,25 @@
       {% if entry.brochure.cover_thumbnail_image and entry.brochure.cover_thumbnail_image.name %}
         <div class="coric-product-brochure__cover">
           {% responsive_picture entry.brochure.cover_thumbnail_image alt=entry.brochure.title|default:product.name sizes="(max-width: 768px) 100vw, 240px" loading="lazy" css_class="coric-product-brochure__cover-img" %}
+          <div class="coric-product-brochure__watermark">
+            {% include "partials/repeating_element.html" with variant="green" %}
+          </div>
         </div>
       {% endif %}
       <div class="coric-product-brochure__meta">
-        <h3 class="coric-product-brochure__name">{{ entry.brochure.title|default:product.name }}</h3>
+        <h3 class="coric-product-brochure__label">{% translate "Brošura" %}</h3>
+        <p class="coric-product-brochure__name">{{ entry.brochure.title|default:product.name }}</p>
         <p class="coric-product-brochure__size">{{ entry.size_bytes|filesizeformat }}, {% translate "PDF" %}</p>
         <a href="{{ entry.brochure.pdf_file.url }}"
            target="_blank"
            rel="noopener noreferrer"
            download
-           class="coric-button coric-button--primary"
+           class="coric-button coric-button--detaljnije coric-product-brochure__cta"
            data-testid="brochure-download-{{ entry.brochure.id }}">
           {% translate "PREUZMI" %}
+          <svg class="coric-button__arrow" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m9 6 6 6-6 6"/>
+          </svg>
         </a>
       </div>
     </div>

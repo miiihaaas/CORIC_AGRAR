@@ -24,6 +24,48 @@
   margin-bottom: var(--spacing-section);
 }
 
+/* === Hero — foto varijanta (redizajn: full-bleed fotografija + kartica dole-levo) === */
+.coric-brand-hero--photo {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-height: 60vh;
+  /* Full-bleed breakout — 100% VIEWPORT širine bez obzira na .coric-brand-detail
+   * max-width/padding (NE samo gutter-cancel kao ranije). width:100vw + centriranje
+   * preko calc(50% - 50vw) je standardni "break out of a centered container" trik. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: var(--spacing-scale-8) var(--spacing-container-gutter-mobile) 0;
+  overflow: hidden;
+}
+
+.coric-brand-hero--photo .coric-brand-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: var(--color-brand-green-800);
+}
+
+.coric-brand-hero--photo .coric-brand-hero__overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .coric-brand-hero--photo {
+    min-height: 85vh;
+    padding: var(--spacing-scale-10) var(--spacing-container-gutter-desktop) 0;
+  }
+}
+
 /* === Statistike wrapper === */
 .coric-brand-statistics {
   margin-bottom: var(--spacing-section);
@@ -34,25 +76,62 @@
   margin-bottom: var(--spacing-section);
 }
 
+/* === Intro banner wrapper === */
+.coric-brand-intro {
+  /* Full-bleed breakout (isti trik kao .coric-brand-hero--photo) — 100% viewport
+   * širine, ne samo do ivice centriranog kontejnera. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-bottom: var(--spacing-section);
+}
+
 /* === Serije wrapper === */
 .coric-brand-series {
   margin-bottom: var(--spacing-section);
 }
 
-.coric-series-block {
-  margin-bottom: var(--spacing-scale-8);
+/* === Bottom foto sekcija wrapper (redizajn) ===
+ * SM: sekcija deli klase .coric-home-section .coric-home-blog-preview sa
+ * home-page.css (identičan photo+wave box, na zahtev) — te klase nose
+ * `margin: 0 auto` / `max-width: 100%` koje bi pregazile full-bleed breakout
+ * ispod da je specifičnost ista (home-page.css se importuje POSLE ovog fajla).
+ * #id selektor ovde garantuje pobedu nezavisno od redosleda import-a. */
+#brand-bottom-photo.coric-brand-bottom-photo-section {
+  /* Full-bleed breakout (isti trik kao .coric-brand-hero--photo). */
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: var(--spacing-section);
 }
 
-.coric-series-block__title {
-  font-size: var(--typography-scale-h2);
+/* === "Modeli proizvođača" master naslov === */
+.coric-series-section__heading {
+  font-family: var(--typography-family-primary);
+  font-weight: var(--typography-weight-light);
+  font-size: var(--typography-scale-h1);
+  line-height: var(--typography-line-height-tight);
   color: var(--color-brand-green-800);
-  margin-bottom: var(--spacing-scale-4);
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-scale-8);
+}
+
+.coric-series-section__heading strong {
+  font-weight: var(--typography-weight-bold);
+}
+
+.coric-series-block {
+  margin-bottom: var(--spacing-scale-10);
+  text-align: center;
 }
 
 .coric-series-block__description {
   font-size: var(--typography-scale-body);
   color: var(--color-neutral-gray-700);
-  margin-bottom: var(--spacing-scale-5);
+  max-width: 640px;
+  margin: 0 auto var(--spacing-scale-5);
 }
 
 /* === Grid layout === */
@@ -119,6 +198,53 @@
   margin: 0 0 var(--spacing-scale-3);
 }
 
+/* --- Redizajn: .coric-product-grid je EKSKLUZIVNO brand-series grid (_series_grid.html) —
+ * override-i ovde NE cure na deljenu .coric-product-card bazu (REUSE preko traktori/polovna
+ * listinga, similar-products, tulip showcase — vidi Dev Note gore u fajlu). Flat "plutajuća"
+ * fotografija + centriran tekst, verno usvojenom brand-page dizajnu. */
+.coric-product-grid .coric-product-card {
+  background: none;
+  box-shadow: var(--shadow-none);
+  border-radius: 0;
+}
+
+.coric-product-grid .coric-product-card:hover,
+.coric-product-grid .coric-product-card:focus-visible {
+  transform: none;
+  box-shadow: var(--shadow-none);
+}
+
+.coric-product-grid .coric-product-card:hover .coric-product-card__img,
+.coric-product-grid .coric-product-card:focus-visible .coric-product-card__img {
+  transform: scale(1.03);
+}
+
+.coric-product-grid .coric-product-card__image {
+  background: none;
+}
+
+.coric-product-grid .coric-product-card__img {
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.coric-product-grid .coric-product-card__body {
+  padding: var(--spacing-scale-4) var(--spacing-scale-3) 0;
+  text-align: center;
+}
+
+.coric-product-grid .coric-product-card__title {
+  font-weight: var(--typography-weight-bold);
+  text-transform: uppercase;
+}
+
+.coric-product-grid .coric-product-card__excerpt {
+  font-size: var(--typography-scale-small);
+  color: var(--color-neutral-gray-700);
+  max-width: 320px;
+  margin: 0 auto var(--spacing-scale-4);
+}
+
 .coric-product-card__features {
   list-style: none;
   margin: 0 0 var(--spacing-scale-3);
@@ -158,10 +284,26 @@
   overflow: hidden;
 }
 
+/* responsive_picture postavlja width/height HTML atribute na intrinzičnu
+ * veličinu slike (CLS reservation) — CSS width:100%/height:auto ih override-uje
+ * za prikaz, dok browser i dalje računa aspect-ratio iz tih atributa (nema CLS). */
+.coric-product-row__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .coric-product-row__specs {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-scale-3);
+  background: var(--color-neutral-cream);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-scale-5);
+}
+
+.coric-product-row__specs > .coric-button {
+  align-self: flex-end;
 }
 
 .coric-product-row__title {
@@ -173,6 +315,17 @@
 .coric-product-row__desc {
   font-size: var(--typography-scale-body);
   color: var(--color-neutral-gray-700);
+}
+
+.coric-product-row__specs-heading {
+  font-size: var(--typography-scale-small);
+  font-weight: var(--typography-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--typography-tracking-wide);
+  color: var(--color-brand-green-800);
+  margin: var(--spacing-scale-2) 0 0;
+  padding-bottom: var(--spacing-scale-2);
+  border-bottom: 2px solid var(--color-accent-gold-500);
 }
 
 .coric-product-row__accordion {
@@ -204,6 +357,9 @@
   transform: rotate(45deg);
 }
 
+/* Smooth expand/collapse — vidi static/js/spec-accordion.js (WAAPI height
+ * animacija na <details>; CSS grid-template-rows trik napušten, vidi Dev Note
+ * u product-detail.css). */
 .coric-product-row__specs-table {
   width: 100%;
   margin-top: var(--spacing-scale-2);
@@ -243,21 +399,87 @@
 }
 
 .coric-catalog-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-scale-6);
   background: var(--color-brand-green-800);
   color: var(--color-semantic-text-on-dark);
-  padding: var(--spacing-scale-10) var(--spacing-scale-5);
+  padding: var(--spacing-scale-8) var(--spacing-scale-5);
+  border-radius: var(--rounded-lg);
   text-align: center;
 }
 
+/* === Brošura — dve preklopljene "korice" (CSS ilustracija, bez image asset-a) === */
+.coric-catalog-cta__brochure {
+  position: relative;
+  flex: 0 0 auto;
+  width: 96px;
+  height: 120px;
+}
+
+.coric-catalog-cta__brochure-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--rounded-sm);
+  box-shadow: var(--shadow-lg);
+}
+
+.coric-catalog-cta__brochure-card--back {
+  background: var(--color-accent-gold-500);
+  transform: rotate(8deg) translate(10px, 4px);
+}
+
+.coric-catalog-cta__brochure-card--front {
+  background: var(--color-brand-green-600);
+  transform: rotate(-6deg);
+  padding: var(--spacing-scale-3);
+}
+
+.coric-catalog-cta__brochure-card--front img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--rounded-sm);
+}
+
+.coric-catalog-cta__body {
+  flex: 1 1 320px;
+  min-width: 0;
+  text-align: left;
+}
+
 .coric-catalog-cta__heading {
-  font-size: var(--typography-scale-h2);
-  margin: 0 0 var(--spacing-scale-4);
+  font-size: var(--typography-scale-h3);
+  font-weight: var(--typography-weight-bold);
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-scale-2);
   color: var(--color-semantic-text-on-dark);
 }
 
 .coric-catalog-cta__description {
-  font-size: var(--typography-scale-body);
-  margin: 0 0 var(--spacing-scale-5);
+  font-size: var(--typography-scale-small);
+  margin: 0;
+  opacity: 0.85;
+}
+
+.coric-catalog-cta__cta {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .coric-catalog-cta {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .coric-catalog-cta__body {
+    text-align: center;
+  }
 }
 
 /* === Coming-soon brand (AC2.5) === */

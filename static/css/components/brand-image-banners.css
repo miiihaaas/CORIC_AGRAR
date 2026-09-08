@@ -1,0 +1,117 @@
+/* ============================================================================
+ * brand-image-banners.css — Brand detail redizajn: intro banner (full-bleed
+ * foto + zatamnjen tekst) i zatvarajuća foto-sekcija pred footer (talas +
+ * bedž). Oba su dekorativna, generička (static asset, isto pravilo kao
+ * about_hero.html) — NISU per-brand polja. Tokeni iz tokens.css.
+ * ========================================================================= */
+
+/* === Intro banner === */
+.coric-brand-intro-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 320px;
+  padding: var(--spacing-scale-8) var(--spacing-container-gutter-mobile);
+  overflow: hidden;
+}
+
+.coric-brand-intro-banner__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: var(--color-brand-green-800);
+}
+
+.coric-brand-intro-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    to right,
+    rgba(31, 63, 47, 0.9) 0%,
+    rgba(31, 63, 47, 0.6) 55%,
+    rgba(31, 63, 47, 0.25) 100%
+  );
+}
+
+.coric-brand-intro-banner__overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--spacing-container-max-width);
+  margin: 0 auto;
+}
+
+.coric-brand-intro-banner__text {
+  font-size: var(--typography-scale-h3);
+  font-weight: var(--typography-weight-light);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-semantic-text-on-dark);
+  max-width: 720px;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(15, 15, 15, 0.4);
+}
+
+.coric-brand-intro-banner__text strong {
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-accent-lime-500);
+}
+
+@media (min-width: 768px) {
+  .coric-brand-intro-banner {
+    min-height: 420px;
+    padding: var(--spacing-scale-10) var(--spacing-container-gutter-desktop);
+  }
+}
+
+/* === Bottom CTA foto (pred footer) ===
+ * Redizajn: identična .coric-home-blog-preview__photo sa naslovne strane
+ * (deljena klasa iz home-page.css — isti wave + rounded photo box), samo BEZ
+ * __grid blog kartica (vidi _bottom_cta_photo.html). Pošto __grid daje visinu
+ * boxu na home strani (margin-top 300px desktop), ovde MORA eksplicitan
+ * min-height — SKOPIRANO na #brand-bottom-photo da ne cure na home stranu. */
+#brand-bottom-photo .coric-home-blog-preview__photo {
+  position: relative;
+  min-height: 320px;
+}
+
+#brand-bottom-photo .coric-brand-bottom-photo__badge {
+  position: absolute;
+  z-index: 1;
+  top: var(--spacing-scale-5);
+  left: var(--spacing-scale-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--rounded-full);
+  background: var(--color-brand-green-800);
+  box-shadow: var(--shadow-lg);
+}
+
+#brand-bottom-photo .coric-brand-bottom-photo__badge img {
+  width: 38px;
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  #brand-bottom-photo .coric-home-blog-preview__photo {
+    min-height: 480px;
+  }
+
+  #brand-bottom-photo .coric-brand-bottom-photo__badge {
+    top: var(--spacing-scale-6);
+    left: var(--spacing-scale-6);
+    width: 80px;
+    height: 80px;
+  }
+
+  #brand-bottom-photo .coric-brand-bottom-photo__badge img {
+    width: 48px;
+  }
+}

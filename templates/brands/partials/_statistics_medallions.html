@@ -1,9 +1,15 @@
 {% load i18n %}
+{# Ikone su fiksne po redosledu (traktor/ljudi/pogoni/podrška) — brand.statistics #}
+{# nosi SAMO value+label (SM-D „max 4 stavke, dict shape"); dodavanje icon ključa u #}
+{# JSON shape je van scope-a redizajna, pa se ikona bira po poziciji u listi. #}
 <h2 id="brand-statistics-title" class="visually-hidden">{% translate "Statistike" %}</h2>
 {% include "partials/section_eyebrow.html" with text=_("STATISTIKE") tag="div" %}
 <div class="coric-statistic-medallions" data-statistic-counters>
   {% for stat in brand.statistics|slice:":4" %}
     <div class="coric-statistic-medallion" data-testid="statistic-medallion-{{ forloop.counter }}">
+      <span class="coric-statistic-medallion__icon" aria-hidden="true">
+        <i class="fa-solid {% cycle 'fa-tractor' 'fa-users' 'fa-industry' 'fa-headset' %}"></i>
+      </span>
       <span class="coric-statistic-medallion__value" data-count-target="{{ stat.value }}" data-count-duration="1500">0</span>
       <span class="coric-statistic-medallion__label">{{ stat.label }}</span>
     </div>

@@ -13,6 +13,7 @@
   {% block hreflang %}{% hreflang_links %}{% endblock %}
   <link rel="stylesheet" href="{% static "css/tokens.css" %}">
   <link rel="stylesheet" href="{% static 'vendor/glightbox/glightbox.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
   {% bootstrap_css %}
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
   {% block extra_head %}{% endblock %}
@@ -43,6 +44,7 @@
   <script src="{% static 'js/lightbox-init.js' %}" defer></script>
   <script src="{% static 'js/statistic-counter.js' %}" defer></script>
   <script src="{% static 'js/testimonials-slider.js' %}" defer></script>
+  <script src="{% static 'js/spec-accordion.js' %}" defer></script>
   <script src="{% static 'js/gdpr-banner.js' %}" defer></script>
   {# Per-page scripts POSLE site-wide — sync init safe za Bootstrap komponente #}
   {% block scripts %}{% endblock %}

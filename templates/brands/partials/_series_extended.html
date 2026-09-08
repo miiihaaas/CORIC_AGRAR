@@ -2,7 +2,7 @@
 {% for product in series.products.all %}
   <article class="coric-product-row" data-testid="product-row-{{ product.slug }}">
     <div class="coric-product-row__image">
-      {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 60vw" loading="lazy" %}
+      {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 60vw" loading="lazy" css_class="coric-product-row__img" %}
     </div>
     <div class="coric-product-row__specs">
       <h3 class="coric-product-row__title">{{ product.name }}</h3>
@@ -10,6 +10,9 @@
         <p class="coric-product-row__desc">{{ product.description|truncatewords:25 }}</p>
       {% endif %}
       {% regroup product.specifications.all by section_label as spec_sections %}
+      {% if spec_sections %}
+        <h4 class="coric-product-row__specs-heading">{% translate "Tehnički podaci traktora" %}</h4>
+      {% endif %}
       {% for section_group in spec_sections %}
         <details class="coric-product-row__accordion"{% if forloop.first %} open{% endif %} data-testid="spec-section-{{ section_group.grouper|slugify }}">
           <summary>{{ section_group.grouper }}<span class="coric-product-row__accordion-icon" aria-hidden="true">+</span></summary>

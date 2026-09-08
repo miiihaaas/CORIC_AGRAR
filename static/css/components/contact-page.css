@@ -312,22 +312,33 @@
 }
 
 /* === Mapa (responsive aspect-ratio iframe) === */
+/* Sekcija je NAMERNO van .coric-contact (koji nosi max-width + padding) — vidi
+ * contact.html. __inner nosi sopstveni gutter za eyebrow/naslov/fallback tekst;
+ * __frame je full-bleed 100vw i zalepljen za footer (nula donjeg razmaka). */
 .coric-contact-map {
-  margin-bottom: var(--spacing-scale-4);
+  margin-bottom: 0;
+  padding-top: var(--spacing-section-mobile);
 }
 
 .coric-contact-map__inner {
   max-width: var(--spacing-container-max-width);
   margin: 0 auto;
+  padding: 0 var(--spacing-container-gutter-mobile);
 }
 
 .coric-contact-map__frame {
   position: relative;
-  width: 100%;
+  /* Full-bleed breakout — 100% VIEWPORT širine bez obzira na __inner max-width
+   * (isti "break out of a centered container" trik kao .coric-brand-hero--photo). */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: var(--spacing-scale-6);
   aspect-ratio: 16 / 9;
-  border-radius: var(--rounded-md);
+  max-height: 500px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  /* Ivica do ivice viewport-a — bez zaobljenja/senke (te su smislene samo kad
+   * mapa ima gutter oko sebe). */
 }
 
 .coric-contact-map__iframe {
@@ -379,5 +390,13 @@
   .coric-contact-info__grid {
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-scale-6);
+  }
+
+  .coric-contact-map {
+    padding-top: var(--spacing-section);
+  }
+
+  .coric-contact-map__inner {
+    padding: 0 var(--spacing-container-gutter-desktop);
   }
 }

@@ -13,6 +13,9 @@
         {% if product.horse_power %}
           <p class="coric-product-card__spec">{{ product.horse_power }} {% translate "KS" %}</p>
         {% endif %}
+        {% if product.description %}
+          <p class="coric-product-card__excerpt">{{ product.description|truncatewords:16 }}</p>
+        {% endif %}
         <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "OPŠIRNIJE" %}</span>
       </div>
     </a>
