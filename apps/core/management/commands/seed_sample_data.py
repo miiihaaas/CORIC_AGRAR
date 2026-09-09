@@ -21,13 +21,24 @@ superusera. Story 9-8 MORA da provisionuje svog SOPSTVENOG DEV-only superusera k
 ARHITEKTURNA GRANICA: ``apps/core`` po pravilu ne importuje domain app-ove — ALI ovo je
 operativni/management (data-bootstrap) sloj, NE runtime core kod, pa direktni import domain modela je
 svestan i dozvoljen izuzetak (mirror data-migration seed-ova u ``apps/brands/migrations``). SM-D1.
+
+PROFIL 2 PROŠIRENJE (2026-09-09): manifest shape je proširen (Series, više Category/Subcategory,
+po-proizvod ``subcategory_slug``/``series_slug``/``images``/``specs``, ProductBrochure,
+ProductTestimonial, ProductSimilar) da profil 2 (kurirani "1:1 snapshot lokalne baze" manifest,
+vidi ``_seed_profiles/profile2.py``) može da referencira/pravi sve entitete koje baza sadrži.
+Svako novo polje je OPCIONO (``.get()`` sa fallback-om na staro ponašanje) — PROFILE_1 shape i
+DB pozivi ostaju bit-za-bit identični (E2E cilja tačne slugove, ne sme da se pomeri). Fajlovi
+(slike/PDF) se NIKAD ne pišu u ``defaults`` dict get_or_create-a (FileField.save() mora da pozove
+storage) — prilažu se TEK kad je red NOVO kreiran, isti pattern kao ``seed_e2e_data`` galerija slika.
 """
 
 from __future__ import annotations
 
 from decimal import Decimal
+from pathlib import Path
 
 from django.conf import settings
+from django.core.files import File
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
@@ -37,8 +48,20 @@ from apps.blog.models import Post
 from apps.blog.models import Tag as BlogTag
 from apps.brands.models import Brand
 from apps.brands.models import Category as BrandCategory
+from apps.brands.models import Series, Subcategory
 from apps.pages.models import SiteSettings
-from apps.products.models import Product, ProductSpecification
+from apps.products.models import (
+    Product,
+    ProductBrochure,
+    ProductImage,
+    ProductSimilar,
+    ProductSpecification,
+    ProductTestimonial,
+)
+
+# Profil 2 seed asset-i (slike/PDF stvarno referencirani iz baze, optimizovani, commit-ovani u repo).
+# Vidi ``_seed_profiles/assets/`` i ``ops/seed/generate_profile2_manifest.py`` (generator).
+_SEED_ASSETS_DIR = Path(__file__).resolve().parent / "_seed_profiles" / "assets"
 
 # =============================================================================
 # Seed manifest (FINALNE vrednosti — verbatim iz story manifesta + interface contract)
@@ -123,7 +146,12 @@ _NEW_TRACTORS = [
 _HEADLINE_SPECS = [
     {"section": "motor", "key": "Snaga motora", "value": "80 KS", "order": 0},
     {"section": "transmisija", "key": "Broj brzina", "value": "16+8", "order": 1},
-    {"section": "hidraulika", "key": "Nosivost dizalice", "value": "2600 kg", "order": 2},
+    {
+        "section": "hidraulika",
+        "key": "Nosivost dizalice",
+        "value": "2600 kg",
+        "order": 2,
+    },
 ]
 
 # POLOVNE mašine (condition="used", is_published=True, status="published"); sve year <= 2022
@@ -143,7 +171,11 @@ _USED_MACHINES = [
         "brand_slug": "tulip",
         "name": "Polovni Tulip MIX 6 m³",
         "description": "Polovni rasipač stajnjaka zapremine 6 m³ u dobrom stanju.",
-        "key_features": ["Zapremina 6 m³", "Pocinkovano kućište", "Robusna konstrukcija"],
+        "key_features": [
+            "Zapremina 6 m³",
+            "Pocinkovano kućište",
+            "Robusna konstrukcija",
+        ],
         "horse_power": 35,
         "year": 2018,
         "price_eur": Decimal("4200.00"),
@@ -307,14 +339,18 @@ class Command(BaseCommand):
             self._seed(counters, manifest)
 
         # Sažetak TEK posle uspešnog commit-a (Atomicity Dev Note).
-        self.stdout.write(self.style.SUCCESS("seed_sample_data završen — demo content spreman."))
+        self.stdout.write(
+            self.style.SUCCESS("seed_sample_data završen — demo content spreman.")
+        )
         created_any = False
         for label, count in counters.items():
             if count:
                 self.stdout.write(f"  {label}: {count} kreirano (postojeći preskočeni)")
                 created_any = True
         if not created_any:
-            self.stdout.write("  ništa novo — svi objekti su već postojali (idempotentno).")
+            self.stdout.write(
+                "  ništa novo — svi objekti su već postojali (idempotentno)."
+            )
 
     # -- internal helpers -----------------------------------------------------
 
@@ -322,15 +358,31 @@ class Command(BaseCommand):
         # Prazna sekcija = profil je ne pokriva -> preskoci je bez greske. Bez ovoga bi
         # delimicno popunjen profil (npr. proizvodi bez bloga) rusio ceo seed.
         brands = self._seed_brands(counters, manifest)
-        if manifest.get("traktori_category"):
-            self._seed_traktori_category(counters, manifest["traktori_category"])
+        categories = self._seed_categories(counters, manifest)
+        subcategories = self._seed_subcategories(counters, manifest, categories)
+        series_map = self._seed_series(counters, manifest, brands)
         self._seed_products(
-            manifest.get("new_tractors", []), "new", brands, counters, "novi traktori"
+            manifest.get("new_tractors", []),
+            "new",
+            brands,
+            counters,
+            "novi traktori",
+            subcategories=subcategories,
+            series_map=series_map,
         )
         self._seed_products(
-            manifest.get("used_machines", []), "used", brands, counters, "polovne mašine"
+            manifest.get("used_machines", []),
+            "used",
+            brands,
+            counters,
+            "polovne mašine",
+            subcategories=subcategories,
+            series_map=series_map,
         )
         self._seed_specs(counters, manifest.get("headline_specs"))
+        self._seed_brochures(counters, manifest.get("brochures", []))
+        self._seed_testimonials(counters, manifest.get("testimonials", []))
+        self._seed_similar(counters, manifest.get("similar", []))
         self._seed_blog(counters, manifest.get("blog"))
         self._seed_sitesettings(counters)
 
@@ -343,14 +395,26 @@ class Command(BaseCommand):
         """Vrati mapu slug -> Brand za sve traktor brendove + referencirane postojeće brendove."""
         brands: dict[str, Brand] = {}
         for data in manifest.get("tractor_brands", []):
+            base = {"is_coming_soon": False, "statistics": data.get("statistics", [])}
+            if data.get("brand_color"):
+                base["brand_color"] = data["brand_color"]
             defaults = _set_translatable(
-                {"is_coming_soon": False, "statistics": []},
+                base,
                 name=data["name"],
                 description=data["description"],
                 slogan=data["slogan"],
             )
-            brand, created = Brand.objects.get_or_create(slug=data["slug"], defaults=defaults)
+            brand, created = Brand.objects.get_or_create(
+                slug=data["slug"], defaults=defaults
+            )
             self._bump(counters, "brendovi", created)
+            if created:
+                if data.get("logo_asset"):
+                    self._attach_file(brand, "logo", ("brands", data["logo_asset"]))
+                if data.get("hero_image_asset"):
+                    self._attach_file(
+                        brand, "hero_image", ("brands", data["hero_image_asset"])
+                    )
             brands[data["slug"]] = brand
 
         # Postojeći migration-seed-ovani brendovi koje polovne mašine referenciraju (AC2 — NE dupliraj).
@@ -363,26 +427,116 @@ class Command(BaseCommand):
             brands[slug] = brand
         return brands
 
-    def _seed_traktori_category(self, counters, category):
-        defaults = _set_translatable(
-            {
-                "is_for": category["is_for"],
-                "display_order": category["display_order"],
-            },
-            name=category["name"],
-            description=category["description"],
-        )
-        _, created = BrandCategory.objects.get_or_create(
-            slug=category["slug"], defaults=defaults
-        )
-        self._bump(counters, "kategorije", created)
+    def _seed_categories(self, counters, manifest):
+        """Vrati mapu slug -> Category: manuelna traktori kategorija + referencirane migracijske.
 
-    def _seed_products(self, items, condition, brands, counters, label):
+        Zamenjuje stari ``_seed_traktori_category`` (koji nije vraćao ništa) — profil 2 mora da
+        razreši ``subcategory_slug`` FK-ove i za migracijske kategorije (mehanizacija), pa metoda
+        vraća mapu umesto da samo kreira. Ponašanje za profil 1 (samo ``traktori_category``,
+        bez ``referenced_category_slugs``) je funkcionalno identično starom kodu.
+        """
+        categories: dict[str, BrandCategory] = {}
+        category = manifest.get("traktori_category")
+        if category:
+            defaults = _set_translatable(
+                {
+                    "is_for": category["is_for"],
+                    "display_order": category["display_order"],
+                },
+                name=category["name"],
+                description=category["description"],
+            )
+            obj, created = BrandCategory.objects.get_or_create(
+                slug=category["slug"], defaults=defaults
+            )
+            self._bump(counters, "kategorije", created)
+            categories[category["slug"]] = obj
+
+        # Postojeće migration-seed-ovane kategorije (mehanizacija) koje profil 2 proizvodi
+        # referenciraju kroz subcategory_slug — NE dupliraj (mirror referenced_brand_slugs).
+        for slug in manifest.get("referenced_category_slugs", ()):
+            obj, created = BrandCategory.objects.get_or_create(
+                slug=slug,
+                defaults=_set_translatable({"is_for": "mehanizacija"}, name=slug),
+            )
+            self._bump(counters, "kategorije", created)
+            categories[slug] = obj
+        return categories
+
+    def _seed_subcategories(self, counters, manifest, categories):
+        """Vrati mapu slug -> Subcategory. Podržava i manuelne i referencirane (migracijske).
+
+        NAPOMENA: mapa je flat po ``slug`` (ne po (category, slug) paru) — dovoljno za trenutni
+        manifest jer su svi subcategory slug-ovi globalno distinktni. Lista MORA imati parent-e
+        pre dece (top-down redosled) ako ikad naraste iznad 1 nivoa dubine.
+        """
+        subcategories: dict[str, Subcategory] = {}
+        for data in manifest.get("subcategories", []):
+            category = categories[data["category_slug"]]
+            parent = (
+                subcategories.get(data["parent_slug"])
+                if data.get("parent_slug")
+                else None
+            )
+            defaults = _set_translatable(
+                {
+                    "icon": data.get("icon", ""),
+                    "display_order": data.get("display_order", 0),
+                },
+                name=data["name"],
+                description=data.get("description", ""),
+            )
+            obj, created = Subcategory.objects.get_or_create(
+                category=category, parent=parent, slug=data["slug"], defaults=defaults
+            )
+            self._bump(counters, "potkategorije", created)
+            subcategories[data["slug"]] = obj
+        return subcategories
+
+    def _seed_series(self, counters, manifest, brands):
+        """Vrati mapu (brand_slug, slug) -> Series."""
+        series_map: dict[tuple[str, str], Series] = {}
+        for data in manifest.get("series", []):
+            brand = brands[data["brand_slug"]]
+            defaults = _set_translatable(
+                {
+                    "layout_mode": data.get("layout_mode", Series.LayoutMode.GRID),
+                    "display_order": data.get("display_order", 0),
+                },
+                name=data["name"],
+                description=data.get("description", ""),
+            )
+            obj, created = Series.objects.get_or_create(
+                brand=brand, slug=data["slug"], defaults=defaults
+            )
+            self._bump(counters, "serije", created)
+            series_map[(data["brand_slug"], data["slug"])] = obj
+        return series_map
+
+    def _seed_products(
+        self,
+        items,
+        condition,
+        brands,
+        counters,
+        label,
+        subcategories=None,
+        series_map=None,
+    ):
+        subcategories = subcategories or {}
+        series_map = series_map or {}
         for data in items:
+            subcategory_slug = data.get("subcategory_slug")
+            series_slug = data.get("series_slug")
             defaults = _set_translatable(
                 {
                     "brand": brands[data["brand_slug"]],
-                    "subcategory": None,
+                    "subcategory": subcategories[subcategory_slug]
+                    if subcategory_slug
+                    else None,
+                    "series": series_map[(data["brand_slug"], series_slug)]
+                    if series_slug
+                    else None,
                     "horse_power": data["horse_power"],
                     "year": data["year"],
                     "price_eur": data["price_eur"],
@@ -394,8 +548,114 @@ class Command(BaseCommand):
                 description=data["description"],
                 key_features=data["key_features"],
             )
-            _, created = Product.objects.get_or_create(slug=data["slug"], defaults=defaults)
+            product, created = Product.objects.get_or_create(
+                slug=data["slug"], defaults=defaults
+            )
             self._bump(counters, label, created)
+            if created and data.get("main_image_asset"):
+                self._attach_file(
+                    product,
+                    "main_image",
+                    ("products", "main", data["main_image_asset"]),
+                )
+            for img in data.get("images", []):
+                self._seed_product_image(counters, product, img)
+            for spec in data.get("specs", []):
+                self._seed_product_spec(counters, product, spec)
+
+    def _seed_product_image(self, counters, product, img):
+        obj, created = ProductImage.objects.get_or_create(
+            product=product,
+            order=img["order"],
+            defaults=_set_translatable({}, alt_text=img.get("alt_text", "")),
+        )
+        self._bump(counters, "slike proizvoda", created)
+        if created:
+            self._attach_file(obj, "image", ("products", "gallery", img["asset"]))
+
+    def _seed_product_spec(self, counters, product, spec):
+        # ``key`` je lookup ključ (isti pattern kao ``_seed_specs`` headline specs ispod).
+        defaults = _set_translatable(
+            {"order": spec.get("order", 0), "key_sr": spec["key"]},
+            value=spec["value"],
+        )
+        _, created = ProductSpecification.objects.get_or_create(
+            product=product,
+            section=spec["section"],
+            key=spec["key"],
+            defaults=defaults,
+        )
+        self._bump(counters, "specifikacije", created)
+
+    def _seed_brochures(self, counters, brochures):
+        for data in brochures:
+            product = Product.objects.get(slug=data["product_slug"])
+            title = data.get("title", "")
+            obj, created = ProductBrochure.objects.get_or_create(
+                product=product,
+                title=title,
+                defaults={"title_sr": title},
+            )
+            self._bump(counters, "brošure", created)
+            if created:
+                if data.get("pdf_asset"):
+                    self._attach_file(
+                        obj, "pdf_file", ("products", "brochures", data["pdf_asset"])
+                    )
+                if data.get("cover_thumbnail_asset"):
+                    self._attach_file(
+                        obj,
+                        "cover_thumbnail_image",
+                        ("products", "brochure_covers", data["cover_thumbnail_asset"]),
+                    )
+
+    def _seed_testimonials(self, counters, testimonials):
+        for data in testimonials:
+            product = Product.objects.get(slug=data["product_slug"])
+            # ``author_name`` je lookup ključ (NIJE translatable — vidi translation.py) — ne
+            # dupliraj ga u defaults, isti pattern kao ``key`` u _seed_product_spec.
+            defaults = _set_translatable(
+                {"order": data.get("order", 0)},
+                quote=data["quote"],
+                location=data.get("location", ""),
+            )
+            obj, created = ProductTestimonial.objects.get_or_create(
+                product=product,
+                author_name=data["author_name"],
+                defaults=defaults,
+            )
+            self._bump(counters, "testimonijali", created)
+            if created and data.get("photo_asset"):
+                self._attach_file(
+                    obj, "photo", ("products", "testimonials", data["photo_asset"])
+                )
+
+    def _seed_similar(self, counters, similar):
+        for data in similar:
+            product = Product.objects.get(slug=data["product_slug"])
+            related = Product.objects.get(slug=data["related_product_slug"])
+            _, created = ProductSimilar.objects.get_or_create(
+                product=product,
+                related_product=related,
+                defaults={"order": data.get("order", 0)},
+            )
+            self._bump(counters, "slični proizvodi", created)
+
+    def _attach_file(self, instance, field_name, path_parts):
+        """Prilaži seed asset fajl na FileField/ImageField NAKON što je red kreiran.
+
+        FileField.save() radi svoj storage upis + poziva model.save() — MORA da se desi POSLE
+        get_or_create() kreacije (isti razlog kao ``seed_e2e_data._ensure_gallery_image``:
+        FileField se ne može seed-ovati kroz ``defaults`` dict).
+        """
+        path = _SEED_ASSETS_DIR.joinpath(*path_parts)
+        if not path.exists():
+            raise CommandError(
+                f"Seed asset nedostaje: {path} — manifest referencira fajl koji ne postoji u "
+                "repou (_seed_profiles/assets/). Pokreni ops/seed/generate_profile2_manifest.py."
+            )
+        with path.open("rb") as fh:
+            getattr(instance, field_name).save(path.name, File(fh), save=True)
 
     def _seed_specs(self, counters, headline_specs):
         if not headline_specs:
@@ -449,7 +709,9 @@ class Command(BaseCommand):
                 perex=data["perex"],
                 body=data["body"],
             )
-            post, created = Post.objects.get_or_create(slug=data["slug"], defaults=defaults)
+            post, created = Post.objects.get_or_create(
+                slug=data["slug"], defaults=defaults
+            )
             self._bump(counters, "blog objave", created)
             # G-3: M2M tek posle save() (post sad ima PK).
             post.tags.add(tag)
