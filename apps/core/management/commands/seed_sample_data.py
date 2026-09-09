@@ -230,6 +230,44 @@ def _set_translatable(defaults, **fields):
     return defaults
 
 
+# =============================================================================
+# Profili (2026-09-08) — `--profile` bira KOJI manifest se seed-uje.
+# =============================================================================
+# Profil 1 je ISTORIJSKI manifest (Story 9-7) i mora ostati funkcionalno nepromenjen:
+# `seed_e2e_data` + Playwright E2E ciljaju tacne slug-ove (agri-tracking-tb804,
+# wuzheng-wz504, saillong-sl904). Profil 2 je kurirani demo sadrzaj koji se puni
+# odvojeno (vidi _seed_profiles/profile2.py) da ovaj fajl ne raste.
+#
+# Manifest je CIST PODATAK — seed logika (get_or_create po eksplicitnom slug-u,
+# modeltranslation _sr kolone, counters) je zajednicka za sve profile.
+PROFILE_1 = {
+    "tractor_brands": _TRACTOR_BRANDS,
+    # Migration-seed-ovani brendovi koje polovne masine referenciraju (AC2 — NE dupliraj).
+    "referenced_brand_slugs": ("tulip", "hzm"),
+    "traktori_category": _TRAKTORI_CATEGORY,
+    "new_tractors": _NEW_TRACTORS,
+    "used_machines": _USED_MACHINES,
+    "headline_specs": {
+        "product_slug": "agri-tracking-tb804",
+        "specs": _HEADLINE_SPECS,
+    },
+    "blog": {
+        "category": _BLOG_CATEGORY,
+        "tag": _BLOG_TAG,
+        "posts": _BLOG_POSTS,
+    },
+}
+
+
+def _load_manifest(profile: str) -> dict:
+    """Vrati manifest za dati profil. Profil 2 se importuje LENJO (fail-loud ako fali)."""
+    if profile == "1":
+        return PROFILE_1
+    from ._seed_profiles.profile2 import PROFILE_2
+
+    return PROFILE_2
+
+
 class Command(BaseCommand):
     help = (
         "DEV-only idempotentan seed demo sadržaja (TRAKTORI strana + polovne mašine + blog). "
@@ -245,6 +283,15 @@ class Command(BaseCommand):
             default=False,
             help="Zaobiđi production guard i izvrši seed čak i sa DEBUG=False (DEV/staging samo).",
         )
+        parser.add_argument(
+            "--profile",
+            choices=["1", "2"],
+            default="1",
+            help=(
+                "Koji manifest demo sadržaja seed-ovati. 1 = istorijski Story 9-7 manifest "
+                "(default; E2E zavisi od njega). 2 = kurirani demo sadržaj."
+            ),
+        )
 
     def handle(self, *args, **options):
         # SM-D2: production guard je PRVO što handle() radi, PRE bilo kakvog DB write-a.
@@ -253,10 +300,11 @@ class Command(BaseCommand):
                 "seed_sample_data je DEV-only; odbijam izvršavanje sa DEBUG=False bez --force"
             )
 
+        manifest = _load_manifest(options["profile"])
         counters: dict[str, int] = {}
 
         with transaction.atomic():
-            self._seed(counters)
+            self._seed(counters, manifest)
 
         # Sažetak TEK posle uspešnog commit-a (Atomicity Dev Note).
         self.stdout.write(self.style.SUCCESS("seed_sample_data završen — demo content spreman."))
@@ -270,13 +318,20 @@ class Command(BaseCommand):
 
     # -- internal helpers -----------------------------------------------------
 
-    def _seed(self, counters):
-        brands = self._seed_brands(counters)
-        self._seed_traktori_category(counters)
-        self._seed_products(_NEW_TRACTORS, "new", brands, counters, "novi traktori")
-        self._seed_products(_USED_MACHINES, "used", brands, counters, "polovne mašine")
-        self._seed_specs(counters)
-        self._seed_blog(counters)
+    def _seed(self, counters, manifest):
+        # Prazna sekcija = profil je ne pokriva -> preskoci je bez greske. Bez ovoga bi
+        # delimicno popunjen profil (npr. proizvodi bez bloga) rusio ceo seed.
+        brands = self._seed_brands(counters, manifest)
+        if manifest.get("traktori_category"):
+            self._seed_traktori_category(counters, manifest["traktori_category"])
+        self._seed_products(
+            manifest.get("new_tractors", []), "new", brands, counters, "novi traktori"
+        )
+        self._seed_products(
+            manifest.get("used_machines", []), "used", brands, counters, "polovne mašine"
+        )
+        self._seed_specs(counters, manifest.get("headline_specs"))
+        self._seed_blog(counters, manifest.get("blog"))
         self._seed_sitesettings(counters)
 
     def _bump(self, counters, label, created):
@@ -284,10 +339,10 @@ class Command(BaseCommand):
         if created:
             counters[label] += 1
 
-    def _seed_brands(self, counters):
+    def _seed_brands(self, counters, manifest):
         """Vrati mapu slug -> Brand za sve traktor brendove + referencirane postojeće brendove."""
         brands: dict[str, Brand] = {}
-        for data in _TRACTOR_BRANDS:
+        for data in manifest.get("tractor_brands", []):
             defaults = _set_translatable(
                 {"is_coming_soon": False, "statistics": []},
                 name=data["name"],
@@ -299,7 +354,7 @@ class Command(BaseCommand):
             brands[data["slug"]] = brand
 
         # Postojeći migration-seed-ovani brendovi koje polovne mašine referenciraju (AC2 — NE dupliraj).
-        for slug in ("tulip", "hzm"):
+        for slug in manifest.get("referenced_brand_slugs", ()):
             brand, created = Brand.objects.get_or_create(
                 slug=slug,
                 defaults=_set_translatable({}, name=slug.upper()),
@@ -308,17 +363,17 @@ class Command(BaseCommand):
             brands[slug] = brand
         return brands
 
-    def _seed_traktori_category(self, counters):
+    def _seed_traktori_category(self, counters, category):
         defaults = _set_translatable(
             {
-                "is_for": _TRAKTORI_CATEGORY["is_for"],
-                "display_order": _TRAKTORI_CATEGORY["display_order"],
+                "is_for": category["is_for"],
+                "display_order": category["display_order"],
             },
-            name=_TRAKTORI_CATEGORY["name"],
-            description=_TRAKTORI_CATEGORY["description"],
+            name=category["name"],
+            description=category["description"],
         )
         _, created = BrandCategory.objects.get_or_create(
-            slug=_TRAKTORI_CATEGORY["slug"], defaults=defaults
+            slug=category["slug"], defaults=defaults
         )
         self._bump(counters, "kategorije", created)
 
@@ -342,9 +397,13 @@ class Command(BaseCommand):
             _, created = Product.objects.get_or_create(slug=data["slug"], defaults=defaults)
             self._bump(counters, label, created)
 
-    def _seed_specs(self, counters):
-        product = Product.objects.get(slug="agri-tracking-tb804")
-        for spec in _HEADLINE_SPECS:
+    def _seed_specs(self, counters, headline_specs):
+        if not headline_specs:
+            return
+        # `get` (ne `filter().first()`) je namerno fail-loud: profil koji trazi
+        # specifikacije za slug koji nije seed-ovan je greska u manifestu, ne tiha rupa.
+        product = Product.objects.get(slug=headline_specs["product_slug"])
+        for spec in headline_specs["specs"]:
             # ``key`` je lookup ključ (vidi get_or_create ispod) — ne dupliraj ga u defaults.
             # Bazni ``key`` accessor već čita ``key_sr`` (modeltranslation); postavi samo ``key_sr``.
             defaults = _set_translatable(
@@ -359,24 +418,26 @@ class Command(BaseCommand):
             )
             self._bump(counters, "specifikacije", created)
 
-    def _seed_blog(self, counters):
+    def _seed_blog(self, counters, blog):
+        if not blog:
+            return
         cat_defaults = _set_translatable(
             {},
-            name=_BLOG_CATEGORY["name"],
-            description=_BLOG_CATEGORY["description"],
+            name=blog["category"]["name"],
+            description=blog["category"]["description"],
         )
         category, created = BlogCategory.objects.get_or_create(
-            slug=_BLOG_CATEGORY["slug"], defaults=cat_defaults
+            slug=blog["category"]["slug"], defaults=cat_defaults
         )
         self._bump(counters, "blog kategorije", created)
 
         tag, created = BlogTag.objects.get_or_create(
-            slug=_BLOG_TAG["slug"],
-            defaults=_set_translatable({}, name=_BLOG_TAG["name"]),
+            slug=blog["tag"]["slug"],
+            defaults=_set_translatable({}, name=blog["tag"]["name"]),
         )
         self._bump(counters, "blog tagovi", created)
 
-        for data in _BLOG_POSTS:
+        for data in blog["posts"]:
             defaults = _set_translatable(
                 {
                     "category": category,
