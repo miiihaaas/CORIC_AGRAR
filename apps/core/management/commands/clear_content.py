@@ -1,4 +1,4 @@
-"""DEV/staging komanda za brisanje demo sadrzaja — NIKAD produkcija.
+"""Komanda za brisanje demo sadrzaja — cuva korisnike i panel login.
 
 Prati `seed_sample_data`: seed puni demo sadrzaj, ova komanda ga sklanja da bi
 prezentacija mogla da krene iz cistog stanja. Par je zamisljen da se vrti vise puta.
@@ -96,6 +96,15 @@ class Command(BaseCommand):
             help="Preskoči interaktivnu potvrdu (za skripte/CI).",
         )
         parser.add_argument(
+            "--allow-production",
+            action="store_true",
+            default=False,
+            help=(
+                "Dozvoli izvršavanje na produkciji. Bez ovoga se produkcija ODBIJA. "
+                "Korisnici, grupe i lozinke prežive i sa ovim prekidačem."
+            ),
+        )
+        parser.add_argument(
             "--dry-run",
             action="store_true",
             default=False,
@@ -106,7 +115,7 @@ class Command(BaseCommand):
         # PRVA stvar, pre bilo kakvog citanja/pisanja: produkcija je zabranjena.
         # DEBUG NE razlikuje okruženja — staging takođe ima DEBUG=False (staging.py:8),
         # pa se gleda ime settings modula.
-        self._refuse_on_production()
+        self._refuse_on_production(allow=options["allow_production"])
 
         dry_run = options["dry_run"]
         counts = {label: _purge_qs(model).count() for label, model in _PURGE_MODELS}
@@ -147,14 +156,29 @@ class Command(BaseCommand):
 
     # -- internal helpers -----------------------------------------------------
 
-    def _refuse_on_production(self):
+    def _refuse_on_production(self, allow: bool):
+        """Produkcija je odbijena po difoltu; otkljucava je samo `--allow-production`.
+
+        Zasto flag umesto potpune zabrane: demo sadrzaj na produkciji je izmisljen i
+        sme da se brise (odluka vlasnika, 2026-09-09). Zasto flag umesto slobodnog
+        prolaza: `deploy.sh` i cron rade NEINTERAKTIVNO — difolt odbijanje stiti od
+        slucajnog pokretanja u automatizaciji, gde nema koga da se pita.
+
+        Korisnici, grupe i lozinke prezivljavaju u SVAKOM slucaju — to ne zavisi od
+        ovog prekidaca nego od toga sto komanda uopste ne dira auth_* tabele.
+        """
         settings_module = getattr(settings, "SETTINGS_MODULE", "") or ""
-        if settings_module.endswith(".production"):
+        if not settings_module.endswith(".production"):
+            return
+        if not allow:
             raise CommandError(
-                "clear_content je zabranjen na produkciji "
+                "clear_content na produkciji zahteva eksplicitan --allow-production "
                 f"(DJANGO_SETTINGS_MODULE={settings_module}). "
-                "Dozvoljeni su samo lokal i staging — nema --force prekidača."
+                "Bez njega se odbija da ne bi slučajno otišao kroz automatizaciju."
             )
+        self.stdout.write(
+            self.style.ERROR("PRODUKCIJA — brisanje sadržaja na živom sajtu (--allow-production).")
+        )
 
     def _orphan_seometa_qs(self):
         """SeoMeta redovi vezani za modele koje ova komanda briše.

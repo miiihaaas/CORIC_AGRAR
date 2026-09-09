@@ -172,12 +172,38 @@ def test_site_configuration_survives():
 
 
 @override_settings(SETTINGS_MODULE="config.settings.production")
-def test_refuses_on_production_settings():
-    """Mandat je lokal + staging. Nema --force prekidaca za produkciju."""
+def test_refuses_on_production_without_explicit_flag():
+    """Difolt na produkciji je ODBIJANJE — stiti od slucajnog poziva iz automatizacije."""
     _seed()
-    with pytest.raises(CommandError, match="produkciji"):
+    with pytest.raises(CommandError, match="allow-production"):
         _clear()
     assert Product.objects.exists(), "Ništa se ne sme obrisati kad brana odbije."
+
+
+@override_settings(SETTINGS_MODULE="config.settings.production")
+def test_allows_production_with_explicit_flag():
+    """Sa --allow-production brisanje prolazi (demo sadrzaj na produ je izmisljen)."""
+    _seed()
+    _clear(allow_production=True)
+    assert not Product.objects.exclude(slug__in=MIGRATION_SEEDED_PRODUCT_SLUGS).exists()
+
+
+@override_settings(SETTINGS_MODULE="config.settings.production")
+def test_users_survive_even_on_production():
+    """Panel login prezivljava i na produkciji — ne zavisi od prekidaca.
+
+    Ovo je uslov koji je vlasnik postavio kad je dozvolio brisanje na produkciji:
+    podaci smeju da odu, korisnici i mogucnost logovanja NE.
+    """
+    User = get_user_model()
+    admin = User.objects.create_superuser(
+        username="prod-admin", email="prod@example.com", password="tajna-lozinka-456"
+    )
+    _seed()
+    _clear(allow_production=True)
+    admin.refresh_from_db()
+    assert admin.is_superuser
+    assert admin.check_password("tajna-lozinka-456")
 
 
 @override_settings(SETTINGS_MODULE="config.settings.staging")
