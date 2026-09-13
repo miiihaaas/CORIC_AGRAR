@@ -35,15 +35,25 @@
 
 .coric-top-header__address {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
 }
 
+/* Kompaktan info-bar, NE primarna interaktivna kontrola — inline tekst-link unutar
+ * jednolinijske trake (WCAG 2.5.8 inline exception). BEZ min-height:44px: taj touch-target
+ * box je bio VIŠI od 40px trake (overflow:hidden), pa se tekst centrirao ISPOD vidljive
+ * zone i vizuelno "nestajao" iako je bio u DOM-u. */
 .coric-top-header__phone,
 .coric-top-header__phone--service {
   color: inherit;
   text-decoration: none;
-  min-height: 44px;
   display: inline-flex;
   align-items: center;
+}
+
+.coric-top-header__icon {
+  margin-right: var(--spacing-scale-2);
+  font-size: var(--typography-scale-caption);
 }
 
 .coric-top-header__phone:hover,

@@ -30,7 +30,7 @@ from django.conf import settings
 # baca ImportError). `SearchVector`/`SearchQuery`/`SearchRank` su u `...search`.
 from django.contrib.postgres.lookups import Unaccent
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db.models import Value
+from django.db.models import Q, Value
 
 from apps.products.models import Product
 
@@ -80,11 +80,18 @@ def build_product_search_qs(query: str, language_code: str) -> "QuerySet[Product
     search_vector = SearchVector(
         Unaccent(name_col), weight="A", config=_SEARCH_CONFIG
     ) + SearchVector(Unaccent(description_col), weight="B", config=_SEARCH_CONFIG)
+    # PREFIX fallback (search-as-you-type): plain tsquery matchuje SAMO cele reci ("trak" NE
+    # nadje "Traktori" dok se rec ne zavrsi) — OR-ujemo dopunski icontains na name/description
+    # da nedovrsene reci ipak daju rezultate dok korisnik kuca. Pogoci SAMO iz ove grane dobiju
+    # rank=0 (SearchRank nema preklapanje) → potisnuti na dno posle pravih FTS pogodaka.
+    prefix_filter = Q(**{f"{name_col}__icontains": query}) | Q(
+        **{f"{description_col}__icontains": query}
+    )
     return (
         Product.objects.filter(is_published=True)
         .select_related("brand")
         .annotate(search=search_vector)
         .annotate(rank=SearchRank(search_vector, search_query))
-        .filter(search=search_query)
+        .filter(Q(search=search_query) | prefix_filter)
         .order_by("-rank", "-created_at")
     )

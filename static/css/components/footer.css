@@ -1,4 +1,4 @@
-/* footer.css — Footer styling (Story 1.8).
+/* footer.css — Footer styling (Story 1.8; redizajn po mockupu — kolona-1: kontakt, logo top-centered).
  * BEM: .coric-footer__*
  * Tokens: --color-brand-green-800, --color-semantic-text-on-dark, --spacing-scale-*
  * Allowed px in AC9 whitelist: 1. Exception: rgba(255,255,255,0.2) per D9 (footer separator).
@@ -10,12 +10,10 @@
   padding: var(--spacing-scale-10) 0 var(--spacing-scale-5) 0;
 }
 
-.coric-footer__top {
-  padding-bottom: var(--spacing-scale-5);
-}
-
-.coric-footer__col {
-  margin-bottom: var(--spacing-scale-5);
+.coric-footer__brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-scale-12);
 }
 
 .coric-footer__logo-link {
@@ -25,11 +23,25 @@
 .coric-footer__logo {
   max-width: 100%;
   height: auto;
+  width: 160px;
 }
 
-.coric-footer__slogan {
-  margin-top: var(--spacing-scale-3);
-  font-weight: var(--typography-weight-light);
+.coric-footer__top {
+  padding-bottom: var(--spacing-scale-5);
+}
+
+.coric-footer__col {
+  margin-bottom: var(--spacing-scale-5);
+}
+
+.coric-footer__col-title {
+  font-family: var(--typography-family-primary);
+  font-size: var(--typography-scale-small);
+  font-weight: var(--typography-weight-bold);
+  letter-spacing: var(--typography-tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-semantic-text-on-dark);
+  margin: 0 0 var(--spacing-scale-4) 0;
 }
 
 .coric-footer__menu,
@@ -41,9 +53,15 @@
 }
 
 .coric-footer__menu li,
-.coric-footer__news li,
-.coric-footer__contact li {
+.coric-footer__news li {
   margin-bottom: var(--spacing-scale-2);
+}
+
+.coric-footer__contact li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-scale-3);
+  margin-bottom: var(--spacing-scale-3);
 }
 
 .coric-footer__menu a,
@@ -66,20 +84,35 @@
   font-style: normal;
 }
 
+/* Ikonica ispred kontakt podatka — jedinstven "boxed" izgled bez obzira na glif (mockup). */
+.coric-footer__contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-semantic-text-on-dark);
+  border-radius: var(--rounded-sm);
+  font-size: var(--typography-scale-caption);
+}
+
 .coric-footer__social {
   display: flex;
   gap: var(--spacing-scale-3);
   align-items: center;
-  margin-top: var(--spacing-scale-3);
+  margin-top: var(--spacing-scale-4);
 }
 
 .coric-footer__social-link {
-  color: var(--color-semantic-text-on-dark);
+  background-color: var(--color-semantic-text-on-dark);
+  color: var(--color-brand-green-800);
+  border-radius: var(--rounded-full);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 /* Decision D9 — rgba(255,255,255,0.2) allowed in whitelist (footer separator only). */
@@ -89,14 +122,21 @@
   margin: var(--spacing-scale-5) 0;
 }
 
-/* Story 7.4 — legal link red (privatnost + kolačići). Reset bullets + inline horizontalni layout. */
+/* Bottom red — copyright levo, pravni linkovi desno (GDPR/privacy — G-11, netaknuto funkcionalno). */
+.coric-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-scale-3);
+}
+
 .coric-footer__legal {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   gap: var(--spacing-scale-3);
-  justify-content: center;
 }
 
 .coric-footer__legal a {
@@ -109,6 +149,8 @@
 }
 
 .coric-footer__copyright {
+  font-weight: var(--typography-weight-bold);
+  letter-spacing: var(--typography-tracking-wide);
   font-size: var(--typography-scale-caption);
   margin: 0;
 }
@@ -142,11 +184,24 @@
     padding: var(--spacing-scale-8) 0 var(--spacing-scale-5) 0;
   }
 
+  .coric-footer__brand {
+    margin-bottom: var(--spacing-scale-8);
+  }
+
   .coric-footer__col {
     text-align: center;
   }
 
+  .coric-footer__contact li {
+    justify-content: center;
+  }
+
   .coric-footer__social {
     justify-content: center;
+  }
+
+  .coric-footer__bottom {
+    justify-content: center;
+    text-align: center;
   }
 }

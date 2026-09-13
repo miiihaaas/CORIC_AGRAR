@@ -211,24 +211,31 @@ def test_imp4_service_placeholder_resolved():
 
 
 def test_social_hidden_when_empty(client):
-    """AC8/AC9/SM-D8a: prazan social URL (seed default) → NEMA href=""/href="#" social link."""
-    # Seed je prazan social → social linkovi se NE renderuju (HIDE-WHEN-EMPTY).
+    """AC8/AC9/SM-D8a: prazan social URL (seed default) → NEMA href=""/href="#" social link
+    u top-header-u.
+
+    IZUZETAK (na eksplicitan zahtev — footer redizajn): coric-footer__social-link SADA
+    prikazuje ikonice uvek i pada na href="#" dok se link ne popuni kroz admin (footer.html
+    komentar), pa footer NIJE deo ovog HIDE-WHEN-EMPTY assert-a. top-header ostaje netaknut
+    (i dalje HIDE-WHEN-EMPTY).
+    """
+    # Seed je prazan social → top-header social linkovi se NE renderuju (HIDE-WHEN-EMPTY).
     for path in ("/sr/", "/sr/kontakt/"):
         html = _get(client, path)
-        # Nijedan social-link <a> NE sme imati href="" ni href="#".
+        # Nijedan top-header social-link <a> NE sme imati href="" ni href="#".
         empty_social = re.findall(
-            r"<a\b[^>]*class=[\"'][^\"']*social-link[^\"']*[\"'][^>]*href=[\"'](#|)[\"']",
+            r"<a\b[^>]*class=[\"'][^\"']*top-header__social-link[^\"']*[\"'][^>]*href=[\"'](#|)[\"']",
             html,
             re.IGNORECASE,
         )
         also_empty = re.findall(
-            r"<a\b[^>]*href=[\"'](#|)[\"'][^>]*class=[\"'][^\"']*social-link",
+            r"<a\b[^>]*href=[\"'](#|)[\"'][^>]*class=[\"'][^\"']*top-header__social-link",
             html,
             re.IGNORECASE,
         )
         assert not empty_social and not also_empty, (
-            f"Sa praznim social seed-om, social linkovi MORAJU biti SAKRIVENI (NEMA "
-            f"href=''/href='#'; SM-D8a) na {path}, pronađeno: "
+            f"Sa praznim social seed-om, top-header social linkovi MORAJU biti SAKRIVENI "
+            f"(NEMA href=''/href='#'; SM-D8a) na {path}, pronađeno: "
             f"{empty_social + also_empty!r}."
         )
 

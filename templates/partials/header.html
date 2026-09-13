@@ -16,17 +16,20 @@
   <div id="coricTopHeaderExpanded" class="container collapse d-md-block coric-top-header__content">
     {# IMP-2: <p> NE <address> — HTML5 <address> rezervisan za nearest <article>/<body>. #}
     <p class="coric-top-header__address">
+      <i class="fa-solid fa-location-dot coric-top-header__icon" aria-hidden="true"></i>
       {% site_setting "address" %}
     </p>
     {% site_setting "phone_sales" as ps %}
     <a href="tel:{{ ps|cut:" " }}" class="coric-top-header__phone"
        aria-label="{% translate "Telefon prodaje" %}">
+      <i class="fa-solid fa-phone coric-top-header__icon" aria-hidden="true"></i>
       {{ ps }}
     </a>
     {# RESOLVED Story 3-4: IMP-4 servis placeholder wired na SiteSettings.phone_service. #}
     {% site_setting "phone_service" as psv %}
     <a href="tel:{{ psv|cut:" " }}" class="coric-top-header__phone--service"
        aria-label="{% translate "Telefon servisa" %}">
+      <i class="fa-solid fa-phone coric-top-header__icon" aria-hidden="true"></i>
       {% translate "Servis" %}: {{ psv }}
     </a>
     <div class="coric-top-header__social">
@@ -85,6 +88,7 @@
         <li class="nav-item">
           <a class="nav-link coric-nav__link" href="{% url 'pages:home' %}">{% translate "Početna" %}</a>
         </li>
+        <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:about' %}">{% translate "O nama" %}</a></li>
         <li class="nav-item">
           <a class="nav-link coric-nav__link" href="{% url 'products:tractor_list' %}">{% translate "Traktori" %}</a>
         </li>
@@ -108,7 +112,6 @@
         {# RESOLVED Story 4-4: servis ruta wired na pages:service. #}
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:service' %}">{% translate "Servis" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'blog:index' %}">{% translate "Priče sa polja" %}</a></li>
-        <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:about' %}">{% translate "O nama" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:contact' %}">{% translate "Kontakt" %}</a></li>
         <li class="nav-item coric-nav__search-item">
           {# Story 2.13 — IMP-3 dug zatvoren: button wired (aria-expanded/aria-controls/data-search-toggle). #}
@@ -125,17 +128,18 @@
           </button>
           {# SM-D12 — expand panel mount; GET-only (NEMA csrf_token, SM-D17). #}
           <div id="coric-search-panel" class="coric-search-panel" hidden>
-            <form role="search"
-                  hx-get="{% url 'search:dropdown' %}"
-                  hx-trigger="keyup changed delay:300ms"
-                  hx-target="#coric-search-results"
-                  hx-swap="innerHTML"
-                  hx-indicator="#coric-search-loading"
-                  class="coric-search-panel__form">
+            {# action/method="get" → Enter navigira na punu "Vidi sve" stranu (search:results) umesto native submit-a na trenutnu stranicu (koja ?q= ignoriše); hx-get na input-u i dalje radi live dropdown u paraleli. #}
+            <form role="search" action="{% url 'search:results' %}" method="get" class="coric-search-panel__form">
+              {# hx-* atributi MORAJU biti na input elementu, NE na formi — htmx "changed" modifier čita elt.value, a forma nema .value (uvek undefined → request se nikad ne šalje). #}
               <input type="search" name="q" minlength="2" autocomplete="off"
                      class="coric-search-panel__input"
                      aria-label="{% translate "Pretraga" %}"
                      placeholder="{% translate "Pretraži proizvode…" %}"
+                     hx-get="{% url 'search:dropdown' %}"
+                     hx-trigger="keyup changed delay:300ms"
+                     hx-target="#coric-search-results"
+                     hx-swap="innerHTML"
+                     hx-indicator="#coric-search-loading"
                      data-search-input>
               <div id="coric-search-loading" class="coric-search-panel__loading htmx-indicator" aria-hidden="true">
                 <span class="spinner-border spinner-border-sm" role="status">

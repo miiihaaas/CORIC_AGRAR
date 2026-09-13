@@ -135,6 +135,24 @@
 /* === O nama intro === */
 .coric-home-about {
   text-align: center;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Watermark logo u pozadini — pseudo-element (NE background na samoj sekciji) da
+ * opacity ne izbledi i tekst; z-index: -1 unutar izolovanog stacking konteksta drži
+ * sadržaj sekcije uvek iznad. */
+.coric-home-about::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url(../../img/coric-logo-pozadina.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .coric-home-about__text {

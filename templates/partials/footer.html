@@ -2,35 +2,86 @@
 
 <footer class="coric-footer" role="contentinfo">
   <div class="container">
+    {# Logo — centriran, samostalan red iznad kolona (redizajn po mockupu). #}
+    <div class="coric-footer__brand">
+      <a href="{% url 'pages:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Početna" %}">
+        {# 9.9 a11y: alt sa punim dijakritikama (brend ime) — additivna izmena, markup netaknut. #}
+        <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}"
+             alt="Ćorić Agrar"
+             class="coric-footer__logo">
+      </a>
+    </div>
+
     <div class="coric-footer__top">
       <div class="row">
-        {# Kolona 1 — Logo + slogan. BONUS-2: logo wrapped u {% url 'pages:home' %} (Story 3.1 migracija). #}
+        {# Kolona 1 — Kontakt + Social. IMP-CASCADE-4: <address> u <li> (footer canonical). #}
         <div class="col-md-3 coric-footer__col">
-          <a href="{% url 'pages:home' %}" class="coric-footer__logo-link" aria-label="{% translate "Početna" %}">
-            {# 9.9 a11y: alt sa punim dijakritikama (brend ime) — additivna izmena, markup netaknut. #}
-            <img src="{% static 'img/coric-agrar-logo-transp-light-200.png' %}"
-                 alt="Ćorić Agrar"
-                 class="coric-footer__logo">
-          </a>
-          <p class="coric-footer__slogan">
-            {% translate "Prijatelj koji razume zemlju!" %}
-          </p>
+          <h2 class="coric-footer__col-title">{% translate "Kontakt" %}</h2>
+          <ul class="coric-footer__contact">
+            <li>
+              <span class="coric-footer__contact-icon" aria-hidden="true"><i class="fa-solid fa-phone"></i></span>
+              {% site_setting "phone_sales" as ps %}
+              <a href="tel:{{ ps|cut:" " }}">{{ ps }}</a>
+            </li>
+            <li>
+              <span class="coric-footer__contact-icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
+              {% site_setting "email" as em %}
+              <a href="mailto:{{ em }}">{{ em }}</a>
+            </li>
+            <li>
+              <span class="coric-footer__contact-icon" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></span>
+              <address>{% site_setting "address" %}</address>
+            </li>
+          </ul>
+          <div class="coric-footer__social">
+            {# Footer social ikonice se prikazuju uvek (na zahtev) — href pada na "#" dok se ne popuni kroz admin (top-header ostaje HIDE-WHEN-EMPTY, SM-D8a). #}
+            {% site_setting "social_facebook" as fb %}
+            <a href="{{ fb|default:'#' }}" class="coric-footer__social-link" aria-label="Facebook">
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M24 12c0-6.627-5.373-12-12-12S0 5.373 0 12c0 5.99 4.388 10.954 10.125 11.854V15.47H7.078V12h3.047V9.356c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.234 2.686.234v2.953H15.83c-1.491 0-1.956.925-1.956 1.875V12h3.328l-.532 3.469h-2.796v8.385C19.612 22.954 24 17.99 24 12z"/>
+              </svg>
+            </a>
+            {% site_setting "social_instagram" as ig %}
+            <a href="{{ ig|default:'#' }}" class="coric-footer__social-link" aria-label="Instagram">
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+              </svg>
+            </a>
+            {# YouTube nema SiteSettings polje (samo facebook/instagram postoje) — placeholder href="#", isti obrazac kao "#" stavke u Proizvodi/O nama kolonama. #}
+            <a href="#" class="coric-footer__social-link" aria-label="YouTube">
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+          </div>
         </div>
 
         {# Kolona 2 — Proizvodi #}
         <div class="col-md-3 coric-footer__col">
-          {% include "partials/section_eyebrow.html" with text="PROIZVODI" tag="h2" variant="on-dark" %}
+          <h2 class="coric-footer__col-title">{% translate "Proizvodi" %}</h2>
           <ul class="coric-footer__menu">
-            <li><a href="#">{% translate "Traktori" %}</a></li>
+            <li><a href="#">{% translate "Mašine" %}</a></li>
+            <li><a href="{% url 'products:tractor_list' %}">{% translate "Traktori" %}</a></li>
+            <li><a href="#">{% translate "Telehendleri" %}</a></li>
             <li><a href="#">{% translate "Mehanizacija" %}</a></li>
-            <li><a href="#">{% translate "Polovna mehanizacija" %}</a></li>
-            <li><a href="#">{% translate "Rezervni delovi" %}</a></li>
           </ul>
         </div>
 
-        {# Kolona 3 — Najnovije vesti (dinamičke — latest_blog_posts context processor). #}
+        {# Kolona 3 — O nama #}
         <div class="col-md-3 coric-footer__col">
-          {% include "partials/section_eyebrow.html" with text="NAJNOVIJE VESTI" tag="h2" variant="on-dark" %}
+          <h2 class="coric-footer__col-title">{% translate "O nama" %}</h2>
+          <ul class="coric-footer__menu">
+            <li><a href="#">{% translate "Istraživanje i razvoj" %}</a></li>
+            <li><a href="#">{% translate "Naš tim" %}</a></li>
+            <li><a href="{% url 'pages:service' %}">{% translate "Usluge" %}</a></li>
+            <li><a href="{% url 'pages:contact' %}">{% translate "Kontakt" %}</a></li>
+            <li><a href="#">{% translate "Transport" %}</a></li>
+          </ul>
+        </div>
+
+        {# Kolona 4 — Najnovije vesti (dinamičke — latest_blog_posts context processor). #}
+        <div class="col-md-3 coric-footer__col">
+          <h2 class="coric-footer__col-title">{% translate "Najnovije vesti" %}</h2>
           <ul class="coric-footer__news">
             {% for post in latest_blog_posts %}
             <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
@@ -39,38 +90,6 @@
             {% endfor %}
           </ul>
         </div>
-
-        {# Kolona 4 — Kontakt + Social. IMP-CASCADE-4: <address> u <li> (footer canonical). #}
-        <div class="col-md-3 coric-footer__col">
-          {% include "partials/section_eyebrow.html" with text="KONTAKT" tag="h2" variant="on-dark" %}
-          <ul class="coric-footer__contact">
-            {% site_setting "phone_sales" as ps %}
-            <li><a href="tel:{{ ps|cut:" " }}">{{ ps }}</a></li>
-            {% site_setting "email" as em %}
-            <li><a href="mailto:{{ em }}">{{ em }}</a></li>
-            <li>
-              <address>{% site_setting "address" %}</address>
-            </li>
-          </ul>
-          <div class="coric-footer__social">
-            {% site_setting "social_facebook" as fb %}
-            {% if fb %}
-            <a href="{{ fb }}" class="coric-footer__social-link" aria-label="Facebook">
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                <path d="M24 12c0-6.627-5.373-12-12-12S0 5.373 0 12c0 5.99 4.388 10.954 10.125 11.854V15.47H7.078V12h3.047V9.356c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.234 2.686.234v2.953H15.83c-1.491 0-1.956.925-1.956 1.875V12h3.328l-.532 3.469h-2.796v8.385C19.612 22.954 24 17.99 24 12z"/>
-              </svg>
-            </a>
-            {% endif %}
-            {% site_setting "social_instagram" as ig %}
-            {% if ig %}
-            <a href="{{ ig }}" class="coric-footer__social-link" aria-label="Instagram">
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
-              </svg>
-            </a>
-            {% endif %}
-          </div>
-        </div>
       </div>
     </div>
 
@@ -78,13 +97,13 @@
 
     <div class="coric-footer__bottom">
       {# Story 7.4 — pravni red: privatnost (NOVA pages ruta) + kolačići (POSTOJEĆA gdpr ruta, NE duplira; G-11). #}
-      <ul class="coric-footer__legal text-center">
+      <p class="coric-footer__copyright">
+        &copy; 2026 Ćorić Agrar. {% translate "Sva prava zadržana." %}
+      </p>
+      <ul class="coric-footer__legal">
         <li><a href="{% url 'pages:page_detail' slug='politika-privatnosti' %}">{% translate "Politika privatnosti" %}</a></li>
         <li><a href="{% url 'gdpr:cookie_policy' %}">{% translate "Politika kolačića" %}</a></li>
       </ul>
-      <p class="coric-footer__copyright text-center">
-        &copy; 2026 Ćorić Agrar. {% translate "Sva prava zadržana." %}
-      </p>
     </div>
   </div>
 </footer>
