@@ -1,13 +1,21 @@
 {% load i18n static %}
 {# „O nama" hero — full-screen foto-pozadina + green-800 overlay card (naslov h1 + brand lockup + Repeating Element watermark). SM-D5/SM-D6: variant="green", foto-pozadina static asset kao dekorativni <img> (NE CSS bg). #}
 <section class="coric-about-hero" aria-label="{% translate "O nama — uvodna sekcija" %}">
-  {# Dekorativna foto-pozadina — eager (above-the-fold LCP). alt="" + aria-hidden (dekorativna). #}
-  {# OQ-2 PRODUCTION BLOCKER: realna hero fotografija pre produkcije; v1 placeholder. #}
+  {# Dekorativna foto-pozadina — VIDEO (aerial kombajn+traktor pri žetvi, CC BY-SA 4.0 — potrebna atribucija, vidi git commit). autoplay+muted+loop+playsinline (bez kontrola, dekorativno). poster = prvi frejm istog isečka (koristi se i kao statični fallback za prefers-reduced-motion ispod — NEMA duplog izvora istine za hero fotografiju). Komentar mora ostati single-line (Django comment tag ne podržava multi-line). #}
+  <video class="coric-about-hero__bg coric-about-hero__bg--video"
+         poster="{% static 'img/about/hero-o-nama.jpg' %}"
+         autoplay muted loop playsinline
+         aria-hidden="true"
+         preload="auto">
+    <source src="{% static 'video/about/hero-o-nama.webm' %}" type="video/webm">
+    <source src="{% static 'video/about/hero-o-nama.mp4' %}" type="video/mp4">
+  </video>
+  {# prefers-reduced-motion fallback — isti frejm kao video poster, statična slika (about-page.css skriva/prikazuje parove preko media query-ja, BEZ JS-a). #}
   <img src="{% static 'img/about/hero-o-nama.jpg' %}"
        alt=""
        aria-hidden="true"
        loading="eager"
-       class="coric-about-hero__bg">
+       class="coric-about-hero__bg coric-about-hero__bg--static">
   <div class="coric-about-hero__overlay">
     {% static 'img/coric-agrar-logo-transp-light-200.png' as brand_logo_static %}
     {% include "partials/hero_overlay_card.html" with title=_("O nama") brand_logo=brand_logo_static brand_logo_alt=_("Ćorić Agrar logo") variant="green" bullets="" %}

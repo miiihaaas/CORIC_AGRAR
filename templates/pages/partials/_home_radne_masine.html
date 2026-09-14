@@ -6,7 +6,6 @@
     {% translate "HZM radne mašine" %}
   </h2>
 
-  {% url 'brands:hzm_radne_masine' as hzm_url %}
   <div class="coric-category-showcase narrow-one" data-testid="home-radne-masine-grid">
     {% for sub in hzm_subcategories %}
       <article class="coric-category-card" aria-labelledby="home-hzm-{{ sub.slug }}-title">
@@ -22,8 +21,8 @@
         {% if sub.description %}
           <p class="coric-category-card__description">{{ sub.description|truncatewords:20 }}</p>
         {% endif %}
-        {# ITEM-3 LOCK: zajednički statički CTA ka HZM landing — NE sub.get_absolute_url. #}
-        <a href="{{ hzm_url }}"
+        {# Deep-link ka konkretnoj potkategoriji (isti pattern kao HZM landing sekcija). #}
+        <a href="{{ sub.get_absolute_url }}"
            class="coric-button coric-button--primary coric-category-card__cta"
            aria-label="{% blocktranslate with cat=sub.name %}Radne mašine — {{ cat }}{% endblocktranslate %}">
           {% translate "Detaljnije" %}

@@ -139,14 +139,60 @@ def test_home_hzm_subcategories_ordered_by_display_order(client, home_url):
     )
 
 
-def test_home_latest_posts_is_empty_list(client, home_url):
-    """AC2/SM-D7: latest_posts je UVEK prazna lista u v1 (forward-compat blog placeholder)."""
+def test_home_latest_posts_is_empty_list_when_no_published_posts(client, home_url):
+    """AC2: latest_posts je prazna lista kad nema OBJAVLJENIH Post objava u bazi
+    (defensive/forward-compat — template grana renderuje Lorem Ipsum placeholder).
+
+    NAPOMENA: SM-D7 (v1) je nametao latest_posts=[] UVEK jer Post model nije
+    postojao. Blog Epic 5 je otad implementiran — HomeView.get_context_data
+    sada vraća 2 najnovije objavljene Post objave (Post.published, mirror
+    apps/blog/context_processors.latest_blog_posts). Ovaj test i dalje pokriva
+    "nema objava" slučaj; vidi test_home_latest_posts_returns_two_newest_published
+    za "postoje objave" slučaj.
+    """
     activate("sr")
     response = client.get(home_url)
     assert response.status_code == 200
     assert response.context["latest_posts"] == [], (
-        "SM-D7: latest_posts MORA biti prazna lista [] u v1 (Post model ne postoji; "
-        "template grana renderuje Lorem Ipsum placeholder)."
+        "latest_posts MORA biti prazna lista [] kad nema objavljenih Post objava "
+        "(template grana renderuje Lorem Ipsum placeholder)."
+    )
+
+
+def test_home_latest_posts_returns_two_newest_published(client, home_url):
+    """AC2: latest_posts vraća 2 NAJNOVIJE OBJAVLJENE Post objave (NE draft/scheduled)."""
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    from apps.blog.models import Post
+
+    def _make_published_post(title: str, *, days_ago: int) -> Post:
+        return Post.objects.create(
+            title=title,
+            perex="Kratak uvod.",
+            body="Tekst objave.",
+            status=Post.Status.PUBLISHED,
+            published_at=timezone.now() - timedelta(days=days_ago),
+        )
+
+    activate("sr")
+    oldest = _make_published_post("Najstarija objava", days_ago=2)
+    middle = _make_published_post("Srednja objava", days_ago=1)
+    newest = _make_published_post("Najnovija objava", days_ago=0)
+    Post.objects.create(
+        title="Nacrt — ne sme se prikazati",
+        perex="Kratak uvod.",
+        body="Tekst objave.",
+        status=Post.Status.DRAFT,
+    )
+
+    response = client.get(home_url)
+    assert response.status_code == 200
+    titles = [post.title for post in response.context["latest_posts"]]
+    assert titles == [newest.title, middle.title], (
+        f"latest_posts MORA biti tačno 2 najnovije OBJAVLJENE objave (najnovija prva), "
+        f"dobio {titles!r} (oldest={oldest.title!r} ne sme biti uključena)."
     )
 
 

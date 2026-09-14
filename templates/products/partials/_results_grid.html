@@ -6,32 +6,49 @@
      aria-labelledby="tractor-results-title"
      data-testid="tractor-results-grid">
   {% if products %}
-    <div class="coric-tractor-results__grid">
-      {% for product in products %}
-        <a class="coric-product-card"
-           href="{{ product.get_absolute_url }}"
-           aria-label="{% blocktranslate with name=product.name %}{{ name }} — pregled modela{% endblocktranslate %}"
-           data-testid="tractor-card-{{ product.slug }}">
-          <div class="coric-product-card__image">
-            {% if product.main_image %}
-              {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-product-card__img" %}
-            {% endif %}
-          </div>
-          <div class="coric-product-card__body">
-            <h3 class="coric-product-card__title">{{ product.name }}</h3>
-            <div class="coric-product-card__meta">
-              {% if product.horse_power %}
-                <p class="coric-product-card__spec">{{ product.horse_power }} {% translate "KS" %}</p>
-              {% endif %}
-              {% if product.price_eur %}
-                <p class="coric-product-card__price">{{ product.price_eur|floatformat:0 }} {% translate "EUR" %}</p>
-              {% endif %}
-            </div>
-            <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "OPŠIRNIJE" %}</span>
-          </div>
-        </a>
-      {% endfor %}
-    </div>
+    {# Grupisanje po brendu — queryset MORA biti sortiran po brand__name (views.py) da bi #}
+    {# {% regroup %} radio ispravno (grupiše SAMO susedne stavke sa istim ključem). #}
+    {% regroup products by brand as brand_groups %}
+    {% for group in brand_groups %}
+      <div class="coric-tractor-results__brand-group" data-testid="tractor-brand-group-{{ group.grouper.slug }}">
+        <div class="coric-tractor-results__brand-heading">
+          {% if group.grouper.logo %}
+            {% responsive_picture group.grouper.logo alt=group.grouper.name sizes="160px" loading="lazy" format='PNG' css_class="coric-tractor-results__brand-logo" %}
+          {% else %}
+            <span class="coric-tractor-results__brand-name">{{ group.grouper.name }}</span>
+          {% endif %}
+        </div>
+        <div class="coric-tractor-results__grid">
+          {% for product in group.list %}
+            <a class="coric-product-card"
+               href="{{ product.get_absolute_url }}"
+               aria-label="{% blocktranslate with name=product.name %}{{ name }} — pregled modela{% endblocktranslate %}"
+               data-testid="tractor-card-{{ product.slug }}">
+              <div class="coric-product-card__image">
+                {% if product.main_image %}
+                  {% responsive_picture product.main_image alt=product.name sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" css_class="coric-product-card__img" %}
+                {% endif %}
+              </div>
+              <div class="coric-product-card__body">
+                <h3 class="coric-product-card__title">{{ product.name }}</h3>
+                {% if product.description %}
+                  <p class="coric-product-card__excerpt">{{ product.description|truncatewords:20 }}</p>
+                {% endif %}
+                <div class="coric-product-card__meta">
+                  {% if product.horse_power %}
+                    <p class="coric-product-card__spec">{{ product.horse_power }} {% translate "KS" %}</p>
+                  {% endif %}
+                  {% if product.price_eur %}
+                    <p class="coric-product-card__price">{{ product.price_eur|floatformat:0 }} {% translate "EUR" %}</p>
+                  {% endif %}
+                </div>
+                <span class="coric-button coric-button--primary coric-product-card__cta" aria-hidden="true">{% translate "OPŠIRNIJE" %}</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
 
     {% if is_paginated %}
       <nav class="coric-tractor-results__pagination" aria-label="{% translate 'Paginacija' %}">

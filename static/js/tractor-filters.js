@@ -85,8 +85,14 @@
     });
 
     track.noUiSlider.on('change', function () {
-      // Trigger HTMX hx-trigger="input changed" pickup
+      // BUGFIX (2026-09): dispatch na OBA inputa — 'change' fires bez obzira koji
+      // handle je pomeren (min ili max), a htmx-ov "changed" filter (from:find input,
+      // vidi _filter_form.html) proverava .value BAŠ na elementu koji je dispatch-ovao
+      // event. Dispatch samo na minInput je značio da desni (max) handle NIKAD nije
+      // prošao "changed" proveru (minInput.value se nije promenio) → request se nije
+      // slao. Input koji se nije promenio je bezopasan no-op (htmx ga filtrira).
       minInput.dispatchEvent(new Event('input', { bubbles: true }));
+      maxInput.dispatchEvent(new Event('input', { bubbles: true }));
     });
   }
 

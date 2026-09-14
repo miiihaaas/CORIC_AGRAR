@@ -230,8 +230,18 @@ def test_filter_form_has_hx_get_attribute(client):
 
 
 def test_filter_form_has_hx_trigger_with_debounce(client):
-    """AC5: filter form ima `hx-trigger="input changed delay:300ms, change delay:300ms"`
-    (debounce 300ms + dual input/change events per SM A I3).
+    """AC5: filter form ima `hx-trigger="change delay:300ms"` (debounce 300ms fallback,
+    bubbling 'change' event) + svaki range-slider hidden input ima SVOJ
+    `hx-trigger="input changed delay:300ms"` + SVOJ `hx-get` (BUGFIX 2026-09).
+
+    NAPOMENA: "input changed" NIJE na <form> tagu (raniji dizajn) jer htmx-ov
+    "changed" filter BEZ from: čita `.value` na elementu na kom je hx-trigger
+    definisan — na <form> je to uvek undefined, pa se request nikad ne šalje.
+    from:find (querySelector, jednina) takođe ne radi za 4 nezavisna inputa
+    (hvata SAMO prvi). Ispravno rešenje: hx-trigger="input changed" + hx-get
+    DIREKTNO na svakom od 4 hidden inputa (snaga_min/max, cena_min/max) —
+    hx-target/hx-swap/hx-push-url/hx-indicator se nasleđuju sa <form>, ali
+    hx-get MORA biti eksplicitan na svakom (verb atributi se NE nasleđuju).
     """
     activate("sr")
     BrandFactory.create()
@@ -245,14 +255,27 @@ def test_filter_form_has_hx_trigger_with_debounce(client):
     assert form_match
     form_tag = form_match.group(0)
 
-    assert "delay:300ms" in form_tag, (
-        f"Filter form MORA imati `hx-trigger` sa `delay:300ms` (debounce per AC5). "
-        f"Form tag: {form_tag!r}."
+    assert "delay:300ms" in form_tag and "change" in form_tag, (
+        f"Filter form MORA imati `hx-trigger` sa `change` + `delay:300ms` "
+        f"(bubbling fallback per AC5). Form tag: {form_tag!r}."
     )
-    assert "input changed" in form_tag, (
-        f"Filter form MORA listening na `input changed` event (slider drag). "
-        f"Form tag: {form_tag!r}."
+
+    range_inputs = re.findall(r'<input[^>]*data-range-(?:min|max)-input[^>]*>', html, re.IGNORECASE)
+    assert len(range_inputs) == 4, (
+        f"Očekivana 4 range-slider hidden inputa (snaga_min/max, cena_min/max), "
+        f"pronađeno {len(range_inputs)}."
     )
+    for inp in range_inputs:
+        assert "input changed" in inp and "delay:300ms" in inp, (
+            f"Svaki range-slider input MORA imati SOPSTVENI "
+            f"`hx-trigger=\"input changed delay:300ms\"` (slider drag → filter). "
+            f"Input: {inp!r}."
+        )
+        assert "hx-get=" in inp, (
+            f"Svaki range-slider input MORA imati SOPSTVENI `hx-get` — htmx NE "
+            f"nasleđuje verb atribute (hx-get/post/...) sa ancestor <form>, samo "
+            f"hx-target/hx-swap/hx-push-url/hx-indicator. Input: {inp!r}."
+        )
 
 
 def test_filter_form_has_hx_push_url_and_target(client):

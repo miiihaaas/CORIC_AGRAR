@@ -238,13 +238,18 @@ class TractorListView(ListView):
         # Product.subcategory je nullable (PR-D3) — proizvodi bez subcategory ne
         # match-uju (JOIN na NULL = no match); tractor admins MORAJU postaviti
         # subcategory za listing visibility.
+        # order_by brand__name PRVI — rezultati se grupišu po brendu u template-u
+        # ({% regroup %} u _results_grid.html zahteva već sortiranu listu po ključu
+        # grupisanja); -created_at ostaje sekundarni sort UNUTAR svakog brenda.
+        # select_related("brand") već postoji (N+1 guard) — {% regroup %} i brand
+        # logo u template-u NE dodaju novi upit.
         qs = (
             Product.objects.filter(
                 is_published=True,
                 subcategory__category__is_for="traktori",
             )
             .select_related("brand", "series", "subcategory")
-            .order_by("-created_at")
+            .order_by("brand__name", "-created_at")
         )
         snaga_min = _parse_int(self.request.GET.get("snaga_min"))
         snaga_max = _parse_int(self.request.GET.get("snaga_max"))

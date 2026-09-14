@@ -49,6 +49,13 @@
   font-size: 1.5rem;
 }
 
+/* Opis kartice — smanjen samo u ovoj sekciji (scoped override; baza
+ * .coric-category-card__description u category-showcase.css ostaje netaknuta
+ * jer je deljena sa HZM/Jeegee landing i subcategory-listing stranama). */
+.coric-home-radne-masine .coric-category-card__description {
+  font-size: 1rem;
+}
+
 /* === Hero === */
 /* Full-bleed hero koji počinje od vrha (y=0): CEO header (top-bar + nav) lebdi
  * APSOLUTNO preko hero slike (overlay, definisano u header.css pod
@@ -286,6 +293,20 @@
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: var(--rounded-sm);
   text-align: center;
+}
+
+/* Reprezentativna fotografija objave — isti 3:2 otisak/border-radius kao
+ * .coric-category-card__photo (category-showcase.css), inset u glass karticu
+ * (NE edge-bleed — kartica ima padding oko celog sadržaja). picture tag iz
+ * {% responsive_picture %} je nestilizovan wrapper — klasa ide na <img>. */
+.coric-home-blog-card__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--rounded-md);
+  margin-bottom: var(--spacing-scale-4);
 }
 
 .coric-home-blog-meta {

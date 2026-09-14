@@ -60,10 +60,11 @@
         <div class="col-md-3 coric-footer__col">
           <h2 class="coric-footer__col-title">{% translate "Proizvodi" %}</h2>
           <ul class="coric-footer__menu">
-            <li><a href="#">{% translate "Mašine" %}</a></li>
+            <li><a href="{% url 'brands:hzm_radne_masine' %}">{% translate "Radne mašine" %}</a></li>
             <li><a href="{% url 'products:tractor_list' %}">{% translate "Traktori" %}</a></li>
             <li><a href="#">{% translate "Telehendleri" %}</a></li>
-            <li><a href="#">{% translate "Mehanizacija" %}</a></li>
+            <li><a href="{% url 'brands:jeegee_prikljucna' %}">{% translate "Priključna mehanizacija" %}</a></li>
+            <li><a href="{% url 'brands:tulip_mix_prikolice' %}">{% translate "MIX prikolice" %}</a></li>
           </ul>
         </div>
 
