@@ -110,7 +110,21 @@
           </ul>
         </li>
         {# RESOLVED Story 4-4: servis ruta wired na pages:service. #}
-        <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:service' %}">{% translate "Servis" %}</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link coric-nav__link dropdown-toggle"
+             href="#"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false"
+             aria-haspopup="true"
+             id="navbarDropdownServis">
+            {% translate "Servis" %}
+          </a>
+          <ul class="dropdown-menu coric-nav__dropdown" aria-labelledby="navbarDropdownServis">
+            <li><a class="dropdown-item" href="{% url 'pages:service' %}">{% translate "Prijava kvara" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'pages:part_request' %}">{% translate "Rezervni delovi" %}</a></li>
+          </ul>
+        </li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'blog:index' %}">{% translate "Priče sa polja" %}</a></li>
         <li class="nav-item"><a class="nav-link coric-nav__link" href="{% url 'pages:contact' %}">{% translate "Kontakt" %}</a></li>
         <li class="nav-item coric-nav__search-item">
