@@ -717,7 +717,13 @@ def test_ac6_footer_renders_4_columns_with_column_titles():
     """AC6: footer mora imati 4 `col-md-3` kolone + `<h2>` naslov u svakoj
     ('Kontakt', 'Proizvodi', 'O nama', 'Najnovije vesti').
     """
-    html = _render_partial("partials/footer.html")
+    # Naslovi kolona su `{% translate %}` stringovi → render MORA biti u fiksnoj
+    # lokali (sr), inače aktivni jezik iz prethodnog testa curi i naslovi stignu
+    # prevedeni (CI je renderovao /en/ → 'About us' umesto 'O nama').
+    from django.utils.translation import override
+
+    with override("sr"):
+        html = _render_partial("partials/footer.html")
     # 4 col-md-3 kolone
     col_count = len(re.findall(r"""class\s*=\s*["'][^"']*col-md-3""", html))
     assert col_count == 4, (
