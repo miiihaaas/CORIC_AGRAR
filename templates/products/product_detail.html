@@ -24,15 +24,15 @@
       </section>
     {% endif %}
 
-    {% if product.specifications.all %}
-      <section id="product-specs" aria-labelledby="product-specs-title" class="coric-product-specs">
-        {% include "products/partials/_specs_accordion.html" %}
-      </section>
-    {% endif %}
-
     {% if product.images.all %}
       <section id="product-gallery" aria-labelledby="product-gallery-title" class="coric-product-gallery">
         {% include "products/partials/_gallery_carousel.html" %}
+      </section>
+    {% endif %}
+
+    {% if product.specifications.all %}
+      <section id="product-specs" aria-labelledby="product-specs-title" class="coric-product-specs">
+        {% include "products/partials/_specs_accordion.html" %}
       </section>
     {% endif %}
 
