@@ -98,34 +98,24 @@ def test_radne_masine_card_includes_repeating_element_green(client):
     )
 
 
-def test_radne_masine_all_cards_use_single_shared_hzm_cta(client):
-    """AC7/ITEM-3 LOCK: SVE HZM kartice koriste JEDAN zajednički CTA ->
-    brands:hzm_radne_masine (NE per-subcategory get_absolute_url, koji bi bio NoReverseMatch).
+def test_radne_masine_cards_link_to_own_subcategory(client):
+    """AC7 (revidirano — ITEM-3 LOCK ukinut na zahtev korisnika): SVAKA HZM kartica
+    linkuje na SVOJU potkategoriju (sub.get_absolute_url), NE na zajednički
+    brands:hzm_radne_masine CTA (isti pattern kao HZM landing sekcija —
+    _hzm_subcategory_showcase.html).
     """
     if get_hzm_category() is None:
         pytest.skip("HZM radne-masine Category nije seed-ovana (migracija 0004).")
     html = _home_html(client)
-    hzm_target = reverse("brands:hzm_radne_masine")
-    assert _links_to(html, hzm_target), (
-        f"Radne mašine sekcija MORA linkovati na brands:hzm_radne_masine ({hzm_target})."
-    )
-
-    # ITEM-3 LOCK: NE sme biti per-subcategory category_mehanizacija deep-link
-    # (Category.get_absolute_url() reverzuje category_mehanizacija -> NoReverseMatch bug).
     cat = get_hzm_category()
-    leak = []
+    missing = []
     for sub in cat.subcategories.filter(parent=None):
-        # Heuristika: per-subcategory deep-link bi sadržao slug potkategorije u href-u
-        # ka mehanizacija ruti (NE ka hzm_radne_masine).
-        sub_href_re = re.compile(
-            rf'<a\b[^>]*href="[^"]*/{re.escape(sub.slug)}/?"', re.IGNORECASE
-        )
-        if sub_href_re.search(html):
-            leak.append(sub.slug)
-    assert not leak, (
-        "ITEM-3 LOCK: HZM kartice NE SMEJU koristiti per-subcategory deep-link "
-        f"(sub.get_absolute_url). Sve kartice MORAJU deliti CTA ka brands:hzm_radne_masine. "
-        f"Detektovani per-subcategory linkovi: {leak!r}"
+        sub_target = sub.get_absolute_url()
+        if not _links_to(html, sub_target):
+            missing.append(sub.slug)
+    assert not missing, (
+        "Radne mašine kartice MORAJU linkovati na sub.get_absolute_url() (deep-link ka "
+        f"sopstvenoj potkategoriji). Nedostaju linkovi za: {missing!r}"
     )
 
 

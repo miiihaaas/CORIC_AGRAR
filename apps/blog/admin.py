@@ -1,17 +1,18 @@
-"""Story 8.7 — Blog CRUD Admin sa WYSIWYG (Post / Category / Tag).
+"""Story 8.7 — Blog CRUD Admin sa WYSIWYG (Post / Tag).
 
 Nadograđuje 5.1 STUB u pun multi-locale CRUD obrazac (mirror 8.4/8.5/8.6):
-- PostAdmin/CategoryAdmin/TagAdmin → TranslationAdmin (sr/hu/en auto-tabovi).
+- PostAdmin/TagAdmin → TranslationAdmin (sr/hu/en auto-tabovi). Category je
+  UKLONJEN (post-launch odluka) — blog objave se više ne kategorišu.
 - PostAdminForm: main_image override u plain FileField + clean_main_image delegira
   na blessed media_pipeline.validate_image_mime (MIME + Pillow verify +
   MAX_IMAGE_PIXELS=50M decompression-bomb guard; NE reimplementiraj — G-10).
 - WYSIWYG za `body` (i samo body) kroz `wysiwyg` CSS-hook na Textarea-i —
   progressive enhancement IZNAD plain Textarea (SM-D2; static/js/wysiwyg.js).
   `Post.body` OSTAJE plain TextField (0 migracija — SM-D2/AC11).
-- Publish-gate u save_related (NOVINA): pre objave traži title_sr + body_sr +
-  main_image + category; graceful messages.error + revert-na-draft kroz
-  QuerySet.update() bypass (NIKAD raise → 500; G-6/G-7). published_at auto-set
-  timezone.now() ako prazno (AC6/SM-D12; NE pregazi ručno postavljen).
+- Publish-gate u save_related: pre objave traži title_sr + body_sr + main_image;
+  graceful messages.error + revert-na-draft kroz QuerySet.update() bypass (NIKAD
+  raise → 500; G-6/G-7). published_at auto-set timezone.now() ako prazno
+  (AC6/SM-D12; NE pregazi ručno postavljen).
 - view_on_site RE-ENABLED (5-3 registrovao blog:detail — SM-D8).
 - filter_horizontal=("tags",) (M2M slobodno dodavanje + `+` add-popup — AC7).
 - SeoMetaInline + SeoWarningAdminMixin OČUVAN na PostAdmin (6.1 — G-8).
@@ -28,7 +29,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
-from apps.blog.models import Category, Post, Tag
+from apps.blog.models import Post, Tag
 from apps.core.admin_forms import (
     relax_base_translation_fields,
     relax_fields_with_model_default,
@@ -124,15 +125,8 @@ class PostAdminForm(forms.ModelForm):
 
 
 # =============================================================================
-# CategoryAdmin + TagAdmin (AC1, AC7, AC10) — NEMA SeoMetaInline (SM-D10/G-12)
+# TagAdmin (AC1, AC7, AC10) — NEMA SeoMetaInline (SM-D10/G-12)
 # =============================================================================
-
-
-@admin.register(Category)
-class CategoryAdmin(TranslationAdmin):
-    list_display = ("name", "slug")
-    search_fields = ("name_sr",)  # REALNA kolona, NE virtuelni `name` (G-1)
-    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Tag)
@@ -151,10 +145,10 @@ class TagAdmin(TranslationAdmin):
 class PostAdmin(SeoWarningAdminMixin, TranslationAdmin):
     form = PostAdminForm
     inlines = [SeoMetaInline]  # 6.1 regression KEPT (G-8)
-    list_display = ("title", "category", "status", "published_at", "author")
-    # OBAVEZAN N+1 guard — list_display renderuje FK kolone category + author (G-10; mirror 8.6).
-    list_select_related = ("category", "author")
-    list_filter = ("status", "category", "tags")
+    list_display = ("title", "status", "published_at", "author")
+    # OBAVEZAN N+1 guard — list_display renderuje FK kolonu author (G-10; mirror 8.6).
+    list_select_related = ("author",)
+    list_filter = ("status", "tags")
     search_fields = ("title_sr",)  # REALNA kolona, NE virtuelni `title` (G-1)
     prepopulated_fields = {"slug": ("title",)}  # radi sa TranslationAdmin (G-14)
     date_hierarchy = "published_at"
@@ -165,7 +159,7 @@ class PostAdmin(SeoWarningAdminMixin, TranslationAdmin):
     fieldsets = (
         (
             _("Osnovno"),
-            {"fields": ("title", "slug", "category", "tags", "author")},
+            {"fields": ("title", "slug", "tags", "author")},
         ),
         (
             _("Status"),
@@ -201,7 +195,7 @@ class PostAdmin(SeoWarningAdminMixin, TranslationAdmin):
         return formfield
 
     def save_related(self, request, form, formsets, change):
-        """Publish-gate: pre objave traži title_sr + body_sr + main_image + category (AC5/SM-D5).
+        """Publish-gate: pre objave traži title_sr + body_sr + main_image (AC5/SM-D5).
 
         super().save_related() se zove PRVI (perzistuje M2M/inline + prolazi kroz
         SeoWarningAdminMixin save lanac, G-3). Na neuspeh: graceful messages.error + revert
@@ -225,8 +219,6 @@ class PostAdmin(SeoWarningAdminMixin, TranslationAdmin):
             missing.append(_("telo objave na srpskom"))
         if not instance.main_image:
             missing.append(_("glavna slika"))
-        if instance.category_id is None:
-            missing.append(_("kategorija"))
 
         if missing:
             messages.error(

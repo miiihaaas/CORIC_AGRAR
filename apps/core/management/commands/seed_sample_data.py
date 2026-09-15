@@ -29,7 +29,12 @@ vidi ``_seed_profiles/profile2.py``) može da referencira/pravi sve entitete koj
 Svako novo polje je OPCIONO (``.get()`` sa fallback-om na staro ponašanje) — PROFILE_1 shape i
 DB pozivi ostaju bit-za-bit identični (E2E cilja tačne slugove, ne sme da se pomeri). Fajlovi
 (slike/PDF) se NIKAD ne pišu u ``defaults`` dict get_or_create-a (FileField.save() mora da pozove
-storage) — prilažu se TEK kad je red NOVO kreiran, isti pattern kao ``seed_e2e_data`` galerija slika.
+storage). Brand.logo/hero_image i Product.main_image se prilažu i na VEĆ POSTOJEĆEM redu (kad je
+polje prazno — ``_attach_file_if_missing``), jer profil 1 taj red kreira BEZ tih polja; profil 2
+mora da ih dopuni na istom redu, ne samo na novokreiranom (isti red se deli između profila,
+npr. ``agri-tracking``/``agri-tracking-tb804``). Ostali fajlovi (galerija, brošure, testimonial
+foto) prilažu se TEK kad je red NOVO kreiran (``_attach_file``) — ti redovi ne postoje u profilu 1,
+pa "postojeći red bez fajla" scenario tu ne nastaje.
 """
 
 from __future__ import annotations
@@ -43,7 +48,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 
-from apps.blog.models import Category as BlogCategory
 from apps.blog.models import Post
 from apps.blog.models import Tag as BlogTag
 from apps.brands.models import Brand
@@ -212,12 +216,6 @@ _USED_MACHINES = [
     },
 ]
 
-_BLOG_CATEGORY = {
-    "slug": "ratarstvo",
-    "name": "Ratarstvo",
-    "description": "Saveti i novosti iz oblasti ratarske proizvodnje i obrade zemljišta.",
-}
-
 _BLOG_TAG = {
     "slug": "zetva",
     "name": "Žetva",
@@ -284,7 +282,6 @@ PROFILE_1 = {
         "specs": _HEADLINE_SPECS,
     },
     "blog": {
-        "category": _BLOG_CATEGORY,
         "tag": _BLOG_TAG,
         "posts": _BLOG_POSTS,
     },
@@ -408,13 +405,33 @@ class Command(BaseCommand):
                 slug=data["slug"], defaults=defaults
             )
             self._bump(counters, "brendovi", created)
-            if created:
-                if data.get("logo_asset"):
-                    self._attach_file(brand, "logo", ("brands", data["logo_asset"]))
-                if data.get("hero_image_asset"):
-                    self._attach_file(
-                        brand, "hero_image", ("brands", data["hero_image_asset"])
-                    )
+            if not created:
+                # get_or_create ignoriše `defaults` na već postojećem redu (isti "profil 1
+                # kreirao BEZ ovog polja, profil 2 dopunjuje" slučaj kao logo/hero_image —
+                # vidi _attach_file_if_missing docstring). `statistics`/`brand_color` su
+                # JSON/char polja (ne FileField), pa se ovde backfill-uju direktno umesto
+                # kroz storage .save().
+                update_fields = []
+                if data.get("statistics") and not brand.statistics:
+                    brand.statistics = data["statistics"]
+                    update_fields.append("statistics")
+                if data.get("brand_color") and not brand.brand_color:
+                    brand.brand_color = data["brand_color"]
+                    update_fields.append("brand_color")
+                if update_fields:
+                    brand.save(update_fields=update_fields)
+            if data.get("logo_asset"):
+                self._attach_file_if_missing(
+                    brand, "logo", ("brands", data["logo_asset"])
+                )
+            if data.get("hero_image_asset"):
+                self._attach_file_if_missing(
+                    brand, "hero_image", ("brands", data["hero_image_asset"])
+                )
+            if data.get("catalog_pdf_asset"):
+                self._attach_file_if_missing(
+                    brand, "catalog_pdf", ("brands", data["catalog_pdf_asset"])
+                )
             brands[data["slug"]] = brand
 
         # Postojeći migration-seed-ovani brendovi koje polovne mašine referenciraju (AC2 — NE dupliraj).
@@ -552,8 +569,8 @@ class Command(BaseCommand):
                 slug=data["slug"], defaults=defaults
             )
             self._bump(counters, label, created)
-            if created and data.get("main_image_asset"):
-                self._attach_file(
+            if data.get("main_image_asset"):
+                self._attach_file_if_missing(
                     product,
                     "main_image",
                     ("products", "main", data["main_image_asset"]),
@@ -657,6 +674,20 @@ class Command(BaseCommand):
         with path.open("rb") as fh:
             getattr(instance, field_name).save(path.name, File(fh), save=True)
 
+    def _attach_file_if_missing(self, instance, field_name, path_parts):
+        """Isto kao ``_attach_file``, ali i na POSTOJEĆEM redu (ne samo novokreiranom).
+
+        Brand/Product redovi mogu već postojati iz profila 1 (koji ovo polje nikad nije
+        setovao — nije bilo u ``defaults``), pa je ``if created:`` gate praznio profil 2
+        reseed na već-postojećoj bazi: get_or_create nađe stari red (created=False) i
+        prilaganje se tiho preskoči. Ovde umesto ``created`` proveravamo da li je POLJE
+        prazno — idempotentno (ne re-upload-uje ako je već setovano), a ipak dopunjuje
+        postojeći red kad profil 2 prvi put donosi asset koji profil 1 nije imao.
+        """
+        if getattr(instance, field_name):
+            return
+        self._attach_file(instance, field_name, path_parts)
+
     def _seed_specs(self, counters, headline_specs):
         if not headline_specs:
             return
@@ -681,16 +712,6 @@ class Command(BaseCommand):
     def _seed_blog(self, counters, blog):
         if not blog:
             return
-        cat_defaults = _set_translatable(
-            {},
-            name=blog["category"]["name"],
-            description=blog["category"]["description"],
-        )
-        category, created = BlogCategory.objects.get_or_create(
-            slug=blog["category"]["slug"], defaults=cat_defaults
-        )
-        self._bump(counters, "blog kategorije", created)
-
         tag, created = BlogTag.objects.get_or_create(
             slug=blog["tag"]["slug"],
             defaults=_set_translatable({}, name=blog["tag"]["name"]),
@@ -700,7 +721,6 @@ class Command(BaseCommand):
         for data in blog["posts"]:
             defaults = _set_translatable(
                 {
-                    "category": category,
                     "status": "published",
                     "published_at": timezone.now(),
                     "author": None,

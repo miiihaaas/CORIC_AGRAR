@@ -14,6 +14,7 @@ import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
+from apps.brands.models import Brand
 from apps.core.management.commands._seed_profiles.profile2 import PROFILE_2
 from apps.core.management.commands.seed_sample_data import PROFILE_1
 from apps.products.models import Product
@@ -101,6 +102,63 @@ def test_profile_2_does_not_remove_profile_1_content():
     call_command("seed_sample_data", force=True, profile="2")
     slugs_after = set(Product.objects.values_list("slug", flat=True))
     assert slugs_before <= slugs_after
+
+
+def test_profile_2_backfills_logo_and_hero_on_brand_seeded_by_profile_1():
+    """Regresija: brend koji profil 1 vec kreirao (BEZ logo/hero_image — profil 1 manifest
+    nema te ključeve) mora dobiti logo/hero_image kad se profil 2 pokrene na ISTOJ bazi
+    (produkcioni upgrade put: profil 1 -> profil 2, ne fresh baza). Pre fix-a je
+    ``if created:`` gate u ``_seed_brands`` tiho preskakao attach jer get_or_create nalazi
+    vec postojeci red (created=False)."""
+    call_command("seed_sample_data", force=True, profile="1")
+    brand = Brand.objects.get(slug="agri-tracking")
+    assert not brand.logo
+    assert not brand.hero_image
+
+    call_command("seed_sample_data", force=True, profile="2")
+    brand.refresh_from_db()
+    assert brand.logo
+    assert brand.hero_image
+
+
+def test_profile_2_backfills_statistics_on_brand_seeded_by_profile_1():
+    """Regresija: profil 1 kreira brend sa ``statistics=[]`` (nema taj ključ u manifestu).
+    ``get_or_create(defaults=...)`` ignoriše `defaults` na već postojećem redu, pa profil 2
+    (koji NOSI statistics) mora eksplicitno da ih backfill-uje na tom istom redu — inače
+    ``<section id="brand-statistics">`` ostaje ne-renderovan (template ga sakriva kad je
+    ``brand.statistics`` prazno)."""
+    call_command("seed_sample_data", force=True, profile="1")
+    brand = Brand.objects.get(slug="agri-tracking")
+    assert brand.statistics == []
+
+    call_command("seed_sample_data", force=True, profile="2")
+    brand.refresh_from_db()
+    assert brand.statistics
+
+
+def test_profile_2_all_series_use_extended_layout():
+    """LOCK: sve serije (svi brendovi) MORAJU biti ``layout_mode="extended"`` — jedinstven
+    prikaz modela na brand detail stranici (slika + opis + tabela specifikacija), bez
+    "grid" card varijante. Sprečava da neko tiho vrati "grid" za novu/postojeću seriju."""
+    layout_modes = {item["slug"]: item["layout_mode"] for item in PROFILE_2["series"]}
+    assert set(layout_modes.values()) == {"extended"}, (
+        f"Sve serije moraju biti 'extended', nađeno: {layout_modes}"
+    )
+
+
+def test_profile_2_backfills_catalog_pdf_on_brand_seeded_by_profile_1():
+    """Regresija: isti "profil 1 kreira BEZ ovog polja" slučaj kao logo/hero_image/statistics
+    — ``Brand.catalog_pdf`` mora biti popunjen kad profil 2 doda ``catalog_pdf_asset``, čak i
+    na već postojećem redu. Bez ovoga `<section id="brand-catalog-cta">` (CTA banner za
+    preuzimanje PDF kataloga) ostaje ne-renderovan (template ga sakriva kad je
+    ``brand.catalog_pdf`` prazno)."""
+    call_command("seed_sample_data", force=True, profile="1")
+    brand = Brand.objects.get(slug="agri-tracking")
+    assert not brand.catalog_pdf
+
+    call_command("seed_sample_data", force=True, profile="2")
+    brand.refresh_from_db()
+    assert brand.catalog_pdf
 
 
 def test_unknown_profile_is_rejected():

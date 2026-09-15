@@ -22,7 +22,6 @@ from django.core.management.base import CommandError
 from django.test import override_settings
 
 from apps.core.management.commands.clear_content import MIGRATION_SEEDED_PRODUCT_SLUGS
-from apps.blog.models import Category as BlogCategory
 from apps.blog.models import Post
 from apps.blog.models import Tag as BlogTag
 from apps.brands.models import Brand
@@ -91,7 +90,6 @@ def test_blog_is_deleted():
     assert Post.objects.exists()
     _clear()
     assert not Post.objects.exists()
-    assert not BlogCategory.objects.exists()
     assert not BlogTag.objects.exists()
 
 

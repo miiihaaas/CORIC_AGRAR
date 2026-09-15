@@ -47,7 +47,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from apps.blog.models import Category as BlogCategory
 from apps.blog.models import Post
 from apps.blog.models import Tag as BlogTag
 from apps.products.models import Product
@@ -63,12 +62,11 @@ _CONFIRM_WORD = "OBRISI"
 # Ako migracija ikad dobije nove modele, dopuni ovu listu (test to zakljucava).
 MIGRATION_SEEDED_PRODUCT_SLUGS = ("tulip-mix-6m3", "tulip-mix-8m3")
 
-# Modeli koji se brisu, redom. Blog kategorija/tag idu POSLE Post-a (FK zavisnost).
+# Modeli koji se brisu, redom. Blog tag ide POSLE Post-a (M2M zavisnost).
 # Proizvodi imaju filter (izuzimanje migracijskih), ostali brisu sve.
 _PURGE_MODELS = (
     ("proizvodi", Product),
     ("blog objave", Post),
-    ("blog kategorije", BlogCategory),
     ("blog tagovi", BlogTag),
 )
 

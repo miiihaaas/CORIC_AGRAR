@@ -48,6 +48,7 @@ PROFILE_2: dict = {
             ],
             "logo_asset": "agri-tracking-logo.jpg",
             "hero_image_asset": "agri-tracking-hero.jpg",
+            "catalog_pdf_asset": "agri-tracking-katalog.pdf",
         },
         {
             "slug": "saillong",
@@ -162,7 +163,7 @@ PROFILE_2: dict = {
             "slug": "standardna-serija",
             "name": "Standardna serija",
             "description": "",
-            "layout_mode": "grid",
+            "layout_mode": "extended",
             "display_order": 0,
         },
         {
@@ -170,7 +171,7 @@ PROFILE_2: dict = {
             "slug": "standardna-serija",
             "name": "Standardna serija",
             "description": "",
-            "layout_mode": "grid",
+            "layout_mode": "extended",
             "display_order": 0,
         },
         {
@@ -178,7 +179,7 @@ PROFILE_2: dict = {
             "slug": "standardna-serija",
             "name": "Standardna serija",
             "description": "",
-            "layout_mode": "grid",
+            "layout_mode": "extended",
             "display_order": 0,
         },
     ],
@@ -2135,11 +2136,6 @@ PROFILE_2: dict = {
         },
     ],
     "blog": {
-        "category": {
-            "slug": "ratarstvo",
-            "name": "Ratarstvo",
-            "description": "Saveti i novosti iz oblasti ratarske proizvodnje i obrade zemljišta.",
-        },
         "tag": {
             "slug": "zetva",
             "name": "Žetva",

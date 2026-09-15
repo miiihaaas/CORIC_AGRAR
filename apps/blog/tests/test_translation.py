@@ -1,8 +1,10 @@
 """Story 5.1 — apps/blog/translation.py modeltranslation registracija (TEA RED phase).
 
-Pokriva AC4: Post(title/perex/body) + Category(name/description) + Tag(name)
-registrovani u modeltranslation → virtuelna polja _sr/_hu/_en postoje na modelu;
-slug NIJE translatable; sr fallback (MODELTRANSLATION_FALLBACK_LANGUAGES=("sr",)).
+Pokriva AC4: Post(title/perex/body) + Tag(name) registrovani u modeltranslation
+→ virtuelna polja _sr/_hu/_en postoje na modelu; slug NIJE translatable; sr
+fallback (MODELTRANSLATION_FALLBACK_LANGUAGES=("sr",)).
+
+Category je UKLONJEN (post-launch odluka) — testovi obrisani sa njim.
 
 ⚠️ GUARD: apps.blog importi UNUTAR funkcija (collection-safety).
 
@@ -25,10 +27,10 @@ pytestmark = pytest.mark.django_db
 def test_blog_models_registered_in_translator():
     from modeltranslation.translator import translator
 
-    from apps.blog.models import Category, Post, Tag
+    from apps.blog.models import Post, Tag
 
     registered = set(translator.get_registered_models())
-    for model in (Post, Category, Tag):
+    for model in (Post, Tag):
         assert model in registered, (
             f"{model.__name__} MORA biti registrovan u modeltranslation "
             f"(@register u apps/blog/translation.py) — AC4."
@@ -52,23 +54,6 @@ def test_post_translation_fields():
     )
 
 
-# AC4: Category translatable polja → name/description × _sr/_hu/_en
-def test_category_translation_fields():
-    from apps.blog.models import Category
-
-    field_names = {f.name for f in Category._meta.get_fields()}
-    expected = {
-        f"{base}_{lang}"
-        for base in ("name", "description")
-        for lang in ("sr", "hu", "en")
-    }
-    missing = expected - field_names
-    assert not missing, (
-        f"Category modeltranslation polja nedostaju: {missing}. "
-        f"@register(Category) fields=('name','description') — AC4."
-    )
-
-
 # AC4: Tag translatable polja → name × _sr/_hu/_en
 def test_tag_translation_fields():
     from apps.blog.models import Tag
@@ -84,9 +69,9 @@ def test_tag_translation_fields():
 
 # AC4: slug NIJE translatable (jezik-neutralan ASCII; mirror products)
 def test_slug_not_translatable():
-    from apps.blog.models import Category, Post, Tag
+    from apps.blog.models import Post, Tag
 
-    for model in (Post, Category, Tag):
+    for model in (Post, Tag):
         field_names = {f.name for f in model._meta.get_fields()}
         slug_translated = {n for n in field_names if n.startswith("slug_")}
         assert slug_translated == set(), (

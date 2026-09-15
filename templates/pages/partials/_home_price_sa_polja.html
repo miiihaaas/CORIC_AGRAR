@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n media_tags %}
 
 <section class="coric-home-section coric-home-blog-preview" aria-labelledby="home-price-title">
 {%comment %}{% include "partials/wave_divider.html" with position="top" %}{% endcomment %}
@@ -19,8 +19,11 @@
       {% if latest_posts %}
         {% for post in latest_posts %}
           <article class="coric-home-blog-card">
+            {% if post.main_image %}
+              {% responsive_picture post.main_image alt=post.title sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" css_class="coric-home-blog-card__photo" %}
+            {% endif %}
             <h3 class="coric-home-blog-heading">{{ post.title }}</h3>
-            <p class="coric-home-blog-text">{{ post.excerpt }}</p>
+            <p class="coric-home-blog-text">{{ post.perex }}</p>
             <a href="{{ post.get_absolute_url }}" class="coric-button coric-button--detaljnije coric-home-blog-card__cta">
               {% translate "Pročitaj više" %}
               <svg class="coric-button__arrow" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">

@@ -49,6 +49,13 @@
   font-size: 1.5rem;
 }
 
+/* Opis kartice — smanjen samo u ovoj sekciji (scoped override; baza
+ * .coric-category-card__description u category-showcase.css ostaje netaknuta
+ * jer je deljena sa HZM/Jeegee landing i subcategory-listing stranama). */
+.coric-home-radne-masine .coric-category-card__description {
+  font-size: 1rem;
+}
+
 /* === Hero === */
 /* Full-bleed hero koji počinje od vrha (y=0): CEO header (top-bar + nav) lebdi
  * APSOLUTNO preko hero slike (overlay, definisano u header.css pod
@@ -135,6 +142,24 @@
 /* === O nama intro === */
 .coric-home-about {
   text-align: center;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Watermark logo u pozadini — pseudo-element (NE background na samoj sekciji) da
+ * opacity ne izbledi i tekst; z-index: -1 unutar izolovanog stacking konteksta drži
+ * sadržaj sekcije uvek iznad. */
+.coric-home-about::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url(../../img/coric-logo-pozadina.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .coric-home-about__text {
@@ -268,6 +293,20 @@
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: var(--rounded-sm);
   text-align: center;
+}
+
+/* Reprezentativna fotografija objave — isti 3:2 otisak/border-radius kao
+ * .coric-category-card__photo (category-showcase.css), inset u glass karticu
+ * (NE edge-bleed — kartica ima padding oko celog sadržaja). picture tag iz
+ * {% responsive_picture %} je nestilizovan wrapper — klasa ide na <img>. */
+.coric-home-blog-card__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--rounded-md);
+  margin-bottom: var(--spacing-scale-4);
 }
 
 .coric-home-blog-meta {

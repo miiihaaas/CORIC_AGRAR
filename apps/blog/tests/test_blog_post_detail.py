@@ -1,22 +1,22 @@
-"""Story 5.3 — Obogaćen BlogPostDetailView (AC1/AC2/AC6/AC7) — TEA RED phase.
+"""Story 5.3 — Obogaćen BlogPostDetailView (AC1/AC6/AC7) — TEA RED phase.
+
+Category (i „Slične objave" AC2, koja je bila 100% category-bazirana) je
+UKLONJEN (post-launch odluka) — pripadajući testovi obrisani s njim.
 
 Pokriva (5-3 OBOGAĆUJE 5-2 placeholder — ADITIVNO):
   - AC1: naslovna slika (`{% if post.main_image %}` guard) + meta (datum + autor
-    NULL-guard SM-D5 + kategorija link `blog:category`) + naslov + telo `|linebreaks`
-    (plain auto-escape — NIKAD `|safe`; XSS lock) + tag linkovi `blog:tag`
-  - AC2: „Slične objave" — 2-4 published iz ISTE kategorije, exclude-self,
-    draft-not-leaked, bounded, category=None → prazna
+    NULL-guard SM-D5) + naslov + telo `|linebreaks` (plain auto-escape — NIKAD
+    `|safe`; XSS lock) + tag linkovi `blog:tag`
   - AC6: social share FB/Viber/WhatsApp/Copy-link + `share_url` view-context (IMP-2)
     + egzaktni href-ovi (IMP-3)
   - AC7: meta title + meta_description `post.perex|default:post.title` (IMP-4)
 
 ⚠️ RED-faza: 5-3 obogaćenje JOŠ NE postoji → ovi testovi padaju na FEATURE odsustvu
-(context key `similar_posts`/`share_url` nedostaje; `blog:category`/`blog:tag`
-NoReverseMatch UNUTAR template/test; social href/`data-testid` odsutni). NE collection
-errori — apps.blog importi su UNUTAR funkcija; `reverse()` je UNUTAR test tela.
+(context key `share_url` nedostaje; `blog:tag` NoReverseMatch UNUTAR template/test;
+social href/`data-testid` odsutni). NE collection errori — apps.blog importi su
+UNUTAR funkcija; `reverse()` je UNUTAR test tela.
 
-⚠️ GUARD: apps.blog importi UNUTAR funkcija. REUSE conftest
-make_post/make_category/make_tag/author_user.
+⚠️ GUARD: apps.blog importi UNUTAR funkcija. REUSE conftest make_post/make_tag/author_user.
 
 Refs:
 - 5-3-blog-post-detail-strana.md AC1/AC2/AC6/AC7 + Task 9.2/9.3/9.4/9.5/9.9/9.10
@@ -47,33 +47,12 @@ def _get_detail(client, post):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# AC1 — obogaćen detail: slika + meta + kategorija-link + naslov + telo + tagovi
+# AC1 — obogaćen detail: slika + meta + naslov + telo + tagovi
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# AC1 (9.2): kategorija ime kao link na blog:category arhivu
-def test_detail_renders_category_link(client, make_post, make_category):
-    activate("sr")
-    cat = make_category(name="Ratarstvo")
-    post = _published(make_post, title="Priča sa kategorijom", category=cat)
-
-    response = _get_detail(client, post)
-
-    assert response.status_code == 200
-    html = response.content.decode("utf-8")
-    # blog:category link mora biti renderovan u meta liniji (reverse UNUTAR testa)
-    with override("sr"):
-        cat_url = reverse("blog:category", kwargs={"slug": cat.slug})
-    assert cat_url in html, (
-        f"Detail meta MORA imati kategorija link na arhivu {cat_url!r} "
-        f"(`{{% url 'blog:category' slug=post.category.slug %}}` — AC1/SM-D2). "
-        f"NoReverseMatch/odsutan link = 5-3 arhiva nije implementirana (RED)."
-    )
-    assert cat.name in html, "Detail MORA prikazati ime kategorije."
-
-
 # AC1 (9.2): svaki tag renderuje link na blog:tag arhivu
-def test_detail_renders_tag_links(client, make_post, make_category, make_tag):
+def test_detail_renders_tag_links(client, make_post, make_tag):
     activate("sr")
     tag_psenica = make_tag(name="Pšenica")
     tag_zetva = make_tag(name="Žetva")
@@ -190,129 +169,6 @@ def test_detail_body_escapes_script_no_safe_filter(client, make_post):
     assert "<script>alert(1)</script>" not in html, (
         "SIROV `<script>` NE SME biti u response-u (stored-XSS). "
         "body kroz nh3 `rich_html` sanitizaciju — 8.7 AC3."
-    )
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# AC2 (9.5) — „Slične objave" (SM-D8 / Gotcha BL3-3)
-# ─────────────────────────────────────────────────────────────────────────────
-
-
-# AC2: similar_posts = same-category published, exclude-self, draft-not-leaked, bounded
-def test_similar_posts_same_category_exclude_self_draft_excluded(
-    client, make_post, make_category
-):
-    activate("sr")
-    k = make_category(name="Ratarstvo")
-    other = make_category(name="Stočarstvo")
-
-    p = _published(make_post, title="Glavna priča P", category=k)
-    sim1 = _published(make_post, title="Slična 1", category=k)
-    sim2 = _published(make_post, title="Slična 2", category=k)
-    sim3 = _published(make_post, title="Slična 3", category=k)
-    draft_in_k = make_post(
-        title="Draft u K", status="draft", published_at=None, category=k
-    )
-    pub_other = _published(make_post, title="Druga kategorija", category=other)
-
-    response = _get_detail(client, p)
-
-    assert response.status_code == 200
-    assert "similar_posts" in response.context, (
-        "get_context_data MORA postaviti `similar_posts` (AC2 — 5-3 obogaćenje; RED)."
-    )
-    similar_pks = {sp.pk for sp in response.context["similar_posts"]}
-
-    assert {sim1.pk, sim2.pk, sim3.pk} <= similar_pks, (
-        "similar_posts MORA sadržati published objave ISTE kategorije."
-    )
-    assert p.pk not in similar_pks, (
-        "current post (P) NE SME biti u svojim slicnim (.exclude(pk=post.pk))."
-    )
-    assert draft_in_k.pk not in similar_pks, (
-        "DRAFT u istoj kategoriji NE SME procuriti (Post.published — draft-not-leaked)."
-    )
-    assert pub_other.pk not in similar_pks, (
-        "published objava DRUGE kategorije NE SME biti u similar_posts."
-    )
-
-
-# AC2: bounded ≤ _SIMILAR_POSTS_LIMIT (4)
-def test_similar_posts_bounded_to_limit(client, make_post, make_category):
-    activate("sr")
-    k = make_category(name="Ratarstvo")
-    p = _published(make_post, title="Glavna priča za bound", category=k)
-    # 6 dodatnih published u K → similar mora biti CAP-ovan na 4
-    for i in range(6):
-        _published(make_post, title=f"Slična bound {i}", category=k)
-
-    response = _get_detail(client, p)
-
-    assert response.status_code == 200
-    similar = response.context["similar_posts"]
-    assert len(similar) <= 4, (
-        f"similar_posts MORA biti bounded `[:_SIMILAR_POSTS_LIMIT]` (≤4 — epics.md:889). "
-        f"Dobili {len(similar)}."
-    )
-
-
-# AC2: post.category is None (SET_NULL) → similar_posts prazna (NE crash, NE „sve")
-def test_similar_posts_empty_when_category_none(client, make_post):
-    activate("sr")
-    # druge published objave bez kategorije postoje → ne smeju procuriti kao „slične"
-    _published(make_post, title="Bez kategorije A", category=None)
-    p = _published(make_post, title="Glavna bez kategorije", category=None)
-
-    response = _get_detail(client, p)
-
-    assert response.status_code == 200, (
-        "Detail sa post.category=None MORA biti 200 (NE crash — SM-D8 guard)."
-    )
-    assert list(response.context["similar_posts"]) == [], (
-        "post.category=None -> similar_posts MORA biti prazna (NE sve objave; SM-D8)."
-    )
-
-
-# AC2: kategorija sa SAMO current-post → similar prazna → sekcija se NE renderuje
-def test_similar_posts_empty_when_only_self_in_category(
-    client, make_post, make_category
-):
-    activate("sr")
-    k = make_category(name="Usamljena")
-    p = _published(make_post, title="Jedina u kategoriji", category=k)
-
-    response = _get_detail(client, p)
-
-    assert response.status_code == 200
-    assert list(response.context["similar_posts"]) == [], (
-        "Kategorija sa samo-current-post → similar_posts prazna (graceful)."
-    )
-
-
-# AC2 / AC9 / SM-D2: future-dated (scheduled) sibling NE SME procuriti u similar_posts
-# (Post.published filtrira published_at__lte=now — draft-not-leaked druga polovina).
-def test_similar_posts_future_published_excluded(client, make_post, make_category):
-    activate("sr")
-    k = make_category(name="Ratarstvo")
-    p = _published(make_post, title="Glavna priča P", category=k)
-    past = _published(make_post, title="Prošla slična u K", category=k)
-    future = make_post(
-        title="Zakazana slična u K",
-        status="published",
-        published_at=timezone.now() + timezone.timedelta(days=7),
-        category=k,
-    )
-
-    response = _get_detail(client, p)
-
-    assert response.status_code == 200
-    similar_pks = {sp.pk for sp in response.context["similar_posts"]}
-    assert past.pk in similar_pks, (
-        "Prošla published sibling MORA biti u similar_posts."
-    )
-    assert future.pk not in similar_pks, (
-        "FUTURE-dated (scheduled) sibling NE SME procuriti u similar_posts "
-        "(Post.published filtrira published_at__lte=now — AC2/AC9/SM-D2)."
     )
 
 

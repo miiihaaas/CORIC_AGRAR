@@ -26,9 +26,26 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* OQ-2 PRODUCTION BLOCKER: realna hero fotografija pre produkcije;
-     green-800 fallback dok se slika ne učita / ako nedostaje. */
+  /* OQ-2 rešeno (realna hero fotografija/video); green-800 fallback ostaje
+     kao safety-net dok se izvor ne učita / ako nedostaje. */
   background-color: var(--color-brand-green-800);
+}
+
+/* Video/statična slika par — samo JEDAN vidljiv istovremeno (default: video).
+   .coric-about-hero__bg--static je isti frejm kao video poster, prikazan
+   SAMO kad korisnik preferira redukovan pokret (ispod). */
+.coric-about-hero__bg--static {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coric-about-hero__bg--video {
+    display: none;
+  }
+
+  .coric-about-hero__bg--static {
+    display: block;
+  }
 }
 
 .coric-about-hero__overlay {
@@ -111,7 +128,8 @@
   padding: 0;
 }
 
-/* Dekorativna vertikalna linija lente (CSS, aria-hidden čvorovi nose semantiku 0). */
+/* Dekorativna vertikalna linija lente (CSS, aria-hidden čvorovi nose semantiku 0).
+   Bazni pravougaonik je UVEK pun (NO-JS fallback) — „rast" animacija je JS-gated ispod. */
 .coric-about-timeline__list::before {
   content: '';
   position: absolute;
@@ -138,6 +156,19 @@
   background-color: var(--color-accent-gold-500);
 }
 
+/* Linija „raste" odozgo nadole kad lenta uđe u viewport (root-level reveal —
+   timeline-reveal.js dodaje .coric-is-revealed na <ol data-timeline> samu). transform:scaleY
+   (NE height) — kompozitovano na GPU-u, ne triggeruje layout/reflow. */
+.coric-js .coric-about-timeline__list::before {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.coric-js .coric-about-timeline__list.coric-is-revealed::before {
+  transform: scaleY(1);
+}
+
 .coric-about-timeline__year {
   display: block;
   font-size: var(--typography-scale-caption);
@@ -155,19 +186,30 @@
 }
 
 .coric-about-timeline__event-text {
-  font-size: var(--typography-scale-body);
+  font-size: 1rem;
   line-height: var(--typography-line-height-relaxed);
   color: var(--color-neutral-gray-700);
   margin: 0;
 }
 
 /* Reveal — hidden stanje GEJTOVANO `.coric-js` markerom (timeline-reveal.js dodaje
-   na init). Bez JS-a marker se NE dodaje → segmenti su PUNO vidljivi (NO-JS fallback). */
+   na init). Bez JS-a marker se NE dodaje → segmenti su PUNO vidljivi (NO-JS fallback).
+   Svaki segment ima SOPSTVENI IntersectionObserver (timeline-reveal.js) — otkriva se
+   nezavisno dok ulazi u viewport (standardni „scroll timeline" stagger efekat), NE svi
+   odjednom. Mali transition-delay po nth-child dodatno ublažava slučaj kad više kartica
+   uđe u viewport istovremeno (brzi scroll/veliki ekran) — bez toga bi „iskočile" zajedno. */
 .coric-js .coric-about-timeline__segment {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 800ms ease-in-out, transform 800ms ease-in-out;
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.coric-js .coric-about-timeline__segment:nth-child(2) { transition-delay: 60ms; }
+.coric-js .coric-about-timeline__segment:nth-child(3) { transition-delay: 120ms; }
+.coric-js .coric-about-timeline__segment:nth-child(4) { transition-delay: 180ms; }
+.coric-js .coric-about-timeline__segment:nth-child(5) { transition-delay: 240ms; }
+.coric-js .coric-about-timeline__segment:nth-child(6) { transition-delay: 300ms; }
 
 .coric-js .coric-about-timeline__segment.coric-is-revealed {
   opacity: 1;
@@ -175,8 +217,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .coric-js .coric-about-timeline__list::before,
   .coric-js .coric-about-timeline__segment {
     transition: none;
+    transition-delay: 0s;
   }
 }
 
@@ -237,6 +281,60 @@
   .coric-about-gallery__grid {
     column-count: 2;
     column-gap: var(--spacing-scale-5);
+  }
+
+  /* Vremenska lenta — alternirajući raspored (standardni „our history" pattern):
+     linija centrirana, kartice naizmenično levo/desno preko nth-child (BEZ dodatnog
+     markup-a). `left:50%` na parnim segmentima je position:relative offset — NE
+     izbacuje element iz flow-a, samo ga vizuelno pomera (siblings i dalje stackuju
+     vertikalno na svojoj prirodnoj visini). */
+  .coric-about-timeline__list::before {
+    left: 50%;
+    margin-left: -1px;
+  }
+
+  .coric-about-timeline__segment {
+    width: 50%;
+    padding-left: 0;
+    margin-bottom: var(--spacing-scale-10);
+  }
+
+  .coric-about-timeline__segment:nth-child(odd) {
+    padding-right: var(--spacing-scale-10);
+    text-align: right;
+  }
+
+  .coric-about-timeline__segment:nth-child(even) {
+    left: 50%;
+    padding-left: var(--spacing-scale-10);
+  }
+
+  .coric-about-timeline__node {
+    left: auto;
+  }
+
+  .coric-about-timeline__segment:nth-child(odd) .coric-about-timeline__node {
+    right: -8px;
+  }
+
+  .coric-about-timeline__segment:nth-child(even) .coric-about-timeline__node {
+    left: -8px;
+  }
+
+  /* Desktop reveal: alterniraj smer klizanja (levo/desno) umesto translateY —
+     standardni „timeline" osećaj. Specificity (nth-child + .coric-is-revealed)
+     namerno viša od hidden-state pravila iznad, bez oslanjanja na redosled izvora. */
+  .coric-js .coric-about-timeline__segment:nth-child(odd) {
+    transform: translateX(-32px);
+  }
+
+  .coric-js .coric-about-timeline__segment:nth-child(even) {
+    transform: translateX(32px);
+  }
+
+  .coric-js .coric-about-timeline__segment:nth-child(odd).coric-is-revealed,
+  .coric-js .coric-about-timeline__segment:nth-child(even).coric-is-revealed {
+    transform: translateX(0);
   }
 }
 

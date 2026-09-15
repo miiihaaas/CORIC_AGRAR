@@ -1,8 +1,10 @@
 {% load i18n %}
-{# Vremenska lenta — Section Eyebrow + h2 + semantička <ol data-timeline> sa 3 događaja. #}
+{# Vremenska lenta — Section Eyebrow + h2 + semantička <ol data-timeline> sa 6 događaja. #}
 {# Tekst (godina/naslov/opis) je SEMANTIČKI HTML (NE SVG <text>). Dekorativni čvorovi/linija su CSS #}
-{# <span aria-hidden="true">. Reveal: hidden stanje gejtovano `.coric-js` markerom (timeline-reveal.js), #}
-{# pa bez JS-a segmenti ostaju vidljivi (NO-JS fallback, AC6). #}
+{# <span aria-hidden="true">. Desktop (≥768px): kartice alternirају levo/desno oko centralne linije #}
+{# (nth-child u about-page.css, BEZ dodatnog markup-a). Reveal: linija „raste" + svaka kartica se #}
+{# otkriva NEZAVISNO dok ulazi u viewport (per-segment IntersectionObserver, timeline-reveal.js). #}
+{# Hidden stanje gejtovano `.coric-js` markerom, pa bez JS-a sve ostaje vidljivo (NO-JS fallback, AC6). #}
 <section class="coric-about-timeline" aria-labelledby="about-timeline-title">
   <div class="coric-about-timeline__inner">
     {% include "partials/section_eyebrow.html" with text=_("VREMENSKA LENTA") tag="div" %}
@@ -22,12 +24,42 @@
       </li>
       <li class="coric-about-timeline__segment" data-timeline-segment>
         <span class="coric-about-timeline__node" aria-hidden="true"></span>
+        <span class="coric-about-timeline__year">2012</span>
+        <h3 class="coric-about-timeline__event-title">
+          {% translate "Ovlašćeni servisni partner" %}
+        </h3>
+        <p class="coric-about-timeline__event-text">
+          {% translate "Postajemo ovlašćeni servisni partner vodećih proizvođača mehanizacije i proširujemo tim majstora obučenih za rad na savremenim traktorima." %}
+        </p>
+      </li>
+      <li class="coric-about-timeline__segment" data-timeline-segment>
+        <span class="coric-about-timeline__node" aria-hidden="true"></span>
         <span class="coric-about-timeline__year">2015</span>
         <h3 class="coric-about-timeline__event-title">
           {% translate "Širenje ponude" %}
         </h3>
         <p class="coric-about-timeline__event-text">
           {% translate "Proširujemo asortiman na priključnu opremu i radne mašine vodećih brendova i otvaramo veći prodajno-servisni prostor za rastuću mrežu kupaca." %}
+        </p>
+      </li>
+      <li class="coric-about-timeline__segment" data-timeline-segment>
+        <span class="coric-about-timeline__node" aria-hidden="true"></span>
+        <span class="coric-about-timeline__year">2019</span>
+        <h3 class="coric-about-timeline__event-title">
+          {% translate "Polovna mehanizacija" %}
+        </h3>
+        <p class="coric-about-timeline__event-text">
+          {% translate "Uvodimo posebnu ponudu pažljivo pregledane polovne mehanizacije — pristupačniju opciju za gazdinstva koja tek grade svoj mehanizacijski park." %}
+        </p>
+      </li>
+      <li class="coric-about-timeline__segment" data-timeline-segment>
+        <span class="coric-about-timeline__node" aria-hidden="true"></span>
+        <span class="coric-about-timeline__year">2022</span>
+        <h3 class="coric-about-timeline__event-title">
+          {% translate "Digitalno prisustvo" %}
+        </h3>
+        <p class="coric-about-timeline__event-text">
+          {% translate "Pokrećemo online katalog i digitalnu podršku kupcima, čineći celokupnu ponudu i stručne savete dostupnim u svakom trenutku." %}
         </p>
       </li>
       <li class="coric-about-timeline__segment" data-timeline-segment>

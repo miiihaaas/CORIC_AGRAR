@@ -1,8 +1,11 @@
-"""Story 5.1 — Blog modeli (Category / Tag / Post) — MODEL FOUNDATION Epic 5.
+"""Story 5.1 — Blog modeli (Tag / Post) — MODEL FOUNDATION Epic 5.
 
-Sva 3 modela nasleđuju `SluggedModel` + `TimestampedModel` iz apps.core
+`Category` je UKLONJEN (post-launch odluka) — blog objave se više NE
+kategorišu; jedina preostala taksonomija je `Tag`.
+
+Oba modela nasleđuju `SluggedModel` + `TimestampedModel` iz apps.core
 (slug globally unique + created_at/updated_at). Slug auto-gen iz `name`
-(Category/Tag) / `title` (Post) kroz `slugify_ascii` (save()/full_clean()
+(Tag) / `title` (Post) kroz `slugify_ascii` (save()/full_clean()
 pattern — mirror Product 2-2 CRIT-2). NEMA auto-de-dup slug kolizije (IMP-5 —
 drugi save() istog title-a → ValidationError/IntegrityError; YAGNI, matches
 Product presedan).
@@ -32,44 +35,6 @@ from apps.core.models import SluggedModel, TimestampedModel
 from apps.core.utils import slugify_ascii
 
 from apps.blog.managers import PublishedManager
-
-
-# =============================================================================
-# Category (AC1)
-# =============================================================================
-
-
-class Category(SluggedModel, TimestampedModel):
-    """Kategorija blog objave (Ratarstvo, Stočarstvo, ...).
-
-    slug auto-gen iz `name` kroz slugify_ascii. name/description translatable (AC4).
-    """
-
-    name = models.CharField(_("Naziv"), max_length=200)
-    description = models.TextField(_("Opis"), blank=True)
-
-    class Meta:
-        ordering = ["name"]
-        verbose_name = _("Kategorija")
-        verbose_name_plural = _("Kategorije")
-
-    def __str__(self) -> str:
-        return self.name
-
-    def full_clean(self, *args, **kwargs):
-        """Auto-gen slug iz name PRE field-level validacije (mirror Product 2-2).
-
-        NIKAD self.clean() direktno — super().full_clean() ga već poziva.
-        """
-        if not self.slug and self.name:
-            self.slug = slugify_ascii(self.name)
-        super().full_clean(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
-        if not self.slug and self.name:
-            self.slug = slugify_ascii(self.name)
-        self.full_clean()
-        super().save(*args, **kwargs)
 
 
 # =============================================================================
@@ -112,10 +77,9 @@ class Post(SluggedModel, TimestampedModel):
 
     slug auto-gen iz `title` (globally unique — SluggedModel). title/perex/body
     translatable (AC4). body je PLAIN TextField (NE WYSIWYG model field — SM-D10;
-    rich editor je Epic 8.7). category FK SET_NULL, tags M2M, author FK →
-    settings.AUTH_USER_MODEL SET_NULL. status TextChoices + published_at = published
-    discriminator (PublishedManager filtrira status='published' AND
-    published_at__lte=now).
+    rich editor je Epic 8.7). tags M2M, author FK → settings.AUTH_USER_MODEL
+    SET_NULL. status TextChoices + published_at = published discriminator
+    (PublishedManager filtrira status='published' AND published_at__lte=now).
     """
 
     class Status(models.TextChoices):
@@ -140,14 +104,6 @@ class Post(SluggedModel, TimestampedModel):
         max_length=255,
         blank=True,
         null=True,
-    )
-    category = models.ForeignKey(
-        "blog.Category",
-        on_delete=models.SET_NULL,
-        related_name="posts",
-        null=True,
-        blank=True,
-        verbose_name=_("Kategorija"),
     )
     tags = models.ManyToManyField(
         "blog.Tag",

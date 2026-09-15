@@ -255,8 +255,9 @@ def test_extended_regroup_orders_sections_motor_first(client):
     )
 
 
-def test_extended_motor_section_open_by_default(client):
-    """AC5: prva accordion sekcija (Motor) MORA imati <details open>."""
+def test_extended_accordion_sections_closed_by_default(client):
+    """Sve accordion sekcije (uklj. prvu/Motor) MORAJU biti zatvorene po defaultu —
+    korisnik eksplicitno traži da nijedna nije unapred otvorena."""
     activate("sr")
     brand = BrandFactory.create(name="Agri Tracking")
     series = SeriesFactory.create_extended(brand=brand, name="Extended Serija")
@@ -268,14 +269,13 @@ def test_extended_motor_section_open_by_default(client):
     response = client.get(url)
     html = response.content.decode("utf-8")
 
-    # Pronalazi prvi <details> u extended layout-u
-    # Mora biti `<details ... open>` (na prvoj sekciji = Motor zbog sort order-a)
-    first_details = re.search(r"<details[^>]*>", html)
-    assert first_details, "Bar jedan <details> mora postojati u extended layout-u."
-    assert "open" in first_details.group(0), (
-        f"Prva accordion sekcija (Motor) MORA imati 'open' atribut. "
-        f"Pronađen: {first_details.group(0)!r}. Koristi `{{% if forloop.first %}}open{{% endif %}}` u template-u."
-    )
+    all_details = re.findall(r"<details[^>]*>", html)
+    assert all_details, "Bar jedan <details> mora postojati u extended layout-u."
+    for details_tag in all_details:
+        assert "open" not in details_tag, (
+            f"Accordion sekcija NE SME imati 'open' atribut po defaultu. "
+            f"Pronađen: {details_tag!r}."
+        )
 
 
 def test_extended_empty_section_skipped(client):

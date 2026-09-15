@@ -7,7 +7,8 @@
       method="get"
       action="{% url 'products:tractor_list' %}"
       hx-get="{% url 'products:tractor_list' %}"
-      hx-trigger="input changed delay:300ms, change delay:300ms"
+      {# BUGFIX (2026-09): "input changed" je uklonjen odavde — vidi hx-trigger na SVAKOM hidden inputu ispod (from:find koristi querySelector, JEDNINA — hvatao je SAMO prvi input u formi, snaga_min; ostala 3 inputa nikad nisu okidala request). "change" ostaje ovde kao bubbling fallback (bez changed filtera, radi ispravno na formi). #}
+      hx-trigger="change delay:300ms"
       hx-target="#tractor-results"
       hx-swap="innerHTML"
       hx-push-url="true"
@@ -29,8 +30,8 @@
          data-aria-label-min="{% translate 'Snaga minimum (konjske snage)' %}"
          data-aria-label-max="{% translate 'Snaga maksimum (konjske snage)' %}">
       <div class="coric-range-slider__track" aria-hidden="true"></div>
-      <input type="hidden" name="snaga_min" value="{{ active_filters.snaga_min }}" data-range-min-input data-testid="filter-snaga-min">
-      <input type="hidden" name="snaga_max" value="{{ active_filters.snaga_max }}" data-range-max-input data-testid="filter-snaga-max">
+      <input type="hidden" name="snaga_min" value="{{ active_filters.snaga_min }}" data-range-min-input data-testid="filter-snaga-min" hx-trigger="input changed delay:300ms" hx-get="{% url 'products:tractor_list' %}">
+      <input type="hidden" name="snaga_max" value="{{ active_filters.snaga_max }}" data-range-max-input data-testid="filter-snaga-max" hx-trigger="input changed delay:300ms" hx-get="{% url 'products:tractor_list' %}">
       <div class="coric-range-slider__values">
         <span class="coric-range-slider__value-min" data-range-value-min>{{ active_filters.snaga_min|default:'0' }}</span>
         <span class="coric-range-slider__separator"> — </span>
@@ -54,8 +55,8 @@
          data-aria-label-min="{% translate 'Cena minimum (EUR)' %}"
          data-aria-label-max="{% translate 'Cena maksimum (EUR)' %}">
       <div class="coric-range-slider__track" aria-hidden="true"></div>
-      <input type="hidden" name="cena_min" value="{{ active_filters.cena_min }}" data-range-min-input>
-      <input type="hidden" name="cena_max" value="{{ active_filters.cena_max }}" data-range-max-input>
+      <input type="hidden" name="cena_min" value="{{ active_filters.cena_min }}" data-range-min-input hx-trigger="input changed delay:300ms" hx-get="{% url 'products:tractor_list' %}">
+      <input type="hidden" name="cena_max" value="{{ active_filters.cena_max }}" data-range-max-input hx-trigger="input changed delay:300ms" hx-get="{% url 'products:tractor_list' %}">
       <div class="coric-range-slider__values">
         <span class="coric-range-slider__value-min" data-range-value-min>{{ active_filters.cena_min|default:'0' }}</span>
         <span class="coric-range-slider__separator"> — </span>

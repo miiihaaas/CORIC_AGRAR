@@ -17,6 +17,7 @@ from django.db.models import Prefetch, Q
 from django.http import Http404
 from django.views.generic import DetailView, TemplateView
 
+from apps.blog.models import Post
 from apps.brands.models import Brand, Category
 from apps.pages.models import Page
 from apps.products.models import Product
@@ -87,9 +88,14 @@ class HomeView(TemplateView):
             .order_by("is_coming_soon", "name")
         )
 
-        # SM-D7: forward-compat blog placeholder — Post model NE postoji (Epic 5).
-        # Prazna lista → template renderuje 2 Lorem Ipsum placeholder kartice.
-        context["latest_posts"] = []
+        # Priče sa polja: 2 najnovije OBJAVLJENE Post objave (Post.published —
+        # NIKAD Post.objects — SM-D3 mirror iz apps/blog/context_processors.py:
+        # status="published" AND published_at__lte=now, NE curi nacrt/zakazano).
+        # Prazna lista (nema objavljenih postova) → template pada na Lorem Ipsum
+        # placeholder granu (forward-compat, isti obrazac kao ranije).
+        context["latest_posts"] = list(
+            Post.published.order_by("-published_at", "-created_at")[:2]
+        )
 
         # Radne mašine: HZM radne-masine Category + njene top-level Subcategory dece.
         # Defensive guard (mirror Story 2-12): ako Category ne postoji → [] (NE crash).

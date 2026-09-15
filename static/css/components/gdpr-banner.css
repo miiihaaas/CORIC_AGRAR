@@ -19,7 +19,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-scale-5);
-  padding: var(--spacing-scale-5) var(--spacing-scale-6);
+  /* Vertikalni padding stegnut sa scale-5(24px)->scale-3(12px) — dodatno smanjuje
+     fixed-bottom footprint (vidi BUGFIX komentar ispod za glavni uzrok/fix). */
+  padding: var(--spacing-scale-3) var(--spacing-scale-6);
   background-color: var(--color-brand-green-900);
   color: var(--color-semantic-text-on-dark);
   box-shadow: var(--shadow-lg);
@@ -30,13 +32,28 @@
   transition: transform 0.25s ease-out;
 }
 
+/* BUGFIX (2026-09): <form> wrapper (markup) NIJE bio flex-layout-transparent —
+ * .coric-gdpr-banner__body i __actions su zato UVEK stackovali vertikalno
+ * (normalan block flow unutar <form>), bez obzira na justify-content:space-between
+ * na roditelju iznad, koji je očigledno namerio single-row layout na širim
+ * ekranima. Rezultat: baner ~185px visok na SVIM širinama (1280-1920px), što na
+ * uobičajenim laptop rezolucijama (npr. 1366x768) fizički preklapa i presreće
+ * klik/drag na sadržaj iznad njega u page flow-u (npr. range slider filter na
+ * /sr/traktori/ — potvrđeno: document.elementFromPoint na sredini slider handle-a
+ * vraćao je baner, NE handle). display:contents čini <form> "nevidljivim" za
+ * layout (deca postaju direktni flex item-i roditelja) — submit/CSRF/name=action
+ * ponašanje forme ostaje netaknuto, MENJA SE SAMO vizuelni box. */
+.coric-gdpr-banner__form {
+  display: contents;
+}
+
 .coric-gdpr-banner__body {
   flex: 1 1 320px;
   min-width: 0;
 }
 
 .coric-gdpr-banner__title {
-  margin: 0 0 var(--spacing-scale-2);
+  margin: 0 0 var(--spacing-scale-1);
   font-size: var(--typography-scale-h4);
   font-weight: var(--typography-weight-bold);
   line-height: var(--typography-line-height-tight);
@@ -44,7 +61,7 @@
 }
 
 .coric-gdpr-banner__text {
-  margin: 0 0 var(--spacing-scale-3);
+  margin: 0 0 var(--spacing-scale-2);
   color: var(--color-semantic-text-on-dark);
 }
 

@@ -16,6 +16,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.paginator import Paginator
 from django.db.models import Case, CharField, IntegerField, Prefetch, Value, When
 from django.http import Http404
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -145,7 +146,14 @@ class BrandDetailView(DetailView):
         ctx["hero_variant"] = (
             "blue" if (self.object.brand_color or "").lower() == "#00a4e9" else "green"
         )
-        ctx["hero_logo_url"] = self.object.logo.url if self.object.logo else ""
+        # Tulip logo (tamni tekst) se ne vidi na tamno-zelenoj hero kartici — ista
+        # svetla static/img zamena kao brands/partials/_tulip_hero.html (dedicated
+        # mix-prikolice landing), primenjena i ovde jer je BrandDetailView generički
+        # reachable po slug-u (/traktori/tulip/), NE samo za traktor brendove.
+        if self.object.slug == _TULIP_BRAND_SLUG:
+            ctx["hero_logo_url"] = static("img/tulip-logo-light.png")
+        else:
+            ctx["hero_logo_url"] = self.object.logo.url if self.object.logo else ""
         ctx["hero_title"] = self.object.slogan or self.object.name
         ctx["hero_fallback_field"] = "slogan" if self.object.slogan else "name"
         return ctx

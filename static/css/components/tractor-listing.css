@@ -47,7 +47,7 @@
 .coric-brand-header__grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-scale-4);
+  gap: var(--spacing-scale-3);
   justify-content: center;
   align-items: center;
   margin-top: var(--spacing-scale-4);
@@ -57,7 +57,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-scale-3);
+  padding: var(--spacing-scale-2);
   border-radius: var(--rounded-md);
   transition: transform 150ms ease, box-shadow 150ms ease;
   text-decoration: none;
@@ -75,9 +75,13 @@
   outline-offset: 2px;
 }
 
+/* Fiksna širina (NE max-height/width:auto) — brendovi imaju vrlo različit aspect
+ * ratio izvornih logo fajlova (kvadratni HZM bik ikona vs širok SAILLONG wordmark),
+ * pa bi width:auto davao vizuelno neujednačene širine u istom redu. object-fit:contain
+ * centrira/skalira svaki logo unutar ISTE kutije bez izobličenja. */
 .coric-brand-header__logo {
-  max-height: 80px;
-  width: auto;
+  width: 160px;
+  height: 50px;
   object-fit: contain;
 }
 
@@ -157,6 +161,39 @@
   min-height: 200px;
 }
 
+/* Grupa po brendu — logo + naziv iznad odgovarajućih kartica (queryset je
+ * sortiran po brand__name u views.py, {% regroup %} u template-u). */
+.coric-tractor-results__brand-group {
+  margin-bottom: var(--spacing-section-mobile);
+}
+
+.coric-tractor-results__brand-group:last-child {
+  margin-bottom: 0;
+}
+
+.coric-tractor-results__brand-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: var(--spacing-scale-4);
+  margin-bottom: var(--spacing-scale-4);
+  border-bottom: 1px solid var(--color-neutral-gray-300);
+}
+
+/* Ista logika kao .coric-brand-header__logo iznad — fiksna širina + object-fit:contain
+ * za ujednačen izgled reda brendova bez obzira na aspect ratio izvornog fajla. */
+.coric-tractor-results__brand-logo {
+  width: 160px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.coric-tractor-results__brand-name {
+  font-size: var(--typography-scale-h4);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-brand-green-800);
+}
+
 .coric-tractor-results__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -173,6 +210,16 @@
   .coric-tractor-results__grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Excerpt (kratak opis) po kartici — coric-product-card__excerpt baza NEMA
+ * unscoped stilove (samo per-page override-i, mirror .coric-product-grid u
+ * brand-listing.css i .coric-product-similar__grid u product-detail.css). */
+.coric-tractor-results__grid .coric-product-card__excerpt {
+  font-size: var(--typography-scale-small);
+  line-height: var(--typography-line-height-relaxed);
+  color: var(--color-neutral-gray-700);
+  margin: 0 0 var(--spacing-scale-3);
 }
 
 /* === Pagination === */
