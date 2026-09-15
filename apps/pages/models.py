@@ -1,7 +1,7 @@
 """Story 3.4 — PRVI model u apps.pages: `SiteSettings` singleton config model.
 
 Centralizuje globalna podešavanja sajta (kontakt-info: adresa, telefon prodaje,
-telefon servisa, e-pošta, radno vreme; social: Facebook + Instagram URL) koji su
+telefon servisa, e-pošta, radno vreme; social: Facebook + Instagram + YouTube URL) koji su
 ranije bili hardkodovani na više template lokacija (_contact_info.html / footer /
 top-header). Sva 3 templata sada čitaju kroz `{% site_setting "..." %}` tag.
 
@@ -79,6 +79,14 @@ class SiteSettings(TimestampedModel):
         blank=True,
         help_text=_(
             "PLACEHOLDER — prazno dok biznis ne unese realni Instagram URL; "
+            "link se sakriva kad je prazno."
+        ),
+    )
+    social_youtube = models.URLField(
+        _("YouTube URL"),
+        blank=True,
+        help_text=_(
+            "PLACEHOLDER — prazno dok biznis ne unese realni YouTube URL; "
             "link se sakriva kad je prazno."
         ),
     )
