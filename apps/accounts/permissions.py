@@ -2,12 +2,12 @@
 
 Sav RBAC u jednom modulu (SM-D14 — YAGNI zaseban signals.py):
 - GROUP_SUPERADMIN / GROUP_EDITOR konstante (single-source naziva — SM-D5).
-- EDITOR_CONTENT_MODELS — eksplicitan default-deny allowlist od 15 content modela
-  (4 brands + 7 products + 3 blog + 1 pages; SM-D3 / G-13).
+- EDITOR_CONTENT_MODELS — eksplicitan default-deny allowlist od 14 content modela
+  (4 brands + 7 products + 2 blog + 1 pages; SM-D3 / G-13).
 - IsSuperadminMixin / IsEditorMixin — LoginRequiredMixin + UserPassesTestMixin,
   raise_exception=True (anon → 302 login; autentifikovan-neovlašćen → 403; SM-D8).
 - sync_rbac_groups(sender, **kwargs) — post_migrate handler koji kreira obe grupe
-  (get_or_create) i dodeljuje Editor-u CRUD permisije TAČNO za 15 modela
+  (get_or_create) i dodeljuje Editor-u CRUD permisije TAČNO za 14 modela
   (permissions.set — idempotentno; G-2). Superadmin grupa ostaje prazna jer
   is_superuser implicitno pokriva sve (SM-D6). NIKAD auth/admin/infra perms (G-3).
 
@@ -52,9 +52,8 @@ EDITOR_CONTENT_MODELS: list[tuple[str, str]] = [
     ("products", "productbrochure"),
     ("products", "producttestimonial"),
     ("products", "productsimilar"),
-    # blog (3)
+    # blog (2 — Category UKLONJEN 2026-09-15, post-launch odluka)
     ("blog", "post"),
-    ("blog", "category"),
     ("blog", "tag"),
     # pages (1 — SAMO Page; SiteSettings IZOSTAVLJEN, SM-D15)
     ("pages", "page"),
@@ -136,7 +135,7 @@ def is_editor(user) -> bool:
 # post_migrate RBAC sync handler (AC4/5/6/7 — SM-D2 / G-1/G-2)
 # ─────────────────────────────────────────────────────────────────────────────
 def sync_rbac_groups(sender, **kwargs) -> None:
-    """Kreiraj Superadmin+Editor grupe i dodeli Editor CRUD perms za 15 modela.
+    """Kreiraj Superadmin+Editor grupe i dodeli Editor CRUD perms za 14 modela.
 
     Idempotentan (G-2): get_or_create + permissions.set(). Re-run NE duplira
     grupe ni permisije. Superadmin grupa ostaje prazna (is_superuser pokriva —

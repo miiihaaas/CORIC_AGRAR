@@ -96,7 +96,11 @@ TEST_BASE_TEMPLATE_PY = PROJECT_ROOT / "tests" / "test_base_template.py"
 # breakpoint companion uz 767, ista izuzeta kategorija (breakpoint, NE magic-dimenzija).
 # 20: nav link/search-item horizontalni padding (dizajn runda 2026-09-08) — nema ga
 # u --spacing-scale-* (4/8/12/16/24...), a zamena na 24px bi pomerila nav layout.
-PX_WHITELIST = {1, 2, 20, 44, 60, 80, 40, 56, 100, 120, 767, 768}
+# 28 + 160 dodati 2026-09-15 (footer redizajn po mockupu): 28 = boxed kontakt-ikonica
+# (.coric-footer__contact-icon width/height), 160 = footer logo width. Obe su KOMPONENTNE
+# dimenzije (ista kategorija kao već whitelist-ovane 40/56 logo dimenzije), NE spacing —
+# --spacing-scale-* ih ne pokriva.
+PX_WHITELIST = {1, 2, 20, 28, 44, 60, 80, 40, 56, 100, 120, 160, 767, 768}
 
 # unitless magic number whitelist (AC9 — CRITICAL-12 split)
 UNITLESS_WHITELIST = {1020}
@@ -702,29 +706,34 @@ def test_ac6_footer_has_role_contentinfo():
     )
 
 
-# AC-6: footer ima 4 col-md-3 kolone i 3 section_eyebrow include-a (PROIZVODI, NAJNOVIJE VESTI, KONTAKT)
+# AC-6: footer ima 4 col-md-3 kolone, svaka sa sopstvenim <h2> naslovom.
+# TEST_MODIFICATION 2026-09-15 (footer redizajn po mockupu): kolone više NE koriste
+# `section_eyebrow` include (uppercase eyebrow) nego `<h2 class="coric-footer__col-title">`
+# sa normalno kapitalizovanim, prevodivim naslovom (Kontakt / Proizvodi / O nama /
+# Najnovije vesti). Intent AC6 (4 kolone + eksplicitan heading po koloni) je OČUVAN —
+# asertuje se novi markup hook umesto starog eyebrow-a.
 @pytest.mark.django_db  # Story 3.4: footer sada čita SiteSettings (site_setting tag) → DB pristup.
-def test_ac6_footer_renders_4_columns_with_3_section_eyebrows():
-    """AC6: footer mora imati 4 `col-md-3` kolone + 3 Section Eyebrow include-a sa
-    eksplicitnim heading-ovima ('PROIZVODI', 'NAJNOVIJE VESTI', 'KONTAKT').
+def test_ac6_footer_renders_4_columns_with_column_titles():
+    """AC6: footer mora imati 4 `col-md-3` kolone + `<h2>` naslov u svakoj
+    ('Kontakt', 'Proizvodi', 'O nama', 'Najnovije vesti').
     """
     html = _render_partial("partials/footer.html")
     # 4 col-md-3 kolone
-    col_count = len(re.findall(r'class\s*=\s*["\'][^"\']*col-md-3', html))
+    col_count = len(re.findall(r"""class\s*=\s*["'][^"']*col-md-3""", html))
     assert col_count == 4, (
         f"Rendered footer ima {col_count} `col-md-3` kolona, očekivano 4. AC6."
     )
-    # 3 section_eyebrow konzumacije (verifikujemo eksplicitne heading tekstove)
-    for heading in ("PROIZVODI", "NAJNOVIJE VESTI", "KONTAKT"):
+    # Heading po koloni (eksplicitni tekstovi — redizajn mockup)
+    for heading in ("Kontakt", "Proizvodi", "O nama", "Najnovije vesti"):
         assert heading in html, (
             f"Rendered footer NE sadrži heading '{heading}'. "
-            f"AC6 — Section Eyebrow konzumacija za sve 3 kolone (Story 1.7 reuse)."
+            f"AC6 — svaka od 4 kolone MORA imati eksplicitan naslov."
         )
-    # Section Eyebrow base klasa mora biti renderovana (3×)
-    eyebrow_count = len(re.findall(r"coric-section-eyebrow\b", html))
-    assert eyebrow_count >= 3, (
-        f"Rendered footer ima {eyebrow_count} `.coric-section-eyebrow` mention(s), "
-        f"očekivano >= 3 (jedan po koloni 2, 3, 4). AC6 + Story 1.7 reuse."
+    # Naslovi su renderovani kroz stabilan markup hook (4×)
+    title_count = len(re.findall(r"coric-footer__col-title", html))
+    assert title_count >= 4, (
+        f"Rendered footer ima {title_count} `.coric-footer__col-title` mention(s), "
+        f"očekivano >= 4 (jedan po koloni). AC6."
     )
 
 

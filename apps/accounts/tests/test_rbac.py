@@ -1,10 +1,11 @@
 """Story 8.2 — User Accounts + RBAC (Superadmin / Editor Groups) — TEA RED phase.
 
 Pokriva svih 14 AC sigurnosno-kritične RBAC FOUNDATION story:
-- permissions.py: GROUP_SUPERADMIN/GROUP_EDITOR konstante + EDITOR_CONTENT_MODELS allowlist (15 modela).
+- permissions.py: GROUP_SUPERADMIN/GROUP_EDITOR konstante + EDITOR_CONTENT_MODELS allowlist (14 modela;
+  blog.Category UKLONJEN 2026-09-15 — post-launch odluka).
 - IsSuperadminMixin / IsEditorMixin (LoginRequiredMixin + UserPassesTestMixin, raise_exception=True).
 - post_migrate handler sync_rbac_groups → kreira Superadmin+Editor grupe, dodeljuje Editor CRUD perms
-  TAČNO za 15 content modela; idempotentno; NIKAD auth/admin/infra perms (AC6 CRITICAL).
+  TAČNO za 14 content modela; idempotentno; NIKAD auth/admin/infra perms (AC6 CRITICAL).
 - CustomUserAdmin re-register + self-escalation hardening (AC13); Editor 403 na auth.User admin (AC8).
 - AC14 fail-closed dokaz na REALNOM throwaway view-u kroz urlconf override.
 
@@ -132,10 +133,14 @@ def test_ac1_group_name_constants_exist_and_exact():
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# AC1/AC5 — EDITOR_CONTENT_MODELS allowlist (15 parova; eksplicitne ekskluzije)
+# AC1/AC5 — EDITOR_CONTENT_MODELS allowlist (14 parova; eksplicitne ekskluzije)
 # ──────────────────────────────────────────────────────────────────────────────
-def test_ac5_editor_content_models_is_exact_15_pair_allowlist():
-    """AC5/SM-D3/G-13: EDITOR_CONTENT_MODELS sadrži TAČNO 15 (app_label, model) parova."""
+def test_ac5_editor_content_models_is_exact_14_pair_allowlist():
+    """AC5/SM-D3/G-13: EDITOR_CONTENT_MODELS sadrži TAČNO 14 (app_label, model) parova.
+
+    TEST_MODIFICATION 2026-09-15: blog.Category model je UKLONJEN (post-launch odluka),
+    pa allowlist pada sa 15 na 14 parova (blog: post + tag).
+    """
     from apps.accounts.permissions import EDITOR_CONTENT_MODELS
 
     expected = {
@@ -151,14 +156,13 @@ def test_ac5_editor_content_models_is_exact_15_pair_allowlist():
         ("products", "producttestimonial"),
         ("products", "productsimilar"),
         ("blog", "post"),
-        ("blog", "category"),
         ("blog", "tag"),
         ("pages", "page"),
     }
     actual = set(tuple(p) for p in EDITOR_CONTENT_MODELS)
     assert actual == expected, (
-        f"EDITOR_CONTENT_MODELS MORA biti TAČNO 15 content parova (4 brands + 7 products + "
-        f"3 blog + 1 pages). Razlika: nedostaje={expected - actual}, višak={actual - expected}."
+        f"EDITOR_CONTENT_MODELS MORA biti TAČNO 14 content parova (4 brands + 7 products + "
+        f"2 blog + 1 pages). Razlika: nedostaje={expected - actual}, višak={actual - expected}."
     )
 
 
@@ -366,8 +370,8 @@ def test_ac5_editor_has_representative_content_crud_perms():
     )
 
 
-def test_ac5_editor_has_full_crud_for_all_15_models():
-    """AC5: Editor ima TAČNO add/change/delete/view × 15 content modela = 60 content permisija."""
+def test_ac5_editor_has_full_crud_for_all_14_models():
+    """AC5: Editor ima TAČNO add/change/delete/view × 14 content modela = 56 content permisija."""
     from django.contrib.auth.models import Group
 
     from apps.accounts.permissions import EDITOR_CONTENT_MODELS
@@ -383,7 +387,7 @@ def test_ac5_editor_has_full_crud_for_all_15_models():
             if (app_label, model, codename) not in have:
                 missing.append(f"{app_label}.{codename}")
     assert not missing, (
-        f"Editor MORA imati svе 4 CRUD perms za svih 15 modela (60 ukupno); nedostaju: {missing} (AC5)."
+        f"Editor MORA imati svе 4 CRUD perms za svih 14 modela (56 ukupno); nedostaju: {missing} (AC5)."
     )
 
 

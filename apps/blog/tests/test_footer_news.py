@@ -59,8 +59,11 @@ def _has_limit_3(sql):
 
 
 def _is_footer_shaped(sql):
-    """Footer `latest_blog_posts` upit shape: blog_post SELECT, BEZ category-join,
-    ORDER BY, anchored LIMIT 3 (izoluje footer od bilo kog drugog blog upita).
+    """Footer `latest_blog_posts` upit shape: blog_post SELECT, ORDER BY, anchored
+    LIMIT 3 (izoluje footer od bilo kog drugog blog upita).
+
+    `blog_category` guard je istorijski (Category model UKLONJEN 2026-09-15) —
+    ostaje bezopasan no-op; izolaciju sada nosi anchored LIMIT 3 + test-data shape.
     """
     low = sql.lower()
     return (
@@ -155,7 +158,7 @@ def test_footer_renders_at_most_three_post_links(client, make_post):
 def test_footer_empty_placeholder_when_no_posts(client, make_post):
     """0 PUBLISHED (samo draft/future) → `{% empty %}` placeholder
     „Uskoro nove priče sa polja"; validan <li>; NEMA blog:detail linkova.
-    „NAJNOVIJE VESTI" heading OSTAJE.
+    Heading kolone („Najnovije vesti") OSTAJE.
     """
     activate("sr")
     now = timezone.now()
@@ -177,8 +180,11 @@ def test_footer_empty_placeholder_when_no_posts(client, make_post):
         "0 published -> footer MORA renderovati empty placeholder "
         "'Uskoro nove price sa polja' (REUSE 5-2 msgid; SM-D5)."
     )
-    assert "NAJNOVIJE VESTI" in footer, (
-        "'NAJNOVIJE VESTI' section_eyebrow heading MORA OSTATI i kad je 0 objava."
+    # TEST_MODIFICATION 2026-09-15 (footer redizajn): eyebrow „NAJNOVIJE VESTI" je
+    # zamenjen <h2 class="coric-footer__col-title">„Najnovije vesti". Intent (heading
+    # kolone opstaje i na praznom stanju) OČUVAN — asertuje se novi markup hook.
+    assert "Najnovije vesti" in footer, (
+        "Heading kolone 'Najnovije vesti' MORA OSTATI i kad je 0 objava."
     )
     # NEMA blog:detail linkova u footeru (nijedna objava nije vidljiva)
     assert 'href="/sr/blog/' not in footer, (
@@ -292,7 +298,12 @@ def test_htmx_partial_fires_zero_blog_queries(client, make_post):
     Ne — home nema HTMX partial. Koristimo blog index HTMX i poredimo sa baseline.
     """
     activate("sr")
-    for i in range(3):
+    # TEST_MODIFICATION 2026-09-15: 5 (NE 3) objava. Category je uklonjen → BlogIndexView
+    # upit više NEMA `JOIN blog_category` (stara izolacija footer-shape-a). Sa TAČNO 3
+    # objave Django Paginator kroji stranu na `object_list[0:count]` → `LIMIT 3`, isti
+    # shape kao footer upit → lažni pogodak. Sa 5 objava (paginate_by=10) view upit je
+    # `LIMIT 5`, pa anchored `LIMIT 3` ostaje ekskluzivan potpis footer upita.
+    for i in range(5):
         _published(make_post, title=f"HTMX objava {i}", days_ago=i + 1)
 
     # HTMX partial render — _post_results.html (NE extend-uje base.html → bez footera).
@@ -301,19 +312,20 @@ def test_htmx_partial_fires_zero_blog_queries(client, make_post):
             "/sr/blog/", HTTP_HX_REQUEST="true", HTTP_HOST="localhost"
         )
         assert response.status_code == 200
-        # Sanity: HTMX partial NE renderuje footer (nema „NAJNOVIJE VESTI" heading).
+        # Sanity: HTMX partial NE renderuje footer (nema <footer> elementa).
+        # TEST_MODIFICATION 2026-09-15: heading-string check („NAJNOVIJE VESTI") je posle
+        # footer redizajna postao no-op; `<footer` je robustan marker odsustva footera.
         body = response.content.decode("utf-8")
-        assert "NAJNOVIJE VESTI" not in body, (
+        assert "<footer" not in body, (
             "HTMX partial (_post_results.html) NE SME renderovati footer "
-            "(NE extend-uje base.html). Ako sadrzi footer heading, 0-query lock "
-            "ne dokazuje nista."
+            "(NE extend-uje base.html). Ako sadrži <footer>, 0-query lock "
+            "ne dokazuje ništa."
         )
 
     # latest_blog_posts footer upit NE sme pucati. BlogIndexView pravi SVOJ Post
-    # upit (lista + count) — ALI taj upit ima `select_related("category")` →
-    # `JOIN blog_category` (views.py:56). Footer `latest_blog_posts` upit je
-    # `Post.published.order_by(...)[:3]` BEZ select_related → NEMA category JOIN.
-    # Izolacija footer-upita = blog_post SELECT BEZ `blog_category` joina.
+    # upit (lista + count) — sa 5 objava i paginate_by=10 taj upit je `LIMIT 5`.
+    # Footer `latest_blog_posts` upit je `Post.published.order_by(...)[:3]` → anchored
+    # `LIMIT 3`. Izolacija footer-upita = blog_post SELECT sa anchored LIMIT 3.
     blog_queries = _blog_post_select_queries(ctx.captured_queries)
     footer_shaped = [q for q in blog_queries if _is_footer_shaped(q["sql"])]
     assert footer_shaped == [], (
