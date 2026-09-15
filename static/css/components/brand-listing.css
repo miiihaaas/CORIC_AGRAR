@@ -269,7 +269,12 @@
   grid-template-columns: 3fr 2fr;
   gap: var(--spacing-scale-6);
   margin-bottom: var(--spacing-scale-8);
-  align-items: start;
+  align-items: center;
+}
+
+.coric-product-row + .coric-product-row {
+  border-top: 1px solid var(--color-neutral-gray-300);
+  padding-top: var(--spacing-scale-8);
 }
 
 @media (max-width: 768px) {

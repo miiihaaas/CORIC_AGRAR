@@ -14,7 +14,7 @@
         <h4 class="coric-product-row__specs-heading">{% translate "Tehnički podaci traktora" %}</h4>
       {% endif %}
       {% for section_group in spec_sections %}
-        <details class="coric-product-row__accordion"{% if forloop.first %} open{% endif %} data-testid="spec-section-{{ section_group.grouper|slugify }}">
+        <details class="coric-product-row__accordion" data-testid="spec-section-{{ section_group.grouper|slugify }}">
           <summary>{{ section_group.grouper }}<span class="coric-product-row__accordion-icon" aria-hidden="true">+</span></summary>
           <table class="coric-product-row__specs-table">
             <tbody>
