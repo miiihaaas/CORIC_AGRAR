@@ -164,8 +164,7 @@ def test_no_pending_migrations():
 
 # AC2: NEMA data seed — blog startuje PRAZAN (count==0 na čistoj test bazi)
 def test_no_data_seed_blog_starts_empty():
-    from apps.blog.models import Category, Post, Tag
+    from apps.blog.models import Post, Tag
 
     assert Post.objects.count() == 0, "Post MORA startovati PRAZAN (NEMA data seed — SM-D4)."
-    assert Category.objects.count() == 0, "Category MORA startovati PRAZAN (SM-D4)."
     assert Tag.objects.count() == 0, "Tag MORA startovati PRAZAN (SM-D4)."

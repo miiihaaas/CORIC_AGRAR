@@ -1,15 +1,16 @@
 """Story 5.2 — Paginacija + overflow safety (AC3) — TEA RED phase.
 
-Pokriva AC3 (SM-D3 / SM-D25 / Task 8.6b):
+Category (i kombinovani `?kategorija=<slug>&page=2` deep-link test — Task 8.6b)
+je UKLONJEN (post-launch odluka) — pripadajući test obrisan s njim.
+
+Pokriva AC3 (SM-D3 / SM-D25):
   - paginate_by=10 (epics.md:875 — TAČNO 10/strani)
   - 25 published → strana 1 = 10, ?page=2 = 10, ?page=3 = 5
   - ?page=999 (overflow) → clamp na poslednju stranu (NE 404 EmptyPage) — Paginator.get_page()
   - ?page=abc (invalid) → strana 1 (graceful)
   - is_paginated=True kad >10 objava
-  - KOMBINOVANI deep-link (Task 8.6b): non-HTMX ?kategorija=<slug>&page=2 → full page,
-    dropdown pre-selektovan, strana-2 TE kategorije, filter sačuvan kroz paginaciju
 
-⚠️ GUARD: apps.blog importi UNUTAR funkcija (REUSE conftest make_post/make_category).
+⚠️ GUARD: apps.blog importi UNUTAR funkcija (REUSE conftest make_post).
 
 Refs:
 - 5-2-...-filter.md AC3 + Task 8.4 + 8.6b + SM-D3/SM-D25
@@ -24,7 +25,7 @@ from django.utils.translation import activate
 pytestmark = pytest.mark.django_db
 
 
-def _seed(make_post, n, *, category=None, title_prefix="Objava"):
+def _seed(make_post, n, *, title_prefix="Objava"):
     now = timezone.now()
     posts = []
     for i in range(n):
@@ -34,7 +35,6 @@ def _seed(make_post, n, *, category=None, title_prefix="Objava"):
                 status="published",
                 # raspoređeni datumi → deterministični ordering za page-slice provere
                 published_at=now - timezone.timedelta(hours=i + 1),
-                category=category,
             )
         )
     return posts
@@ -123,58 +123,4 @@ def test_no_pagination_when_under_threshold(client, make_post):
     assert response.status_code == 200
     assert response.context.get("is_paginated") is False, (
         "is_paginated MORA biti False kad ≤10 objava (nema paginacije)."
-    )
-
-
-# AC3 + AC5 / Task 8.6b: KOMBINOVANI deep-link ?kategorija=<slug>&page=2 (non-HTMX)
-def test_combined_category_and_page_deeplink(client, make_post, make_category):
-    """non-HTMX GET /sr/blog/?kategorija=<slug>&page=2 (kategorija sa 11+ objava):
-      - full page render (200, blog/blog_index.html)
-      - dropdown PRE-SELEKTOVAN na <slug> (active_filters.kategorija == slug)
-      - prikazane SAMO objave TE kategorije sa STRANE 2 (NE druge kategorije, NE strana 1)
-      - filter sačuvan kroz paginaciju (querystring drži kategorija na page linkovima)
-    """
-    activate("sr")
-    cat = make_category(name="Ratarstvo")  # slug → "ratarstvo"
-    other = make_category(name="Stočarstvo")
-
-    # 14 objava u target kategoriji (>10 → 2 strane), + 5 u drugoj (NE smeju procuriti)
-    cat_posts = _seed(make_post, 14, category=cat, title_prefix="Ratarstvo priča")
-    _seed(make_post, 5, category=other, title_prefix="Stočarstvo priča")
-
-    response = client.get(
-        f"/sr/blog/?kategorija={cat.slug}&page=2", HTTP_HOST="localhost"
-    )
-
-    assert response.status_code == 200
-    templates = {t.name for t in response.templates if t.name}
-    assert "blog/blog_index.html" in templates, (
-        "Kombinovani deep-link (non-HTMX) MORA renderovati full page blog/blog_index.html."
-    )
-
-    # dropdown pre-selektovan
-    active = response.context.get("active_filters")
-    assert active is not None and active.get("kategorija") == cat.slug, (
-        f"active_filters.kategorija MORA biti pre-selektovan na {cat.slug!r} "
-        f"(dropdown restore), dobili {active!r}."
-    )
-
-    # strana 2 sadrži SAMO objave target kategorije (14 → strana 2 = 4 objave)
-    page_posts = list(response.context["posts"])
-    cat_pks = {p.pk for p in cat_posts}
-    for p in page_posts:
-        assert p.pk in cat_pks, (
-            f"Strana 2 sme sadržati SAMO objave kategorije {cat.slug!r} "
-            f"(pk={p.pk} nije u target kategoriji — filter ne sme procuriti druge)."
-        )
-    assert len(page_posts) == 4, (
-        f"Strana 2 od 14 objava (paginate_by=10) MORA imati 4 objave, "
-        f"dobili {len(page_posts)}."
-    )
-
-    # filter sačuvan kroz paginaciju — page linkovi nose kategorija param
-    html = response.content.decode("utf-8")
-    assert f"kategorija={cat.slug}" in html, (
-        "Paginacijski linkovi MORAJU sačuvati ?kategorija kroz stranice "
-        "({% querystring %} drži kategorija + page)."
     )

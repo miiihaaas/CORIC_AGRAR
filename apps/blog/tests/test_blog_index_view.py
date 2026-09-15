@@ -13,7 +13,7 @@ granica (SM-D2 / Gotcha BL2-1):
 
 ⚠️ GUARD IMPORTS (collection-safety): apps.blog importi UNUTAR funkcija/fixtura,
 NIKAD module-top-level — missing view/url daje per-test FAIL (RED), NE collection
-abort. REUSE 5-1 conftest factory helpers (make_post / make_category).
+abort. REUSE 5-1 conftest factory helper (make_post).
 
 RED phase: views.py / urls.py / templates NE postoje → 200/template asercije
 FAIL (NoReverseMatch za blog:index, TemplateDoesNotExist).

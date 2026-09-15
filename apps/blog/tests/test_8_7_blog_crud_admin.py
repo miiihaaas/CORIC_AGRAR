@@ -35,7 +35,7 @@ false-greens:
       - `test_ac1_changelist_search_no_field_error`, `test_ac1_post_add_view_200_superuser`,
         `test_ac1_change_view_renders_per_locale_fields`, `test_ac1_admin_system_checks_clean`,
         `test_ac5_draft_save_with_no_content_passes` (gate-doesn't-fire boundary),
-        `test_ac7_tag_and_category_changelist_and_add_200`,
+        `test_ac7_tag_changelist_and_add_200`,
         `test_ac8_post_add_view_renders_inline_200`, `test_ac12_post_changelist_200_superuser`.
 None assert a NEW capability while green — every NEW-capability assertion (PostAdminForm,
 constants, filter_horizontal, WYSIWYG widget, publish-gate persistence, sanitized render,
@@ -56,10 +56,14 @@ XSS ASSERT (G-18/SM-D7): scope to the rendered `coric-blog-detail__body` fragmen
 test STRIP (`"<script" not in body`) NOT escape (`"&lt;script&gt;" not in body`);
 NEVER `"alert(1) not in html"` (7-5 lesson — a correct GREEN render keeps inner text).
 
+Category je UKLONJEN (post-launch odluka, posle ove 8.7 story) — svi
+Category-specific testovi/asercije (CategoryAdmin, publish-gate kategorija
+requirement) obrisani/ažurirani u skladu s tim.
+
 Refs: 8-7-...md (AC1-AC12, SM-D1..D12, G-1..G-19) + interface contract +
 apps/products/tests/test_8_6_product_crud_admin.py (closest precedent) +
 apps/core/tests/test_legal_html.py (sanitizer precedent) + apps/blog/tests/conftest.py
-(make_post/make_category/make_tag + superuser/author_user fixtures).
+(make_post/make_tag + superuser/author_user fixtures).
 """
 
 from __future__ import annotations
@@ -80,7 +84,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def editor(django_user_model):
     """Editor = is_staff + member of the `Editor` group (8.2 post_migrate created it;
-    group already carries blog post/category/tag CRUD via EDITOR_CONTENT_MODELS — SM-D11)."""
+    group already carries blog post/tag CRUD via EDITOR_CONTENT_MODELS — SM-D11)."""
     from django.contrib.auth.models import Group
 
     user = django_user_model.objects.create_user(
@@ -157,12 +161,6 @@ def _post_admin():
     from apps.blog.models import Post
 
     return admin.site._registry[Post]
-
-
-def _category_admin():
-    from apps.blog.models import Category
-
-    return admin.site._registry[Category]
 
 
 def _tag_admin():
@@ -244,27 +242,24 @@ def _body_fragment(html, css_class="coric-blog-detail__body"):
 # ══════════════════════════════════════════════════════════════════════════════
 # AC1 — TranslationAdmin multi-locale za Post / Category / Tag
 # ══════════════════════════════════════════════════════════════════════════════
-# AC-1: PostAdmin/CategoryAdmin/TagAdmin su TranslationAdmin instance (multi-locale tabovi)
-# (INVARIANT-LOCK — Post/Category/Tag already TranslationAdmin in the 5.1 stub)
+# AC-1: PostAdmin/TagAdmin su TranslationAdmin instance (multi-locale tabovi)
+# (INVARIANT-LOCK — Post/Tag already TranslationAdmin in the 5.1 stub)
 def test_ac1_postadmin_is_translationadmin():
     from modeltranslation.admin import TranslationAdmin
 
-    for model_admin in (_post_admin(), _category_admin(), _tag_admin()):
+    for model_admin in (_post_admin(), _tag_admin()):
         assert isinstance(model_admin, TranslationAdmin), (
             f"{type(model_admin).__name__} MORA biti TranslationAdmin instanca "
             f"(modeltranslation auto sr/hu/en tabovi — AC1)."
         )
 
 
-# AC-1: search_fields realna kolona title_sr (Post) / name_sr (Category/Tag) — NE virtuelni (G-1)
+# AC-1: search_fields realna kolona title_sr (Post) / name_sr (Tag) — NE virtuelni (G-1)
 # (INVARIANT-LOCK — 5.1 stub already uses sr-suffixed columns)
 def test_ac1_search_fields_uses_title_sr():
     assert tuple(_post_admin().search_fields) == ("title_sr",), (
         "PostAdmin.search_fields MORA biti ('title_sr',) — realna DB kolona, NE virtuelni "
         f"`title` (FieldError na changelist search — G-1); dobio {_post_admin().search_fields!r}."
-    )
-    assert tuple(_category_admin().search_fields) == ("name_sr",), (
-        "CategoryAdmin.search_fields MORA biti ('name_sr',) — realna kolona (G-1)."
     )
     assert tuple(_tag_admin().search_fields) == ("name_sr",), (
         "TagAdmin.search_fields MORA biti ('name_sr',) — realna kolona (G-1)."
@@ -410,13 +405,11 @@ def test_ac3_post_detail_uses_sanitized_filter_on_body():
     )
 
 
-def _published_post_with_body(make_post, make_category, author_user, body_sr):
+def _published_post_with_body(make_post, author_user, body_sr):
     from django.utils import timezone
 
-    cat = make_category()
     return make_post(
         author=author_user,
-        category=cat,
         status="published",
         published_at=timezone.now(),
         body_sr=body_sr,
@@ -424,11 +417,9 @@ def _published_post_with_body(make_post, make_category, author_user, body_sr):
 
 
 # AC-3 (security): <script> in body STRIPPED on render (scope to body fragment — G-18/SM-D7)
-def test_ac3_script_payload_stripped_in_rendered_body(
-    client, make_post, make_category, author_user
-):
+def test_ac3_script_payload_stripped_in_rendered_body(client, make_post, author_user):
     post = _published_post_with_body(
-        make_post, make_category, author_user,
+        make_post, author_user,
         "<p>Bezbedan tekst.</p><script>alert(1)</script>",
     )
     html = client.get(post.get_absolute_url(), HTTP_HOST="localhost").content.decode()
@@ -442,7 +433,7 @@ def test_ac3_script_payload_stripped_in_rendered_body(
 
 # AC-3 (security): <img onerror>, javascript: href, onclick, <iframe> all neutralized in body
 def test_ac3_adversarial_vectors_stripped_in_rendered_body(
-    client, make_post, make_category, author_user
+    client, make_post, author_user
 ):
     payload = (
         '<img src=x onerror="alert(1)">'
@@ -450,7 +441,7 @@ def test_ac3_adversarial_vectors_stripped_in_rendered_body(
         "<iframe src='https://evil.test'></iframe>"
         "<p>kraj</p>"
     )
-    post = _published_post_with_body(make_post, make_category, author_user, payload)
+    post = _published_post_with_body(make_post, author_user, payload)
     html = client.get(post.get_absolute_url(), HTTP_HOST="localhost").content.decode()
     body = _body_fragment(html)
     assert "<img" not in body, "<img onerror> (van allowlist-a) MORA biti STRIP-ovan (AC3)."
@@ -463,13 +454,13 @@ def test_ac3_adversarial_vectors_stripped_in_rendered_body(
 
 # AC-3: allowed rich structure (h2/ul/li/strong/a) survives + <a> gets forced rel (G-7)
 def test_ac3_allowed_rich_structure_survives_with_forced_rel(
-    client, make_post, make_category, author_user
+    client, make_post, author_user
 ):
     body = (
         "<h2>Naslov</h2><ul><li>stavka</li></ul><strong>jako</strong>"
         '<p>Vidi <a href="https://x.test">link</a>.</p>'
     )
-    post = _published_post_with_body(make_post, make_category, author_user, body)
+    post = _published_post_with_body(make_post, author_user, body)
     html = client.get(post.get_absolute_url(), HTTP_HOST="localhost").content.decode()
     frag = _body_fragment(html)
     for tag in ("<h2", "<ul", "<li", "<strong", "<a "):
@@ -615,17 +606,15 @@ def _post_publish(client, post, *, with_image=None):
 
 # AC-5: publish with EMPTY body_sr → graceful 200, stays draft, error message (NOT 500)
 def test_ac5_publish_without_body_reverts_to_draft(
-    client, superuser, make_post, make_category, author_user, valid_jpeg
+    client, superuser, make_post, author_user, valid_jpeg
 ):
     from apps.blog.models import Post
 
     client.force_login(superuser)
-    cat = make_category()
-    post = _draft_post(make_post, author_user, category=cat, body_sr="")
+    post = _draft_post(make_post, author_user, body_sr="")
     post.main_image.save("g.jpg", valid_jpeg, save=True)
     url, data = _post_publish(client, post)
     data["body_sr"] = ""  # missing → gate must block publish
-    data["category"] = str(cat.pk)
     resp = client.post(url, data, follow=True)
     assert resp.status_code == 200, (
         f"Publish bez body_sr MORA biti graceful 200 (NE 500 iz gate raise — G-6/G-7); "
@@ -645,47 +634,17 @@ def test_ac5_publish_without_body_reverts_to_draft(
     )
 
 
-# AC-5: publish with NO category → graceful 200, stays draft (OQ-4 default: category required)
-def test_ac5_publish_without_category_reverts_to_draft(
-    client, superuser, make_post, author_user, valid_jpeg
-):
-    from apps.blog.models import Post
-
-    client.force_login(superuser)
-    post = _draft_post(make_post, author_user, body_sr="<p>Telo objave.</p>")
-    post.main_image.save("g.jpg", valid_jpeg, save=True)
-    url, data = _post_publish(client, post)
-    data["body_sr"] = "<p>Telo objave.</p>"
-    data["category"] = ""  # missing category → gate blocks (OQ-4 default)
-    resp = client.post(url, data, follow=True)
-    assert resp.status_code == 200, (
-        f"Publish bez kategorije MORA biti graceful 200 (NE 500 — G-7); dobio {resp.status_code}."
-    )
-    post.refresh_from_db()
-    assert post.status == Post.Status.DRAFT, (
-        "Objava MORA OSTATI draft kad fali kategorija (revert — AC5/OQ-4)."
-    )
-    # Gate message names the missing requirement (distinguishes real gate from stub — AC5).
-    msgs = " ".join(str(m) for m in resp.context["messages"]).lower()
-    assert "kategorij" in msgs or "objavljivanje" in msgs, (
-        f"Publish-gate MORA emitovati messages.error koja navodi nedostajuću kategoriju "
-        f"(AC5/OQ-4); poruke: {msgs!r}."
-    )
-
-
 # AC-5: publish with NO main_image → graceful 200, stays draft, error names the missing image
 def test_ac5_publish_without_main_image_reverts_to_draft(
-    client, superuser, make_post, make_category, author_user
+    client, superuser, make_post, author_user
 ):
     from apps.blog.models import Post
 
     client.force_login(superuser)
-    cat = make_category()
-    # Draft sa body_sr + category ALI BEZ main_image (sliku ne snimamo) → gate blokira objavu.
-    post = _draft_post(make_post, author_user, category=cat, body_sr="<p>Telo objave.</p>")
+    # Draft sa body_sr ALI BEZ main_image (sliku ne snimamo) → gate blokira objavu.
+    post = _draft_post(make_post, author_user, body_sr="<p>Telo objave.</p>")
     url, data = _post_publish(client, post)
     data["body_sr"] = "<p>Telo objave.</p>"
-    data["category"] = str(cat.pk)
     resp = client.post(url, data, follow=True)
     assert resp.status_code == 200, (
         f"Publish bez main_image MORA biti graceful 200 (NE 500 iz gate raise — G-6/G-7); "
@@ -703,29 +662,27 @@ def test_ac5_publish_without_main_image_reverts_to_draft(
     )
 
 
-# AC-5 (positive): publish with title_sr + body_sr + main_image + category → PUBLISHED
+# AC-5 (positive): publish with title_sr + body_sr + main_image → PUBLISHED
 def test_ac5_complete_publish_succeeds(
-    client, superuser, make_post, make_category, author_user, valid_jpeg
+    client, superuser, make_post, author_user, valid_jpeg
 ):
     from apps.blog.models import Post
 
     client.force_login(superuser)
-    cat = make_category()
-    post = _draft_post(make_post, author_user, category=cat, body_sr="<p>Telo.</p>")
+    post = _draft_post(make_post, author_user, body_sr="<p>Telo.</p>")
     post.main_image.save("g.jpg", valid_jpeg, save=True)
     url, data = _post_publish(client, post)
     data["body_sr"] = "<p>Telo.</p>"
-    data["category"] = str(cat.pk)
     resp = client.post(url, data, follow=True)
     assert resp.status_code == 200, f"Kompletan publish MORA biti 200; dobio {resp.status_code}."
     post.refresh_from_db()
     assert post.status == Post.Status.PUBLISHED, (
-        f"Objava sa title_sr + body_sr + main_image + category MORA biti objavljena "
+        f"Objava sa title_sr + body_sr + main_image MORA biti objavljena "
         f"(gate prolazi — AC5); status={post.status!r}."
     )
 
 
-# AC-5 (boundary): DRAFT save with empty body/no image/no category → PASSES (gate fires only on publish)
+# AC-5 (boundary): DRAFT save with empty body/no image → PASSES (gate fires only on publish)
 def test_ac5_draft_save_with_no_content_passes(client, superuser, make_post, author_user):
     from apps.blog.models import Post
 
@@ -739,7 +696,7 @@ def test_ac5_draft_save_with_no_content_passes(client, superuser, make_post, aut
     _seo_inline_mgmt(data)
     resp = client.post(url, data, follow=True)
     assert resp.status_code == 200, (
-        f"Draft save bez body/slike/kategorije MORA biti 200 (gate se NE okida na draft — AC5); "
+        f"Draft save bez body/slike MORA biti 200 (gate se NE okida na draft — AC5); "
         f"dobio {resp.status_code}."
     )
     post.refresh_from_db()
@@ -751,21 +708,19 @@ def test_ac5_draft_save_with_no_content_passes(client, superuser, make_post, aut
 # ══════════════════════════════════════════════════════════════════════════════
 # AC-6: publishing with published_at=None auto-sets it (and is timezone-aware)
 def test_ac6_published_at_auto_set_on_publish(
-    client, superuser, make_post, make_category, author_user, valid_jpeg
+    client, superuser, make_post, author_user, valid_jpeg
 ):
     from django.utils import timezone
 
     from apps.blog.models import Post
 
     client.force_login(superuser)
-    cat = make_category()
     post = _draft_post(
-        make_post, author_user, category=cat, body_sr="<p>Telo.</p>", published_at=None
+        make_post, author_user, body_sr="<p>Telo.</p>", published_at=None
     )
     post.main_image.save("g.jpg", valid_jpeg, save=True)
     url, data = _post_publish(client, post)
     data["body_sr"] = "<p>Telo.</p>"
-    data["category"] = str(cat.pk)
     data["published_at_0"] = ""  # admin split date/time widget — leave empty
     data["published_at_1"] = ""
     resp = client.post(url, data, follow=True)
@@ -782,7 +737,7 @@ def test_ac6_published_at_auto_set_on_publish(
 
 # AC-6: manually set published_at is NOT overwritten on publish (zakazana objava — SM-D12)
 def test_ac6_existing_published_at_not_overwritten(
-    client, superuser, make_post, make_category, author_user, valid_jpeg
+    client, superuser, make_post, author_user, valid_jpeg
 ):
     from datetime import timedelta
 
@@ -791,15 +746,13 @@ def test_ac6_existing_published_at_not_overwritten(
     from apps.blog.models import Post
 
     client.force_login(superuser)
-    cat = make_category()
     future = (timezone.now() + timedelta(days=30)).replace(microsecond=0)
     post = _draft_post(
-        make_post, author_user, category=cat, body_sr="<p>Telo.</p>", published_at=future
+        make_post, author_user, body_sr="<p>Telo.</p>", published_at=future
     )
     post.main_image.save("g.jpg", valid_jpeg, save=True)
     url, data = _post_publish(client, post)
     data["body_sr"] = "<p>Telo.</p>"
-    data["category"] = str(cat.pk)
     resp = client.post(url, data, follow=True)
     assert resp.status_code == 200
     post.refresh_from_db()
@@ -828,26 +781,21 @@ def test_ac7_tags_filter_horizontal():
     )
 
 
-# AC-7: TagAdmin + CategoryAdmin independently registered (changelist/add → 200)
-def test_ac7_tag_and_category_changelist_and_add_200(client, superuser, make_tag, make_category):
+# AC-7: TagAdmin independently registered (changelist/add → 200)
+def test_ac7_tag_changelist_and_add_200(client, superuser, make_tag):
     client.force_login(superuser)
     make_tag()
-    make_category()
-    for model in ("tag", "category"):
-        cl = client.get(reverse(f"admin:blog_{model}_changelist"))
-        assert cl.status_code == 200, f"blog_{model}_changelist MORA biti 200 (AC7)."
-        add = client.get(reverse(f"admin:blog_{model}_add"))
-        assert add.status_code == 200, f"blog_{model}_add MORA biti 200 (AC7)."
+    cl = client.get(reverse("admin:blog_tag_changelist"))
+    assert cl.status_code == 200, "blog_tag_changelist MORA biti 200 (AC7)."
+    add = client.get(reverse("admin:blog_tag_add"))
+    assert add.status_code == 200, "blog_tag_add MORA biti 200 (AC7)."
 
 
-# AC-7: CategoryAdmin + TagAdmin have prepopulated slug from name (CRUD usability)
-def test_ac7_category_tag_prepopulated_slug():
+# AC-7: TagAdmin has prepopulated slug from name (CRUD usability)
+def test_ac7_tag_prepopulated_slug():
     # TranslationAdmin AUTO-rewrite-uje prepopulated source `name` → `name_sr` (default-lang
     # realna kolona) pri registraciji — slug se prepopulira iz sr naziva u admin JS (G-14).
     # Deklaracija je `{"slug": ("name",)}`; runtime vrednost je `{"slug": ("name_sr",)}`.
-    assert _category_admin().prepopulated_fields == {"slug": ("name_sr",)}, (
-        "CategoryAdmin MORA imati prepopulated slug iz name (TranslationAdmin → name_sr; AC7/G-14)."
-    )
     assert _tag_admin().prepopulated_fields == {"slug": ("name_sr",)}, (
         "TagAdmin MORA imati prepopulated slug iz name (TranslationAdmin → name_sr; AC7/G-14)."
     )

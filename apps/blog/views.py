@@ -1,18 +1,18 @@
 """Blog views — Story 5.2 BlogIndexView + Story 5.3 enriched detail & archives.
 
+Category je UKLONJEN (post-launch odluka) — blog objave se više ne kategorišu;
+jedina preostala taksonomija je Tag (arhiva + detail linkovi).
+
 Story 5.2 — javna blog INDEX strana `/sr/blog/` (`BlogIndexView(ListView)`):
 listira OBJAVLJENE „Priče sa polja" kroz `Post.published` manager (NIKAD
 `Post.objects` — draft/future NEVIDLJIV javno; SM-D2 / Gotcha BL2-1), kao kartice
-(main_image/datum/title/perex/„SAZNAJ VIŠE"), paginacija 10/strani, HTMX category
-filter `?kategorija=<slug>` (request.htmx branching + OOB aria-live guard +
-push-url — mirror 2-8/2-9), Paginator.get_page() overflow safety, N+1 lock
-`select_related("category")` (BEZ tags prefetch — IMP-1).
+(main_image/datum/title/perex/„SAZNAJ VIŠE"), paginacija 10/strani,
+Paginator.get_page() overflow safety.
 
-`BlogPostDetailView(DetailView)` je Story 5.3 OBOGAĆEN detail (slične objave,
-social share, kategorija/tag linkovi, meta) nad 5-2 placeholder-om. Registruje
-`blog:detail` URL tako da 5-1 `Post.get_absolute_url()` razrešava i kartice
-linkuju ispravno. Story 5.3 dodaje i kategorija/tag arhive (`_BlogArchiveListView`
-baza → `BlogCategoryView` / `BlogTagView`).
+`BlogPostDetailView(DetailView)` je Story 5.3 OBOGAĆEN detail (social share, tag
+linkovi, meta) nad 5-2 placeholder-om. Registruje `blog:detail` URL tako da 5-1
+`Post.get_absolute_url()` razrešava i kartice linkuju ispravno. `BlogTagView` je
+tag arhiva (mirror 2-8/2-9 request.htmx branching + OOB aria-live guard).
 
 NEMA model promene / NEMA migracije — 5-2 čist view/template/URL sloj nad 5-1 šemom.
 Pattern REUSE: mirror `apps/products/views.py` TractorListView (2-8) /
@@ -26,20 +26,19 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import DetailView, ListView
 
-from apps.blog.models import Category, Post, Tag
+from apps.blog.models import Post, Tag
 
 _POSTS_PER_PAGE = 10  # AC3 — epics.md:875 (SM-D3)
-_SIMILAR_POSTS_LIMIT = 4  # epics.md:889 (2-4); mirror 2-7 _SIMILAR_PRODUCTS_LIMIT
 
 
 @method_decorator(vary_on_headers("HX-Request"), name="dispatch")
 class BlogIndexView(ListView):
-    """Blog index strana sa HTMX category filterom — Story 5.2.
+    """Blog index strana — Story 5.2.
 
     Mirror 2-8/2-9 single-view request.htmx branching: full page (non-HTMX) vs
     results partial (HTMX). queryset bazira na `Post.published` (draft-not-leaked
-    granica — SM-D2). `select_related("category")` N+1 lock (AC2); BEZ
-    `prefetch_related("tags")` (kartica ne renderuje tagove — IMP-1).
+    granica — SM-D2). BEZ `prefetch_related("tags")` (kartica ne renderuje
+    tagove — IMP-1).
     """
 
     model = Post
@@ -53,11 +52,7 @@ class BlogIndexView(ListView):
 
     def get_queryset(self):
         # SM-D2 / Gotcha BL2-1: NIKAD Post.objects (draft/future bi procurili javno).
-        qs = Post.published.select_related("category")
-        kategorija = self.request.GET.get("kategorija", "").strip()
-        if kategorija:
-            qs = qs.filter(category__slug=kategorija)
-        return qs  # default ordering iz Meta (najnovije prvo)
+        return Post.published.all()  # default ordering iz Meta (najnovije prvo)
 
     def paginate_queryset(self, queryset, page_size):
         # SM-D25 overflow safety — Paginator.get_page() clamp invalid/out-of-range
@@ -75,17 +70,6 @@ class BlogIndexView(ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-
-        ctx["categories_for_dropdown"] = Category.objects.order_by("name")
-
-        active_filters = {"kategorija": self.request.GET.get("kategorija", "")}
-        # IMP-3 normalizacija: invalid kategorija slug → reset na "" za dropdown
-        # koherenciju (queryset i dalje vraća 0 rezultata → empty state handluje).
-        valid_slugs = {c.slug for c in ctx["categories_for_dropdown"]}
-        if active_filters["kategorija"] and active_filters["kategorija"] not in valid_slugs:
-            active_filters["kategorija"] = ""
-        ctx["active_filters"] = active_filters
-
         ctx["count"] = ctx["paginator"].count  # OOB aria-live announcement
         return ctx
 
@@ -98,9 +82,9 @@ class BlogPostDetailView(DetailView):
     „Slične objave" + social share. Queryset bazira na `Post.published`
     (draft/future detail → 404). `context_object_name="post"` (IMP-5).
 
-    get_queryset() select_related("category","author") + prefetch_related("tags")
-    (autor meta + tag-link render N+1 lock — SM-D2). get_context_data postavlja
-    `similar_posts` (SM-D8) + `share_url` (IMP-2).
+    get_queryset() select_related("author") + prefetch_related("tags") (autor
+    meta + tag-link render N+1 lock — SM-D2). get_context_data postavlja
+    `share_url` (IMP-2).
     """
 
     model = Post
@@ -109,49 +93,44 @@ class BlogPostDetailView(DetailView):
 
     def get_queryset(self):
         # SM-D2 / IMP-5: Post.published → draft/future detail → 404.
-        # select_related("category","author") (meta render N+1 lock) +
-        # prefetch_related("tags") (tag-link render N+1 lock).
-        return Post.published.select_related("category", "author").prefetch_related(
-            "tags"
-        )
+        # select_related("author") (meta render N+1 lock) + prefetch_related("tags")
+        # (tag-link render N+1 lock).
+        return Post.published.select_related("author").prefetch_related("tags")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        post = self.object
-        # SM-D8: „Slične objave" — published-only (draft-not-leaked), ISTA kategorija,
-        # exclude-self, bounded. post.category None (SET_NULL) → prazna (NE crash).
-        if post.category_id:
-            similar = (
-                Post.published.filter(category=post.category)
-                .exclude(pk=post.pk)
-                .select_related("category")[:_SIMILAR_POSTS_LIMIT]
-            )
-            ctx["similar_posts"] = list(similar)
-        else:
-            ctx["similar_posts"] = []
         # IMP-2: apsolutni share URL izračunat u view-u (template {{ }} ne može
         # metodi proslediti argument).
-        ctx["share_url"] = self.request.build_absolute_uri(post.get_absolute_url())
+        ctx["share_url"] = self.request.build_absolute_uri(
+            self.object.get_absolute_url()
+        )
         return ctx
 
 
-class _BlogArchiveListView(ListView):
-    """Zajednička baza za kategorija/tag arhive — mirror BlogIndexView (SM-D4/SM-D9).
+@method_decorator(vary_on_headers("HX-Request"), name="dispatch")
+class BlogTagView(ListView):
+    """Tag arhiva `/sr/blog/tag/<slug>/` — Story 5.3 (AC4/SM-D4), mirror BlogIndexView.
 
-    Paginate_by=10 + Paginator.get_page() overflow clamp + HTMX template branching
-    + @vary_on_headers (per-podklasa). Podklase definišu `archive_kind`, resolve
-    `archive_object` u setup() (404 bad slug) i `get_queryset()` (Post.published).
+    Paginate_by=10 + Paginator.get_page() overflow clamp + HTMX template branching.
+    404 na nepostojeći tag slug (setup()).
     """
 
     model = Post
     context_object_name = "posts"
     paginate_by = _POSTS_PER_PAGE
-    archive_kind = ""
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.archive_object = get_object_or_404(Tag, slug=kwargs["slug"])
 
     def get_template_names(self):
         if getattr(self.request, "htmx", False):
             return ["blog/partials/_post_results.html"]
         return ["blog/blog_archive.html"]
+
+    def get_queryset(self):
+        # IMP-6a — .distinct() kanonski M2M join-dup guard (Gotcha BL3-4).
+        return Post.published.filter(tags__slug=self.kwargs["slug"]).distinct()
 
     def paginate_queryset(self, queryset, page_size):
         # SM-D9 — REUSE BlogIndexView Paginator.get_page() overflow clamp.
@@ -169,45 +148,9 @@ class _BlogArchiveListView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["archive_object"] = self.archive_object
-        ctx["archive_kind"] = self.archive_kind
         ctx["count"] = ctx["paginator"].count  # OOB aria-live announcement
-        # IMP-1: arhive REUSE _post_results.html → _blog_empty_state.html grana na
-        # {% if active_filters.kategorija %} → arhiva-prikladna „Nema objava…" + „prikaži
-        # sve" → blog:index. Bez ovoga empty render-uje pogrešnu generičku home CTA.
-        ctx["active_filters"] = {"kategorija": self.kwargs["slug"]}
+        # IMP-1: arhiva REUSE _post_results.html → _blog_empty_state.html grana na
+        # {% if is_archive %} → arhiva-prikladna „Nema objava…" + „prikaži sve" →
+        # blog:index. Bez ovoga empty render-uje pogrešnu generičku home CTA.
+        ctx["is_archive"] = True
         return ctx
-
-
-@method_decorator(vary_on_headers("HX-Request"), name="dispatch")
-class BlogCategoryView(_BlogArchiveListView):
-    """Kategorija arhiva `/sr/blog/kategorija/<slug>/` — Story 5.3 (AC3/SM-D4)."""
-
-    archive_kind = "category"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.archive_object = get_object_or_404(Category, slug=kwargs["slug"])
-
-    def get_queryset(self):
-        return Post.published.select_related("category").filter(
-            category__slug=self.kwargs["slug"]
-        )
-
-
-@method_decorator(vary_on_headers("HX-Request"), name="dispatch")
-class BlogTagView(_BlogArchiveListView):
-    """Tag arhiva `/sr/blog/tag/<slug>/` — Story 5.3 (AC4/SM-D4)."""
-
-    archive_kind = "tag"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.archive_object = get_object_or_404(Tag, slug=kwargs["slug"])
-
-    def get_queryset(self):
-        # IMP-6a — .distinct() kanonski M2M join-dup guard (Gotcha BL3-4).
-        return (
-            Post.published.select_related("category")
-            .filter(tags__slug=self.kwargs["slug"])
-            .distinct()
-        )

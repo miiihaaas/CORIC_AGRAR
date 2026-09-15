@@ -1,15 +1,15 @@
-"""Story 5.2 — Empty state DVE grane (AC7) — TEA RED phase.
+"""Story 5.2 — Empty state (AC7) — TEA RED phase.
 
-Pokriva AC7 (SM-D9 / IMP-4): `_blog_empty_state.html` ima `{% if active_filters.kategorija %}`:
-  - prazan-blog grana (active_filters.kategorija prazan): „Uskoro nove priče sa polja"
-    + „POVRATAK NA POČETNU" → pages:home
-  - filter-0 grana (active_filters.kategorija truthy, validna kategorija sa 0 objava):
-    „Nema objava u ovoj kategoriji." + „prikaži sve" → blog:index
-  - DRAFT-only blog (svi draft, bez filtera) → prazan-blog grana
-  - invalid slug → normalizovan na "" → prazan-blog grana
-  - NEMA paginacije u obe grane
+Category filter je UKLONJEN (post-launch odluka) — „filter-0 grana" (validna
+kategorija sa 0 objava) testovi obrisani s njim. Ta grana i dalje postoji u
+`_blog_empty_state.html` (`{% if is_archive %}`), sad isključivo za tag arhivu
+(vidi test_blog_archives.py) — BlogIndexView više nema nikakav filter.
 
-⚠️ GUARD: apps.blog importi UNUTAR funkcija. REUSE conftest make_post/make_category.
+Pokriva AC7 (SM-D9): prazan-blog grana (0 published na indeksu): „Uskoro nove
+priče sa polja" + „POVRATAK NA POČETNU" → pages:home; DRAFT-only blog → ista
+grana; NEMA paginacije.
+
+⚠️ GUARD: apps.blog importi UNUTAR funkcija. REUSE conftest make_post.
 
 Refs:
 - 5-2-...-filter.md AC7 + Task 8.8 + SM-D9 + IMP-4/OQ-5
@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import pytest
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import activate, override
 
 pytestmark = pytest.mark.django_db
@@ -70,62 +69,6 @@ def test_draft_only_blog_shows_uskoro(client, make_post):
     assert "Uskoro nove priče sa polja" in html, (
         "DRAFT-only blog (Post.published prazan, active_filters.kategorija prazan) "
         "→ prazan-blog grana 'Uskoro nove priče sa polja'."
-    )
-
-
-# AC7 / IMP-4: validna kategorija sa 0 objava → filter-0 grana
-def test_valid_category_zero_posts_shows_filter_empty(client, make_post, make_category):
-    activate("sr")
-    # Kategorija postoji, ali nema published objava u njoj
-    prazna = make_category(name="Stočarstvo")
-    # objava postoji ali u DRUGOJ kategoriji (blog NIJE prazan)
-    druga = make_category(name="Ratarstvo")
-    make_post(
-        title="Ratarska priča",
-        status="published",
-        published_at=timezone.now() - timezone.timedelta(days=1),
-        category=druga,
-    )
-
-    response = client.get(
-        f"/sr/blog/?kategorija={prazna.slug}", HTTP_HOST="localhost"
-    )
-
-    assert response.status_code == 200
-    html = response.content.decode("utf-8")
-    assert "Nema objava u ovoj kategoriji." in html, (
-        "Validna kategorija sa 0 objava → filter-0 grana "
-        "'Nema objava u ovoj kategoriji.' (IMP-4)."
-    )
-    # „prikaži sve" link na blog:index (bez ?kategorija)
-    with override("sr"):
-        index_url = reverse("blog:index")
-    assert f'href="{index_url}"' in html, (
-        f"filter-0 grana MORA imati 'prikaži sve' link na blog:index ({index_url})."
-    )
-
-
-# AC7: filter-0 grana NE prikazuje prazan-blog poruku (semantika razdvojena)
-def test_filter_empty_not_showing_uskoro(client, make_post, make_category):
-    activate("sr")
-    prazna = make_category(name="Stočarstvo")
-    druga = make_category(name="Ratarstvo")
-    make_post(
-        title="Ratarska priča",
-        status="published",
-        published_at=timezone.now() - timezone.timedelta(days=1),
-        category=druga,
-    )
-
-    response = client.get(
-        f"/sr/blog/?kategorija={prazna.slug}", HTTP_HOST="localhost"
-    )
-
-    assert response.status_code == 200
-    html = response.content.decode("utf-8")
-    assert "Uskoro nove priče sa polja" not in html, (
-        "filter-0 grana NE SME prikazati 'Uskoro nove priče sa polja' "
-        "(zavaravajuce - objave POSTOJE, samo ne u toj kategoriji; IMP-4)."
     )
 
 

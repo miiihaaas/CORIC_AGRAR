@@ -26,7 +26,7 @@ Pokrenuti sa:  just test apps/blog/tests/test_context_processors.py
 Refs:
 - 5-4-...-kolona.md AC1-AC4/AC7/AC8 + SM-D1/SM-D2/SM-D3 + Task 5.1-5.5
 - 5-4-interface-contract.md § latest_blog_posts
-- apps/blog/tests/conftest.py (make_post / make_category factory helpers — REUSE)
+- apps/blog/tests/conftest.py (make_post factory helper — REUSE)
 """
 
 from __future__ import annotations

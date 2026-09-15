@@ -47,7 +47,6 @@ django.setup()
 
 from PIL import Image  # noqa: E402
 
-from apps.blog.models import Category as BlogCategory  # noqa: E402
 from apps.blog.models import Post  # noqa: E402
 from apps.blog.models import Tag as BlogTag  # noqa: E402
 from apps.brands.models import Brand, Category, Series, Subcategory  # noqa: E402
@@ -411,16 +410,10 @@ def build_manifest() -> dict:
         )
     manifest["similar"] = similar
 
-    # -- Blog -----------------------------------------------------------------------------
+    # -- Blog (Category je uklonjen — post-launch odluka; samo Tag + Post) ------------------
     blog = None
-    categories = list(BlogCategory.objects.all())
-    if categories:
-        if len(categories) > 1:
-            raise SystemExit(
-                "Vise od 1 BlogCategory — profil2 blog shape (jedna kategorija) ne podrzava "
-                f"vise. Nadjeno: {[c.slug for c in categories]}"
-            )
-        cat = categories[0]
+    blog_posts = list(Post.objects.all().order_by("slug"))
+    if blog_posts:
         tags = list(BlogTag.objects.all())
         if len(tags) > 1:
             raise SystemExit(
@@ -428,7 +421,7 @@ def build_manifest() -> dict:
             )
         tag = tags[0] if tags else None
         posts = []
-        for post in Post.objects.all().order_by("slug"):
+        for post in blog_posts:
             posts.append(
                 {
                     "slug": post.slug,
@@ -438,11 +431,6 @@ def build_manifest() -> dict:
                 }
             )
         blog = {
-            "category": {
-                "slug": cat.slug,
-                "name": cat.name_sr,
-                "description": cat.description_sr or "",
-            },
             "tag": {"slug": tag.slug, "name": tag.name_sr} if tag else None,
             "posts": posts,
         }

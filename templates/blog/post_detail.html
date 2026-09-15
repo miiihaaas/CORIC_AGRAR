@@ -29,12 +29,6 @@
             {% translate "Autor" %}: {{ post.author.get_full_name|default:post.author.username }}
           </span>
         {% endif %}
-        {% if post.category %}
-          <span class="coric-blog-detail__category">
-            {% translate "Kategorija" %}:
-            <a href="{% url 'blog:category' slug=post.category.slug %}">{{ post.category.name }}</a>
-          </span>
-        {% endif %}
       </p>
     </header>
 
@@ -62,12 +56,6 @@
         </ul>
       {% endif %}
     {% endwith %}
-
-    {% if similar_posts %}
-      <section class="coric-blog-detail__similar" aria-labelledby="blog-similar-title">
-        {% include "blog/partials/_similar_posts.html" %}
-      </section>
-    {% endif %}
   </article>
 {% endblock content %}
 

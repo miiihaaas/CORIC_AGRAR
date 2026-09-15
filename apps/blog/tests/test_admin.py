@@ -1,7 +1,9 @@
 """Story 5.1 — STUB apps/blog/admin.py (TEA RED phase).
 
-Pokriva AC6: Category/Tag/Post registrovani na admin.site; superuser GET changelist
-za sva 3 → 200; PostAdmin.view_on_site is False (IMP-1 — sprečava „View on site" →
+Category je UKLONJEN (post-launch odluka) — testovi obrisani sa njim.
+
+Pokriva AC6: Tag/Post registrovani na admin.site; superuser GET changelist za
+oba → 200; PostAdmin.view_on_site is False (IMP-1 — sprečava „View on site" →
 get_absolute_url → NoReverseMatch → 500 jer blog URL-ovi NE postoje do 5.2/5.3);
 smoke NE sme triggerovati Post.get_absolute_url.
 
@@ -31,11 +33,11 @@ from django.urls import reverse
 pytestmark = pytest.mark.django_db
 
 
-# AC6: Category/Tag/Post registrovani na admin.site
+# AC6: Tag/Post registrovani na admin.site
 def test_blog_models_registered_in_admin():
-    from apps.blog.models import Category, Post, Tag
+    from apps.blog.models import Post, Tag
 
-    for model in (Post, Category, Tag):
+    for model in (Post, Tag):
         assert admin.site.is_registered(model), (
             f"{model.__name__} MORA biti registrovan na admin.site "
             f"(@admin.register u apps/blog/admin.py) — AC6."
@@ -69,17 +71,6 @@ def test_post_changelist_200_for_superuser(client, superuser, make_post, author_
         f"superuser GET {url!r} MORA vratiti 200 (admin stub PROLAZI check + render); "
         f"dobio {response.status_code}. Ako 500 → verovatno get_absolute_url/NoReverseMatch "
         f"(view_on_site mora biti False — IMP-1)."
-    )
-
-
-# AC6: superuser GET Category changelist → 200
-def test_category_changelist_200_for_superuser(client, superuser, make_category):
-    make_category()
-    url = reverse("admin:blog_category_changelist")
-    client.force_login(superuser)
-    response = client.get(url)
-    assert response.status_code == 200, (
-        f"superuser GET {url!r} MORA vratiti 200, dobio {response.status_code}."
     )
 
 

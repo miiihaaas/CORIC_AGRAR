@@ -1,11 +1,13 @@
-"""Story 5.1 — apps/blog/models.py Category/Tag/Post modeli (TEA RED phase).
+"""Story 5.1 — apps/blog/models.py Tag/Post modeli (TEA RED phase).
 
-Pokriva AC1: 3 modela nasleđuju SluggedModel+TimestampedModel; tačna polja+tipovi;
-FK category SET_NULL related_name="posts"; M2M tags related_name="posts"; FK author
-→ settings.AUTH_USER_MODEL SET_NULL null=True related_name="blog_posts"; status
-TextChoices DRAFT="draft"/PUBLISHED="published" default DRAFT; published_at nullable;
-slug auto-gen iz title/name kroz slugify_ascii; slug unique (kolizija → IntegrityError);
-__str__; Meta.ordering/verbose_name/indexes (blog_post_status_pub_idx).
+Category je UKLONJEN (post-launch odluka) — testovi obrisani sa njim.
+
+Pokriva AC1: oba modela nasleđuju SluggedModel+TimestampedModel; tačna polja+tipovi;
+M2M tags related_name="posts"; FK author → settings.AUTH_USER_MODEL SET_NULL
+null=True related_name="blog_posts"; status TextChoices DRAFT="draft"/
+PUBLISHED="published" default DRAFT; published_at nullable; slug auto-gen iz
+title/name kroz slugify_ascii; slug unique (kolizija → IntegrityError); __str__;
+Meta.ordering/verbose_name/indexes (blog_post_status_pub_idx).
 
 DB-value lock (IMP-3): Post.Status.PUBLISHED.value == "published" (zaključava DB string
 na koji PublishedManager + 5.2/5.3/5.4 query-i ciljaju).
@@ -41,9 +43,9 @@ pytestmark = pytest.mark.django_db
 
 # AC1: sva 3 modela nasleđuju SluggedModel + TimestampedModel
 def test_models_inherit_slugged_and_timestamped():
-    from apps.blog.models import Category, Post, Tag
+    from apps.blog.models import Post, Tag
 
-    for model in (Category, Tag, Post):
+    for model in (Tag, Post):
         assert issubclass(model, SluggedModel), (
             f"{model.__name__} MORA nasleđivati SluggedModel (slug globally unique — AC1)."
         )
@@ -64,39 +66,6 @@ def test_inherited_slug_and_timestamp_fields():
     )
     assert Post._meta.get_field("created_at") is not None
     assert Post._meta.get_field("updated_at") is not None
-
-
-# =============================================================================
-# AC1 — Category
-# =============================================================================
-
-
-# AC1: Category polja + tipovi (name CharField 200, description TextField blank)
-def test_category_fields():
-    from apps.blog.models import Category
-
-    name = Category._meta.get_field("name")
-    assert isinstance(name, models.CharField) and name.max_length == 200, (
-        "Category.name MORA biti CharField(max_length=200) — AC1."
-    )
-    description = Category._meta.get_field("description")
-    assert isinstance(description, models.TextField) and description.blank is True, (
-        "Category.description MORA biti TextField(blank=True) — AC1."
-    )
-
-
-# AC1: Category slug auto-gen iz name + __str__ + Meta.ordering
-def test_category_slug_autogen_and_str_and_ordering():
-    from apps.blog.models import Category
-
-    cat = Category.objects.create(name="Ratarstvo i Đubrenje")
-    assert cat.slug == "ratarstvo-i-dubrenje", (
-        f"Category.slug MORA auto-gen iz name kroz slugify_ascii (Đ→D), dobio {cat.slug!r}."
-    )
-    assert str(cat) == cat.name, "Category.__str__ MORA vraćati name."
-    assert list(Category._meta.ordering) == ["name"], (
-        f"Category.Meta.ordering MORA biti ['name'], dobio {Category._meta.ordering}."
-    )
 
 
 # =============================================================================
@@ -168,24 +137,6 @@ def test_post_scalar_fields():
     )
 
 
-# AC1: Post.category FK → blog.Category, on_delete=SET_NULL, related_name="posts", null/blank
-def test_post_category_fk():
-    from apps.blog.models import Category, Post
-
-    field = Post._meta.get_field("category")
-    assert isinstance(field, models.ForeignKey), "Post.category MORA biti ForeignKey — AC1."
-    assert field.related_model is Category, "Post.category MORA referencirati blog.Category."
-    assert field.remote_field.on_delete is models.SET_NULL, (
-        "Post.category on_delete MORA biti SET_NULL (brisanje kategorije NE briše objave) — AC1."
-    )
-    assert field.null is True and field.blank is True, (
-        "Post.category MORA biti null=True, blank=True — AC1."
-    )
-    assert field.remote_field.related_name == "posts", (
-        f"Post.category related_name MORA biti 'posts', dobio {field.remote_field.related_name!r}."
-    )
-
-
 # AC1: Post.tags M2M → blog.Tag, related_name="posts", blank
 def test_post_tags_m2m():
     from apps.blog.models import Post, Tag
@@ -224,15 +175,14 @@ def test_post_author_fk_uses_auth_user_model():
 # AC1: NEMA cross-app FK osim AUTH_USER_MODEL (blog je samostalan content app —
 # NE FK na products/brands)
 def test_post_no_cross_app_fk_except_auth_user():
-    from apps.blog.models import Category, Post
+    from apps.blog.models import Post
 
     user_model = get_user_model()
     for field in Post._meta.get_fields():
         if isinstance(field, models.ForeignKey):
-            allowed = (Category, user_model)
-            assert field.related_model in allowed, (
+            assert field.related_model is user_model, (
                 f"Post.{field.name} FK ka {field.related_model} NIJE dozvoljen — blog je "
-                f"samostalan content app (samo blog.Category + AUTH_USER_MODEL; NE products/brands)."
+                f"samostalan content app (samo AUTH_USER_MODEL; NE products/brands)."
             )
 
 
@@ -377,24 +327,15 @@ def test_post_has_objects_and_published_managers():
     )
 
 
-# AC1: verbose_name-ovi sa punim dijakritikom (Objava/Objave; Kategorija/Kategorije)
+# AC1: verbose_name-ovi sa punim dijakritikom (Objava/Objave; Tag/Tagovi)
 def test_verbose_names_full_diacritics():
-    from apps.blog.models import Category, Post, Tag
+    from apps.blog.models import Post, Tag
 
     assert str(Post._meta.verbose_name) == "Objava", (
         f"Post.Meta.verbose_name MORA biti 'Objava', dobio {Post._meta.verbose_name!r}."
     )
     assert str(Post._meta.verbose_name_plural) == "Objave", (
         f"Post.Meta.verbose_name_plural MORA biti 'Objave', dobio {Post._meta.verbose_name_plural!r}."
-    )
-    assert str(Category._meta.verbose_name) == "Kategorija", (
-        f"Category.Meta.verbose_name MORA biti 'Kategorija', dobio {Category._meta.verbose_name!r}."
-    )
-    # TEST_GAP-1: dopuna verbose_name pokrivenosti (Category plural + Tag oba) —
-    # tihi rename bilo kog verbose_name-a se sad hvata.
-    assert str(Category._meta.verbose_name_plural) == "Kategorije", (
-        f"Category.Meta.verbose_name_plural MORA biti 'Kategorije', "
-        f"dobio {Category._meta.verbose_name_plural!r}."
     )
     assert str(Tag._meta.verbose_name) == "Tag", (
         f"Tag.Meta.verbose_name MORA biti 'Tag', dobio {Tag._meta.verbose_name!r}."

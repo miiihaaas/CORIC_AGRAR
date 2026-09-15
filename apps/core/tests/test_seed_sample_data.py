@@ -32,7 +32,6 @@ from django.core.management.base import CommandError
 from django.test import override_settings
 from django.utils import timezone
 
-from apps.blog.models import Category as BlogCategory
 from apps.blog.models import Post
 from apps.blog.models import Tag as BlogTag
 from apps.brands.models import Brand
@@ -231,15 +230,14 @@ def test_no_used_machine_has_year_gte_2024():
 
 
 # =============================================================================
-# AC7 — Blog posts published + Category + Tag
+# AC7 — Blog posts published + Tag (Category je uklonjen — post-launch odluka)
 # =============================================================================
 
 
 @pytest.mark.django_db
-def test_blog_category_ratarstvo_and_tag_zetva_exist():
+def test_blog_tag_zetva_exists():
     # AC-7
     call_command("seed_sample_data")
-    assert BlogCategory.objects.filter(slug="ratarstvo").exists()
     assert BlogTag.objects.filter(slug="zetva").exists()
 
 
@@ -263,11 +261,10 @@ def test_headline_post_slug_exists_and_published():
 
 
 @pytest.mark.django_db
-def test_published_posts_have_category_and_tag():
+def test_published_posts_have_tag():
     # AC-7
     call_command("seed_sample_data")
     post = Post.published.get(slug="pet-saveta-za-prolecnu-setvu")
-    assert post.category is not None
     assert post.tags.exists()
 
 

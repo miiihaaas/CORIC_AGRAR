@@ -1,7 +1,9 @@
 """Story 5.1 — TEA RED phase conftest za apps/blog/ test suite.
 
+Category je UKLONJEN (post-launch odluka) — `make_category` fixture obrisana s njim.
+
 PRVA story Epic 5 (Blog „Priče sa polja"). MODEL FOUNDATION: NOVI app apps/blog/
-sa 3 modela (Category/Tag/Post) + modeltranslation + PublishedManager + admin stub
+sa 2 modela (Tag/Post) + modeltranslation + PublishedManager + admin stub
 + schema migracija. NEMA views/urls/templates u 5-1 (5-2…5-4 scope).
 
 RED phase: apps.blog NE postoji (NIJE u INSTALLED_APPS) → svaki test koji importuje
@@ -63,24 +65,7 @@ def author_user(django_user_model):
     )
 
 
-# ── Factory helpers (Category / Tag / Post) — inline, pune dijakritike ────────
-
-
-@pytest.fixture
-def make_category():
-    """Helper: kreira Category (slug auto-gen iz name). Pune dijakritike default.
-
-    Default name „Ratarstvo"; override kroz `make_category(name="Žetva i Đubrenje")`.
-    """
-
-    def _make(**overrides):
-        from apps.blog.models import Category
-
-        defaults = {"name": "Ratarstvo", "description": "Priče sa njive."}
-        defaults.update(overrides)
-        return Category.objects.create(**defaults)
-
-    return _make
+# ── Factory helpers (Tag / Post) — inline, pune dijakritike ────────────────────
 
 
 @pytest.fixture
@@ -103,7 +88,7 @@ def make_post():
 
     Default DRAFT + published_at=None. Override status/published_at per-test:
         make_post(status="published", published_at=timezone.now())
-    `category`/`author`/`tags` opciono prosleđeni (FK/M2M).
+    `author`/`tags` opciono prosleđeni (FK/M2M).
     """
 
     def _make(*, tags=None, **overrides):
