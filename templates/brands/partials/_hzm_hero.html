@@ -1,10 +1,22 @@
 {% load i18n %}
 {# HZM hero — variant="green" (SM-D9: CSS NEMA --hzm varijantu; brand-specifične #}
-{# varijante su Story 9-10 polish scope). #}
-<div class="coric-brand-hero" data-testid="hzm-hero">
-  {% if brand.logo %}
-    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant="green" bullets="" %}
-  {% else %}
-    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant="green" bullets="" %}
+{# varijante su Story 9-10 polish scope). Foto-hero: full-bleed brand.hero_image + #}
+{# overlay kartica, isti obrazac kao brands/partials/_hero_section.html. Bez #}
+{# hero_image (brand ga još nema) — degradira na staru zelenu karticu, bez fotografije. #}
+<div class="coric-brand-hero{% if brand.hero_image %} coric-brand-hero--photo{% endif %}" data-testid="hzm-hero">
+  {% if brand.hero_image %}
+    <img src="{{ brand.hero_image.url }}"
+         alt=""
+         aria-hidden="true"
+         loading="eager"
+         fetchpriority="high"
+         class="coric-brand-hero__bg">
   {% endif %}
+  <div class="coric-brand-hero__overlay">
+    {% if brand.logo %}
+      {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant="green" bullets="" %}
+    {% else %}
+      {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant="green" bullets="" %}
+    {% endif %}
+  </div>
 </div>

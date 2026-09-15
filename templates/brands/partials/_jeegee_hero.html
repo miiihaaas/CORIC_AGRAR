@@ -1,11 +1,23 @@
 {% load i18n %}
 {# Jeegee hero — fiksna PLAVA varijanta Repeating Element-a. #}
 {# NIJE REUSE Story 2-6 _hero_section.html (per SM-D4) — Jeegee variant je hardcoded, #}
-{# NEMA conditional brand_color → variant branching iz Story 2-6. #}
-<div class="coric-brand-hero" data-testid="jeegee-hero">
-  {% if brand.logo %}
-    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant="jeegee" bullets="" %}
-  {% else %}
-    {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant="jeegee" bullets="" %}
+{# NEMA conditional brand_color → variant branching iz Story 2-6. Foto-hero: #}
+{# full-bleed brand.hero_image + overlay kartica, isti obrazac kao ostali brand hero-i. #}
+{# Bez hero_image (brand ga još nema) — degradira na staru zelenu karticu, bez fotografije. #}
+<div class="coric-brand-hero{% if brand.hero_image %} coric-brand-hero--photo{% endif %}" data-testid="jeegee-hero">
+  {% if brand.hero_image %}
+    <img src="{{ brand.hero_image.url }}"
+         alt=""
+         aria-hidden="true"
+         loading="eager"
+         fetchpriority="high"
+         class="coric-brand-hero__bg">
   {% endif %}
+  <div class="coric-brand-hero__overlay">
+    {% if brand.logo %}
+      {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo=brand.logo.url brand_logo_alt=brand.name variant="jeegee" bullets="" %}
+    {% else %}
+      {% include "partials/hero_overlay_card.html" with title=brand.name brand_logo="" brand_logo_alt=brand.name variant="jeegee" bullets="" %}
+    {% endif %}
+  </div>
 </div>
