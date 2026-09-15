@@ -202,12 +202,13 @@ def test_ac1_assertNumQueries_initial_render_under_budget(client, django_assert_
     for i in range(5):
         UsedProductFactory.create(brand=brand, name=f"Used {i}", price_eur=Decimal(f"{1000 * (i + 1)}.00"))
 
-    # Query budget: 7 = 4 view upita (categories dropdown + brands dropdown + Product
-    #   COUNT + Product slice) + SiteSettings chrome (3.4) + RedirectMiddleware
-    #   seo_redirect lookup (6-4) + footer latest_blog_posts blog_post LIMIT 3 (5-4).
-    #   Sve tri chrome upite su konstantne po request-u (indeksirane, ne skaliraju sa
-    #   brojem product-a). Real N+1 u view-u i dalje obara ovaj exact budget.
-    with django_assert_num_queries(7):
+    # Query budget: 6 = 3 view upita (brands dropdown + Product COUNT + Product slice —
+    #   categories dropdown je SADA statička 4-bucket lista, NE Category upit) +
+    #   SiteSettings chrome (3.4) + RedirectMiddleware seo_redirect lookup (6-4) +
+    #   footer latest_blog_posts blog_post LIMIT 3 (5-4). Sve tri chrome upite su
+    #   konstantne po request-u (indeksirane, ne skaliraju sa brojem product-a). Real
+    #   N+1 u view-u i dalje obara ovaj exact budget.
+    with django_assert_num_queries(6):
         response = client.get("/sr/mehanizacija/polovna/", HTTP_HOST="localhost")
         assert response.status_code == 200
 
@@ -300,26 +301,120 @@ def test_ac2_get_queryset_includes_used_regardless_of_subcategory_scope(client):
 # =============================================================================
 
 
-def test_ac2_get_queryset_applies_kategorija_filter(client):
-    """AC2: ?kategorija=<slug> filtruje po subcategory__category__slug + is_for='mehanizacija'."""
+def test_ac2_get_queryset_applies_kategorija_traktori_bucket(client):
+    """AC2: ?kategorija=traktori filtruje po brand__slug (poznati traktor brendovi) —
+    used traktori NEMAJU subcategory (profil 1/2 data gap), pa se bucket prepoznaje
+    po brand-u, ne po Category vezi."""
+    activate("sr")
+    tractor_brand = BrandFactory.create(slug="agri-tracking", name="Agri Tracking")
+    other_brand = BrandFactory.create()
+    tractor_product = UsedProductFactory.create(brand=tractor_brand, name="Used Tractor")
+    other_product = UsedProductFactory.create(brand=other_brand, name="Used Other")
+
+    response = client.get("/sr/mehanizacija/polovna/?kategorija=traktori", HTTP_HOST="localhost")
+
+    assert response.status_code == 200
+    product_pks = [p.pk for p in response.context["products"]]
+    assert tractor_product.pk in product_pks, (
+        f"Traktor brand product MORA biti sa ?kategorija=traktori. Dobili: {product_pks!r}."
+    )
+    assert other_product.pk not in product_pks, (
+        f"Ne-traktor brand product NE SME biti sa ?kategorija=traktori. Dobili: {product_pks!r}."
+    )
+
+
+def test_ac2_get_queryset_applies_kategorija_prikljucna_mehanizacija_bucket(client):
+    """AC2: ?kategorija=prikljucna-mehanizacija grupiše sve 3 Jeegee kategorije
+    (osnovna-obrada-zemljista/priprema-zemljista/masine-za-setvu) u JEDAN filter."""
     activate("sr")
     brand = BrandFactory.create()
     plugovi_product = UsedProductFactory.create_in_category(
-        brand=brand, category_slug="plugovi", category_name="Plugovi", name="Plug 1"
+        brand=brand,
+        category_slug="osnovna-obrada-zemljista",
+        category_name="Osnovna obrada zemljišta",
+        name="Plug 1",
     )
-    other_product = UsedProductFactory.create_in_category(
-        brand=brand, category_slug="grablje", category_name="Grablje", name="Grablje 1"
+    setva_product = UsedProductFactory.create_in_category(
+        brand=brand,
+        category_slug="masine-za-setvu",
+        category_name="Mašine za setvu",
+        name="Sejalica 1",
+    )
+    radne_masine_product = UsedProductFactory.create_in_category(
+        brand=brand, category_slug="radne-masine", category_name="Radne mašine", name="Utovarivač 1"
     )
 
-    response = client.get("/sr/mehanizacija/polovna/?kategorija=plugovi", HTTP_HOST="localhost")
+    response = client.get(
+        "/sr/mehanizacija/polovna/?kategorija=prikljucna-mehanizacija", HTTP_HOST="localhost"
+    )
 
     assert response.status_code == 200
     product_pks = [p.pk for p in response.context["products"]]
     assert plugovi_product.pk in product_pks, (
-        f"Plug product MORA biti sa ?kategorija=plugovi. Dobili: {product_pks!r}."
+        f"Osnovna obrada zemljišta product MORA biti u prikljucna-mehanizacija bucket-u. "
+        f"Dobili: {product_pks!r}."
+    )
+    assert setva_product.pk in product_pks, (
+        f"Mašine za setvu product MORA biti u prikljucna-mehanizacija bucket-u. "
+        f"Dobili: {product_pks!r}."
+    )
+    assert radne_masine_product.pk not in product_pks, (
+        f"Radne mašine product NE SME biti u prikljucna-mehanizacija bucket-u. "
+        f"Dobili: {product_pks!r}."
+    )
+
+
+def test_ac2_get_queryset_applies_kategorija_radne_masine_bucket(client):
+    """AC2: ?kategorija=radne-masine filtruje po subcategory__category__slug='radne-masine'."""
+    activate("sr")
+    brand = BrandFactory.create()
+    radne_masine_product = UsedProductFactory.create_in_category(
+        brand=brand, category_slug="radne-masine", category_name="Radne mašine", name="Utovarivač 1"
+    )
+    other_product = UsedProductFactory.create_in_category(
+        brand=brand,
+        category_slug="osnovna-obrada-zemljista",
+        category_name="Osnovna obrada zemljišta",
+        name="Plug 1",
+    )
+
+    response = client.get("/sr/mehanizacija/polovna/?kategorija=radne-masine", HTTP_HOST="localhost")
+
+    assert response.status_code == 200
+    product_pks = [p.pk for p in response.context["products"]]
+    assert radne_masine_product.pk in product_pks, (
+        f"Radne mašine product MORA biti sa ?kategorija=radne-masine. Dobili: {product_pks!r}."
     )
     assert other_product.pk not in product_pks, (
-        f"Grablje product NE SME biti sa ?kategorija=plugovi. Dobili: {product_pks!r}."
+        f"Priključna mehanizacija product NE SME biti sa ?kategorija=radne-masine. "
+        f"Dobili: {product_pks!r}."
+    )
+
+
+def test_ac2_get_queryset_applies_kategorija_ostalo_bucket(client):
+    """AC2: ?kategorija=ostalo je fallback za sve što NIJE traktori/prikljucna-mehanizacija/
+    radne-masine (npr. Tulip MIX ili bilo koji used proizvod bez prepoznatog bucket-a)."""
+    activate("sr")
+    tractor_brand = BrandFactory.create(slug="wuzheng", name="Wuzheng")
+    misc_brand = BrandFactory.create()
+    tractor_product = UsedProductFactory.create(brand=tractor_brand, name="Used Tractor")
+    radne_masine_product = UsedProductFactory.create_in_category(
+        brand=misc_brand, category_slug="radne-masine", category_name="Radne mašine", name="Utovarivač 1"
+    )
+    misc_product = UsedProductFactory.create(brand=misc_brand, name="Used MIX Prikolica")
+
+    response = client.get("/sr/mehanizacija/polovna/?kategorija=ostalo", HTTP_HOST="localhost")
+
+    assert response.status_code == 200
+    product_pks = [p.pk for p in response.context["products"]]
+    assert misc_product.pk in product_pks, (
+        f"Proizvod bez prepoznatog bucket-a MORA biti u 'ostalo'. Dobili: {product_pks!r}."
+    )
+    assert tractor_product.pk not in product_pks, (
+        f"Traktor brand product NE SME biti u 'ostalo'. Dobili: {product_pks!r}."
+    )
+    assert radne_masine_product.pk not in product_pks, (
+        f"Radne mašine product NE SME biti u 'ostalo'. Dobili: {product_pks!r}."
     )
 
 
@@ -477,33 +572,25 @@ def test_ac2_pagination_out_of_range_page_clamps_to_last_page(client):
 
 
 def test_ac2_get_context_data_includes_categories_for_dropdown(client):
-    """AC2: context['categories_for_dropdown'] filtruje is_for='mehanizacija' kategorije,
-    ordered by display_order, name.
+    """AC2: context['categories_for_dropdown'] je kurirani 4-bucket taxonomy (Traktori,
+    Priključna mehanizacija, Radne mašine, Ostalo) — NE 1:1 sa Category tabelom
+    (Jeegee-ove 3 kategorije se grupišu u jednu 'Priključna mehanizacija' opciju,
+    'Traktori' se prepoznaje po brand-u, ne po Category vezi).
     """
     activate("sr")
     BrandFactory.create()
-    # Kreiraj 1 mehanizacija + 1 traktori kategoriju
-    from apps.brands.models import Category
-
-    mech_cat = Category.objects.create(
-        slug="kat-mech", name="Mech Cat", is_for="mehanizacija", display_order=1
-    )
-    trakt_cat = Category.objects.create(
-        slug="kat-trakt", name="Trakt Cat", is_for="traktori", display_order=0
-    )
 
     response = client.get("/sr/mehanizacija/polovna/", HTTP_HOST="localhost")
     assert response.status_code == 200
 
     categories = list(response.context["categories_for_dropdown"])
-    category_pks = [c.pk for c in categories]
-    assert mech_cat.pk in category_pks, (
-        f"Mehanizacija category MORA biti u dropdown-u. Dobili: {category_pks!r}."
-    )
-    assert trakt_cat.pk not in category_pks, (
-        f"Traktori category NE SME biti u mehanizacija dropdown-u "
-        f"(is_for='mehanizacija' filter). Dobili: {category_pks!r}."
-    )
+    category_slugs = [c["slug"] for c in categories]
+    assert category_slugs == [
+        "traktori",
+        "prikljucna-mehanizacija",
+        "radne-masine",
+        "ostalo",
+    ], f"categories_for_dropdown MORA biti tačno ova 4 bucket-a ovim redom. Dobili: {category_slugs!r}."
 
 
 def test_ac2_get_context_data_includes_brands_for_dropdown(client):

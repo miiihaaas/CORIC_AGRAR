@@ -43,6 +43,28 @@ _USED_SORT_OPTIONS = {
     "godina_desc": "-year",
 }
 
+# Polovna mehanizacija "kategorija" filter — kurirani 4-bucket taxonomy, NE 1:1 sa
+# Category tabelom: Jeegee-ove 3 kategorije (osnovna-obrada-zemljista/priprema-zemljista/
+# masine-za-setvu) se grupišu u JEDNU "Priključna mehanizacija" opciju. "Traktori" nema
+# svoju Category(is_for="traktori") vezu na used proizvodima (subcategory je None za sve
+# postojeće polovne traktore — profil 1/2 gap), pa se prepoznaje po brand__slug. "Ostalo"
+# je fallback za sve što ne upada ni u jedan od preostala tri bucket-a (npr. Tulip MIX,
+# polovni-hzm-utovarivac bez subcategory).
+_USED_TRACTOR_BRAND_SLUGS = ("agri-tracking", "wuzheng", "saillong")
+_USED_PRIKLJUCNA_CATEGORY_SLUGS = (
+    "osnovna-obrada-zemljista",
+    "priprema-zemljista",
+    "masine-za-setvu",
+)
+_USED_RADNE_MASINE_CATEGORY_SLUG = "radne-masine"
+
+_USED_CATEGORY_BUCKETS = (
+    ("traktori", _("Traktori")),
+    ("prikljucna-mehanizacija", _("Priključna mehanizacija")),
+    (_USED_RADNE_MASINE_CATEGORY_SLUG, _("Radne mašine")),
+    ("ostalo", _("Ostalo")),
+)
+
 
 def _parse_int(raw, *, min_value=0, max_value=10_000):
     """Story 2.8 SM-D11 defensive parser — vraća None za invalid/out-of-range input."""
@@ -319,10 +341,20 @@ class UsedMachineryListView(ListView):
         # SM-D11 defensive parsing — invalid input silently ignored.
 
         kategorija_slug = self.request.GET.get("kategorija", "").strip()
-        if kategorija_slug:
+        if kategorija_slug == "traktori":
+            qs = qs.filter(brand__slug__in=_USED_TRACTOR_BRAND_SLUGS)
+        elif kategorija_slug == "prikljucna-mehanizacija":
             qs = qs.filter(
-                subcategory__category__slug=kategorija_slug,
-                subcategory__category__is_for="mehanizacija",
+                subcategory__category__slug__in=_USED_PRIKLJUCNA_CATEGORY_SLUGS
+            )
+        elif kategorija_slug == _USED_RADNE_MASINE_CATEGORY_SLUG:
+            qs = qs.filter(
+                subcategory__category__slug=_USED_RADNE_MASINE_CATEGORY_SLUG
+            )
+        elif kategorija_slug == "ostalo":
+            qs = qs.exclude(brand__slug__in=_USED_TRACTOR_BRAND_SLUGS).exclude(
+                subcategory__category__slug__in=_USED_PRIKLJUCNA_CATEGORY_SLUGS
+                + (_USED_RADNE_MASINE_CATEGORY_SLUG,)
             )
 
         brend_slug = self.request.GET.get("brend", "").strip()
@@ -375,9 +407,9 @@ class UsedMachineryListView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
 
-        ctx["categories_for_dropdown"] = Category.objects.filter(
-            is_for="mehanizacija"
-        ).order_by("display_order", "name")
+        ctx["categories_for_dropdown"] = [
+            {"slug": slug, "name": label} for slug, label in _USED_CATEGORY_BUCKETS
+        ]
 
         ctx["brands_for_dropdown"] = Brand.objects.filter(
             is_coming_soon=False
@@ -396,7 +428,7 @@ class UsedMachineryListView(ListView):
         # IMP-3 normalization: invalid kategorija slug → reset na "" za form-restore
         # koherenciju sa dropdown setom (queryset još uvek vraća 0 results —
         # empty state handluje).
-        valid_kategorija_slugs = {c.slug for c in ctx["categories_for_dropdown"]}
+        valid_kategorija_slugs = {c["slug"] for c in ctx["categories_for_dropdown"]}
         if (
             active_filters["kategorija"]
             and active_filters["kategorija"] not in valid_kategorija_slugs
